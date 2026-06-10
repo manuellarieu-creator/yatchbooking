@@ -1,23 +1,25 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-8 h-20 flex items-center border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <Link className="flex items-center justify-center" href="#">
+        <Link className="flex items-center justify-center" href="/">
           <span className="font-bold text-2xl text-primary uppercase tracking-wider">Azur Yachts</span>
         </Link>
-        <nav className="ml-auto flex gap-6">
-          <Link className="text-sm font-semibold hover:text-secondary transition-colors" href="#">Flotte</Link>
-          <Link className="text-sm font-semibold hover:text-secondary transition-colors" href="#">Destinations</Link>
-          <Link className="text-sm font-semibold hover:text-secondary transition-colors" href="#">Contact</Link>
+        <nav className="ml-auto flex gap-6 items-center">
+          <Link className="text-sm font-semibold hover:text-secondary transition-colors" href="/yachts">Flotte</Link>
+          <Link className="text-sm font-semibold hover:text-secondary transition-colors" href="/destinations">Destinations</Link>
+          <Link className="text-sm font-semibold hover:text-secondary transition-colors" href="/contact">Contact</Link>
+          <Button variant="default" asChild>
+            <Link href="/dashboard">Connexion</Link>
+          </Button>
         </nav>
       </header>
       <main className="flex-1">
         <section className="w-full py-24 lg:py-32 xl:py-48 bg-primary relative overflow-hidden">
-          {/* Un léger dégradé pour faire ressortir le texte s'il y avait une image de fond */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 z-0"></div>
-          
           <div className="container px-4 md:px-6 relative z-10">
             <div className="flex flex-col items-center space-y-8 text-center">
               <div className="space-y-4">
@@ -29,12 +31,12 @@ export default function Home() {
                 </p>
               </div>
               <div className="space-x-4">
-                <button className="bg-secondary text-secondary-foreground font-semibold hover:bg-secondary/90 text-lg px-8 py-4 rounded-md transition-colors shadow-lg">
+                <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 text-lg px-8">
                   Explorer la flotte
-                </button>
-                <button className="bg-white/10 text-white font-semibold border border-white/20 hover:bg-white/20 text-lg px-8 py-4 rounded-md transition-colors backdrop-blur-sm">
+                </Button>
+                <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent text-white border-white/20 hover:bg-white/20 hover:text-white">
                   Nous contacter
-                </button>
+                </Button>
               </div>
             </div>
           </div>
