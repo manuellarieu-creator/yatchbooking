@@ -151,13 +151,33 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
               <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px' }}>
-                <strong style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Rôle</strong>
-                <span>{selectedUser.role}</span>
+                <strong style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Contact</strong>
+                <div style={{ fontSize: '0.85rem' }}>
+                  <div>📧 {selectedUser.email}</div>
+                  <div>📞 {selectedUser.phone || 'Non renseigné'}</div>
+                </div>
               </div>
               <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px' }}>
-                <strong style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Pays de résidence</strong>
-                <span>{selectedUser.countryResidence || 'Non renseigné'}</span>
+                <strong style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Profil</strong>
+                <div style={{ fontSize: '0.85rem' }}>
+                  <div><strong>Rôle:</strong> {selectedUser.role}</div>
+                  <div><strong>Pays:</strong> {selectedUser.countryResidence || 'Non renseigné'}</div>
+                </div>
               </div>
+              {selectedUser.role === 'ADVERTISER' && (
+                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', gridColumn: '1 / -1' }}>
+                  <strong style={{ display: 'block', fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Langues parlées</strong>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    {selectedUser.languages && selectedUser.languages.length > 0 ? (
+                      selectedUser.languages.map((lang, idx) => (
+                        <span key={idx} style={{ background: '#e2e8f0', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.8rem', color: '#334155' }}>{lang}</span>
+                      ))
+                    ) : (
+                      <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Non renseigné</span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {selectedUser.role === 'ADVERTISER' && (
