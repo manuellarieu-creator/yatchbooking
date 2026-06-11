@@ -50,7 +50,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const listing = await prisma.listing.findUnique({ where: { id: params.id } })
     if (!listing) return NextResponse.json({ error: 'Introuvable' }, { status: 404 })
 
-    if (listing.ownerId !== session.user.id && (session.user as any).role !== 'ADMIN') {
+    if (listing.ownerId !== (session.user as any).id && (session.user as any).role !== 'ADMIN') {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
     }
 
@@ -74,7 +74,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     const listing = await prisma.listing.findUnique({ where: { id: params.id } })
     if (!listing) return NextResponse.json({ error: 'Introuvable' }, { status: 404 })
 
-    if (listing.ownerId !== session.user.id && (session.user as any).role !== 'ADMIN') {
+    if (listing.ownerId !== (session.user as any).id && (session.user as any).role !== 'ADMIN') {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
     }
 

@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
         skipperAvailable, maxRentalHours, deliveryAvailable,
         deliveryFee, cleaningFee,
         status: 'PENDING',
-        ownerId: session.user.id,
+        ownerId: (session.user as any).id,
         images: {
           create: images?.map((img: any, idx: number) => ({
             url: img.url,
