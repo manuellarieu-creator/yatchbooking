@@ -5,11 +5,26 @@ export const authConfig = {
     signIn: '/auth',
   },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = (user as any).role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        (session.user as any).role = token.role;
+      }
+      return session;
+    },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isProtectedRoute = nextUrl.pathname.startsWith('/dashboard') || 
                                nextUrl.pathname.startsWith('/profile') || 
-                               nextUrl.pathname.startsWith('/reservations');
+                               nextUrl.pathname.startsWith('/reservations') ||
+                               nextUrl.pathname.startsWith('/admin');
                                
       if (isProtectedRoute) {
         if (isLoggedIn) return true;
