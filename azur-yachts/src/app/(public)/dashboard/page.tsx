@@ -90,7 +90,7 @@ export default function DashboardPage() {
     badgeClass: 'badge-' + (b.status === 'CONFIRMED' ? 'confirmed' : 'pending')
   }));
 
-  const filteredBookings = bookingFilter ? bookings.filter(b => b.status === bookingFilter) : bookings;
+  const filteredBookings = bookingFilter ? bookings.filter((b: any) => b.status === bookingFilter) : bookings;
 
   return (
     <div className="dashboard-container">
