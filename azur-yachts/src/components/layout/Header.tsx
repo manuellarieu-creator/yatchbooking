@@ -20,6 +20,9 @@ export default async function Header() {
       <div className="nav-right">
         {session?.user ? (
           <>
+            {(session.user as any).role === 'ADMIN' && (
+              <Link href="/admin" className="nav-link" style={{marginRight: '1rem', color: '#d4b57a'}}>Espace Admin</Link>
+            )}
             <Link href="/reservations" className="nav-link" style={{marginRight: '1rem'}}>Mes réservations</Link>
             <Link href="/profile" className="nav-link" style={{marginRight: '1rem'}}>Mon profil</Link>
             <div className="nav-avatar">
