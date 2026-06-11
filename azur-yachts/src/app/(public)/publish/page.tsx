@@ -778,7 +778,7 @@ export default function PublishPage() {
               {tips[currentStep as keyof typeof tips]?.map((tip, i) => (
                 <div key={i} className="tip-item">
                   <div className="tip-icon">{tip.icon}</div>
-                  <div className="tip-text">{tip.text}{tip.desc}</div>
+                  <div className="tip-text">{tip.text}{(tip as any).desc}</div>
                 </div>
               ))}
             </div>
