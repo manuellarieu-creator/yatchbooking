@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import HeaderVisibility from "@/components/layout/HeaderVisibility";
 
 export const metadata: Metadata = {
   title: "Azur Yachts — Location de Luxe",
@@ -18,7 +19,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
       </head>
       <body>
-        <Header />
+        <HeaderVisibility>
+          <Header />
+        </HeaderVisibility>
         {children}
       </body>
     </html>

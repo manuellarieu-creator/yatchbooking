@@ -11,7 +11,7 @@ export default function DashboardPage() {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [bookingFilter, setBookingFilter] = useState('');
-  const [dashboardData, setDashboardData] = useState<any>({ stats: { revenue: 0, views: 0, bookingsCount: 0, occupancyRate: 0 }, listings: [], bookings: [] });
+  const [dashboardData, setDashboardData] = useState<any>({ user: { firstName: '', lastName: '', tier: 'PREMIUM' }, stats: { revenue: 0, views: 0, bookingsCount: 0, occupancyRate: 0 }, listings: [], bookings: [] });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -112,10 +112,13 @@ export default function DashboardPage() {
             <div className="notif-badge">2</div>
           </div>
           <div className="user-chip">
-            <div className="user-av">FJ</div>
+            <div className="user-av">
+              {dashboardData.user.firstName?.[0] || 'U'}
+              {dashboardData.user.lastName?.[0] || ''}
+            </div>
             <div>
-              <div className="user-name">Fabio Jaction</div>
-              <div className="user-tier">⭐ Premium</div>
+              <div className="user-name">{dashboardData.user.firstName} {dashboardData.user.lastName}</div>
+              <div className="user-tier">⭐ {dashboardData.user.tier}</div>
             </div>
           </div>
         </div>
@@ -163,8 +166,8 @@ export default function DashboardPage() {
             <div className="page-hd">
               <div className="page-hd-left">
                 <span className="page-eyebrow">Tableau de bord</span>
-                <h1 className="page-title">Bonjour, <em>Fabio</em> 👋</h1>
-                <p className="page-sub">Voici un résumé de votre activité · Vendredi 4 juin 2026</p>
+                <h1 className="page-title">Bonjour, <em>{dashboardData.user.firstName || 'Partenaire'}</em> 👋</h1>
+                <p className="page-sub">Voici un résumé de votre activité · {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
               <Link href="/publish"><button className="btn btn-gold">⚓ Nouvelle annonce</button></Link>
             </div>

@@ -17,6 +17,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
     }
 
+    // 0. Fetch User explicitly
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { firstName: true, lastName: true }
+    })
+
     // 1. Fetch user's listings
     const listings = await prisma.listing.findMany({
       where: { ownerId: userId },
@@ -59,6 +65,11 @@ export async function GET(req: NextRequest) {
     const occupancyRate = listings.length > 0 ? Math.round((confirmedBookingsCount / (listings.length * 4)) * 100) : 0 // Simplified mock formula for occupancy
 
     return NextResponse.json({
+      user: {
+        firstName: dbUser?.firstName || 'Utilisateur',
+        lastName: dbUser?.lastName || '',
+        tier: 'PREMIUM', // Mock for now, could be in DB
+      },
       stats: {
         revenue: totalRevenue,
         views: totalViews,
