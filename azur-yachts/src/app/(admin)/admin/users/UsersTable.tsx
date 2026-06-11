@@ -243,6 +243,10 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
                   <div style={{ background: '#000', borderRadius: '8px', overflow: 'hidden', marginBottom: '1rem' }}>
                     <video controls src={selectedUser.videoUrl} style={{ width: '100%', maxHeight: '350px' }} />
                   </div>
+                ) : (!selectedUser.idCardUrl && !selectedUser.idCardBackUrl) ? (
+                  <div style={{ padding: '1rem', background: '#fff1f2', color: '#be123c', borderRadius: '8px', marginBottom: '1rem' }}>
+                    La vidéo KYC et les copies recto/verso de la pièce d'identité n'ont pas été fournies par cet annonceur.
+                  </div>
                 ) : (
                   <div style={{ padding: '1rem', background: '#fff1f2', color: '#be123c', borderRadius: '8px', marginBottom: '1rem' }}>
                     Aucune vidéo KYC n'a été fournie par cet annonceur.
