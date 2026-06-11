@@ -505,7 +505,6 @@ export default function VerificationPage() {
                 <div className="cam-instr-item"><span className="cam-instr-icon">🎙</span><span className="cam-instr-text"><strong>Voix :</strong> Prononcez clairement votre prénom et nom à voix haute.</span></div>
                 <div className="cam-instr-item"><span className="cam-instr-icon">⏱</span><span className="cam-instr-text"><strong>Durée :</strong> La vidéo dure <strong>10 à 15 secondes</strong> maximum. L'enregistrement s'arrête automatiquement.</span></div>
               </div>
-              </div>
             </div>
           </div>
         </div>
