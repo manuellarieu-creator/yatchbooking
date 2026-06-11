@@ -190,7 +190,7 @@ export default function ListingsPage() {
           <div className="active-filters">
             {activeFilterTags.map((tag, i) => (
               <span key={i} className="active-filter">
-                {tag.label} <span className="active-filter-x" onClick={() => removeFilterTag(tag.type, tag.val)}>×</span>
+                {tag.label} <span className="active-filter-x" onClick={() => removeFilterTag(tag.type, (tag as any).val)}>×</span>
               </span>
             ))}
           </div>
