@@ -9,7 +9,7 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   const filteredUsers = tab === 'pending' 
-    ? users.filter(u => u.status === 'PENDING' && u.role === 'ADVERTISER')
+    ? users.filter(u => u.status === 'PENDING')
     : users;
 
   const handleStatusUpdate = async (id: string, newStatus: UserStatus) => {
@@ -43,7 +43,7 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
 
       <div className="admin-tabs">
         <button className={`admin-tab ${tab === 'pending' ? 'active' : ''}`} onClick={() => setTab('pending')}>
-          En attente de validation ({users.filter(u => u.status === 'PENDING' && u.role === 'ADVERTISER').length})
+          En attente de validation ({users.filter(u => u.status === 'PENDING').length})
         </button>
         <button className={`admin-tab ${tab === 'all' ? 'active' : ''}`} onClick={() => setTab('all')}>
           Tous les utilisateurs ({users.length})
@@ -96,7 +96,7 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
                   <td>{new Date(user.createdAt).toLocaleDateString('fr-FR')}</td>
                   <td>
                     <div className="action-group">
-                      {user.status === 'PENDING' && user.role === 'ADVERTISER' && (
+                      {user.status === 'PENDING' && (
                         <>
                           <button 
                             className="action-btn btn-approve" 
@@ -114,7 +114,7 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
                           </button>
                         </>
                       )}
-                      {user.status === 'ACTIVE' && user.role === 'ADVERTISER' && (
+                      {user.status === 'ACTIVE' && (
                         <button 
                           className="action-btn btn-reject"
                           disabled={loadingId === user.id}
