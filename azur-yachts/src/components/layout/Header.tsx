@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { auth } from '@/auth';
 import './header.css';
+import UserMenu from './UserMenu';
 
 export default async function Header() {
   const session = await auth();
@@ -20,18 +21,8 @@ export default async function Header() {
       <div className="nav-right">
         {session?.user ? (
           <>
-            {(session.user as any).role === 'ADMIN' && (
-              <Link href="/admin" className="nav-link" style={{marginRight: '1rem', color: '#d4b57a'}}>Espace Admin</Link>
-            )}
-            <Link href="/reservations" className="nav-link" style={{marginRight: '1rem'}}>Mes réservations</Link>
-            <Link href="/profile" className="nav-link" style={{marginRight: '1rem'}}>Mon profil</Link>
-            {((session.user as any).role === 'ADVERTISER' || (session.user as any).role === 'ADMIN') && (
-              <Link href="/dashboard" className="nav-link" style={{marginRight: '1rem'}}>Tableau de bord</Link>
-            )}
-            <div className="nav-avatar">
-              {((session.user as any).firstName?.[0] || 'U').toUpperCase()}
-              {((session.user as any).lastName?.[0] || '').toUpperCase()}
-            </div>
+            {/* The dropdown handles the user links now */}
+            <UserMenu user={session.user} />
           </>
         ) : (
           <>

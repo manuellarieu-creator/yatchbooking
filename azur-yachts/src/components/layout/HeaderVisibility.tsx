@@ -10,6 +10,7 @@ function HeaderContent({ children }: { children: React.ReactNode }) {
   if (
     pathname?.startsWith('/dashboard') || 
     pathname?.startsWith('/admin') ||
+    pathname?.startsWith('/publish') ||
     searchParams.get('modal') === 'true'
   ) {
     return null;

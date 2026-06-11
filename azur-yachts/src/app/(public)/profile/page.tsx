@@ -119,19 +119,7 @@ export default function ProfilePage() {
   return (
     <div className="profile-container">
       
-      {/* ── TOP NAV ── */}
-      {!isModal && (
-        <div className="nav-top">
-          <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-          <div className="nav-right">
-            <Link href="/dashboard" className="nav-link">Dashboard</Link>
-            <Link href="/publish" className="nav-link">Publier</Link>
-            <div className="nav-avatar" title="Mon Profil" onClick={() => triggerToast('Menu avatar')}>
-              {profile?.firstName?.[0] || 'U'}{profile?.lastName?.[0] || ''}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ── MAIN CONTENT ── */}
 
       <div className="page-wrap">
         {/* ── SIDEBAR ── */}
