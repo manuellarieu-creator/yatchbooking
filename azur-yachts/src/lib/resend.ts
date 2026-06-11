@@ -291,3 +291,20 @@ export async function sendAccountApproved(email: string, firstName: string) {
     `),
   })
 }
+
+export async function sendOtpEmail(email: string, firstName: string, otp: string) {
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: 'Votre code de vérification Azur Yachts',
+    html: baseTemplate(`
+      <h2 class="title">Vérification de votre compte</h2>
+      <p class="text">Bonjour ${firstName},</p>
+      <p class="text">Merci de vous inscrire sur Azur Yachts en tant qu'Annonceur. Pour continuer, veuillez saisir le code de vérification ci-dessous :</p>
+      <div style="background: #fdf8f0; border: 2px dashed #d4b57a; padding: 1.5rem; text-align: center; font-size: 2rem; font-weight: bold; letter-spacing: 0.2em; color: #b8985a; margin: 1.5rem 0;">
+        ${otp}
+      </div>
+      <p class="text">Ce code est valide pendant 15 minutes.</p>
+    `),
+  })
+}

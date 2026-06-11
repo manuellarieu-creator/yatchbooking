@@ -12,6 +12,7 @@ export default function AuthPage() {
   const [mode, setMode] = useState<Mode>('login');
   const [role, setRole] = useState<Role>(null);
   const [step, setStep] = useState<number>(1);
+  const [otpInput, setOtpInput] = useState<string>('');
   const [showSuccess, setShowSuccess] = useState(false);
   
   const [pwdVisible, setPwdVisible] = useState(false);
@@ -139,16 +140,40 @@ export default function AuthPage() {
           lastName: formData.regNom,
           email: formData.regEmail,
           password: formData.regPwd,
+          role: role === 'advertiser' ? 'ADVERTISER' : 'CLIENT'
         })
       });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || 'Erreur lors de l\'inscription');
+      if (data.user.role === 'ADVERTISER') {
+        triggerToast('Un code de vérification vous a été envoyé.');
+        setStep(4);
+      } else {
+        setShowSuccess(true);
       }
-      setShowSuccess(true);
     } catch (err: any) {
       triggerToast(err.message);
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.regEmail, otp: otpInput })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Code invalide');
+      
+      triggerToast('Email vérifié ! Redirection vers la vérification d\'identité...');
+      setTimeout(() => {
+        signIn('credentials', { email: formData.regEmail, password: formData.regPwd, redirect: true, callbackUrl: '/verify' });
+      }, 1000);
+      
+    } catch (err: any) {
+      triggerToast(err.message);
       setLoading(false);
     }
   };
@@ -443,6 +468,39 @@ export default function AuthPage() {
                       Créer mon compte
                       <div className="submit-btn-loader"><div className="spinner"></div></div>
                     </button>
+                  </div>
+                )}
+
+                {/* Step 4: OTP */}
+                {step === 4 && role === 'advertiser' && (
+                  <div>
+                    <div className="form-header">
+                      <span className="form-eyebrow">Dernière étape</span>
+                      <h1 className="form-title">Vérifiez votre <em>email</em></h1>
+                      <p className="form-subtitle">Un code à 6 chiffres a été envoyé à {formData.regEmail}.</p>
+                    </div>
+
+                    <div className="field">
+                      <label className="field-label" style={{textAlign: 'center', display: 'block'}}>Code de vérification</label>
+                      <input 
+                        className="field-input" 
+                        style={{letterSpacing:'0.4em', fontSize:'1.4rem', textAlign:'center', fontWeight: 'bold'}} 
+                        type="text" 
+                        value={otpInput} 
+                        onChange={(e) => setOtpInput(e.target.value.replace(/[^0-9]/g, ''))} 
+                        placeholder="123456" 
+                        maxLength={6} 
+                      />
+                    </div>
+
+                    <button className={`submit-btn ${loading ? 'loading' : ''}`} onClick={handleVerifyOtp} disabled={loading || otpInput.length !== 6}>
+                      Vérifier et continuer
+                      <div className="submit-btn-loader"><div className="spinner"></div></div>
+                    </button>
+                    
+                    <div className="switch-link" style={{marginTop:'1.5rem'}}>
+                      <a onClick={() => triggerToast("L'email a été renvoyé !")}>Renvoyer le code</a>
+                    </div>
                   </div>
                 )}
               </div>

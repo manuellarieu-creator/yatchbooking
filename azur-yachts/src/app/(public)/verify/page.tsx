@@ -2,11 +2,13 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import './verify.css';
 
 type Screen = 'intro' | 'camera' | 'uploading' | 'success' | 'pending';
 
 export default function VerificationPage() {
+  const { data: session } = useSession();
   const [currentScreen, setCurrentScreen] = useState<Screen>('intro');
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
@@ -437,7 +439,7 @@ export default function VerificationPage() {
             <div className="success-checkmark-anim">✅</div>
             <div className="success-title">Vidéo envoyée avec succès !</div>
             <p style={{ fontSize: '.87rem', color: 'var(--text-mid)', lineHeight: 1.9, marginBottom: '1.25rem' }}>
-              Votre vidéo de vérification a bien été reçue par notre équipe. Vous recevrez un email de confirmation à <strong>fabio@demo.com</strong> dans les <strong>24 à 48 heures ouvrées</strong>.
+              Votre vidéo de vérification a bien été reçue par notre équipe. Vous recevrez un email de confirmation à <strong>{session?.user?.email || 'votre adresse email'}</strong> dans les <strong>24 à 48 heures ouvrées</strong>.
             </p>
             <div className="success-badge">⏳ Validation en cours · 24–48h ouvrées</div>
             <div className="next-steps-grid">
