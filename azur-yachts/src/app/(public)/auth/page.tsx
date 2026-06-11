@@ -2,6 +2,7 @@
 
 import { useState, KeyboardEvent } from 'react';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 import './auth.css';
 
 type Mode = 'login' | 'register' | 'forgot';
@@ -95,7 +96,7 @@ export default function AuthPage() {
     return ok;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const newErrors: Record<string, boolean> = {};
     let ok = true;
     if (!formData.loginEmail || !formData.loginEmail.includes('@')) { newErrors.loginEmail = true; ok = false; }
@@ -104,23 +105,52 @@ export default function AuthPage() {
     if (!ok) return;
 
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await signIn('credentials', {
+        email: formData.loginEmail,
+        password: formData.loginPwd,
+        redirect: false,
+      });
+
+      if (res?.error) {
+        triggerToast('Email ou mot de passe incorrect.');
+      } else {
+        triggerToast('Connexion réussie — redirection...');
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      triggerToast('Une erreur est survenue.');
+    } finally {
       setLoading(false);
-      if (formData.loginEmail === 'admin@azuryachts.com') triggerToast('Connexion admin — redirection vers /admin');
-      else if (formData.loginEmail.includes('annonceur') || formData.loginEmail.includes('advertiser')) triggerToast('Connexion annonceur — redirection vers /dashboard');
-      else triggerToast('Connexion réussie — redirection vers l\'accueil');
-    }, 1600);
+    }
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!cguChecked) return triggerToast('Veuillez accepter les CGU.');
     if (!ageChecked) return triggerToast('Vous devez confirmer avoir 18 ans ou plus.');
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: formData.regPrenom,
+          lastName: formData.regNom,
+          email: formData.regEmail,
+          password: formData.regPwd,
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Erreur lors de l\'inscription');
+      }
       setShowSuccess(true);
-    }, 1800);
+    } catch (err: any) {
+      triggerToast(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleForgot = () => {
