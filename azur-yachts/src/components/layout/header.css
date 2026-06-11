@@ -100,10 +100,10 @@
   position: absolute;
   top: 120%;
   right: 0;
-  background: var(--white);
-  border: 1px solid var(--sand);
+  background: var(--navy);
+  border: 1px solid rgba(184, 152, 90, 0.3);
   border-radius: 4px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
   min-width: 220px;
   z-index: 1000;
   display: flex;
@@ -117,20 +117,20 @@
 }
 .user-dropdown-header {
   padding: 1rem;
-  background: var(--sand-light);
-  border-bottom: 1px solid var(--sand);
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(184, 152, 90, 0.2);
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 .user-dropdown-header strong {
-  color: var(--navy);
+  color: var(--gold);
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.1rem;
 }
 .user-dropdown-header span {
   font-size: 0.75rem;
-  color: var(--text-mid);
+  color: rgba(255, 255, 255, 0.6);
 }
 .user-dropdown-body {
   padding: 0.5rem 0;
@@ -139,7 +139,7 @@
 }
 .dropdown-item {
   padding: 0.75rem 1rem;
-  color: var(--text-main);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-size: 0.85rem;
   transition: all 0.2s;
@@ -150,18 +150,19 @@
   width: 100%;
 }
 .dropdown-item:hover {
-  background: var(--cream);
-  color: var(--gold);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--gold-light, #d4b57a);
 }
 .dropdown-item.text-danger {
-  color: var(--danger);
+  color: #ff6b6b;
 }
 .dropdown-item.text-danger:hover {
-  background: var(--danger-bg);
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff8787;
 }
 .dropdown-divider {
   height: 1px;
-  background: var(--sand);
+  background: rgba(184, 152, 90, 0.2);
   margin: 0.5rem 0;
 }
 
@@ -171,15 +172,16 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
   border-radius: 20px;
+  background: rgba(255, 255, 255, 0.95);
   transition: background 0.2s;
 }
 .user-menu-trigger:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #ffffff;
 }
 .user-menu-name {
-  color: var(--white);
+  color: var(--navy);
   font-size: 0.9rem;
   font-weight: 500;
   display: none;
@@ -190,7 +192,7 @@
   }
 }
 .user-menu-arrow {
-  color: var(--white);
+  color: var(--navy);
   font-size: 0.6rem;
   margin-left: 0.2rem;
   opacity: 0.8;

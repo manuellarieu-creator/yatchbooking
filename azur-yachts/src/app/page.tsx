@@ -193,7 +193,11 @@ export default function HomePage() {
             featuredYachts.map((yacht: any) => (
               <Link href={`/yacht/${yacht.id}`} key={yacht.id} className="yacht-card">
                 <div className="yacht-img">
-                  <div className="yacht-img-inner" style={{ background: yacht.images?.[0]?.url ? `url(${yacht.images[0].url}) center/cover` : 'linear-gradient(135deg, #1a3a5a 0%, #0a2040 100%)' }}></div>
+                  <div className="yacht-img-inner" style={{ 
+                    backgroundImage: yacht.images?.[0]?.url ? `url('${yacht.images[0].url}')` : 'linear-gradient(135deg, #1a3a5a 0%, #0a2040 100%)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}></div>
                   {yacht.owner?.advertiserTier === 'PREMIUM' && <span className="yacht-badge" style={{background: 'var(--gold)'}}>Populaire</span>}
                   {yacht.owner?.advertiserTier === 'PLATINIUM' && <span className="yacht-badge" style={{background: 'var(--ocean)'}}>Premium</span>}
                 </div>

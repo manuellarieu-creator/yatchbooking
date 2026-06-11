@@ -35,7 +35,7 @@ export default function ListingsPage() {
             badge: l.owner?.advertiserTier === 'PREMIUM' ? 'Populaire' : l.owner?.advertiserTier === 'PLATINIUM' ? 'Premium' : '',
             badgeColor: 'var(--gold)',
             isVerified: l.owner?.videoVerified || false,
-            img: l.images?.[0]?.url ? `url(${l.images[0].url})` : "linear-gradient(135deg,#1a3a5a,#0a2040)",
+            imgUrl: l.images?.[0]?.url || '',
             isFav: l.isFav || false
           }));
           setYachts(mapped);
@@ -367,7 +367,11 @@ export default function ListingsPage() {
                 {filteredYachts.map((yacht, i) => (
                   <Link href={`/yacht/${yacht.id}`} key={yacht.id} className="yacht-card" style={{ animationDelay: `${i * 0.06}s` }}>
                     <div className="card-img">
-                      <div className="card-img-inner" style={{ background: yacht.img }}></div>
+                      <div className="card-img-inner" style={{ 
+                        backgroundImage: yacht.imgUrl ? `url('${yacht.imgUrl}')` : 'linear-gradient(135deg,#1a3a5a,#0a2040)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center'
+                      }}></div>
                       {yacht.badge && <span className="card-badge" style={{ background: yacht.badgeColor }}>{yacht.badge}</span>}
                       {yacht.isVerified && <span className="card-badge verified" style={{ top: 'auto', bottom: '.9rem', left: '.9rem', right: 'auto', fontSize: '.6rem' }}>✓ Vérifié</span>}
                       <button className={`card-fav ${yacht.isFav ? 'active' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); toggleFav(yacht.id); }}>
