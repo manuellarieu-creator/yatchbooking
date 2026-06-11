@@ -132,7 +132,7 @@ export default function VerificationPage() {
   };
 
   const onRecordingStop = () => {
-    const blob = new Blob(recordedChunksRef.current, { type: recordedChunksRef.current[0]?.type || 'video/webm' });
+    const blob = new Blob(recordedChunksRef.current, { type: (recordedChunksRef.current[0] as any)?.type || 'video/webm' });
     const url = URL.createObjectURL(blob);
     if (feedRef.current) feedRef.current.style.display = 'none';
     if (playbackRef.current) {
