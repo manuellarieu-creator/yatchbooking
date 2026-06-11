@@ -27,6 +27,18 @@ export async function POST(req: Request) {
       );
     }
 
+    // Vérifier si l'email est blacklisté
+    const blacklisted = await db.blacklist.findUnique({
+      where: { email }
+    });
+
+    if (blacklisted) {
+      return NextResponse.json(
+        { message: 'Cet email ne peut pas être utilisé pour créer un compte.' },
+        { status: 403 }
+      );
+    }
+
     // Hasher le mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
 

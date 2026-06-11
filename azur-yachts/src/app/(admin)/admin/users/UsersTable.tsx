@@ -39,6 +39,26 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
     setLoadingId(null);
   };
 
+  const handleDeleteUser = async (id: string, blacklist: boolean) => {
+    if (!confirm(blacklist ? "Voulez-vous vraiment supprimer et bloquer cet utilisateur (Blacklist) ?" : "Voulez-vous vraiment supprimer cet utilisateur ?")) return;
+    setLoadingId(id);
+    try {
+      const res = await fetch(`/api/admin/users/${id}${blacklist ? '?blacklist=true' : ''}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUsers(users.filter(u => u.id !== id));
+        setSelectedUser(null);
+      } else {
+        alert(data.error || "Erreur serveur");
+      }
+    } catch (err) {
+      alert("Erreur réseau");
+    }
+    setLoadingId(null);
+  };
+
   const openModal = (user: User) => {
     setSelectedUser(user);
     setChkIdentity(false);
@@ -128,6 +148,14 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
                           {loadingId === user.id ? '...' : 'Suspendre'}
                         </button>
                       )}
+                      <button 
+                        className="action-btn"
+                        style={{ background: '#fee2e2', color: '#b91c1c', border: 'none' }}
+                        disabled={loadingId === user.id}
+                        onClick={() => handleDeleteUser(user.id, false)}
+                      >
+                        🗑️
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -213,27 +241,45 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
               </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem' }}>
-              <button onClick={() => setSelectedUser(null)} style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#fff', cursor: 'pointer' }}>Fermer</button>
-              
-              {selectedUser.status === 'PENDING' && (
-                <>
-                  <button 
-                    onClick={() => handleStatusUpdate(selectedUser.id, 'REJECTED')}
-                    disabled={loadingId === selectedUser.id}
-                    style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', border: 'none', background: '#ef4444', color: '#fff', cursor: 'pointer' }}
-                  >
-                    {loadingId === selectedUser.id ? '...' : '❌ Rejeter'}
-                  </button>
-                  <button 
-                    onClick={() => handleStatusUpdate(selectedUser.id, 'ACTIVE')}
-                    disabled={loadingId === selectedUser.id || (selectedUser.role === 'ADVERTISER' && !isKycValid)}
-                    style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', border: 'none', background: (selectedUser.role === 'ADVERTISER' && !isKycValid) ? '#cbd5e1' : '#22c55e', color: '#fff', cursor: (selectedUser.role === 'ADVERTISER' && !isKycValid) ? 'not-allowed' : 'pointer' }}
-                  >
-                    {loadingId === selectedUser.id ? '...' : '✅ Approuver'}
-                  </button>
-                </>
-              )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button 
+                  onClick={() => handleDeleteUser(selectedUser.id, false)}
+                  disabled={loadingId === selectedUser.id}
+                  style={{ padding: '0.75rem 1rem', borderRadius: '6px', border: '1px solid #fecaca', background: '#fef2f2', color: '#ef4444', cursor: 'pointer', fontSize: '0.9rem' }}
+                >
+                  🗑️ Supprimer
+                </button>
+                <button 
+                  onClick={() => handleDeleteUser(selectedUser.id, true)}
+                  disabled={loadingId === selectedUser.id}
+                  style={{ padding: '0.75rem 1rem', borderRadius: '6px', border: 'none', background: '#000', color: '#fff', cursor: 'pointer', fontSize: '0.9rem' }}
+                >
+                  ⛔ Blacklist
+                </button>
+              </div>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <button onClick={() => setSelectedUser(null)} style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#fff', cursor: 'pointer' }}>Fermer</button>
+                
+                {selectedUser.status === 'PENDING' && (
+                  <>
+                    <button 
+                      onClick={() => handleStatusUpdate(selectedUser.id, 'REJECTED')}
+                      disabled={loadingId === selectedUser.id}
+                      style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', border: 'none', background: '#ef4444', color: '#fff', cursor: 'pointer' }}
+                    >
+                      {loadingId === selectedUser.id ? '...' : '❌ Rejeter'}
+                    </button>
+                    <button 
+                      onClick={() => handleStatusUpdate(selectedUser.id, 'ACTIVE')}
+                      disabled={loadingId === selectedUser.id || (selectedUser.role === 'ADVERTISER' && !isKycValid)}
+                      style={{ padding: '0.75rem 1.5rem', borderRadius: '6px', border: 'none', background: (selectedUser.role === 'ADVERTISER' && !isKycValid) ? '#cbd5e1' : '#22c55e', color: '#fff', cursor: (selectedUser.role === 'ADVERTISER' && !isKycValid) ? 'not-allowed' : 'pointer' }}
+                    >
+                      {loadingId === selectedUser.id ? '...' : '✅ Approuver'}
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>

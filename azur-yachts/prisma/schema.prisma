@@ -397,3 +397,10 @@ model Newsletter {
   email     String   @unique
   createdAt DateTime @default(now())
 }
+
+model Blacklist {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
+}
