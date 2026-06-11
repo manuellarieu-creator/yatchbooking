@@ -8,11 +8,35 @@ import './verify.css';
 type Screen = 'intro' | 'camera' | 'uploading' | 'success' | 'pending';
 
 export default function VerificationPage() {
-  const { data: session } = (useSession() || {}) as any;
+  const { data: session, update } = (useSession() || {}) as any;
   const [currentScreen, setCurrentScreen] = useState<Screen>('intro');
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   
+  // Polling for Admin Validation
+  useEffect(() => {
+    if (currentScreen !== 'pending' && currentScreen !== 'success') return;
+    
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/users/profile');
+        if (res.ok) {
+          const profile = await res.json();
+          if (profile?.status === 'ACTIVE') {
+            clearInterval(interval);
+            // Mettre à jour la session JWT pour refléter le statut ACTIVE
+            await update({ status: 'ACTIVE' });
+            window.location.href = '/dashboard';
+          }
+        }
+      } catch (err) {
+        console.error('Erreur polling statut:', err);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [currentScreen, update]);
+
   // Camera State
   const [camStatus, setCamStatus] = useState({ type: 'default', text: 'Initialisation…' });
   const [cameraError, setCameraError] = useState('');
