@@ -165,3 +165,34 @@
   margin: 0.5rem 0;
 }
 
+
+.user-menu-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 20px;
+  transition: background 0.2s;
+}
+.user-menu-trigger:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.user-menu-name {
+  color: var(--white);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: none;
+}
+@media (min-width: 768px) {
+  .user-menu-name {
+    display: block;
+  }
+}
+.user-menu-arrow {
+  color: var(--white);
+  font-size: 0.6rem;
+  margin-left: 0.2rem;
+  opacity: 0.8;
+}
+

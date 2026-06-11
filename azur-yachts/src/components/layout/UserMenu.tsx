@@ -26,23 +26,24 @@ export default function UserMenu({ user }: { user: any }) {
 
   return (
     <div className="user-menu-container" ref={menuRef}>
-      <div className="nav-avatar" onClick={() => setIsOpen(!isOpen)}>
-        {initials}
+      <div className="user-menu-trigger" onClick={() => setIsOpen(!isOpen)}>
+        <span className="user-menu-name">{user.firstName} {user.lastName}</span>
+        <div className="nav-avatar">
+          {initials}
+        </div>
+        <span className="user-menu-arrow">▼</span>
       </div>
 
       {isOpen && (
         <div className="user-dropdown">
           <div className="user-dropdown-header">
             <strong>{user.firstName} {user.lastName}</strong>
-            <span>{user.email}</span>
           </div>
           <div className="user-dropdown-body">
             {user.role === 'ADMIN' && (
               <Link href="/admin" className="dropdown-item" onClick={() => setIsOpen(false)}>Espace Admin</Link>
             )}
-            {(user.role === 'ADVERTISER' || user.role === 'ADMIN') && (
-              <Link href="/dashboard" className="dropdown-item" onClick={() => setIsOpen(false)}>Tableau de bord</Link>
-            )}
+            <Link href="/dashboard" className="dropdown-item" onClick={() => setIsOpen(false)}>Tableau de bord</Link>
             <Link href="/profile" className="dropdown-item" onClick={() => setIsOpen(false)}>Mon profil</Link>
             <Link href="/reservations" className="dropdown-item" onClick={() => setIsOpen(false)}>Mes réservations</Link>
             <Link href="/favorites" className="dropdown-item" onClick={() => setIsOpen(false)}>Mes favoris</Link>
