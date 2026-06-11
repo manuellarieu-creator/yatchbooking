@@ -21,6 +21,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <nav className="admin-nav">
           <Link href="/admin/users" className="admin-nav-link">👥 Annonceurs & Utilisateurs</Link>
           <Link href="/admin/listings" className="admin-nav-link">🛥️ Annonces Yachts</Link>
+          <Link href="/admin/destinations" className="admin-nav-link">🌍 Destinations</Link>
           <Link href="/admin/bookings" className="admin-nav-link">📅 Réservations</Link>
           <Link href="/admin/payments" className="admin-nav-link">💶 Paiements</Link>
         </nav>

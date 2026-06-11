@@ -6,6 +6,16 @@ import './home.css';
 
 export default function HomePage() {
   const [featuredYachts, setFeaturedYachts] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>({
+    totalYachts: 0,
+    destinations: [
+      { name: "Côte d'Azur", count: 0, gradient: 'linear-gradient(135deg, #1a5a80, #0a2540)', isLarge: true },
+      { name: "Grèce", count: 0, gradient: 'linear-gradient(135deg, #2d6a8a, #0f3a5a)', isLarge: false },
+      { name: "Caraïbes", count: 0, gradient: 'linear-gradient(135deg, #1a4a3a, #0a2a20)', isLarge: false },
+      { name: "Bali", count: 0, gradient: 'linear-gradient(135deg, #4a2a1a, #2a1a0a)', isLarge: false }
+    ]
+  });
+
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -26,6 +36,15 @@ export default function HomePage() {
       .then(data => {
         if (data.listings) {
           setFeaturedYachts(data.listings);
+        }
+      })
+      .catch(console.error);
+
+    fetch('/api/home-stats')
+      .then(res => res.json())
+      .then(data => {
+        if (data.destinations) {
+          setStats(data);
         }
       })
       .catch(console.error);
@@ -108,39 +127,21 @@ export default function HomePage() {
           <p className="section-desc">Des criques cachées de la Méditerranée aux eaux turquoise des Caraïbes, choisissez votre horizon.</p>
         </div>
         <div className="dest-grid reveal">
-          <div className="dest-card large">
-            <div className="dest-bg" style={{ background: 'linear-gradient(135deg, #1a5a80, #0a2540)' }}></div>
-            <div className="dest-overlay"></div>
-            <span className="dest-tag">Populaire</span>
-            <div className="dest-info">
-              <div className="dest-name">Côte d'Azur</div>
-              <div className="dest-count">42 yachts disponibles</div>
+          {stats.destinations.length > 0 ? stats.destinations.map((dest: any, i: number) => (
+            <div key={dest.id || i} className={`dest-card ${dest.isLarge ? 'large' : ''}`}>
+              <div className="dest-bg" style={{ 
+                background: dest.imageUrl ? `url('${dest.imageUrl}') center/cover` : (dest.gradient || 'linear-gradient(135deg, #1a5a80, #0a2540)') 
+              }}></div>
+              <div className="dest-overlay"></div>
+              {dest.isLarge && <span className="dest-tag">Populaire</span>}
+              <div className="dest-info">
+                <div className="dest-name">{dest.name}</div>
+                <div className="dest-count">{dest.count} yachts disponibles</div>
+              </div>
             </div>
-          </div>
-          <div className="dest-card">
-            <div className="dest-bg" style={{ background: 'linear-gradient(135deg, #2d6a8a, #0f3a5a)' }}></div>
-            <div className="dest-overlay"></div>
-            <div className="dest-info">
-              <div className="dest-name">Grèce</div>
-              <div className="dest-count">58 yachts disponibles</div>
-            </div>
-          </div>
-          <div className="dest-card">
-            <div className="dest-bg" style={{ background: 'linear-gradient(135deg, #1a4a3a, #0a2a20)' }}></div>
-            <div className="dest-overlay"></div>
-            <div className="dest-info">
-              <div className="dest-name">Caraïbes</div>
-              <div className="dest-count">35 yachts disponibles</div>
-            </div>
-          </div>
-          <div className="dest-card">
-            <div className="dest-bg" style={{ background: 'linear-gradient(135deg, #4a2a1a, #2a1a0a)' }}></div>
-            <div className="dest-overlay"></div>
-            <div className="dest-info">
-              <div className="dest-name">Bali</div>
-              <div className="dest-count">22 yachts disponibles</div>
-            </div>
-          </div>
+          )) : (
+            <p style={{ color: 'rgba(255,255,255,0.6)' }}>Aucune destination pour le moment.</p>
+          )}
         </div>
       </section>
 
