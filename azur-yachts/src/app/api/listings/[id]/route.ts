@@ -50,14 +50,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const listing = await prisma.listing.findUnique({ where: { id: params.id } })
     if (!listing) return NextResponse.json({ error: 'Introuvable' }, { status: 404 })
 
-    if (listing.ownerId !== session.user.id && session.user.role !== 'ADMIN') {
+    if (listing.ownerId !== session.user.id && (session.user as any).role !== 'ADMIN') {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
     }
 
     const body = await req.json()
     const updated = await prisma.listing.update({
       where: { id: params.id },
-      data: { ...body, status: session.user.role === 'ADMIN' ? body.status : 'PENDING' },
+      data: { ...body, status: (session.user as any).role === 'ADMIN' ? body.status : 'PENDING' },
     })
 
     return NextResponse.json({ listing: updated })
@@ -74,7 +74,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     const listing = await prisma.listing.findUnique({ where: { id: params.id } })
     if (!listing) return NextResponse.json({ error: 'Introuvable' }, { status: 404 })
 
-    if (listing.ownerId !== session.user.id && session.user.role !== 'ADMIN') {
+    if (listing.ownerId !== session.user.id && (session.user as any).role !== 'ADMIN') {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
     }
 

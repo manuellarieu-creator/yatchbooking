@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     if (!session?.user) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
-    if (session.user.role !== 'ADVERTISER' && session.user.role !== 'ADMIN') {
+    if ((session.user as any).role !== 'ADVERTISER' && (session.user as any).role !== 'ADMIN') {
       return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
     }
 
