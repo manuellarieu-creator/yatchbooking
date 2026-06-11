@@ -1,24 +1,53 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import './listings.css';
-
-const YACHTS = [
-  { id: 1, name: "Azura Prestige 68", type: "Motor Yacht", tier: "Platinium", country: "France", location: "📍 Nice, Côte d'Azur — France", cap: 8, cab: 4, len: "68ft", time: "24h", captain: "oui", skipper: "oui", price: 4800, rating: 4.9, revs: 24, badge: "Nouveau", badgeColor: "var(--gold)", isVerified: true, img: "linear-gradient(135deg,#1a3a5a 0%,#0a2040 100%)", isFav: false },
-  { id: 2, name: "Liberté Bleue 52", type: "Catamaran", tier: "Premium", country: "Grèce", location: "📍 Santorin, Cyclades — Grèce", cap: 10, cab: 5, len: "52ft", time: "24h", captain: "non", skipper: "oui", price: 2900, rating: 4.7, revs: 38, badge: "Premium", badgeColor: "var(--navy)", isVerified: true, img: "linear-gradient(135deg,#1a4a6e 0%,#0a2a40 100%)", isFav: true },
-  { id: 3, name: "Belle Époque 44", type: "Voilier", tier: "Standard", country: "Italie", location: "📍 Porto Cervo, Sardaigne — Italie", cap: 6, cab: 3, len: "44ft", time: "12h", captain: "non", skipper: "non", price: 1650, rating: 4.5, revs: 17, badge: "", badgeColor: "", isVerified: false, img: "linear-gradient(135deg,#3a2a1a 0%,#1a1008 100%)", isFav: false },
-  { id: 4, name: "Ibiza Crown 86", type: "Superyacht", tier: "Platinium", country: "Espagne", location: "📍 Ibiza, Baléares — Espagne", cap: 12, cab: 6, len: "86ft", time: "24h", captain: "oui", skipper: "oui", price: 7200, rating: 5.0, revs: 9, badge: "Coup de cœur", badgeColor: "var(--gold)", isVerified: true, img: "linear-gradient(135deg,#0a2a1a 0%,#051510 100%)", isFav: false },
-  { id: 5, name: "Adriatic Storm 55", type: "Motor Yacht", tier: "Standard", country: "Croatie", location: "📍 Dubrovnik, Dalmatie — Croatie", cap: 8, cab: 4, len: "55ft", time: "24h", captain: "non", skipper: "oui", price: 3400, rating: 4.6, revs: 22, badge: "Standard", badgeColor: "var(--navy)", isVerified: false, img: "linear-gradient(135deg,#1a2a4a 0%,#0a1530 100%)", isFav: false },
-  { id: 6, name: "Caribbean Dream 60", type: "Catamaran", tier: "Premium", country: "Caraïbes", location: "📍 Martinique — Caraïbes", cap: 10, cab: 5, len: "60ft", time: "24h", captain: "non", skipper: "oui", price: 5500, rating: 4.8, revs: 31, badge: "Populaire", badgeColor: "var(--gold)", isVerified: true, img: "linear-gradient(135deg,#1a3a2a 0%,#0a2015 100%)", isFav: false },
-  { id: 7, name: "Mistral Élégance 48", type: "Voilier", tier: "Standard", country: "France", location: "📍 Marseille, PACA — France", cap: 6, cab: 3, len: "48ft", time: "8h", captain: "non", skipper: "non", price: 2100, rating: 4.3, revs: 11, badge: "", badgeColor: "", isVerified: false, img: "linear-gradient(135deg,#2a1a3a 0%,#150a20 100%)", isFav: false },
-  { id: 8, name: "Aegean Spirit 72", type: "Motor Yacht", tier: "Platinium", country: "Grèce", location: "📍 Mykonos, Cyclades — Grèce", cap: 10, cab: 5, len: "72ft", time: "24h", captain: "oui", skipper: "oui", price: 6100, rating: 4.9, revs: 19, badge: "En vedette", badgeColor: "var(--gold)", isVerified: true, img: "linear-gradient(135deg,#1a2a3a 0%,#0a1520 100%)", isFav: false },
-  { id: 9, name: "Costa Brava 38", type: "Voilier", tier: "Standard", country: "Espagne", location: "📍 Barcelone — Espagne", cap: 4, cab: 2, len: "38ft", time: "8h", captain: "non", skipper: "non", price: 1200, rating: 4.2, revs: 8, badge: "", badgeColor: "", isVerified: false, img: "linear-gradient(135deg,#2a2a1a 0%,#151508 100%)", isFav: false }
-];
 
 export default function ListingsPage() {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [yachts, setYachts] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchListings() {
+      try {
+        const res = await fetch('/api/listings?limit=50');
+        const data = await res.json();
+        if (data.listings) {
+          const mapped = data.listings.map((l: any) => ({
+            id: l.id,
+            name: l.title,
+            type: l.boatType,
+            tier: l.owner?.advertiserTier || 'Standard',
+            country: l.country,
+            location: l.location,
+            cap: l.maxAdults + l.maxChildren,
+            cab: Math.max(1, Math.floor(l.maxAdults / 2)),
+            len: l.boatLength ? `${l.boatLength}m` : '-',
+            time: l.maxRentalHours ? `${l.maxRentalHours}h` : '24h',
+            captain: l.requiresCaptain ? 'oui' : 'non',
+            skipper: l.skipperAvailable ? 'oui' : 'non',
+            price: l.price,
+            rating: l.averageRating || 0,
+            revs: l._count?.reviews || 0,
+            badge: l.owner?.advertiserTier === 'PREMIUM' ? 'Populaire' : l.owner?.advertiserTier === 'PLATINIUM' ? 'Premium' : '',
+            badgeColor: 'var(--gold)',
+            isVerified: l.owner?.videoVerified || false,
+            img: l.images?.[0]?.url ? `url(${l.images[0].url}) center/cover` : "linear-gradient(135deg,#1a3a5a 0%,#0a2040 100%)",
+            isFav: false
+          }));
+          setYachts(mapped);
+        }
+      } catch (err) {
+        console.error("Erreur chargement annonces", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchListings();
+  }, []);
 
   const triggerToast = (msg: string) => {
     setToastMsg(msg);
@@ -27,7 +56,7 @@ export default function ListingsPage() {
     setTimeout(() => setShowToast(false), 3200);
   };
 
-  const [yachts, setYachts] = useState(YACHTS);
+
 
   // ── Filters State ──
   const [searchQuery, setSearchQuery] = useState('');
@@ -329,11 +358,16 @@ export default function ListingsPage() {
               <div className="empty-sub">Modifiez vos filtres ou élargissez votre recherche pour voir plus de résultats.</div>
               <button className="nav-btn nav-btn-gold" onClick={clearFilters}>Réinitialiser les filtres</button>
             </div>
+          ) : isLoading ? (
+            <div className="empty-state">
+              <div className="empty-icon" style={{ animation: 'spin 2s linear infinite' }}>⚓</div>
+              <div className="empty-title">Chargement de la flotte...</div>
+            </div>
           ) : (
             <>
               <div className={`listings-grid ${viewMode === 'list' ? 'list-mode' : ''}`}>
                 {filteredYachts.map((yacht, i) => (
-                  <Link href={`/yacht`} key={yacht.id} className="yacht-card" style={{ animationDelay: `${i * 0.06}s` }}>
+                  <Link href={`/yacht/${yacht.id}`} key={yacht.id} className="yacht-card" style={{ animationDelay: `${i * 0.06}s` }}>
                     <div className="card-img">
                       <div className="card-img-inner" style={{ background: yacht.img }}></div>
                       {yacht.badge && <span className="card-badge" style={{ background: yacht.badgeColor }}>{yacht.badge}</span>}
