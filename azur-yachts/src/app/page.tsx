@@ -21,18 +21,6 @@ export default function HomePage() {
 
   return (
     <div className="home-container">
-      {/* NAV */}
-      <nav className="nav-top">
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <ul className="nav-links">
-          <li><Link href="/listings">Flotte</Link></li>
-          <li><Link href="/destinations">Destinations</Link></li>
-          <li><Link href="/experiences">Expériences</Link></li>
-          <li><Link href="/pricing">Tarifs</Link></li>
-          <li><Link href="/about">À propos</Link></li>
-        </ul>
-        <Link href="/listings" style={{ textDecoration: 'none' }}><button className="nav-cta">Réserver</button></Link>
-      </nav>
 
       {/* HERO */}
       <section className="hero">

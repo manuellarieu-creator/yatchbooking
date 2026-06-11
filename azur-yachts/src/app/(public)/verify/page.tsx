@@ -209,17 +209,7 @@ export default function VerificationPage() {
 
   return (
     <div className="verify-container">
-      {/* NAV */}
-      <nav className="nav-top">
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <div className="nav-right">
-          <Link href="/dashboard" className="nav-link">← Tableau de bord</Link>
-          <div className="user-chip">
-            <div className="user-av">FJ</div>
-            <span className="user-name">Fabio Jaction</span>
-          </div>
-        </div>
-      </nav>
+
 
       {/* PROGRESS STEPS */}
       <div className="progress-wrap">

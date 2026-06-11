@@ -116,16 +116,6 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-container">
-      {/* ── NAV ── */}
-      <nav className="nav-top">
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <div className="nav-right">
-          <Link href="/" className="nav-link">Accueil</Link>
-          <Link href="#" className="nav-link">Mes réservations</Link>
-          <Link href="/profile" className="nav-link active">Mon profil</Link>
-          <div className="nav-avatar">JD</div>
-        </div>
-      </nav>
 
       <div className="page-wrap">
         {/* ── SIDEBAR ── */}

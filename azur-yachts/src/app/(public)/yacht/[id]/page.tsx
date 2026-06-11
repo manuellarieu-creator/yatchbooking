@@ -196,14 +196,6 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="yacht-container">
-      {/* ── NAV ── */}
-      <nav className="nav-top">
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <div className="nav-right">
-          <Link href="/auth"><button className="nav-btn nav-btn-outline">Connexion</button></Link>
-          <Link href="/publish"><button className="nav-btn nav-btn-gold">Mettre en location</button></Link>
-        </div>
-      </nav>
 
       {/* ── BREADCRUMB ── */}
       <div className="breadcrumb-bar">

@@ -126,16 +126,7 @@ export default function ReservationsPage() {
 
   return (
     <div className="reservations-container">
-      {/* NAVBAR */}
-      <nav className="nav-top">
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <div className="nav-right">
-          <Link href="/" className="nav-link">Accueil</Link>
-          <Link href="/listings" className="nav-link">Listing</Link>
-          <Link href="/reservations" className="nav-link active">Mes réservations</Link>
-          <Link href="/profile"><div className="nav-avatar" title="Mon compte">JD</div></Link>
-        </div>
-      </nav>
+
 
       <div className="page-wrap">
         {/* HEADER */}
