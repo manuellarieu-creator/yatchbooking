@@ -3,6 +3,7 @@
 import { useState, useRef, ChangeEvent, DragEvent } from 'react';
 import Link from 'next/link';
 import './payment.css';
+import StripeCheckout from '@/components/payment/StripeCheckout';
 
 type PaymentMode = 'stripe' | 'paypal' | 'bank';
 
@@ -200,87 +201,8 @@ export default function PaymentPage() {
               <span className="section-eyebrow">Paiement par carte</span>
               <h2 className="section-title">Règlement <em>sécurisé</em></h2>
 
-              <div className="stripe-card">
-                <div className="stripe-card-title">Cartes enregistrées</div>
-                <div className="saved-cards">
-                  <div className={`saved-card-item ${selectedSavedCard === 'visa' ? 'selected' : ''}`} onClick={() => setSelectedSavedCard('visa')}>
-                    <div className="saved-card-radio"></div>
-                    <div className="saved-card-logo">VISA</div>
-                    <div className="saved-card-info">
-                      <div className="saved-card-num">Visa •••• •••• •••• 4242</div>
-                      <div className="saved-card-exp">Expire 09/27</div>
-                    </div>
-                    <span className="saved-card-default">Défaut</span>
-                  </div>
-                  <div className={`saved-card-item ${selectedSavedCard === 'mc' ? 'selected' : ''}`} onClick={() => setSelectedSavedCard('mc')}>
-                    <div className="saved-card-radio"></div>
-                    <div className="saved-card-logo" style={{ background: 'linear-gradient(135deg,#1a4a6e,#0a2a40)' }}>MC</div>
-                    <div className="saved-card-info">
-                      <div className="saved-card-num">Mastercard •••• •••• •••• 1137</div>
-                      <div className="saved-card-exp">Expire 03/26</div>
-                    </div>
-                  </div>
-                  <div className="new-card-toggle" onClick={() => setNewCardVisible(!newCardVisible)}>
-                    <span>{newCardVisible ? '▴' : '▾'}</span> Payer avec une nouvelle carte
-                  </div>
-                </div>
+              <StripeCheckout bookingId="mock" amount={34200} onSuccess={() => setSuccessStatus('stripe')} />
 
-                {/* New card form */}
-                {newCardVisible && (
-                  <div>
-                    <div className="card-preview">
-                      <div className="card-chip"></div>
-                      <div className="card-number-display">{displayNum}</div>
-                      <div className="card-bottom">
-                        <div>
-                          <div className="card-holder-lbl">Titulaire</div>
-                          <div className="card-holder-val">{displayHolder}</div>
-                        </div>
-                        <div>
-                          <div className="card-expiry-lbl">Expire</div>
-                          <div className="card-expiry-val">{displayExp}</div>
-                        </div>
-                      </div>
-                      <div className="card-brand">{cardBrand}</div>
-                    </div>
-
-                    <div className="form-field">
-                      <label className="form-label">Numéro de carte <span className="req">*</span></label>
-                      <div className="card-input-wrap">
-                        <input className="form-input" type="text" value={cardNum} onChange={handleCardNumChange} placeholder="1234 5678 9012 3456" maxLength={19} />
-                        <div className="card-type-badge">{cardBrand}</div>
-                      </div>
-                    </div>
-                    <div className="form-row">
-                      <div className="form-field" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Date d'expiration <span className="req">*</span></label>
-                        <input className="form-input" type="text" value={cardExp} onChange={handleCardExpChange} placeholder="MM/AA" maxLength={5} />
-                      </div>
-                      <div className="form-field" style={{ marginBottom: 0 }}>
-                        <label className="form-label">CVC <span className="req">*</span></label>
-                        <input className="form-input" type="text" value={cardCvc} onChange={e => setCardCvc(e.target.value.replace(/\D/g,''))} placeholder="123" maxLength={4} />
-                      </div>
-                    </div>
-                    <div className="form-field" style={{ marginTop: '1.1rem' }}>
-                      <label className="form-label">Nom du titulaire <span className="req">*</span></label>
-                      <input className="form-input" type="text" value={cardHolder} onChange={e => setCardHolder(e.target.value)} placeholder="JEAN DUPONT" />
-                    </div>
-                  </div>
-                )}
-
-                <div className="security-badges">
-                  <div className="sec-badge">🔒 <strong>SSL 256-bit</strong></div>
-                  <div className="sec-badge">✅ <strong>PCI-DSS</strong> Niveau 1</div>
-                  <div className="sec-badge">🛡 <strong>3D Secure</strong></div>
-                  <div className="sec-badge">💳 Visa · Mastercard · Amex</div>
-                </div>
-              </div>
-
-              <button className={`pay-btn ${loading ? 'loading' : ''}`} onClick={handleStripePayment} disabled={loading}>
-                Payer €34 200
-                <div className="pay-btn-loader"><div className="spinner"></div></div>
-              </button>
-              <p className="pay-footnote">🔒 Vos données bancaires sont chiffrées et traitées par Stripe. Azur Yachts ne stocke jamais vos informations de carte.</p>
             </div>
           )}
 
