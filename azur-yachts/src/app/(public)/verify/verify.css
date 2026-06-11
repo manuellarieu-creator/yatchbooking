@@ -895,3 +895,19 @@
   .verify-container .page-body { padding: 2rem 1rem 5rem; }
   .verify-container .progress-wrap { padding: 1rem 1.25rem; }
 }
+
+/* Attention Animation */
+@keyframes glowingPulse {
+  0% { box-shadow: 0 0 0 0 rgba(10, 22, 40, 0.4); }
+  70% { box-shadow: 0 0 0 14px rgba(10, 22, 40, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(10, 22, 40, 0); }
+}
+
+.verify-container .btn-animated {
+  animation: glowingPulse 2s infinite;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.verify-container .btn-animated:hover {
+  transform: translateY(-2px);
+  animation-play-state: paused;
+}

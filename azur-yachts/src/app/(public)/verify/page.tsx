@@ -303,7 +303,7 @@ export default function VerificationPage() {
             </div>
 
             <div>
-              <button className="btn-primary" onClick={() => switchScreen('document')} style={{ marginBottom: '2rem', width: '100%', fontSize: '1.1rem', padding: '1.2rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <button className="btn-primary btn-animated" onClick={() => switchScreen('document')} style={{ marginBottom: '2rem', width: '100%', fontSize: '1.1rem', padding: '1.2rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 Commencer la vérification →
               </button>
 
