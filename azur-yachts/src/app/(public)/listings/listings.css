@@ -1,0 +1,321 @@
+/* CSS for Listings Page - Extracted from User HTML */
+
+.listings-container {
+  --navy:       #0a1628;
+  --navy-mid:   #112240;
+  --navy-light: #1a3358;
+  --gold:       #b8985a;
+  --gold-light: #d4b57a;
+  --gold-pale:  #f0e4c8;
+  --cream:      #faf8f4;
+  --sand:       #e8e0d0;
+  --sand-light: #f3ede3;
+  --white:      #ffffff;
+  --text-dark:  #1a1a2e;
+  --text-mid:   #4a4a6a;
+  --text-light: #8a8aaa;
+  
+  font-family: 'Jost', sans-serif;
+  background: var(--cream);
+  color: var(--text-dark);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+.listings-container .nav-top {
+  background: var(--navy); padding: 0 4rem; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 1px solid rgba(184,152,90,0.2);
+}
+.listings-container .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; letter-spacing: 0.15em; color: #fff; text-decoration: none; }
+.listings-container .nav-logo span { color: var(--gold-light); }
+.listings-container .nav-links { display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0; }
+.listings-container .nav-links a { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+.listings-container .nav-links a:hover, .listings-container .nav-links a.active { color: var(--gold-light); }
+.listings-container .nav-right { display: flex; gap: 0.75rem; align-items: center; }
+.listings-container .nav-btn { padding: 0.45rem 1.2rem; font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: 1px solid; }
+.listings-container .nav-btn-outline { background: transparent; color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.2); }
+.listings-container .nav-btn-outline:hover { border-color: var(--gold); color: var(--gold-light); }
+.listings-container .nav-btn-gold { background: var(--gold); color: #fff; border-color: var(--gold); }
+.listings-container .nav-btn-gold:hover { background: var(--gold-light); border-color: var(--gold-light); }
+
+/* ── PAGE HERO STRIP ── */
+.listings-container .page-hero {
+  background: var(--navy);
+  padding: 3.5rem 4rem 3rem;
+  position: relative; overflow: hidden;
+}
+.listings-container .page-hero::before {
+  content: '';
+  position: absolute; inset: 0; opacity: 0.04;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 29px, rgba(184,152,90,0.6) 29px, rgba(184,152,90,0.6) 30px),
+    repeating-linear-gradient(90deg, transparent, transparent 29px, rgba(184,152,90,0.6) 29px, rgba(184,152,90,0.6) 30px);
+}
+.listings-container .page-hero::after {
+  content: '';
+  position: absolute; right: 0; top: 0; bottom: 0; width: 420px;
+  background: linear-gradient(to left, rgba(10,22,40,0) 0%, rgba(10,22,40,1) 100%);
+  pointer-events: none; z-index: 1;
+}
+.listings-container .hero-yacht-silhouette {
+  position: absolute; right: 3rem; top: 50%; transform: translateY(-50%);
+  opacity: 0.06; z-index: 0;
+}
+.listings-container .page-hero-inner { position: relative; z-index: 2; max-width: 700px; }
+.listings-container .page-eyebrow { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3em; color: var(--gold); display: block; margin-bottom: 0.75rem; }
+.listings-container .page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 300; color: #fff; line-height: 1.1; margin-bottom: 1.25rem; }
+.listings-container .page-title em { font-style: italic; color: var(--gold-light); }
+.listings-container .page-intro { font-size: 0.88rem; color: rgba(255,255,255,0.5); line-height: 1.9; max-width: 580px; margin-bottom: 0; }
+.listings-container .page-intro strong { color: rgba(255,255,255,0.8); font-weight: 500; }
+
+/* Breadcrumb */
+.listings-container .breadcrumb { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1.25rem; }
+.listings-container .breadcrumb a, .listings-container .breadcrumb span { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); text-decoration: none; }
+.listings-container .breadcrumb a:hover { color: var(--gold-light); }
+.listings-container .breadcrumb .sep { color: rgba(255,255,255,0.2); }
+.listings-container .breadcrumb .current { color: var(--gold-light); }
+
+/* ── SEARCH BAR ── */
+.listings-container .search-bar-wrap {
+  background: var(--white); border-top: 3px solid var(--gold);
+  padding: 1.25rem 4rem;
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  box-shadow: 0 4px 20px rgba(10,22,40,0.08);
+  position: sticky; top: 64px; z-index: 90;
+}
+.listings-container .search-field { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 140px; }
+.listings-container .search-field-icon { font-size: 0.95rem; color: var(--text-light); flex-shrink: 0; }
+.listings-container .search-field-inner { flex: 1; }
+.listings-container .search-field-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-light); margin-bottom: 0.2rem;}
+.listings-container .search-field-input {
+  border: none; outline: none; font-family: 'Jost', sans-serif;
+  font-size: 0.88rem; color: var(--text-dark); background: transparent;
+  width: 100%; padding: 0;
+}
+.listings-container .search-field-input::placeholder { color: var(--text-light); }
+.listings-container .search-divider { width: 1px; height: 36px; background: var(--sand); flex-shrink: 0; }
+.listings-container .search-submit { background: var(--navy); color: #fff; border: none; padding: 0.7rem 1.8rem; font-family: 'Jost', sans-serif; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+.listings-container .search-submit:hover { background: var(--gold); }
+.listings-container .result-count { font-size: 0.75rem; color: var(--text-light); white-space: nowrap; }
+.listings-container .result-count strong { color: var(--gold); font-weight: 600; }
+
+/* ── LAYOUT ── */
+.listings-container .page-body { display: grid; grid-template-columns: 280px 1fr; gap: 0; align-items: start; max-width: 1400px; margin: 0 auto; }
+
+/* ── SIDEBAR FILTERS ── */
+.listings-container .filters-sidebar {
+  padding: 2rem 2rem 4rem;
+  border-right: 1px solid var(--sand);
+  position: sticky; top: 133px;
+  max-height: calc(100vh - 133px);
+  overflow-y: auto;
+}
+.listings-container .filters-sidebar::-webkit-scrollbar { width: 4px; }
+.listings-container .filters-sidebar::-webkit-scrollbar-track { background: transparent; }
+.listings-container .filters-sidebar::-webkit-scrollbar-thumb { background: var(--sand); }
+
+.listings-container .filters-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; }
+.listings-container .filters-title { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-dark); font-weight: 500; }
+.listings-container .filters-reset { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); cursor: pointer; border: none; background: none; font-family: 'Jost', sans-serif; transition: opacity 0.2s; }
+.listings-container .filters-reset:hover { opacity: 0.7; }
+
+.listings-container .filter-group { margin-bottom: 1.75rem; padding-bottom: 1.75rem; border-bottom: 1px solid var(--sand); }
+.listings-container .filter-group:last-child { border-bottom: none; margin-bottom: 0; }
+.listings-container .filter-group-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-light); margin-bottom: 1rem; }
+
+/* Range slider */
+.listings-container .range-wrap { padding: 0 2px; }
+.listings-container .range-values { display: flex; justify-content: space-between; margin-bottom: 0.6rem; }
+.listings-container .range-val { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--navy); }
+.listings-container .range-val small { font-family: 'Jost', sans-serif; font-size: 0.65rem; color: var(--text-light); }
+.listings-container .dual-range { position: relative; height: 24px; }
+.listings-container .dual-range input[type=range] {
+  position: absolute; width: 100%; height: 4px; -webkit-appearance: none;
+  background: transparent; pointer-events: none; top: 50%; transform: translateY(-50%);
+}
+.listings-container .dual-range input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--navy); cursor: pointer; pointer-events: all; border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.listings-container .range-track {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  height: 4px; background: var(--sand); width: 100%; border-radius: 2px;
+}
+.listings-container .range-fill { position: absolute; height: 4px; background: var(--navy); border-radius: 2px; }
+
+/* Checkboxes */
+.listings-container .check-list { display: flex; flex-direction: column; gap: 0.55rem; }
+.listings-container .check-item { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; }
+.listings-container .check-item input { display: none; }
+.listings-container .check-box {
+  width: 16px; height: 16px; border: 1.5px solid var(--sand); flex-shrink: 0;
+  background: transparent; transition: all 0.2s; position: relative;
+}
+.listings-container .check-item input:checked + .check-box { background: var(--navy); border-color: var(--navy); }
+.listings-container .check-item input[type=checkbox]:checked + .check-box::after {
+  content: ''; position: absolute; left: 4px; top: 1px;
+  width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none;
+  transform: rotate(45deg);
+}
+.listings-container .check-item input[type=radio]:checked + .check-box::after {
+  content: ''; position: absolute; inset: 3px; border-radius: 50%; background: #fff;
+}
+.listings-container .check-label { font-size: 0.82rem; color: var(--text-mid); }
+.listings-container .check-count { margin-left: auto; font-size: 0.68rem; color: var(--text-light); }
+
+/* Toggle pair */
+.listings-container .toggle-pair { display: flex; gap: 0.4rem; }
+.listings-container .toggle-option {
+  flex: 1; padding: 0.45rem; text-align: center;
+  font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid var(--sand); cursor: pointer; transition: all 0.2s;
+  color: var(--text-light); background: transparent;
+}
+.listings-container .toggle-option:hover { border-color: var(--navy); color: var(--navy); }
+.listings-container .toggle-option.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+/* Stars filter */
+.listings-container .stars-filter { display: flex; flex-direction: column; gap: 0.4rem; }
+.listings-container .star-row { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.3rem 0; }
+.listings-container .star-row input[type=radio] { display: none; }
+.listings-container .star-radio { width: 14px; height: 14px; border: 1.5px solid var(--sand); border-radius: 50%; transition: all 0.2s; position: relative; flex-shrink: 0; }
+.listings-container .star-row input:checked + .star-radio { border-color: var(--gold); background: var(--gold); }
+.listings-container .star-row input:checked + .star-radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: #fff; }
+.listings-container .star-label { display: flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--text-mid); }
+.listings-container .star-label .stars { color: #e2a200; font-size: 0.75rem; }
+
+/* Active filter tags */
+.listings-container .active-filters { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; margin-bottom: 1rem;}
+.listings-container .active-filter {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: var(--navy); color: rgba(255,255,255,0.85);
+  padding: 0.25rem 0.7rem; font-size: 0.65rem; letter-spacing: 0.08em;
+}
+.listings-container .active-filter-x { cursor: pointer; opacity: 0.6; font-size: 0.75rem; transition: opacity 0.2s; }
+.listings-container .active-filter-x:hover { opacity: 1; }
+
+/* ── MAIN CONTENT ── */
+.listings-container .listing-main { padding: 2rem 2.5rem 4rem; }
+
+/* Toolbar */
+.listings-container .listing-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--sand);
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.listings-container .toolbar-left { display: flex; align-items: baseline; gap: 0.75rem; }
+.listings-container .count-label { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--navy); font-weight: 300; }
+.listings-container .count-label em { font-style: italic; color: var(--gold); }
+.listings-container .count-sub { font-size: 0.78rem; color: var(--text-light); }
+.listings-container .toolbar-right { display: flex; align-items: center; gap: 0.75rem; }
+.listings-container .sort-select { border: 1px solid var(--sand); background: var(--white); font-family: 'Jost', sans-serif; font-size: 0.78rem; color: var(--text-mid); padding: 0.45rem 0.9rem; outline: none; cursor: pointer; }
+.listings-container .view-toggle { display: flex; border: 1px solid var(--sand); overflow: hidden; }
+.listings-container .view-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor: pointer; color: var(--text-light); transition: all 0.2s; font-size: 0.9rem; }
+.listings-container .view-btn.active { background: var(--navy); color: #fff; }
+
+/* Grid / List mode */
+.listings-container .listings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.listings-container .listings-grid.list-mode { grid-template-columns: 1fr; }
+
+/* ── LISTING CARD ── */
+.listings-container .yacht-card { background: var(--white); border: 1px solid var(--sand); cursor: pointer; transition: box-shadow 0.3s, transform 0.3s; position: relative; text-decoration: none; color: inherit; display: block; }
+.listings-container .yacht-card:hover { box-shadow: 0 12px 40px rgba(10,22,40,0.12); transform: translateY(-3px); }
+
+.listings-container .card-img { height: 220px; overflow: hidden; position: relative; background: var(--navy-mid); }
+.listings-container .card-img-inner { width: 100%; height: 100%; background-size: cover; background-position: center; transition: transform 0.6s ease; }
+.listings-container .yacht-card:hover .card-img-inner { transform: scale(1.06); }
+.listings-container .card-badge { position: absolute; top: 0.9rem; left: 0.9rem; z-index: 2; background: var(--gold); color: #fff; padding: 0.25rem 0.7rem; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.listings-container .card-badge.navy { background: var(--navy); }
+.listings-container .card-badge.verified { background: var(--navy-mid); border: 1px solid rgba(184,152,90,0.4); display: flex; align-items: center; gap: 0.3rem; }
+.listings-container .card-fav { position: absolute; top: 0.9rem; right: 0.9rem; z-index: 2; width: 32px; height: 32px; background: rgba(10,22,40,0.6); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 0.9rem; transition: background 0.2s; color: #fff;}
+.listings-container .card-fav:hover { background: rgba(10,22,40,0.85); }
+.listings-container .card-fav.active { background: rgba(184,152,90,0.9); }
+
+.listings-container .card-body { padding: 1.25rem 1.4rem; }
+.listings-container .card-type { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 0.3rem; }
+.listings-container .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 400; color: var(--navy); margin-bottom: 0.5rem; }
+.listings-container .card-location { font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.3rem; }
+
+/* Specs inline */
+.listings-container .card-specs { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--sand); }
+.listings-container .card-spec { font-size: 0.72rem; color: var(--text-mid); display: flex; align-items: center; gap: 0.3rem; }
+.listings-container .card-spec strong { color: var(--text-dark); font-weight: 500; }
+
+/* Info rows */
+.listings-container .card-info { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.listings-container .card-info-row { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-mid); }
+.listings-container .card-info-row .icon { font-size: 0.8rem; }
+.listings-container .card-pill { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.18rem 0.55rem; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.listings-container .pill-captain { background: rgba(10,22,40,0.07); color: var(--navy); }
+.listings-container .pill-nocaptain { background: rgba(184,152,90,0.12); color: var(--gold); }
+.listings-container .pill-skipper { background: rgba(27,107,58,0.1); color: #1a6b3a; }
+.listings-container .pill-noskipper { background: rgba(138,26,26,0.08); color: #8a1a1a; }
+
+/* Footer */
+.listings-container .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--sand); }
+.listings-container .card-price { }
+.listings-container .card-price-value { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--navy); line-height: 1; }
+.listings-container .card-price-unit { font-size: 0.65rem; color: var(--text-light); margin-top: 0.1rem; }
+.listings-container .card-rating { display: flex; align-items: center; gap: 0.3rem; }
+.listings-container .card-star { color: #e2a200; font-size: 0.85rem; }
+.listings-container .card-rating-val { font-size: 0.82rem; font-weight: 500; color: var(--text-dark); }
+.listings-container .card-rating-count { font-size: 0.72rem; color: var(--text-light); }
+
+/* LIST MODE card override */
+.listings-container .list-mode .yacht-card { display: grid; grid-template-columns: 280px 1fr; }
+.listings-container .list-mode .card-img { height: 100%; min-height: 200px; }
+.listings-container .list-mode .card-body { display: flex; flex-direction: column; justify-content: space-between; }
+.listings-container .list-mode .card-specs { flex-wrap: nowrap; }
+
+/* ── PAGINATION ── */
+.listings-container .pagination { display: flex; align-items: center; justify-content: space-between; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--sand); }
+.listings-container .pagination-info { font-size: 0.8rem; color: var(--text-light); }
+.listings-container .pagination-btns { display: flex; gap: 0.25rem; }
+.listings-container .pag-btn { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--sand); background: var(--white); font-size: 0.82rem; color: var(--text-mid); cursor: pointer; transition: all 0.2s; font-family: 'Jost', sans-serif; }
+.listings-container .pag-btn:hover { border-color: var(--navy); color: var(--navy); }
+.listings-container .pag-btn.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+.listings-container .pag-btn.dots { border-color: transparent; background: transparent; cursor: default; }
+
+/* ── EMPTY STATE ── */
+.listings-container .empty-state { text-align: center; padding: 5rem 2rem; grid-column: 1 / -1; }
+.listings-container .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+.listings-container .empty-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 0.5rem; }
+.listings-container .empty-sub { font-size: 0.88rem; color: var(--text-light); margin-bottom: 1.5rem; }
+
+/* ── TOAST ── */
+.listings-container .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 999; background: var(--navy); color: #fff; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; min-width: 260px; box-shadow: 0 8px 32px rgba(10,22,40,0.3); transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.listings-container .toast.show { transform: translateY(0); opacity: 1; }
+.listings-container .toast-bar { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--gold); width: 100%; transform-origin: left; }
+.listings-container .toast.show .toast-bar { animation: toastTimer 3s linear forwards; }
+@keyframes toastTimer { to { transform: scaleX(0); } }
+
+/* Stagger entrance */
+.listings-container .yacht-card { opacity: 0; animation: cardReveal 0.5s ease forwards; }
+@keyframes cardReveal { to { opacity: 1; } }
+.listings-container .yacht-card:nth-child(1) { animation-delay: 0.04s; }
+.listings-container .yacht-card:nth-child(2) { animation-delay: 0.1s; }
+.listings-container .yacht-card:nth-child(3) { animation-delay: 0.16s; }
+.listings-container .yacht-card:nth-child(4) { animation-delay: 0.22s; }
+.listings-container .yacht-card:nth-child(5) { animation-delay: 0.28s; }
+.listings-container .yacht-card:nth-child(6) { animation-delay: 0.34s; }
+.listings-container .yacht-card:nth-child(7) { animation-delay: 0.40s; }
+.listings-container .yacht-card:nth-child(8) { animation-delay: 0.46s; }
+.listings-container .yacht-card:nth-child(9) { animation-delay: 0.52s; }
+
+/* Responsive */
+@media (max-width: 1100px) { .listings-container .listings-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 860px) {
+  .listings-container .page-body { grid-template-columns: 1fr; }
+  .listings-container .filters-sidebar { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--sand); padding: 1.5rem 1.25rem; display: none; }
+  .listings-container .filters-sidebar.mobile-open { display: block; }
+  .listings-container .listing-main { padding: 1.5rem 1.25rem 3rem; }
+  .listings-container .listings-grid { grid-template-columns: 1fr; }
+  .listings-container .nav-top { padding: 0 1.5rem; }
+  .listings-container .search-bar-wrap { padding: 1rem 1.25rem; }
+  .listings-container .page-hero { padding: 2rem 1.25rem; }
+}
+@media (max-width: 560px) { .listings-container .nav-links { display: none; } }

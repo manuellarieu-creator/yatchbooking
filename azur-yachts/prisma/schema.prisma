@@ -6,21 +6,99 @@ datasource db {
   provider  = "postgresql"
 }
 
+enum Role {
+  CLIENT
+  ADVERTISER
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  REJECTED
+}
+
+enum AdvertiserTier {
+  STANDARD
+  PREMIUM
+  PLATINIUM
+}
+
+enum ListingStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+  INACTIVE
+}
+
+enum BookingStatus {
+  PENDING
+  PAYMENT_PENDING
+  PAYMENT_RECEIVED
+  CONFIRMED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentMethod {
+  STRIPE
+  PAYPAL
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  AWAITING_PROOF
+  PROOF_SUBMITTED
+  VERIFIED
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  BOOKING_NEW
+  BOOKING_CONFIRMED
+  BOOKING_REJECTED
+  LISTING_APPROVED
+  LISTING_REJECTED
+  ACCOUNT_APPROVED
+  NEW_MESSAGE
+  PAYMENT_RECEIVED
+}
+
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role          Role      @default(USER)
-  accounts      Account[]
-  sessions      Session[]
-  bookings      Booking[]
-  yachts        Yacht[]   // Si un user peut être propriétaire de yachts
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                String          @id @default(cuid())
+  email             String          @unique
+  password          String?
+  firstName         String
+  lastName          String
+  role              Role            @default(CLIENT)
+  status            UserStatus      @default(PENDING)
+  isEmailVerified   Boolean         @default(false)
+  emailVerifyToken  String?
+  videoVerified     Boolean         @default(false)
+  videoUrl          String?
+  advertiserTier    AdvertiserTier?
+  countryResidence  String?
+  languages         String[]
+  avatar            String?
+  phone             String?
+  bio               String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  accounts          Account[]
+  sessions          Session[]
+  listings          Listing[]
+  bookings          Booking[]
+  reviews           Review[]
+  sentMessages      Message[]
+  conversations     ConversationParticipant[]
+  notifications     Notification[]
+  favorites         Favorite[]
 }
 
 model Account {
@@ -58,52 +136,248 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-enum Role {
-  USER
-  ADMIN
-  OWNER
+model Listing {
+  id                String        @id @default(cuid())
+  title             String
+  description       String        @db.Text
+  price             Float
+  country           String
+  location          String
+  latitude          Float?
+  longitude         Float?
+  status            ListingStatus @default(PENDING)
+  rejectionReason   String?
+  maxAdults         Int
+  maxChildren       Int
+  boatType          String
+  boatLength        Float?
+  boatYear          Int
+  requiresCaptain   Boolean       @default(false)
+  skipperAvailable  Boolean       @default(false)
+  maxRentalHours    Int?
+  deliveryAvailable Boolean       @default(false)
+  deliveryFee       Float?
+  cleaningFee       Float
+  averageRating     Float         @default(0)
+  reviewCount       Int           @default(0)
+  viewCount         Int           @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  owner             User          @relation(fields: [ownerId], references: [id])
+  ownerId           String
+  images            ListingImage[]
+  availabilities    Availability[]
+  services          Service[]
+  bookings          Booking[]
+  reviews           Review[]
+  favorites         Favorite[]
 }
 
-model Yacht {
-  id          String   @id @default(cuid())
-  name        String
-  description String   @db.Text
-  pricePerDay Float
-  capacity    Int
-  cabins      Int
-  location    String
-  images      String[]
-  features    String[]
-  
-  ownerId     String
-  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  
-  bookings    Booking[]
+model ListingImage {
+  id        String  @id @default(cuid())
+  url       String
+  publicId  String
+  order     Int
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId String
+}
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Availability {
+  id        String   @id @default(cuid())
+  startDate DateTime
+  endDate   DateTime
+  type      String   @default("AVAILABLE")
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId String
+}
+
+model Service {
+  id          String  @id @default(cuid())
+  name        String
+  price       Float
+  unit        String  @default("PER_BOOKING")
+  description String?
+  isRequired  Boolean @default(false)
+  listing     Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId   String
 }
 
 model Booking {
-  id          String   @id @default(cuid())
-  startDate   DateTime
-  endDate     DateTime
-  totalPrice  Float
-  status      BookingStatus @default(PENDING)
-  
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  yachtId     String
-  yacht       Yacht    @relation(fields: [yachtId], references: [id], onDelete: Cascade)
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String        @id @default(cuid())
+  startDate        DateTime
+  endDate          DateTime
+  totalNights      Int
+  basePrice        Float
+  cleaningFee      Float
+  deliveryFee      Float         @default(0)
+  servicesTotal    Float         @default(0)
+  discountAmount   Float         @default(0)
+  discountCode     String?
+  totalPrice       Float
+  adults           Int
+  children         Int
+  pets             Boolean       @default(false)
+  deliveryRequested Boolean      @default(false)
+  deliveryPort     String?
+  status           BookingStatus @default(PENDING)
+  adminNote        String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  listing          Listing       @relation(fields: [listingId], references: [id])
+  listingId        String
+  client           User          @relation(fields: [clientId], references: [id])
+  clientId         String
+  selectedServices BookingService[]
+  payment          Payment?
 }
 
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
-  COMPLETED
+model BookingService {
+  id        String  @id @default(cuid())
+  name      String
+  price     Float
+  unit      String
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId String
+}
+
+model Payment {
+  id                   String        @id @default(cuid())
+  amount               Float
+  currency             String        @default("EUR")
+  method               PaymentMethod
+  status               PaymentStatus @default(PENDING)
+  stripePaymentIntentId String?
+  stripeClientSecret   String?
+  paypalOrderId        String?
+  paypalCaptureId      String?
+  bankTransferRef      String?
+  bankProofUrl         String?
+  bankProofPublicId    String?
+  bankProofSubmittedAt DateTime?
+  paymentDeadline      DateTime?
+  reminder1SentAt      DateTime?
+  reminder2SentAt      DateTime?
+  booking              Booking       @relation(fields: [bookingId], references: [id])
+  bookingId            String        @unique
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+}
+
+model PaymentSettings {
+  id                    String        @id @default(cuid())
+  activeMethod          PaymentMethod @default(STRIPE)
+  stripeEnabled         Boolean       @default(true)
+  stripePublicKey       String?
+  stripeSecretKey       String?
+  stripeWebhookSecret   String?
+  paypalEnabled         Boolean       @default(false)
+  paypalClientId        String?
+  paypalClientSecret    String?
+  paypalMode            String        @default("sandbox")
+  bankEnabled           Boolean       @default(false)
+  bankAccountName       String?
+  bankIban              String?
+  bankBic               String?
+  bankName              String?
+  bankNotificationEmail String?
+  updatedAt             DateTime      @updatedAt
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String   @db.Text
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  listingId String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+}
+
+model Conversation {
+  id           String                    @id @default(cuid())
+  listingId    String?
+  listingTitle String?
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  lastReadAt     DateTime?
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id              String       @id @default(cuid())
+  content         String       @db.Text
+  isAdminReply    Boolean      @default(false)
+  displayAsUserId String?
+  sender          User         @relation(fields: [senderId], references: [id])
+  senderId        String
+  conversation    Conversation @relation(fields: [conversationId], references: [id])
+  conversationId  String
+  readAt          DateTime?
+  createdAt       DateTime     @default(now())
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  title     String
+  body      String
+  link      String?
+  isRead    Boolean          @default(false)
+  user      User             @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime         @default(now())
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  listingId String
+  createdAt DateTime @default(now())
+  @@unique([userId, listingId])
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+model FAQ {
+  id       String @id @default(cuid())
+  question String
+  answer   String @db.Text
+  category String @default("Général")
+  order    Int
+}
+
+model DiscountCode {
+  id              String    @id @default(cuid())
+  code            String    @unique
+  discountPercent Float
+  maxUses         Int?
+  usedCount       Int       @default(0)
+  expiresAt       DateTime?
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
 }

@@ -1,47 +1,363 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+'use client';
 
-export default function Home() {
+import { useEffect } from 'react';
+import Link from 'next/link';
+import './home.css';
+
+export default function HomePage() {
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), 80);
+        }
+      });
+    }, { threshold: 0.08 });
+    
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="px-4 lg:px-8 h-20 flex items-center border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <Link className="flex items-center justify-center" href="/">
-          <span className="font-bold text-2xl text-primary uppercase tracking-wider">Azur Yachts</span>
-        </Link>
-        <nav className="ml-auto flex gap-6 items-center">
-          <Link className="text-sm font-semibold hover:text-secondary transition-colors" href="/yachts">Flotte</Link>
-          <Link className="text-sm font-semibold hover:text-secondary transition-colors" href="/destinations">Destinations</Link>
-          <Link className="text-sm font-semibold hover:text-secondary transition-colors" href="/contact">Contact</Link>
-          <Button variant="default" asChild>
-            <Link href="/dashboard">Connexion</Link>
-          </Button>
-        </nav>
-      </header>
-      <main className="flex-1">
-        <section className="w-full py-24 lg:py-32 xl:py-48 bg-primary relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 z-0"></div>
-          <div className="container px-4 md:px-6 relative z-10">
-            <div className="flex flex-col items-center space-y-8 text-center">
-              <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl text-white">
-                  L'Océan, Votre Nouveau <br/><span className="text-secondary">Terrain de Jeu.</span>
-                </h1>
-                <p className="mx-auto max-w-[700px] text-white/80 md:text-xl">
-                  Découvrez notre flotte exclusive de yachts de luxe disponibles à la location sur la Côte d'Azur et au-delà.
-                </p>
+    <div className="home-container">
+      {/* NAV */}
+      <nav className="nav-top">
+        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
+        <ul className="nav-links">
+          <li><Link href="/listings">Flotte</Link></li>
+          <li><Link href="/destinations">Destinations</Link></li>
+          <li><Link href="/experiences">Expériences</Link></li>
+          <li><Link href="/pricing">Tarifs</Link></li>
+          <li><Link href="/about">À propos</Link></li>
+        </ul>
+        <Link href="/listings" style={{ textDecoration: 'none' }}><button className="nav-cta">Réserver</button></Link>
+      </nav>
+
+      {/* HERO */}
+      <section className="hero">
+        <div className="hero-bg"></div>
+        <div className="hero-deco"></div>
+        <svg style={{ position: 'absolute', bottom: '80px', left: '50%', transform: 'translateX(-50%)', opacity: 0.07, width: '600px', height: 'auto' }} viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 160 L550 160 L480 110 L300 80 L120 110 Z" fill="#b8985a"/>
+          <path d="M300 80 L300 20 L200 80 Z" fill="#b8985a"/>
+          <path d="M300 80 L300 10 L400 80 Z" fill="#b8985a" opacity="0.6"/>
+          <line x1="50" y1="160" x2="550" y2="160" stroke="#b8985a" strokeWidth="2"/>
+        </svg>
+        <svg style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: '100%', opacity: 0.15 }} viewBox="0 0 1440 80" preserveAspectRatio="none" fill="none">
+          <path d="M0 40 Q180 10 360 40 Q540 70 720 40 Q900 10 1080 40 Q1260 70 1440 40 L1440 80 L0 80Z" fill="#b8985a"/>
+        </svg>
+
+        <div style={{ textAlign: 'center', zIndex: 2, position: 'relative', width: '100%', maxWidth: '1100px', padding: '2rem' }}>
+          <div className="hero-content">
+            <span className="hero-eyebrow">Yacht Charter de Prestige</span>
+            <h1 className="hero-title">Naviguez vers<br/><em>l'Extraordinaire</em></h1>
+            <p className="hero-subtitle">Des expériences nautiques d'exception sur les plus belles eaux du monde. Votre yacht, vos règles, votre liberté.</p>
+          </div>
+          <div className="search-card">
+            <div className="search-grid">
+              <div className="search-field">
+                <label>Destination</label>
+                <input type="text" placeholder="Côte d'Azur, Sardaigne…" />
               </div>
-              <div className="space-x-4">
-                <Button size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 text-lg px-8">
-                  Explorer la flotte
-                </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 bg-transparent text-white border-white/20 hover:bg-white/20 hover:text-white">
-                  Nous contacter
-                </Button>
+              <div className="search-field">
+                <label>Départ</label>
+                <input type="date" />
+              </div>
+              <div className="search-field">
+                <label>Type de yacht</label>
+                <select>
+                  <option>Tous types</option>
+                  <option>Voilier</option>
+                  <option>Catamaran</option>
+                  <option>Motor Yacht</option>
+                  <option>Superyacht</option>
+                </select>
+              </div>
+              <Link href="/listings" style={{ textDecoration: 'none' }}><button className="search-btn" style={{ width: '100%' }}>Rechercher</button></Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* STATS BAR */}
+      <div className="stats-bar reveal">
+        <div className="stat">
+          <div className="stat-num">340<span className="stat-unit">+</span></div>
+          <div className="stat-label">Yachts disponibles</div>
+        </div>
+        <div className="stat">
+          <div className="stat-num">68</div>
+          <div className="stat-label">Destinations mondiales</div>
+        </div>
+        <div className="stat">
+          <div className="stat-num">12K<span className="stat-unit">+</span></div>
+          <div className="stat-label">Clients satisfaits</div>
+        </div>
+        <div className="stat">
+          <div className="stat-num">15</div>
+          <div className="stat-label">Années d'excellence</div>
+        </div>
+      </div>
+
+      {/* DESTINATIONS */}
+      <section className="destinations">
+        <div className="section-header reveal">
+          <span className="section-eyebrow">Explorez le monde</span>
+          <h2 className="section-title">Destinations <em>emblématiques</em></h2>
+          <p className="section-desc">Des criques cachées de la Méditerranée aux eaux turquoise des Caraïbes, choisissez votre horizon.</p>
+        </div>
+        <div className="dest-grid reveal">
+          <div className="dest-card large">
+            <div className="dest-bg" style={{ background: 'linear-gradient(135deg, #1a5a80, #0a2540)' }}></div>
+            <div className="dest-overlay"></div>
+            <span className="dest-tag">Populaire</span>
+            <div className="dest-info">
+              <div className="dest-name">Côte d'Azur</div>
+              <div className="dest-count">42 yachts disponibles</div>
+            </div>
+          </div>
+          <div className="dest-card">
+            <div className="dest-bg" style={{ background: 'linear-gradient(135deg, #2d6a8a, #0f3a5a)' }}></div>
+            <div className="dest-overlay"></div>
+            <div className="dest-info">
+              <div className="dest-name">Grèce</div>
+              <div className="dest-count">58 yachts disponibles</div>
+            </div>
+          </div>
+          <div className="dest-card">
+            <div className="dest-bg" style={{ background: 'linear-gradient(135deg, #1a4a3a, #0a2a20)' }}></div>
+            <div className="dest-overlay"></div>
+            <div className="dest-info">
+              <div className="dest-name">Caraïbes</div>
+              <div className="dest-count">35 yachts disponibles</div>
+            </div>
+          </div>
+          <div className="dest-card">
+            <div className="dest-bg" style={{ background: 'linear-gradient(135deg, #4a2a1a, #2a1a0a)' }}></div>
+            <div className="dest-overlay"></div>
+            <div className="dest-info">
+              <div className="dest-name">Bali</div>
+              <div className="dest-count">22 yachts disponibles</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className="how-it-works">
+        <div className="section-header reveal">
+          <span className="section-eyebrow" style={{ color: 'var(--gold)' }}>Simple & élégant</span>
+          <h2 className="section-title">Comment <em>naviguer</em> avec nous</h2>
+          <p className="section-desc" style={{ color: 'rgba(255,255,255,0.45)' }}>Quatre étapes pour vivre l'expérience yacht de vos rêves.</p>
+        </div>
+        <div className="steps-grid reveal">
+          <div className="step">
+            <div className="step-num">01</div>
+            <div className="step-title">Choisissez votre yacht</div>
+            <p className="step-desc">Parcourez notre flotte exclusive de 340+ embarcations de prestige, filtrées selon vos critères.</p>
+          </div>
+          <div className="step">
+            <div className="step-num">02</div>
+            <div className="step-title">Personnalisez votre croisière</div>
+            <p className="step-desc">Sélectionnez vos dates, votre itinéraire, et optez pour des services additionnels (chef, plongée…).</p>
+          </div>
+          <div className="step">
+            <div className="step-num">03</div>
+            <div className="step-title">Confirmez & payez</div>
+            <p className="step-desc">Réservation sécurisée en ligne. Acompte de 30%, solde 30 jours avant le départ.</p>
+          </div>
+          <div className="step">
+            <div className="step-num">04</div>
+            <div className="step-title">Larguez les amarres</div>
+            <p className="step-desc">Notre équipe vous accueille à bord. Votre équipage dédié prend soin de tout.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* YACHTS */}
+      <section className="yachts-section">
+        <div className="yachts-header reveal">
+          <div>
+            <span className="section-eyebrow">Notre sélection</span>
+            <h2 className="section-title">Yachts <em>d'exception</em></h2>
+          </div>
+          <Link href="/listings" className="see-more">Voir toute la flotte</Link>
+        </div>
+        <div className="yachts-grid reveal">
+          <Link href="/yacht" className="yacht-card">
+            <div className="yacht-img">
+              <div className="yacht-img-inner" style={{ background: 'linear-gradient(135deg, #1a3a5a 0%, #0a2040 100%)' }}></div>
+              <span className="yacht-badge">Nouveau</span>
+            </div>
+            <div className="yacht-body">
+              <div className="yacht-type">Superyacht · Motor</div>
+              <div className="yacht-name">Azura Prestige 68</div>
+              <div className="yacht-specs">
+                <span className="spec"><strong>68 ft</strong> longueur</span>
+                <span className="spec"><strong>8</strong> invités</span>
+                <span className="spec"><strong>4</strong> cabines</span>
+              </div>
+              <div className="yacht-footer">
+                <div className="yacht-price">€4 800 <span>/ jour</span></div>
+                <button className="book-btn" onClick={(e) => e.preventDefault()}>Réserver</button>
+              </div>
+            </div>
+          </Link>
+          <Link href="/yacht" className="yacht-card">
+            <div className="yacht-img">
+              <div className="yacht-img-inner" style={{ background: 'linear-gradient(135deg, #2a4a2a 0%, #1a3a1a 100%)' }}></div>
+              <span className="yacht-badge" style={{ background: 'var(--ocean)' }}>Premium</span>
+            </div>
+            <div className="yacht-body">
+              <div className="yacht-type">Catamaran · Voile</div>
+              <div className="yacht-name">Liberté Bleue 52</div>
+              <div className="yacht-specs">
+                <span className="spec"><strong>52 ft</strong> longueur</span>
+                <span className="spec"><strong>10</strong> invités</span>
+                <span className="spec"><strong>5</strong> cabines</span>
+              </div>
+              <div className="yacht-footer">
+                <div className="yacht-price">€2 900 <span>/ jour</span></div>
+                <button className="book-btn" onClick={(e) => e.preventDefault()}>Réserver</button>
+              </div>
+            </div>
+          </Link>
+          <Link href="/yacht" className="yacht-card">
+            <div className="yacht-img">
+              <div className="yacht-img-inner" style={{ background: 'linear-gradient(135deg, #3a2a1a 0%, #2a1a0a 100%)' }}></div>
+            </div>
+            <div className="yacht-body">
+              <div className="yacht-type">Voilier classique</div>
+              <div className="yacht-name">Belle Époque 44</div>
+              <div className="yacht-specs">
+                <span className="spec"><strong>44 ft</strong> longueur</span>
+                <span className="spec"><strong>6</strong> invités</span>
+                <span className="spec"><strong>3</strong> cabines</span>
+              </div>
+              <div className="yacht-footer">
+                <div className="yacht-price">€1 650 <span>/ jour</span></div>
+                <button className="book-btn" onClick={(e) => e.preventDefault()}>Réserver</button>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* CTA BANNER */}
+      <div className="cta-banner reveal">
+        <div className="cta-banner-content">
+          <span className="cta-eyebrow">Votre aventure commence ici</span>
+          <h2 className="cta-title">Votre <em>yacht privé</em><br/>vous attend</h2>
+          <p className="cta-sub">Laissez-nous concevoir la croisière parfaite. Nos conseillers experts sont à votre disposition pour créer une expérience sur mesure, exactement selon vos désirs.</p>
+          <div>
+            <Link href="/listings" style={{ textDecoration: 'none' }}><button className="cta-btn">Voir les yachts</button></Link>
+            <Link href="/contact" style={{ textDecoration: 'none' }}><button className="cta-btn-outline">Parler à un expert</button></Link>
+          </div>
+        </div>
+      </div>
+
+      {/* TESTIMONIALS */}
+      <section className="testimonials">
+        <div className="section-header centered reveal">
+          <span className="section-eyebrow">Ils nous font confiance</span>
+          <h2 className="section-title">Ce que disent<br/>nos <em>navigateurs</em></h2>
+        </div>
+        <div className="testi-grid reveal">
+          <div className="testi-card">
+            <span className="testi-quote">"</span>
+            <div className="testi-stars">★★★★★</div>
+            <p className="testi-text">Une semaine en Grèce à bord de l'Azura 68 — un rêve devenu réalité. L'équipage était d'une attention extraordinaire, le yacht immaculé. Nous reviendrons sans aucun doute.</p>
+            <div className="testi-author">
+              <div className="testi-avatar">SL</div>
+              <div>
+                <div className="testi-name">Sophie Lemaire</div>
+                <div className="testi-loc">Paris, France</div>
               </div>
             </div>
           </div>
-        </section>
-      </main>
+          <div className="testi-card">
+            <span className="testi-quote">"</span>
+            <div className="testi-stars">★★★★★</div>
+            <p className="testi-text">Service irréprochable de A à Z. La réservation était simple, le yacht exactement comme sur les photos, et la Côte d'Azur depuis la mer est tout simplement magique.</p>
+            <div className="testi-author">
+              <div className="testi-avatar">MR</div>
+              <div>
+                <div className="testi-name">Marco Ricci</div>
+                <div className="testi-loc">Milan, Italie</div>
+              </div>
+            </div>
+          </div>
+          <div className="testi-card">
+            <span className="testi-quote">"</span>
+            <div className="testi-stars">★★★★★</div>
+            <p className="testi-text">Notre anniversaire de mariage aux Caraïbes. Azur Yachts a tout planifié à la perfection — le catamaran, le chef, les excursions. Une expérience absolument mémorable.</p>
+            <div className="testi-author">
+              <div className="testi-avatar">AR</div>
+              <div>
+                <div className="testi-name">Amelia & Robert Chen</div>
+                <div className="testi-loc">Londres, Royaume-Uni</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <div className="newsletter reveal">
+        <div className="newsletter-text">
+          <h3>Offres exclusives & itinéraires secrets</h3>
+          <p>Rejoignez 8 000+ passionnés de navigation</p>
+        </div>
+        <div className="newsletter-form">
+          <input className="newsletter-input" type="email" placeholder="Votre adresse e-mail" />
+          <button className="newsletter-submit">S'abonner</button>
+        </div>
+      </div>
+
+      {/* FOOTER */}
+      <footer>
+        <div className="footer-grid">
+          <div className="footer-brand">
+            <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
+            <p className="footer-desc">Spécialiste de la location de yachts de luxe depuis 2009. Nous mettons l'excellence au cœur de chaque expérience nautique.</p>
+          </div>
+          <div className="footer-col">
+            <h4>Navigation</h4>
+            <ul>
+              <li><Link href="/listings">Notre flotte</Link></li>
+              <li><Link href="#">Destinations</Link></li>
+              <li><Link href="#">Expériences</Link></li>
+              <li><Link href="#">Tarifs & offres</Link></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Services</h4>
+            <ul>
+              <li><Link href="#">Yacht privé</Link></li>
+              <li><Link href="#">Événements</Link></li>
+              <li><Link href="#">Chef à bord</Link></li>
+              <li><Link href="#">Transferts VIP</Link></li>
+            </ul>
+          </div>
+          <div className="footer-col">
+            <h4>Contact</h4>
+            <ul>
+              <li><Link href="#">+33 1 42 00 00 00</Link></li>
+              <li><Link href="#">contact@azuryachts.com</Link></li>
+              <li><Link href="#">3, Quai des Milliardaires, Monaco</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span className="footer-copy">© 2025 Azur Yachts. Tous droits réservés.</span>
+          <span className="footer-copy">
+            <Link href="/legal" style={{ color: 'inherit', textDecoration: 'none' }}>Mentions légales</Link> · 
+            <Link href="/legal" style={{ color: 'inherit', textDecoration: 'none' }}> Confidentialité</Link> · 
+            <Link href="/legal" style={{ color: 'inherit', textDecoration: 'none' }}> CGV</Link>
+          </span>
+        </div>
+      </footer>
     </div>
   );
 }
