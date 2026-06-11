@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import './home.css';
 
 export default function HomePage() {
+  const [featuredYachts, setFeaturedYachts] = useState<any[]>([]);
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -19,20 +20,19 @@ export default function HomePage() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    fetch('/api/listings?limit=3')
+      .then(res => res.json())
+      .then(data => {
+        if (data.listings) {
+          setFeaturedYachts(data.listings);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
   return (
     <div className="home-container">
-      {/* NAV */}
-      <nav className="nav-top">
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <ul className="nav-links">
-          <li><Link href="/listings">Flotte</Link></li>
-          <li><Link href="/destinations">Destinations</Link></li>
-          <li><Link href="/experiences">Expériences</Link></li>
-          <li><Link href="/pricing">Tarifs</Link></li>
-          <li><Link href="/about">À propos</Link></li>
-        </ul>
-        <Link href="/listings" style={{ textDecoration: 'none' }}><button className="nav-cta">Réserver</button></Link>
-      </nav>
 
       {/* HERO */}
       <section className="hero">
@@ -185,62 +185,34 @@ export default function HomePage() {
           <Link href="/listings" className="see-more">Voir toute la flotte</Link>
         </div>
         <div className="yachts-grid reveal">
-          <Link href="/yacht" className="yacht-card">
-            <div className="yacht-img">
-              <div className="yacht-img-inner" style={{ background: 'linear-gradient(135deg, #1a3a5a 0%, #0a2040 100%)' }}></div>
-              <span className="yacht-badge">Nouveau</span>
+          {featuredYachts.length === 0 ? (
+            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-light)'}}>
+              <div className="spinner" style={{margin: '0 auto'}}></div>
             </div>
-            <div className="yacht-body">
-              <div className="yacht-type">Superyacht · Motor</div>
-              <div className="yacht-name">Azura Prestige 68</div>
-              <div className="yacht-specs">
-                <span className="spec"><strong>68 ft</strong> longueur</span>
-                <span className="spec"><strong>8</strong> invités</span>
-                <span className="spec"><strong>4</strong> cabines</span>
-              </div>
-              <div className="yacht-footer">
-                <div className="yacht-price">€4 800 <span>/ jour</span></div>
-                <button className="book-btn" onClick={(e) => e.preventDefault()}>Réserver</button>
-              </div>
-            </div>
-          </Link>
-          <Link href="/yacht" className="yacht-card">
-            <div className="yacht-img">
-              <div className="yacht-img-inner" style={{ background: 'linear-gradient(135deg, #2a4a2a 0%, #1a3a1a 100%)' }}></div>
-              <span className="yacht-badge" style={{ background: 'var(--ocean)' }}>Premium</span>
-            </div>
-            <div className="yacht-body">
-              <div className="yacht-type">Catamaran · Voile</div>
-              <div className="yacht-name">Liberté Bleue 52</div>
-              <div className="yacht-specs">
-                <span className="spec"><strong>52 ft</strong> longueur</span>
-                <span className="spec"><strong>10</strong> invités</span>
-                <span className="spec"><strong>5</strong> cabines</span>
-              </div>
-              <div className="yacht-footer">
-                <div className="yacht-price">€2 900 <span>/ jour</span></div>
-                <button className="book-btn" onClick={(e) => e.preventDefault()}>Réserver</button>
-              </div>
-            </div>
-          </Link>
-          <Link href="/yacht" className="yacht-card">
-            <div className="yacht-img">
-              <div className="yacht-img-inner" style={{ background: 'linear-gradient(135deg, #3a2a1a 0%, #2a1a0a 100%)' }}></div>
-            </div>
-            <div className="yacht-body">
-              <div className="yacht-type">Voilier classique</div>
-              <div className="yacht-name">Belle Époque 44</div>
-              <div className="yacht-specs">
-                <span className="spec"><strong>44 ft</strong> longueur</span>
-                <span className="spec"><strong>6</strong> invités</span>
-                <span className="spec"><strong>3</strong> cabines</span>
-              </div>
-              <div className="yacht-footer">
-                <div className="yacht-price">€1 650 <span>/ jour</span></div>
-                <button className="book-btn" onClick={(e) => e.preventDefault()}>Réserver</button>
-              </div>
-            </div>
-          </Link>
+          ) : (
+            featuredYachts.map((yacht: any) => (
+              <Link href={`/yacht/${yacht.id}`} key={yacht.id} className="yacht-card">
+                <div className="yacht-img">
+                  <div className="yacht-img-inner" style={{ background: yacht.images?.[0]?.url ? `url(${yacht.images[0].url}) center/cover` : 'linear-gradient(135deg, #1a3a5a 0%, #0a2040 100%)' }}></div>
+                  {yacht.owner?.advertiserTier === 'PREMIUM' && <span className="yacht-badge" style={{background: 'var(--gold)'}}>Populaire</span>}
+                  {yacht.owner?.advertiserTier === 'PLATINIUM' && <span className="yacht-badge" style={{background: 'var(--ocean)'}}>Premium</span>}
+                </div>
+                <div className="yacht-body">
+                  <div className="yacht-type">{yacht.boatType}</div>
+                  <div className="yacht-name">{yacht.title}</div>
+                  <div className="yacht-specs">
+                    <span className="spec"><strong>{yacht.boatLength || '-'}m</strong> longueur</span>
+                    <span className="spec"><strong>{yacht.maxAdults}</strong> adultes</span>
+                    <span className="spec"><strong>{Math.max(1, Math.floor(yacht.maxAdults/2))}</strong> cabines</span>
+                  </div>
+                  <div className="yacht-footer">
+                    <div className="yacht-price">€{yacht.price.toLocaleString()} <span>/ jour</span></div>
+                    <button className="book-btn" onClick={(e) => { e.preventDefault(); window.location.href = `/yacht/${yacht.id}`; }}>Réserver</button>
+                  </div>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </section>
 

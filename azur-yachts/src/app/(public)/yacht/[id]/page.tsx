@@ -75,7 +75,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   // ── Chat State ──
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMsgs, setChatMsgs] = useState([
-    { type: 'incoming', text: "Bonjour ! N'hésitez pas si vous avez des questions sur l'Azura Prestige 68.", time: "10:15" }
+    { type: 'incoming', text: `Bonjour ! N'hésitez pas si vous avez des questions sur le ${yacht?.title || 'bateau'}.`, time: "10:15" }
   ]);
   const [chatInput, setChatInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -196,14 +196,6 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="yacht-container">
-      {/* ── NAV ── */}
-      <nav className="nav-top">
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <div className="nav-right">
-          <Link href="/auth"><button className="nav-btn nav-btn-outline">Connexion</button></Link>
-          <Link href="/publish"><button className="nav-btn nav-btn-gold">Mettre en location</button></Link>
-        </div>
-      </nav>
 
       {/* ── BREADCRUMB ── */}
       <div className="breadcrumb-bar">
@@ -290,15 +282,14 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             <div className="sec-title">Spécifications techniques</div>
             <table className="specs-table">
               <tbody>
-                <tr><td>Couple moteur</td><td>111 ft/lb</td></tr>
-                <tr><td>Moteur</td><td>Milwaukee-Eight 107</td></tr>
-                <tr><td>Système de carburant</td><td>Injection séquentielle ESFI</td></tr>
-                <tr><td>Alésage & Course</td><td>3,937 in × 4,375 in</td></tr>
-                <tr><td>Infodivertissement</td><td>Boom Box 4.3</td></tr>
-                <tr><td>Année de mise en service</td><td>2019</td></tr>
-                <tr><td>Longueur</td><td>68 ft / 20,73 m</td></tr>
-                <tr><td>Largeur (bau)</td><td>5,80 m</td></tr>
-                <tr><td>Tirant d'eau</td><td>1,90 m</td></tr>
+                <tr><td>Type</td><td>{yacht.boatType || '-'}</td></tr>
+                <tr><td>Année</td><td>{yacht.boatYear || '-'}</td></tr>
+                <tr><td>Longueur</td><td>{yacht.boatLength ? `${yacht.boatLength} m` : '-'}</td></tr>
+                <tr><td>Capacité adultes</td><td>{yacht.maxAdults || '-'}</td></tr>
+                <tr><td>Capacité enfants</td><td>{yacht.maxChildren || '0'}</td></tr>
+                <tr><td>Location max</td><td>{yacht.maxRentalHours ? `${yacht.maxRentalHours} heures` : 'Sans limite'}</td></tr>
+                <tr><td>Frais de nettoyage</td><td>{yacht.cleaningFee ? `€${yacht.cleaningFee}` : 'Inclus'}</td></tr>
+                <tr><td>Livraison disponible</td><td>{yacht.deliveryAvailable ? `Oui (€${yacht.deliveryFee})` : 'Non'}</td></tr>
               </tbody>
             </table>
           </div>

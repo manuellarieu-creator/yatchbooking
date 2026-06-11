@@ -1,88 +1,59 @@
 'use client';
 
-import { useState, useRef, ChangeEvent, DragEvent } from 'react';
+import { useState, useRef, ChangeEvent, DragEvent, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import './payment.css';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
-type PaymentMode = 'stripe' | 'paypal' | 'bank';
+function PaymentContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const bookingId = searchParams.get('bookingId');
 
-export default function PaymentPage() {
-  const [mode, setMode] = useState<PaymentMode>('stripe');
-  const [selectedSavedCard, setSelectedSavedCard] = useState<'visa' | 'mc' | null>('visa');
-  const [newCardVisible, setNewCardVisible] = useState(false);
-  
-  // Card form state
-  const [cardNum, setCardNum] = useState('');
-  const [cardExp, setCardExp] = useState('');
-  const [cardCvc, setCardCvc] = useState('');
-  const [cardHolder, setCardHolder] = useState('');
+  const [booking, setBooking] = useState<any>(null);
+  const [loadingBooking, setLoadingBooking] = useState(true);
   
   // Bank transfer state
   const [proofVisible, setProofVisible] = useState(false);
   const [proofFile, setProofFile] = useState<File | null>(null);
+  const [proofBase64, setProofBase64] = useState<string | null>(null);
   
   // UI state
   const [loading, setLoading] = useState(false);
-  const [successStatus, setSuccessStatus] = useState<PaymentMode | null>(null);
+  const [successStatus, setSuccessStatus] = useState<'bank' | 'bank_proof' | null>(null);
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (bookingId) {
+      fetch(`/api/bookings/${bookingId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.booking) {
+            setBooking(data.booking);
+            // Si un paiement est déjà attaché et en attente de preuve, on l'affiche
+            if (data.booking.payment && data.booking.payment.status === 'PENDING') {
+              setSuccessStatus('bank');
+            } else if (data.booking.payment && data.booking.payment.status === 'PROOF_SUBMITTED') {
+              setSuccessStatus('bank_proof');
+            }
+          }
+        })
+        .finally(() => setLoadingBooking(false));
+    } else {
+      setLoadingBooking(false);
+    }
+  }, [bookingId]);
 
   const triggerToast = (msg: string) => {
     setToastMsg(msg);
     setShowToast(false);
     setTimeout(() => setShowToast(true), 50);
     setTimeout(() => setShowToast(false), 3500);
-  };
-
-  const handleModeChange = (m: PaymentMode) => {
-    setMode(m);
-    setSuccessStatus(null);
-  };
-
-  const handleCardNumChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let v = e.target.value.replace(/\D/g, '').slice(0, 16);
-    v = v.replace(/(.{4})/g, '$1 ').trim();
-    setCardNum(v);
-  };
-
-  const handleCardExpChange = (e: ChangeEvent<HTMLInputElement>) => {
-    let v = e.target.value.replace(/\D/g, '').slice(0, 4);
-    if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2);
-    setCardExp(v);
-  };
-
-  const getCardBrand = (num: string) => {
-    const clean = num.replace(/\D/g, '');
-    if (clean.startsWith('4')) return 'VISA';
-    if (clean.startsWith('5')) return 'MC';
-    if (clean.startsWith('3')) return 'AMEX';
-    return '—';
-  };
-
-  const cardBrand = getCardBrand(cardNum);
-  const displayNum = cardNum.replace(/\D/g, '').padEnd(16, '•').replace(/(.{4})/g, '$1 ').trim();
-  const displayExp = cardExp || 'MM/AA';
-  const displayHolder = cardHolder.toUpperCase() || 'VOTRE NOM';
-
-  const handleStripePayment = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccessStatus('stripe');
-      triggerToast('✅ Paiement accepté par Stripe !');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 2200);
-  };
-
-  const handlePaypalPayment = () => {
-    triggerToast('Redirection vers PayPal…');
-    setTimeout(() => {
-      setSuccessStatus('paypal');
-      triggerToast('✅ Paiement PayPal confirmé !');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 2000);
   };
 
   const handleCopy = (text: string) => {
@@ -94,7 +65,13 @@ export default function PaymentPage() {
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setProofFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setProofFile(file);
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setProofBase64(ev.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -102,7 +79,13 @@ export default function PaymentPage() {
     e.preventDefault();
     e.currentTarget.classList.remove('dragover');
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      setProofFile(e.dataTransfer.files[0]);
+      const file = e.dataTransfer.files[0];
+      setProofFile(file);
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setProofBase64(ev.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -117,32 +100,74 @@ export default function PaymentPage() {
 
   const clearFile = () => {
     setProofFile(null);
+    setProofBase64(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const submitProof = () => {
+  // Etape 1: Demander les instructions de virement
+  const generateBankTransfer = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccessStatus('bank');
-      triggerToast('📨 Preuve de virement envoyée à notre équipe !');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 1800);
+    try {
+      const res = await fetch('/api/payments/bank-transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: booking.id }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setBooking({ ...booking, payment: data.payment });
+        setSuccessStatus('bank');
+        triggerToast('✅ Instructions générées. Un email vous a été envoyé.');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        triggerToast(`❌ Erreur: ${data.error}`);
+      }
+    } catch (err) {
+      triggerToast('❌ Erreur de connexion');
+    }
+    setLoading(false);
   };
 
-  const getMethodBadgeText = () => {
-    switch (mode) {
-      case 'stripe': return '💳 Paiement par carte (Stripe)';
-      case 'paypal': return '🅿 Paiement via PayPal';
-      case 'bank': return '🏦 Virement bancaire';
+  // Etape 2: Envoyer la preuve
+  const submitProof = async () => {
+    if (!proofBase64 || !booking?.payment?.id) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/payments/bank-transfer/proof', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paymentId: booking.payment.id,
+          proofBase64,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSuccessStatus('bank_proof');
+        triggerToast('📨 Preuve de virement envoyée à notre équipe !');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        triggerToast(`❌ Erreur: ${data.error}`);
+      }
+    } catch (err) {
+      triggerToast('❌ Erreur de connexion');
     }
+    setLoading(false);
   };
+
+  if (loadingBooking) {
+    return <div className="payment-page-container"><div style={{padding: '5rem', textAlign: 'center'}}>Chargement de votre réservation...</div></div>;
+  }
+
+  if (!booking) {
+    return <div className="payment-page-container"><div style={{padding: '5rem', textAlign: 'center'}}>Réservation introuvable ou non autorisée.</div></div>;
+  }
 
   return (
     <div className="payment-page-container">
       {/* NAV */}
       <nav className="pay-nav">
-        <button className="nav-back" onClick={() => window.history.back()}>← Retour</button>
+        <button className="nav-back" onClick={() => router.push('/dashboard')}>← Retour au tableau de bord</button>
         <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
         <div className="nav-secure">🔒 Paiement sécurisé</div>
       </nav>
@@ -186,171 +211,32 @@ export default function PaymentPage() {
         {/* ═══ LEFT COL ═══ */}
         <div className="left-col">
 
-          {/* Demo switcher (simule le choix admin) */}
-          <div className="demo-switcher">
-            <span className="demo-label">Mode actif (configuré par l'admin) :</span>
-            <button className={`demo-btn ${mode === 'stripe' ? 'active' : ''}`} onClick={() => handleModeChange('stripe')}>💳 Stripe</button>
-            <button className={`demo-btn ${mode === 'paypal' ? 'active' : ''}`} onClick={() => handleModeChange('paypal')}>🅿 PayPal</button>
-            <button className={`demo-btn ${mode === 'bank' ? 'active' : ''}`} onClick={() => handleModeChange('bank')}>🏦 Virement</button>
-          </div>
-
-          {/* ══ STRIPE ══ */}
-          {mode === 'stripe' && successStatus !== 'stripe' && (
+          {/* Bank Transfer Initialization */}
+          {!successStatus && (
             <div className="payment-panel active">
-              <span className="section-eyebrow">Paiement par carte</span>
-              <h2 className="section-title">Règlement <em>sécurisé</em></h2>
+              <span className="section-eyebrow">Sélection du mode de paiement</span>
+              <h2 className="section-title">Payer par <em>Virement Bancaire</em></h2>
 
-              <div className="stripe-card">
-                <div className="stripe-card-title">Cartes enregistrées</div>
-                <div className="saved-cards">
-                  <div className={`saved-card-item ${selectedSavedCard === 'visa' ? 'selected' : ''}`} onClick={() => setSelectedSavedCard('visa')}>
-                    <div className="saved-card-radio"></div>
-                    <div className="saved-card-logo">VISA</div>
-                    <div className="saved-card-info">
-                      <div className="saved-card-num">Visa •••• •••• •••• 4242</div>
-                      <div className="saved-card-exp">Expire 09/27</div>
-                    </div>
-                    <span className="saved-card-default">Défaut</span>
-                  </div>
-                  <div className={`saved-card-item ${selectedSavedCard === 'mc' ? 'selected' : ''}`} onClick={() => setSelectedSavedCard('mc')}>
-                    <div className="saved-card-radio"></div>
-                    <div className="saved-card-logo" style={{ background: 'linear-gradient(135deg,#1a4a6e,#0a2a40)' }}>MC</div>
-                    <div className="saved-card-info">
-                      <div className="saved-card-num">Mastercard •••• •••• •••• 1137</div>
-                      <div className="saved-card-exp">Expire 03/26</div>
-                    </div>
-                  </div>
-                  <div className="new-card-toggle" onClick={() => setNewCardVisible(!newCardVisible)}>
-                    <span>{newCardVisible ? '▴' : '▾'}</span> Payer avec une nouvelle carte
-                  </div>
-                </div>
+              <p style={{ color: 'var(--text-mid)', lineHeight: 1.6, marginBottom: '2rem' }}>
+                Conformément à vos préférences, le règlement de cette réservation s'effectuera par virement bancaire. 
+                Cliquez sur le bouton ci-dessous pour générer votre référence unique et obtenir nos coordonnées bancaires.
+              </p>
 
-                {/* New card form */}
-                {newCardVisible && (
-                  <div>
-                    <div className="card-preview">
-                      <div className="card-chip"></div>
-                      <div className="card-number-display">{displayNum}</div>
-                      <div className="card-bottom">
-                        <div>
-                          <div className="card-holder-lbl">Titulaire</div>
-                          <div className="card-holder-val">{displayHolder}</div>
-                        </div>
-                        <div>
-                          <div className="card-expiry-lbl">Expire</div>
-                          <div className="card-expiry-val">{displayExp}</div>
-                        </div>
-                      </div>
-                      <div className="card-brand">{cardBrand}</div>
-                    </div>
-
-                    <div className="form-field">
-                      <label className="form-label">Numéro de carte <span className="req">*</span></label>
-                      <div className="card-input-wrap">
-                        <input className="form-input" type="text" value={cardNum} onChange={handleCardNumChange} placeholder="1234 5678 9012 3456" maxLength={19} />
-                        <div className="card-type-badge">{cardBrand}</div>
-                      </div>
-                    </div>
-                    <div className="form-row">
-                      <div className="form-field" style={{ marginBottom: 0 }}>
-                        <label className="form-label">Date d'expiration <span className="req">*</span></label>
-                        <input className="form-input" type="text" value={cardExp} onChange={handleCardExpChange} placeholder="MM/AA" maxLength={5} />
-                      </div>
-                      <div className="form-field" style={{ marginBottom: 0 }}>
-                        <label className="form-label">CVC <span className="req">*</span></label>
-                        <input className="form-input" type="text" value={cardCvc} onChange={e => setCardCvc(e.target.value.replace(/\D/g,''))} placeholder="123" maxLength={4} />
-                      </div>
-                    </div>
-                    <div className="form-field" style={{ marginTop: '1.1rem' }}>
-                      <label className="form-label">Nom du titulaire <span className="req">*</span></label>
-                      <input className="form-input" type="text" value={cardHolder} onChange={e => setCardHolder(e.target.value)} placeholder="JEAN DUPONT" />
-                    </div>
-                  </div>
-                )}
-
-                <div className="security-badges">
-                  <div className="sec-badge">🔒 <strong>SSL 256-bit</strong></div>
-                  <div className="sec-badge">✅ <strong>PCI-DSS</strong> Niveau 1</div>
-                  <div className="sec-badge">🛡 <strong>3D Secure</strong></div>
-                  <div className="sec-badge">💳 Visa · Mastercard · Amex</div>
-                </div>
-              </div>
-
-              <button className={`pay-btn ${loading ? 'loading' : ''}`} onClick={handleStripePayment} disabled={loading}>
-                Payer €34 200
-                <div className="pay-btn-loader"><div className="spinner"></div></div>
+              <button className={`paypal-btn ${loading ? 'loading' : ''}`} style={{ background: 'var(--navy)' }} onClick={generateBankTransfer} disabled={loading}>
+                {loading ? 'Génération...' : `Générer les instructions de virement (€${booking.totalPrice.toLocaleString('fr-FR')})`}
               </button>
-              <p className="pay-footnote">🔒 Vos données bancaires sont chiffrées et traitées par Stripe. Azur Yachts ne stocke jamais vos informations de carte.</p>
             </div>
           )}
 
-          {/* Stripe Success */}
-          {successStatus === 'stripe' && (
-            <div className="success-screen" style={{ display: 'block' }}>
-              <div className="success-checkmark">✅</div>
-              <div className="success-title">Paiement accepté !</div>
-              <p className="success-sub">Votre paiement de <strong>€34 200</strong> a bien été reçu. Votre réservation est en cours de validation par notre équipe. Vous recevrez un email de confirmation sous 24h.</p>
-              <div className="success-ref">REF-CK7X9M</div>
-              <div className="success-actions">
-                <button className="success-btn success-btn-primary" onClick={() => triggerToast('Redirection vers vos réservations…')}>Voir mes réservations</button>
-                <button className="success-btn success-btn-outline" onClick={() => triggerToast('Retour à l\'accueil…')}>Retour à l'accueil</button>
-              </div>
-            </div>
-          )}
-
-          {/* ══ PAYPAL ══ */}
-          {mode === 'paypal' && successStatus !== 'paypal' && (
+          {/* Bank Instructions & Upload */}
+          {successStatus === 'bank' && (
             <div className="payment-panel active">
-              <span className="section-eyebrow">Paiement PayPal</span>
-              <h2 className="section-title">Payer via <em>PayPal</em></h2>
-
-              <div className="paypal-card">
-                <span className="paypal-logo">🅿</span>
-                <div className="paypal-title">Payer avec PayPal</div>
-                <p className="paypal-desc">Vous serez redirigé vers PayPal pour finaliser votre paiement en toute sécurité. Votre compte PayPal est déjà associé à votre profil Azur Yachts.</p>
-
-                <div className="paypal-account-preview">
-                  <div className="paypal-av">🅿</div>
-                  <div className="paypal-account-info">
-                    <div className="paypal-account-name">Jean Dupont</div>
-                    <div className="paypal-account-email">jean.dupont@gmail.com</div>
-                  </div>
-                  <span className="paypal-account-linked">✓ Lié</span>
-                </div>
-
-                <button className="paypal-btn" onClick={handlePaypalPayment}>
-                  <span className="paypal-btn-icon">🅿</span>
-                  Payer €34 200 avec PayPal
-                </button>
-                <div className="paypal-or">— ou —</div>
-                <p className="paypal-alt">Vous pouvez également payer avec votre carte via PayPal sans avoir de compte.<br/>Protection acheteur PayPal incluse.</p>
-              </div>
-            </div>
-          )}
-
-          {/* Paypal Success */}
-          {successStatus === 'paypal' && (
-            <div className="success-screen" style={{ display: 'block' }}>
-              <div className="success-checkmark">✅</div>
-              <div className="success-title">Paiement PayPal accepté !</div>
-              <p className="success-sub">Votre paiement de <strong>€34 200</strong> via PayPal a bien été capturé. Votre réservation est en cours de validation par notre équipe.</p>
-              <div className="success-ref">REF-CK7X9M</div>
-              <div className="success-actions">
-                <button className="success-btn success-btn-primary" onClick={() => triggerToast('Redirection…')}>Voir mes réservations</button>
-                <button className="success-btn success-btn-outline" onClick={() => triggerToast('Retour…')}>Retour à l'accueil</button>
-              </div>
-            </div>
-          )}
-
-          {/* ══ BANK TRANSFER ══ */}
-          {mode === 'bank' && successStatus !== 'bank' && (
-            <div className="payment-panel active">
-              <span className="section-eyebrow">Virement bancaire</span>
+              <span className="section-eyebrow">Instructions</span>
               <h2 className="section-title">Coordonnées <em>bancaires</em></h2>
 
               <div className="bank-hero">
                 <span className="bank-hero-icon">✅</span>
-                <div className="bank-hero-title">Demande de réservation envoyée</div>
+                <div className="bank-hero-title">Demande de paiement générée</div>
                 <p className="bank-hero-sub">Pour finaliser votre réservation, veuillez effectuer un virement bancaire du montant indiqué ci-dessous avec la référence obligatoire.</p>
               </div>
 
@@ -376,31 +262,22 @@ export default function PaymentPage() {
               <div className="bank-amount-card">
                 <div>
                   <div className="bank-amount-lbl">Montant à virer</div>
-                  <div className="bank-amount-val">€34 200,00</div>
+                  <div className="bank-amount-val">€{booking.totalPrice.toLocaleString('fr-FR')}</div>
                 </div>
-                <button className="copy-btn" style={{ borderColor: 'rgba(255,255,255,.3)', color: 'rgba(255,255,255,.6)' }} onClick={() => handleCopy('34200.00')}>Copier</button>
+                <button className="copy-btn" style={{ borderColor: 'rgba(255,255,255,.3)', color: 'rgba(255,255,255,.6)' }} onClick={() => handleCopy(booking.totalPrice.toString())}>Copier</button>
               </div>
 
               <div className="bank-ref-card">
                 <div className="bank-ref-label">Référence à indiquer obligatoirement sur le virement</div>
                 <div className="bank-ref-value">
-                  REF-CK7X9M
-                  <button className="copy-btn" onClick={() => handleCopy('REF-CK7X9M')}>Copier</button>
+                  {booking.payment?.bankTransferRef}
+                  <button className="copy-btn" onClick={() => handleCopy(booking.payment?.bankTransferRef || '')}>Copier</button>
                 </div>
               </div>
 
               <div className="bank-deadline">
                 <span style={{ fontSize: '1rem', flexShrink: 0 }}>⏳</span>
                 <div className="bank-deadline-text">Vous disposez de <strong>24 heures</strong> pour effectuer le virement et soumettre votre preuve de paiement. Passé ce délai, votre réservation sera automatiquement annulée.</div>
-              </div>
-
-              <div className="relance-timeline">
-                <div className="relance-title">Calendrier des relances automatiques</div>
-                <div className="relance-items">
-                  <div className="relance-item"><div className="relance-dot gold"></div><div className="relance-text"><strong>T+1h</strong> — 1ère relance email si aucune preuve soumise</div></div>
-                  <div className="relance-item"><div className="relance-dot orange"></div><div className="relance-text"><strong>T+3h</strong> — 2ème relance email (dernière relance)</div></div>
-                  <div className="relance-item"><div className="relance-dot red"></div><div className="relance-text"><strong>T+24h</strong> — Annulation automatique si aucun paiement reçu</div></div>
-                </div>
               </div>
 
               <div style={{ background: 'var(--sand-light)', border: '1px solid var(--sand)', padding: '1rem 1.25rem', marginBottom: '1.5rem', fontSize: '.8rem', color: 'var(--text-mid)', lineHeight: 1.8 }}>
@@ -447,14 +324,14 @@ export default function PaymentPage() {
           )}
 
           {/* Bank Success */}
-          {successStatus === 'bank' && (
+          {successStatus === 'bank_proof' && (
             <div className="success-screen" style={{ display: 'block', marginTop: '1.25rem' }}>
               <div className="success-checkmark">📨</div>
               <div className="success-title">Preuve envoyée !</div>
               <p className="success-sub">Votre preuve de virement a bien été transmise à notre équipe. Votre réservation sera confirmée après vérification.<br/><br/>Virement SEPA : 36–48h · Virement instantané : 30–45 min</p>
-              <div className="success-ref">REF-CK7X9M</div>
+              <div className="success-ref">{booking.payment?.bankTransferRef}</div>
               <div className="success-actions">
-                <button className="success-btn success-btn-primary" onClick={() => triggerToast('Redirection…')}>Voir mes réservations</button>
+                <button className="success-btn success-btn-primary" onClick={() => router.push('/dashboard')}>Voir mes réservations</button>
               </div>
             </div>
           )}
@@ -465,51 +342,61 @@ export default function PaymentPage() {
         <div className="order-summary">
           <div className="order-summary-head">
             <div className="order-summary-title">Récapitulatif</div>
-            <div className="order-ref">Réservation REF-CK7X9M</div>
+            <div className="order-ref">Réservation {booking.id.slice(-6).toUpperCase()}</div>
           </div>
           <div className="order-body">
 
             <div className="order-yacht">
-              <div className="order-yacht-img"></div>
+              <div className="order-yacht-img" style={{ backgroundImage: booking.listing.images?.[0] ? `url(${booking.listing.images[0].url})` : 'none' }}></div>
               <div className="order-yacht-info">
-                <div className="order-yacht-type">Superyacht · Motor · Platinium</div>
-                <div className="order-yacht-name">Azura Prestige 68</div>
-                <div className="order-yacht-loc">📍 Nice, Côte d'Azur — France</div>
+                <div className="order-yacht-type">{booking.listing.boatType} · {booking.listing.boatLength}m</div>
+                <div className="order-yacht-name">{booking.listing.title}</div>
+                <div className="order-yacht-loc">📍 {booking.listing.location}, {booking.listing.country}</div>
               </div>
             </div>
 
             <div className="order-dates">
               <div className="order-date-block">
                 <div className="order-date-lbl">Arrivée</div>
-                <div className="order-date-val">14 juin 2025</div>
+                <div className="order-date-val">{format(new Date(booking.startDate), 'dd MMM yyyy', { locale: fr })}</div>
               </div>
               <div className="order-date-sep">→</div>
               <div className="order-date-block">
                 <div className="order-date-lbl">Départ</div>
-                <div className="order-date-val">21 juin 2025</div>
+                <div className="order-date-val">{format(new Date(booking.endDate), 'dd MMM yyyy', { locale: fr })}</div>
               </div>
             </div>
 
-            <div className="order-guests">👥 4 adultes · 2 enfants</div>
+            <div className="order-guests">👥 {booking.adults} adultes · {booking.children} enfants</div>
 
             <div className="recap-rows">
-              <div className="recap-row"><span className="lbl">€4 800 × 7 nuits</span><span className="val">€33 600</span></div>
-              <div className="recap-row"><span className="lbl">Frais de nettoyage</span><span className="val">€350</span></div>
-              <div className="recap-row"><span className="lbl">Services</span><span className="val">€1 900</span></div>
-              <div className="recap-row service"><span className="lbl">— Chef à bord (7j)</span><span className="val">€1 400</span></div>
-              <div className="recap-row service"><span className="lbl">— Équipement snorkeling</span><span className="val">€200</span></div>
-              <div className="recap-row service"><span className="lbl">— Livraison port souhaité</span><span className="val">€300</span></div>
-              <div className="recap-row discount"><span className="lbl">Code BIENVENUE10 (−10%)</span><span className="val">−€1 650</span></div>
+              <div className="recap-row"><span className="lbl">Base ({booking.totalNights} nuits)</span><span className="val">€{booking.basePrice.toLocaleString('fr-FR')}</span></div>
+              <div className="recap-row"><span className="lbl">Frais de nettoyage</span><span className="val">€{booking.cleaningFee.toLocaleString('fr-FR')}</span></div>
+              
+              {booking.servicesTotal > 0 && (
+                <div className="recap-row"><span className="lbl">Services additionnels</span><span className="val">€{booking.servicesTotal.toLocaleString('fr-FR')}</span></div>
+              )}
+              {booking.selectedServices?.map((s: any) => (
+                <div key={s.id} className="recap-row service"><span className="lbl">— {s.name}</span><span className="val">€{s.price.toLocaleString('fr-FR')}</span></div>
+              ))}
+
+              {booking.deliveryFee > 0 && (
+                <div className="recap-row service"><span className="lbl">— Livraison au port</span><span className="val">€{booking.deliveryFee.toLocaleString('fr-FR')}</span></div>
+              )}
+
+              {booking.discountAmount > 0 && (
+                <div className="recap-row discount"><span className="lbl">Code {booking.discountCode}</span><span className="val">−€{booking.discountAmount.toLocaleString('fr-FR')}</span></div>
+              )}
             </div>
 
             <div className="recap-total">
               <span className="recap-total-lbl">Total</span>
-              <span className="recap-total-val">€34 200</span>
+              <span className="recap-total-val">€{booking.totalPrice.toLocaleString('fr-FR')}</span>
             </div>
 
             <div className="order-method-badge">
-              <span className="order-method-icon">💳</span>
-              <span>{getMethodBadgeText()}</span>
+              <span className="order-method-icon">🏦</span>
+              <span>Virement bancaire</span>
             </div>
 
             <div className="order-guarantee">
@@ -527,4 +414,12 @@ export default function PaymentPage() {
       </div>
     </div>
   );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<div className="payment-page-container"><div style={{padding: '5rem', textAlign: 'center'}}>Chargement...</div></div>}>
+      <PaymentContent />
+    </Suspense>
+  )
 }

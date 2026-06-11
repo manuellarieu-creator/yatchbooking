@@ -116,16 +116,6 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-container">
-      {/* ── NAV ── */}
-      <nav className="nav-top">
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <div className="nav-right">
-          <Link href="/" className="nav-link">Accueil</Link>
-          <Link href="#" className="nav-link">Mes réservations</Link>
-          <Link href="/profile" className="nav-link active">Mon profil</Link>
-          <div className="nav-avatar">JD</div>
-        </div>
-      </nav>
 
       <div className="page-wrap">
         {/* ── SIDEBAR ── */}
@@ -139,7 +129,9 @@ export default function ProfilePage() {
             </div>
             <div className="profile-name">{profile?.firstName} {profile?.lastName}</div>
             <div className="profile-email">{profile?.email}</div>
-            <div className="profile-badge">⚓ {profile?.role === 'ADVERTISER' ? 'Annonceur' : 'Client'}</div>
+            <div className="profile-badge">
+              {profile?.role === 'ADMIN' ? '👑 Administrateur' : profile?.role === 'ADVERTISER' ? '⚓ Annonceur' : '⚓ Client'}
+            </div>
             <div className="verified-tick"><span className="tick">✓</span> Email vérifié</div>
           </div>
 
@@ -158,11 +150,21 @@ export default function ProfilePage() {
               <span className="nav-icon">💳</span> Moyens de paiement
             </a>
             <a className={`sidebar-nav-item ${activeTab === 'activite' ? 'active' : ''}`} onClick={() => setActiveTab('activite')}>
-              <span className="nav-icon">📋</span> Activité du compte
+              <span className="nav-icon">📱</span> Activité du compte
             </a>
-            <a className={`sidebar-nav-item ${activeTab === 'danger' ? 'active' : ''}`} onClick={() => setActiveTab('danger')}>
-              <span className="nav-icon">⚠️</span> Zone sensible
+            <a className={`sidebar-nav-item ${activeTab === 'zone-sensible' ? 'active' : ''}`} onClick={() => setActiveTab('zone-sensible')}>
+              <span className="nav-icon" style={{ color: '#ef4444' }}>⚠️</span> Zone sensible
             </a>
+            
+            {profile?.role === 'ADMIN' && (
+              <div style={{ marginTop: '2rem', padding: '0 1.5rem' }}>
+                <Link href="/admin">
+                  <button className="nav-btn-gold" style={{ width: '100%', padding: '0.8rem', cursor: 'pointer' }}>
+                    Aller à l'Espace Admin
+                  </button>
+                </Link>
+              </div>
+            )}
           </nav>
         </aside>
 
