@@ -12,7 +12,8 @@ export default function VerificationPage() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('intro');
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
-  const [idDocument, setIdDocument] = useState<File | null>(null);
+  const [idDocumentFront, setIdDocumentFront] = useState<File | null>(null);
+  const [idDocumentBack, setIdDocumentBack] = useState<File | null>(null);
   
   // Polling for Admin Validation
   useEffect(() => {
@@ -75,9 +76,15 @@ export default function VerificationPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDocumentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDocumentFrontChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setIdDocument(e.target.files[0]);
+      setIdDocumentFront(e.target.files[0]);
+    }
+  };
+
+  const handleDocumentBackChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setIdDocumentBack(e.target.files[0]);
     }
   };
 
@@ -296,6 +303,10 @@ export default function VerificationPage() {
             </div>
 
             <div>
+              <button className="btn-primary" onClick={() => switchScreen('document')} style={{ marginBottom: '2rem', width: '100%', fontSize: '1.1rem', padding: '1.2rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                Commencer la vérification →
+              </button>
+
               <div className="guide-card">
                 <div className="guide-title">Comment ça se passe ?</div>
                 <div className="guide-steps">
@@ -318,12 +329,7 @@ export default function VerificationPage() {
                 </div>
                 <div className="guide-note">
                   💡 Assurez-vous d'être dans un endroit bien éclairé et silencieux. Évitez les contre-jours (ne vous positionnez pas devant une fenêtre).
-                </div>
               </div>
-
-              <button className="btn-primary" onClick={() => switchScreen('document')}>
-                  Commencer la vérification →
-                </button>
               <p style={{ fontSize: '.7rem', color: 'var(--text-light)', textAlign: 'center', marginTop: '.6rem', lineHeight: 1.6 }}>En continuant, vous acceptez que votre vidéo soit examinée par notre équipe à des fins de vérification d'identité.</p>
             </div>
           </div>
@@ -337,37 +343,57 @@ export default function VerificationPage() {
               <p>Veuillez nous transmettre une copie de votre pièce d'identité (Passeport, CNI, Permis) en cours de validité.</p>
             </div>
             
-            <div className="document-upload-area" style={{ border: '2px dashed #cbd5e1', padding: '3rem 2rem', textAlign: 'center', borderRadius: '12px', marginBottom: '2rem', background: '#f8fafc' }}>
-              {!idDocument ? (
-                <>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📄</div>
-                  <h3 style={{ marginBottom: '1rem', color: '#334155' }}>Cliquez pour sélectionner un fichier</h3>
-                  <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Formats acceptés: JPG, PNG, PDF (Max 5MB)</p>
-                  <label style={{ background: '#0f172a', color: '#fff', padding: '0.8rem 1.5rem', borderRadius: '6px', cursor: 'pointer', display: 'inline-block', fontWeight: 600 }}>
-                    Parcourir les fichiers
-                    <input type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={handleDocumentChange} style={{ display: 'none' }} />
-                  </label>
-                </>
-              ) : (
-                <>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
-                  <h3 style={{ marginBottom: '0.5rem', color: '#16a34a' }}>Document sélectionné</h3>
-                  <p style={{ color: '#334155', fontWeight: 500, marginBottom: '1.5rem' }}>{idDocument.name}</p>
-                  <button 
-                    onClick={() => setIdDocument(null)} 
-                    style={{ background: '#f1f5f9', color: '#ef4444', border: 'none', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', fontWeight: 500 }}
-                  >
-                    Retirer le fichier
-                  </button>
-                </>
-              )}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+              {/* RECTO */}
+              <div className="document-upload-area" style={{ border: '2px dashed #cbd5e1', padding: '2rem 1rem', textAlign: 'center', borderRadius: '12px', background: '#f8fafc' }}>
+                {!idDocumentFront ? (
+                  <>
+                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📄</div>
+                    <h3 style={{ marginBottom: '0.5rem', color: '#334155', fontSize: '1rem' }}>RECTO de la pièce</h3>
+                    <p style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '1rem' }}>JPG, PNG, PDF</p>
+                    <label style={{ background: '#0f172a', color: '#fff', padding: '0.6rem 1rem', borderRadius: '6px', cursor: 'pointer', display: 'inline-block', fontSize: '0.85rem' }}>
+                      Sélectionner
+                      <input type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={handleDocumentFrontChange} style={{ display: 'none' }} />
+                    </label>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>✅</div>
+                    <h3 style={{ marginBottom: '0.5rem', color: '#16a34a', fontSize: '1rem' }}>Recto sélectionné</h3>
+                    <p style={{ color: '#334155', fontWeight: 500, marginBottom: '1rem', fontSize: '0.8rem', wordBreak: 'break-all' }}>{idDocumentFront.name}</p>
+                    <button onClick={() => setIdDocumentFront(null)} style={{ background: '#f1f5f9', color: '#ef4444', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Retirer</button>
+                  </>
+                )}
+              </div>
+
+              {/* VERSO */}
+              <div className="document-upload-area" style={{ border: '2px dashed #cbd5e1', padding: '2rem 1rem', textAlign: 'center', borderRadius: '12px', background: '#f8fafc' }}>
+                {!idDocumentBack ? (
+                  <>
+                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📄</div>
+                    <h3 style={{ marginBottom: '0.5rem', color: '#334155', fontSize: '1rem' }}>VERSO de la pièce</h3>
+                    <p style={{ color: '#64748b', fontSize: '0.8rem', marginBottom: '1rem' }}>JPG, PNG, PDF</p>
+                    <label style={{ background: '#0f172a', color: '#fff', padding: '0.6rem 1rem', borderRadius: '6px', cursor: 'pointer', display: 'inline-block', fontSize: '0.85rem' }}>
+                      Sélectionner
+                      <input type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={handleDocumentBackChange} style={{ display: 'none' }} />
+                    </label>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>✅</div>
+                    <h3 style={{ marginBottom: '0.5rem', color: '#16a34a', fontSize: '1rem' }}>Verso sélectionné</h3>
+                    <p style={{ color: '#334155', fontWeight: 500, marginBottom: '1rem', fontSize: '0.8rem', wordBreak: 'break-all' }}>{idDocumentBack.name}</p>
+                    <button onClick={() => setIdDocumentBack(null)} style={{ background: '#f1f5f9', color: '#ef4444', border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}>Retirer</button>
+                  </>
+                )}
+              </div>
             </div>
 
             <div className="actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
               <button className="btn-secondary" onClick={() => switchScreen('intro')}>Retour</button>
               <button 
                 className="btn-primary" 
-                disabled={!idDocument}
+                disabled={!idDocumentFront || !idDocumentBack}
                 onClick={startCamera}
               >
                 Continuer vers l'enregistrement vidéo →

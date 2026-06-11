@@ -212,14 +212,31 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
               <div style={{ marginBottom: '2rem' }}>
                 <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#0f172a' }}>Pièce d'Identité & Vidéo KYC</h3>
                 
-                {selectedUser.idCardUrl && (
+                { (selectedUser.idCardUrl || selectedUser.idCardBackUrl) && (
                   <div style={{ marginBottom: '1.5rem', background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                    <h4 style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: '#334155' }}>Document d'identité</h4>
-                    {selectedUser.idCardUrl.endsWith('.pdf') ? (
-                      <a href={selectedUser.idCardUrl} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'underline' }}>Voir le document PDF</a>
-                    ) : (
-                      <img src={selectedUser.idCardUrl} alt="Pièce d'identité" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '4px' }} />
-                    )}
+                    <h4 style={{ fontSize: '0.9rem', marginBottom: '1rem', color: '#334155' }}>Documents d'identité</h4>
+                    <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto' }}>
+                      {selectedUser.idCardUrl && (
+                        <div style={{ flex: '0 0 auto' }}>
+                          <div style={{ fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: '#64748b' }}>RECTO</div>
+                          {selectedUser.idCardUrl.endsWith('.pdf') ? (
+                            <a href={selectedUser.idCardUrl} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'underline', fontSize: '0.9rem' }}>Ouvrir PDF</a>
+                          ) : (
+                            <img src={selectedUser.idCardUrl} alt="Recto" style={{ maxWidth: '300px', maxHeight: '200px', borderRadius: '4px', border: '1px solid #cbd5e1' }} />
+                          )}
+                        </div>
+                      )}
+                      {selectedUser.idCardBackUrl && (
+                        <div style={{ flex: '0 0 auto' }}>
+                          <div style={{ fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem', color: '#64748b' }}>VERSO</div>
+                          {selectedUser.idCardBackUrl.endsWith('.pdf') ? (
+                            <a href={selectedUser.idCardBackUrl} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'underline', fontSize: '0.9rem' }}>Ouvrir PDF</a>
+                          ) : (
+                            <img src={selectedUser.idCardBackUrl} alt="Verso" style={{ maxWidth: '300px', maxHeight: '200px', borderRadius: '4px', border: '1px solid #cbd5e1' }} />
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
                 {selectedUser.videoUrl ? (
