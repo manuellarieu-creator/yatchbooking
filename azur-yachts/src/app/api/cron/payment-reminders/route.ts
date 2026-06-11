@@ -9,7 +9,7 @@ import {
 export async function GET(req: NextRequest) {
   // Verify cron secret
   const authHeader = req.headers.get('authorization')
-  if (authHeader !== `Bearer \${process.env.CRON_SECRET}`) {
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -121,7 +121,7 @@ export async function GET(req: NextRequest) {
       cancelled++
     }
 
-    console.log(\`✅ Cron: \${reminder1Sent} R1, \${reminder2Sent} R2, \${cancelled} cancelled\`)
+    console.log(`✅ Cron: ${reminder1Sent} R1, ${reminder2Sent} R2, ${cancelled} cancelled`)
 
     return NextResponse.json({
       success: true,
