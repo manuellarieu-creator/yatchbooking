@@ -320,7 +320,7 @@ export default function VerificationPage() {
                   </div>
                   <div className="guide-step">
                     <div className="guide-step-num">3</div>
-                    <div className="guide-step-text"><strong>Enregistrez une vidéo de 10–15 secondes</strong><br />Regardez la caméra, tenez votre document face à l'objectif de façon lisible, et prononcez votre prénom.</div>
+                    <div className="guide-step-text"><strong>Enregistrez une vidéo de 10–15 secondes</strong><br />Regardez la caméra et prononcez clairement votre prénom.</div>
                   </div>
                   <div className="guide-step">
                     <div className="guide-step-num">4</div>
@@ -502,18 +502,9 @@ export default function VerificationPage() {
                 <div className="cam-instr-title">Instructions</div>
                 <div className="cam-instr-item"><span className="cam-instr-icon">☀️</span><span className="cam-instr-text"><strong>Éclairage :</strong> Placez-vous face à une source de lumière, évitez les contre-jours.</span></div>
                 <div className="cam-instr-item"><span className="cam-instr-icon">👁</span><span className="cam-instr-text"><strong>Regard :</strong> Regardez directement la caméra, pas l'écran.</span></div>
-                <div className="cam-instr-item"><span className="cam-instr-icon">🪪</span><span className="cam-instr-text"><strong>Document :</strong> Tenez votre pièce d'identité bien visible, lisible, à hauteur de visage.</span></div>
                 <div className="cam-instr-item"><span className="cam-instr-icon">🎙</span><span className="cam-instr-text"><strong>Voix :</strong> Prononcez clairement votre prénom et nom à voix haute.</span></div>
                 <div className="cam-instr-item"><span className="cam-instr-icon">⏱</span><span className="cam-instr-text"><strong>Durée :</strong> La vidéo dure <strong>10 à 15 secondes</strong> maximum. L'enregistrement s'arrête automatiquement.</span></div>
               </div>
-
-              <div className="id-sample">
-                <span className="id-sample-icon">🪪</span>
-                <div className="id-sample-text">
-                  <strong>Documents acceptés :</strong><br />
-                  Passeport · Carte d'identité nationale<br />Permis de conduire<br /><br />
-                  <span style={{ color: 'var(--danger)', fontSize: '.7rem' }}>✗ Documents expirés non acceptés</span>
-                </div>
               </div>
             </div>
           </div>
