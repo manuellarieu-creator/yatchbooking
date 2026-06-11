@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/db'
+import { auth } from '@/auth'
 import { sendPaymentProofReceived } from '@/lib/resend'
 import { ADMIN_EMAIL } from '@/lib/resend'
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await auth()
     if (!session?.user) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
