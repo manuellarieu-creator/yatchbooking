@@ -237,7 +237,7 @@ export default function DashboardPage() {
                   <th>Référence</th><th>Bateau</th><th>Client</th><th>Dates</th><th>Montant</th><th>Statut</th><th>Actions</th>
                 </tr></thead>
                 <tbody>
-                  {filteredBookings.slice(0, 3).map(b => (
+                  {filteredBookings.slice(0, 3).map((b: any) => (
                     <tr key={b.id}>
                       <td><strong>{b.id}</strong></td>
                       <td>
@@ -325,7 +325,7 @@ export default function DashboardPage() {
                   <th>Réf.</th><th>Bateau</th><th>Client</th><th>Dates</th><th>Nuits</th><th>Montant</th><th>Paiement</th><th>Statut</th><th>Actions</th>
                 </tr></thead>
                 <tbody>
-                  {filteredBookings.map(b => (
+                  {filteredBookings.map((b: any) => (
                     <tr key={b.id}>
                       <td><strong>{b.id}</strong></td>
                       <td>{b.boat}</td>
