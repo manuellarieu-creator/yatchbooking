@@ -24,6 +24,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <Link href="/admin/destinations" className="admin-nav-link">🌍 Destinations</Link>
           <Link href="/admin/bookings" className="admin-nav-link">📅 Réservations</Link>
           <Link href="/admin/payments" className="admin-nav-link">💶 Paiements</Link>
+          <Link href="/admin/blacklist" className="admin-nav-link">⛔ Blacklist</Link>
         </nav>
         <div className="admin-logout">
           <Link href="/" className="admin-nav-link">← Retour au site</Link>
