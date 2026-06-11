@@ -144,7 +144,7 @@ export default function AuthPage() {
         })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Erreur lors de l\\'inscription');
+      if (!res.ok) throw new Error(data.error || "Erreur lors de l'inscription");
       
       if (data.user?.role === 'ADVERTISER') {
         triggerToast('Un code de vérification vous a été envoyé.');
