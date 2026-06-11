@@ -35,32 +35,43 @@ export async function GET(req: NextRequest) {
 
     const listingIds = listings.map(l => l.id)
 
-    // 2. Fetch bookings related to user's listings
-    const bookings = await prisma.booking.findMany({
+    // 2. Fetch bookings related to user's listings (all for stats)
+    const allBookings = await prisma.booking.findMany({
       where: { listingId: { in: listingIds } },
       include: {
         client: { select: { firstName: true, lastName: true, avatar: true } },
         listing: { select: { title: true, boatType: true } }
       },
-      orderBy: { createdAt: 'desc' },
-      take: 10 // Last 10 bookings
+      orderBy: { createdAt: 'desc' }
     })
+
+    const bookings = allBookings.slice(0, 10); // Last 10 bookings for the table
 
     // 3. Compute stats
     let totalRevenue = 0
     let totalViews = 0
     let confirmedBookingsCount = 0
 
+    const revenueByListingMap: Record<string, { title: string, revenue: number }> = {}
+    
     listings.forEach(listing => {
       totalViews += listing.viewCount
+      revenueByListingMap[listing.id] = { title: listing.title, revenue: 0 }
     })
 
-    bookings.forEach(booking => {
+    allBookings.forEach(booking => {
       if (['CONFIRMED', 'COMPLETED', 'PAYMENT_RECEIVED'].includes(booking.status)) {
         totalRevenue += booking.totalPrice
         confirmedBookingsCount++
+        if (revenueByListingMap[booking.listingId]) {
+          revenueByListingMap[booking.listingId].revenue += booking.totalPrice
+        }
       }
     })
+
+    const revenueByListing = Object.values(revenueByListingMap)
+      .filter(item => item.revenue > 0)
+      .sort((a, b) => b.revenue - a.revenue)
 
     const occupancyRate = listings.length > 0 ? Math.round((confirmedBookingsCount / (listings.length * 4)) * 100) : 0 // Simplified mock formula for occupancy
 
@@ -76,8 +87,9 @@ export async function GET(req: NextRequest) {
       stats: {
         revenue: totalRevenue,
         views: totalViews,
-        bookingsCount: bookings.length,
+        bookingsCount: allBookings.length,
         occupancyRate: occupancyRate > 100 ? 100 : occupancyRate,
+        revenueByListing,
       },
       listings,
       bookings

@@ -483,31 +483,65 @@ export default function DashboardPage() {
               <div className="kpi-card green"><div className="kpi-lbl">Vues totales</div><div className="kpi-val">{dashboardData.stats.views.toLocaleString()}</div><div className="kpi-delta up">Sur toutes les annonces</div></div>
               <div className="kpi-card orange"><div className="kpi-lbl">Taux de conversion</div><div className="kpi-val">{dashboardData.stats.views > 0 ? ((dashboardData.stats.bookingsCount / dashboardData.stats.views) * 100).toFixed(1) : 0}%</div><div className="kpi-sub">vues → réservations</div></div>
             </div>
-            <div className="stats-row">
-              <div className="chart-card" style={{ marginBottom: 0 }}>
-                <div className="chart-header"><div className="chart-title">Revenus par annonce</div></div>
-                <div className="chart-area">
-                  <div className="chart-bar-wrap"><div className="chart-bar-val">€48K</div><div className="chart-bar" style={{ height: '100%', background: 'var(--navy)' }}></div><div className="chart-bar-label">Azura 68</div></div>
-                  <div className="chart-bar-wrap"><div className="chart-bar-val">€26K</div><div className="chart-bar gold" style={{ height: '54%', background: 'var(--gold)' }}></div><div className="chart-bar-label">Liberté 52</div></div>
-                  <div className="chart-bar-wrap"><div className="chart-bar-val">€8K</div><div className="chart-bar" style={{ height: '17%', background: '#e67e22' }}></div><div className="chart-bar-label">Belle Époque</div></div>
+            {dashboardData.stats.revenueByListing && dashboardData.stats.revenueByListing.length > 0 ? (() => {
+              const colors = ['var(--navy)', 'var(--gold)', '#e67e22', '#2ecc71', '#9b59b6'];
+              const C = 2 * Math.PI * 48;
+              let currentOffset = 0;
+              const maxRev = dashboardData.stats.revenueByListing[0].revenue;
+              const totalRev = dashboardData.stats.revenue || 1;
+              return (
+                <div className="stats-row">
+                  <div className="chart-card" style={{ marginBottom: 0 }}>
+                    <div className="chart-header"><div className="chart-title">Revenus par annonce</div></div>
+                    <div className="chart-area">
+                      {dashboardData.stats.revenueByListing.map((item: any, i: number) => {
+                        const height = (item.revenue / maxRev) * 100;
+                        return (
+                          <div className="chart-bar-wrap" key={i}>
+                            <div className="chart-bar-val">€{item.revenue >= 1000 ? (item.revenue / 1000).toFixed(1) + 'K' : item.revenue}</div>
+                            <div className="chart-bar" style={{ height: `${height}%`, background: colors[i % colors.length] }}></div>
+                            <div className="chart-bar-label">{item.title}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="donut-card">
+                    <svg className="donut-svg" width="120" height="120" viewBox="0 0 120 120">
+                      <circle cx="60" cy="60" r="48" fill="none" stroke="var(--sand)" strokeWidth="16"/>
+                      {dashboardData.stats.revenueByListing.map((item: any, i: number) => {
+                        const pct = item.revenue / totalRev;
+                        const dash = pct * C;
+                        const offset = -currentOffset;
+                        currentOffset += dash;
+                        return (
+                          <circle key={i} cx="60" cy="60" r="48" fill="none" stroke={colors[i % colors.length]} strokeWidth="16" strokeDasharray={`${dash} ${C}`} strokeDashoffset={offset} transform="rotate(-90 60 60)"/>
+                        );
+                      })}
+                      <text x="60" y="57" textAnchor="middle" fontFamily="Cormorant Garamond" fontSize="18" fill="var(--navy)">
+                        €{dashboardData.stats.revenue >= 1000 ? (dashboardData.stats.revenue / 1000).toFixed(1) + 'K' : dashboardData.stats.revenue}
+                      </text>
+                      <text x="60" y="70" textAnchor="middle" fontFamily="Jost" fontSize="8" fill="var(--text-light)">total</text>
+                    </svg>
+                    <div className="donut-legend">
+                      {dashboardData.stats.revenueByListing.map((item: any, i: number) => {
+                        const pct = Math.round((item.revenue / totalRev) * 100);
+                        return (
+                          <div className="donut-leg-item" key={i}>
+                            <div className="donut-leg-dot" style={{ background: colors[i % colors.length] }}></div>
+                            {item.title} — {pct}%
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
+              );
+            })() : (
+              <div className="stats-row" style={{ padding: '2rem', textAlign: 'center', background: '#fff', border: '1px solid var(--sand)', borderRadius: '4px', color: 'var(--text-mid)' }}>
+                Aucune donnée de revenu pour le moment.
               </div>
-              <div className="donut-card">
-                <svg className="donut-svg" width="120" height="120" viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="48" fill="none" stroke="var(--sand)" strokeWidth="16"/>
-                  <circle cx="60" cy="60" r="48" fill="none" stroke="var(--navy)" strokeWidth="16" strokeDasharray="180 121" strokeDashoffset="30" transform="rotate(-90 60 60)"/>
-                  <circle cx="60" cy="60" r="48" fill="none" stroke="var(--gold)" strokeWidth="16" strokeDasharray="90 211" strokeDashoffset="-150" transform="rotate(-90 60 60)"/>
-                  <circle cx="60" cy="60" r="48" fill="none" stroke="#e67e22" strokeWidth="16" strokeDasharray="30 271" strokeDashoffset="-240" transform="rotate(-90 60 60)"/>
-                  <text x="60" y="57" textAnchor="middle" fontFamily="Cormorant Garamond" fontSize="18" fill="var(--navy)">€{dashboardData.stats.revenue >= 1000 ? (dashboardData.stats.revenue / 1000).toFixed(1) + 'K' : dashboardData.stats.revenue}</text>
-                  <text x="60" y="70" textAnchor="middle" fontFamily="Jost" fontSize="8" fill="var(--text-light)">total</text>
-                </svg>
-                <div className="donut-legend">
-                  <div className="donut-leg-item"><div className="donut-leg-dot" style={{ background: 'var(--navy)' }}></div>Azura 68 — 59%</div>
-                  <div className="donut-leg-item"><div className="donut-leg-dot" style={{ background: 'var(--gold)' }}></div>Liberté 52 — 31%</div>
-                  <div className="donut-leg-item"><div className="donut-leg-dot" style={{ background: '#e67e22' }}></div>Belle Époque — 10%</div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* ══════ MESSAGES ══════ */}
