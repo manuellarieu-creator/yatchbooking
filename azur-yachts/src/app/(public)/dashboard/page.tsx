@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import './dashboard.css';
 
@@ -11,6 +11,15 @@ export default function DashboardPage() {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [bookingFilter, setBookingFilter] = useState('');
+  const [dashboardData, setDashboardData] = useState<any>({ stats: { revenue: 0, views: 0, bookingsCount: 0, occupancyRate: 0 }, listings: [], bookings: [] });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/dashboard').then(r => r.json()).then(data => {
+      if (!data.error) setDashboardData(data);
+      setIsLoading(false);
+    }).catch(() => setIsLoading(false));
+  }, []);
   
   // Chat state
   const [activeConv, setActiveConv] = useState('JD');
@@ -67,13 +76,19 @@ export default function DashboardPage() {
     return grid;
   };
 
-  const bookings = [
-    { id: 'REF-CK7X9M', boat: 'Azura Prestige 68', type: 'Motor Yacht', client: 'Jean Dupont', dates: '14–21 juin', nights: 7, total: '€34 200', payment: 'Virement', status: 'payment', badge: 'Pmt reçu', badgeClass: 'badge-payment' },
-    { id: 'REF-BN2K4P', boat: 'Liberté Bleue 52', type: 'Catamaran', client: 'Sophie Lemaire', dates: '3–10 août', nights: 7, total: '€20 300', payment: 'Stripe', status: 'confirmed', badge: 'Confirmée', badgeClass: 'badge-confirmed' },
-    { id: 'REF-QW5R8T', boat: 'Belle Époque 44', type: 'Voilier', client: 'Marco Ricci', dates: '10–17 sept.', nights: 7, total: '€11 550', payment: '—', status: 'pending', badge: 'En attente', badgeClass: 'badge-pending' },
-    { id: 'REF-MT3H7J', boat: 'Azura Prestige 68', type: 'Motor Yacht', client: 'Amelia Chen', dates: '12–19 avr.', nights: 7, total: '€16 800', payment: 'PayPal', status: 'completed', badge: 'Terminée', badgeClass: 'badge-completed' },
-    { id: 'REF-HY9P2L', boat: 'Liberté Bleue 52', type: 'Catamaran', client: 'Pierre Martin', dates: '1–8 mai', nights: 7, total: '€9 800', payment: 'Virement', status: 'cancelled', badge: 'Annulée', badgeClass: 'badge-cancelled' },
-  ];
+  const bookings = dashboardData.bookings.map((b: any) => ({
+    id: b.id,
+    boat: b.listing.title,
+    type: b.listing.boatType,
+    client: b.client.firstName + ' ' + b.client.lastName,
+    dates: new Date(b.startDate).toLocaleDateString() + ' - ' + new Date(b.endDate).toLocaleDateString(),
+    nights: b.totalNights,
+    total: '€' + b.totalPrice.toLocaleString(),
+    payment: 'Stripe',
+    status: b.status === 'CONFIRMED' ? 'confirmed' : (b.status === 'PENDING' ? 'pending' : 'payment'),
+    badge: b.status,
+    badgeClass: 'badge-' + (b.status === 'CONFIRMED' ? 'confirmed' : 'pending')
+  }));
 
   const filteredBookings = bookingFilter ? bookings.filter(b => b.status === bookingFilter) : bookings;
 
@@ -134,6 +149,7 @@ export default function DashboardPage() {
         <main className="main">
           
           {/* ══════ OVERVIEW ══════ */}
+          {isLoading && <div style={{padding: '50px', textAlign: 'center'}}>Chargement du tableau de bord...</div>}
           <div className={`section-panel ${activeSection === 'overview' ? 'active' : ''}`}>
             <div className="verify-banner" style={{ display: 'none' }}>
               <div className="verify-banner-icon">🎥</div>
@@ -173,17 +189,17 @@ export default function DashboardPage() {
             <div className="kpi-grid">
               <div className="kpi-card gold">
                 <div className="kpi-lbl">Revenus ce mois</div>
-                <div className="kpi-val">€34 200</div>
+                <div className="kpi-val">€{dashboardData.stats.revenue.toLocaleString()}</div>
                 <div className="kpi-delta up">↑ +18% vs mois dernier</div>
               </div>
               <div className="kpi-card navy">
                 <div className="kpi-lbl">Réservations actives</div>
-                <div className="kpi-val">3</div>
+                <div className="kpi-val">{dashboardData.stats.bookingsCount}</div>
                 <div className="kpi-sub">dont 1 en attente paiement</div>
               </div>
               <div className="kpi-card green">
                 <div className="kpi-lbl">Taux d'occupation</div>
-                <div className="kpi-val">68%</div>
+                <div className="kpi-val">{dashboardData.stats.occupancyRate}%</div>
                 <div className="kpi-delta up">↑ +5pts vs mois dernier</div>
               </div>
               <div className="kpi-card orange">
@@ -251,75 +267,30 @@ export default function DashboardPage() {
             </div>
 
             <div className="listings-grid">
-              <div className="listing-mini-card">
-                <div className="lmc-img" style={{ background: 'linear-gradient(135deg,var(--navy),var(--navy-mid))' }}>
-                  <div className="lmc-img-grad"></div>
-                  <span style={{ position: 'relative', zIndex: 1, fontSize: '2.2rem', opacity: .3 }}>⚓</span>
-                  <div className="lmc-badge"><span className="badge badge-active">Active</span></div>
-                </div>
-                <div className="lmc-body">
-                  <div className="lmc-type">Motor Yacht · Platinium</div>
-                  <div className="lmc-name">Azura Prestige 68</div>
-                  <div className="lmc-stats">
-                    <span className="lmc-stat">👁 <strong>847</strong> vues</span>
-                    <span className="lmc-stat">📅 <strong>5</strong> résa</span>
-                    <span className="lmc-stat">⭐ <strong>4.9</strong></span>
+              {dashboardData.listings.map((l: any) => (
+                <div className="listing-mini-card" key={l.id}>
+                  <div className="lmc-img" style={{ backgroundImage: `url(${l.images?.[0]?.url || ''})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                    <div className="lmc-img-grad"></div>
+                    <div className="lmc-badge"><span className={`badge badge-${l.status === 'ACTIVE' ? 'active' : 'pending'}`}>{l.status}</span></div>
                   </div>
-                  <div className="lmc-footer">
-                    <div className="lmc-price">€4 800 <small>/ jour</small></div>
-                    <div className="lmc-actions">
-                      <button className="lmc-btn" onClick={() => triggerToast('Modification de l\'annonce…')}>✏️ Modifier</button>
-                      <button className="lmc-btn" onClick={() => triggerToast('Désactivation…')}>⏸</button>
+                  <div className="lmc-body">
+                    <div className="lmc-type">{l.boatType}</div>
+                    <div className="lmc-name">{l.title}</div>
+                    <div className="lmc-stats">
+                      <span className="lmc-stat">👁 <strong>{l.viewCount || 0}</strong> vues</span>
+                      <span className="lmc-stat">📅 <strong>{l._count?.bookings || 0}</strong> résa</span>
+                      <span className="lmc-stat">⭐ <strong>{l._count?.reviews ? '4.9' : '—'}</strong></span>
+                    </div>
+                    <div className="lmc-footer">
+                      <div className="lmc-price">€{l.price} <small>/ jour</small></div>
+                      <div className="lmc-actions">
+                        <Link href={`/yacht/${l.id}`}><button className="lmc-btn">Voir</button></Link>
+                        <button className="lmc-btn" onClick={() => triggerToast('Désactivation…')}>⏸</button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="listing-mini-card">
-                <div className="lmc-img" style={{ background: 'linear-gradient(135deg,#1a4a6e,#0a2a40)' }}>
-                  <div className="lmc-img-grad"></div>
-                  <span style={{ position: 'relative', zIndex: 1, fontSize: '2.2rem', opacity: .3 }}>⚓</span>
-                  <div className="lmc-badge"><span className="badge badge-active">Active</span></div>
-                </div>
-                <div className="lmc-body">
-                  <div className="lmc-type">Catamaran · Premium</div>
-                  <div className="lmc-name">Liberté Bleue 52</div>
-                  <div className="lmc-stats">
-                    <span className="lmc-stat">👁 <strong>612</strong> vues</span>
-                    <span className="lmc-stat">📅 <strong>3</strong> résa</span>
-                    <span className="lmc-stat">⭐ <strong>4.7</strong></span>
-                  </div>
-                  <div className="lmc-footer">
-                    <div className="lmc-price">€2 900 <small>/ jour</small></div>
-                    <div className="lmc-actions">
-                      <button className="lmc-btn" onClick={() => triggerToast('Modification…')}>✏️ Modifier</button>
-                      <button className="lmc-btn" onClick={() => triggerToast('Désactivation…')}>⏸</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="listing-mini-card">
-                <div className="lmc-img" style={{ background: 'linear-gradient(135deg,#3a2a1a,#1a1008)' }}>
-                  <div className="lmc-img-grad"></div>
-                  <span style={{ position: 'relative', zIndex: 1, fontSize: '2.2rem', opacity: .3 }}>⚓</span>
-                  <div className="lmc-badge"><span className="badge badge-pending">En validation</span></div>
-                </div>
-                <div className="lmc-body">
-                  <div className="lmc-type">Voilier · Standard</div>
-                  <div className="lmc-name">Belle Époque 44</div>
-                  <div className="lmc-stats">
-                    <span className="lmc-stat">👁 <strong>—</strong> vues</span>
-                    <span className="lmc-stat">📅 <strong>—</strong> résa</span>
-                    <span className="lmc-stat">⭐ <strong>—</strong></span>
-                  </div>
-                  <div className="lmc-footer">
-                    <div className="lmc-price">€1 650 <small>/ jour</small></div>
-                    <div className="lmc-actions">
-                      <button className="lmc-btn" onClick={() => triggerToast('Modification…')}>✏️ Modifier</button>
-                      <button className="lmc-btn danger" onClick={() => triggerToast('Suppression…')}>🗑</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
