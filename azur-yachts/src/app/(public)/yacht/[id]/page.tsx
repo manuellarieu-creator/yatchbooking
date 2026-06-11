@@ -4,9 +4,27 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import './yacht.css';
 
-export default function YachtPage() {
+export default function YachtPage({ params }: { params: { id: string } }) {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [yacht, setYacht] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [bookingLoading, setBookingLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchYacht() {
+      try {
+        const res = await fetch(`/api/listings/${params.id}`);
+        const data = await res.json();
+        if (data.listing) setYacht(data.listing);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchYacht();
+  }, [params.id]);
 
   const triggerToast = (msg: string) => {
     setToastMsg(msg);
@@ -18,7 +36,7 @@ export default function YachtPage() {
   // ── Lightbox State ──
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const totalPhotos = 12;
+  const totalPhotos = yacht?.images?.length || 1;
 
   // ── Description State ──
   const [descExpanded, setDescExpanded] = useState(false);
@@ -47,8 +65,8 @@ export default function YachtPage() {
   const [discountCode, setDiscountCode] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
   
-  const BASE_PRICE = 4800;
-  const CLEANING_FEE = 350;
+  const BASE_PRICE = yacht?.price || 0;
+  const CLEANING_FEE = yacht?.cleaningFee || 0;
 
   // ── Review Modal State ──
   const [isReviewOpen, setIsReviewOpen] = useState(false);
@@ -126,6 +144,56 @@ export default function YachtPage() {
     }
   };
 
+  const handleBooking = async () => {
+    if (!startDate || !endDate) {
+      triggerToast('Veuillez sélectionner vos dates de réservation.');
+      return;
+    }
+    
+    setBookingLoading(true);
+    try {
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          listingId: yacht.id,
+          startDate: new Date(startDate).toISOString(),
+          endDate: new Date(endDate).toISOString(),
+          adults,
+          children,
+          pets: pets === 'oui',
+          specialRequests: '',
+          services: [] // On pourrait envoyer les IDs des services ici si mappé
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        triggerToast(data.error || 'Erreur lors de la réservation.');
+        return;
+      }
+      
+      triggerToast('Réservation pré-approuvée ! Redirection...');
+      setTimeout(() => {
+        window.location.href = `/payment?bookingId=${data.booking.id}`;
+      }, 1500);
+
+    } catch (err) {
+      console.error(err);
+      triggerToast('Une erreur est survenue.');
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return <div className="yacht-container" style={{ padding: '100px', textAlign: 'center', color: 'white', fontFamily: 'var(--font-heading)' }}>⚓ Chargement du yacht...</div>;
+  }
+
+  if (!yacht) {
+    return <div className="yacht-container" style={{ padding: '100px', textAlign: 'center', color: 'white', fontFamily: 'var(--font-heading)' }}>⚓ Yacht introuvable.</div>;
+  }
+
   return (
     <div className="yacht-container">
       {/* ── NAV ── */}
@@ -141,23 +209,23 @@ export default function YachtPage() {
       <div className="breadcrumb-bar">
         <Link href="/">Accueil</Link><span className="sep">/</span>
         <a href="#">Les Offres</a><span className="sep">/</span>
-        <a href="#">France</a><span className="sep">/</span>
-        <span className="current">Azura Prestige 68</span>
+        <a href="#">{yacht.country}</a><span className="sep">/</span>
+        <span className="current">{yacht.title}</span>
       </div>
 
       {/* ── GALLERY ── */}
       <div className="gallery">
         <div className="gallery-main" onClick={() => { setLightboxIndex(0); setIsLightboxOpen(true); }}>
-          <div className="gallery-bg"></div>
+          <div className="gallery-bg" style={{ backgroundImage: `url(${yacht.images?.[0]?.url || ''})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
           <button className="gallery-share" onClick={(e) => { e.stopPropagation(); triggerToast('Lien copié dans le presse-papiers.'); }}>🔗</button>
           <button className={`gallery-fav ${isFav ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); setIsFav(!isFav); }}>{isFav ? '❤️' : '♡'}</button>
           <button className="gallery-more-btn" onClick={(e) => { e.stopPropagation(); setLightboxIndex(0); setIsLightboxOpen(true); }}>📷 Voir les {totalPhotos} photos</button>
         </div>
         <div className="gallery-thumb" onClick={() => { setLightboxIndex(1); setIsLightboxOpen(true); }}>
-          <div className="gallery-bg"></div>
+          <div className="gallery-bg" style={{ backgroundImage: `url(${yacht.images?.[1]?.url || ''})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
         </div>
         <div className="gallery-thumb" onClick={() => { setLightboxIndex(2); setIsLightboxOpen(true); }}>
-          <div className="gallery-bg"></div>
+          <div className="gallery-bg" style={{ backgroundImage: `url(${yacht.images?.[2]?.url || ''})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
         </div>
       </div>
 
@@ -167,21 +235,20 @@ export default function YachtPage() {
           {/* Header */}
           <div className="listing-header fade-in">
             <div className="listing-meta-top">
-              <span className="listing-location">📍 Nice, Côte d'Azur — France</span>
+              <span className="listing-location">📍 {yacht.location} — {yacht.country}</span>
               <div className="listing-badges">
-                <span className="listing-badge badge-verified">✓ Annonceur vérifié</span>
-                <span className="listing-badge badge-platinium">⚓ Platinium</span>
+                {yacht.owner?.videoVerified && <span className="listing-badge badge-verified">✓ Annonceur vérifié</span>}
+                {yacht.owner?.advertiserTier && <span className="listing-badge badge-platinium">⚓ {yacht.owner.advertiserTier}</span>}
               </div>
             </div>
-            <h1 className="listing-title">Azura Prestige <em>68</em></h1>
+            <h1 className="listing-title">{yacht.title}</h1>
             <div className="listing-quick-stats">
-              <span className="quick-stat">👥 <strong>8</strong> adultes max</span>
-              <span className="quick-stat">🛏 <strong>4</strong> cabines</span>
-              <span className="quick-stat">🚿 <strong>3</strong> sdb</span>
-              <span className="quick-stat">📏 <strong>68 ft</strong></span>
-              <span className="quick-stat">⏱ <strong>24h</strong> loc. max</span>
-              <span className="quick-stat">⚓ Captain Required</span>
-              <span className="quick-stat" style={{ color: 'var(--success)' }}>✓ Skipper disponible</span>
+              <span className="quick-stat">👥 <strong>{yacht.maxAdults}</strong> adultes max</span>
+              <span className="quick-stat">🛏 <strong>{Math.max(1, Math.floor(yacht.maxAdults/2))}</strong> cabines</span>
+              <span className="quick-stat">📏 <strong>{yacht.boatLength} m</strong></span>
+              <span className="quick-stat">⏱ <strong>{yacht.maxRentalHours || 24}h</strong> loc. max</span>
+              {yacht.requiresCaptain ? <span className="quick-stat">⚓ Captain Required</span> : null}
+              {yacht.skipperAvailable ? <span className="quick-stat" style={{ color: 'var(--success)' }}>✓ Skipper disponible</span> : null}
             </div>
           </div>
 
@@ -191,10 +258,7 @@ export default function YachtPage() {
           <div className="fade-in">
             <div className="sec-title">À propos de ce yacht</div>
             <div className="description-text">
-              Ne manquez pas l'opportunité de monter à bord de ce magnifique Azura Prestige 68. Sa coque effilée et son mât légèrement déplacé vous offriront un excellent équilibre et un confort à bord. D'un côté, l'excellent rendement et la grande stabilité en navigation, de l'autre, le grand espace intérieur composé d'une cuisine équipée, de trois cabines doubles et d'une salle de bain avec douche vous assureront un confort optimal.
-              {descExpanded && (
-                <span> La large plateforme de natation et la large plateforme de cockpit depuis laquelle vous pouvez plonger dans les eaux cristallines de la mer vous simplifieront les manœuvres du bateau. Venez découvrir l'archipel de Lerins, cap San Marco, un promontoire de la presqu'île du cap Antibes. Vous pourrez ensuite vous rendre à Golfe-Juan, une ville ancienne du VIIIe siècle av. J.-C. À environ 40 minutes en bateau ou en taxi depuis l'arrêt touristique de Pélissanne, il y a également l'île de Saint-Honorat et l'île Sainte-Marguerite face à la côte.</span>
-              )}
+              {yacht.description}
             </div>
             <button className="read-more-btn" onClick={() => setDescExpanded(!descExpanded)}>
               {descExpanded ? 'Lire moins ▴' : 'Lire la suite ▾'}
@@ -347,11 +411,11 @@ export default function YachtPage() {
         <div className="booking-widget fade-in">
           <div className="widget-header">
             <div className="widget-price-row">
-              <div className="widget-price">€4 800 <small>/ jour</small></div>
+              <div className="widget-price">€{yacht.price.toLocaleString()} <small>/ jour</small></div>
               <div className="widget-rating">
                 <span className="widget-star">★</span>
-                <span className="widget-rating-val">4.5</span>
-                <span className="widget-rating-count">(35 avis)</span>
+                <span className="widget-rating-val">{yacht.averageRating || 0}</span>
+                <span className="widget-rating-count">({yacht._count?.reviews || 0} avis)</span>
               </div>
             </div>
           </div>
@@ -439,8 +503,8 @@ export default function YachtPage() {
 
             {totals && (
               <div className="recap" style={{ display: 'block' }}>
-                <div className="recap-row"><span className="label">€4 800 × {totals.nights} nuits</span><span className="value">€{totals.base.toLocaleString()}</span></div>
-                <div className="recap-row"><span className="label">Nettoyage (obligatoire)</span><span className="value">€350</span></div>
+                <div className="recap-row"><span className="label">€{yacht.price.toLocaleString()} × {totals.nights} nuits</span><span className="value">€{totals.base.toLocaleString()}</span></div>
+                <div className="recap-row"><span className="label">Nettoyage (obligatoire)</span><span className="value">€{yacht.cleaningFee.toLocaleString()}</span></div>
                 {totals.servTotal > 0 && <div className="recap-row"><span className="label">Services additionnels</span><span className="value">€{totals.servTotal.toLocaleString()}</span></div>}
                 {discountApplied && <div className="recap-row discount"><span className="label">Réduction (10%)</span><span className="value">−€{totals.discount.toLocaleString()}</span></div>}
                 <div className="recap-row total">
@@ -450,7 +514,9 @@ export default function YachtPage() {
               </div>
             )}
 
-            <Link href="/payment"><button className="reserve-btn">Réserver ce yacht</button></Link>
+            <button className="reserve-btn" onClick={handleBooking} disabled={bookingLoading}>
+              {bookingLoading ? 'Vérification...' : 'Réserver ce yacht'}
+            </button>
             <div className="widget-footer-note">Vous ne serez débité qu'après confirmation de votre réservation par notre équipe.</div>
           </div>
         </div>
@@ -495,8 +561,8 @@ export default function YachtPage() {
           <button className="lb-btn" onClick={() => setLightboxIndex((lightboxIndex + 1) % totalPhotos)}>›</button>
         </div>
         <div className="lb-thumbnails" onClick={e => e.stopPropagation()}>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className={`lb-thumb ${i === lightboxIndex ? 'active' : ''}`} onClick={() => setLightboxIndex(i)} style={{ background: `linear-gradient(135deg, var(--navy-mid), var(--navy))` }}></div>
+          {yacht.images?.map((img: any, i: number) => (
+            <div key={i} className={`lb-thumb ${i === lightboxIndex ? 'active' : ''}`} onClick={() => setLightboxIndex(i)} style={{ backgroundImage: `url(${img.url})`, backgroundSize: 'cover' }}></div>
           ))}
         </div>
       </div>
