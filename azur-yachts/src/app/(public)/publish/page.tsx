@@ -17,6 +17,7 @@ type Service = {
 export default function PublishPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [savedStatus, setSavedStatus] = useState('💾 Sauvegardé');
+  const isModal = typeof window !== 'undefined' && window.location.search.includes('modal=true');
   
   // Step 1
   const [firstName, setFirstName] = useState('Jean');
@@ -258,13 +259,15 @@ export default function PublishPage() {
   return (
     <div className="publish-page-container">
       {/* NAV */}
-      <nav className="pub-nav">
-        <button className="nav-exit" onClick={() => window.history.back()}>← Quitter</button>
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <div className="nav-right">
-          <span className="nav-save">{savedStatus}</span>
-        </div>
-      </nav>
+      {!isModal && (
+        <nav className="pub-nav">
+          <button className="nav-exit" onClick={() => window.history.back()}>← Quitter</button>
+          <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
+          <div className="nav-right">
+            <span className="nav-save">{savedStatus}</span>
+          </div>
+        </nav>
+      )}
 
       {/* PROGRESS */}
       {!success && (

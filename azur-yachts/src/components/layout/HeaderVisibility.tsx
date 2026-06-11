@@ -1,14 +1,27 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { Suspense } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 
-export default function HeaderVisibility({ children }: { children: React.ReactNode }) {
+function HeaderContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  // On masque le header global sur le tableau de bord annonceur et l'espace admin
-  if (pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin')) {
+  if (
+    pathname?.startsWith('/dashboard') || 
+    pathname?.startsWith('/admin') ||
+    searchParams.get('modal') === 'true'
+  ) {
     return null;
   }
 
   return <>{children}</>;
+}
+
+export default function HeaderVisibility({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={null}>
+      <HeaderContent>{children}</HeaderContent>
+    </Suspense>
+  );
 }

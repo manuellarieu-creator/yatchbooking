@@ -22,6 +22,9 @@ export default function DashboardPage() {
   const [messages, setMessages] = useState<any[]>([]);
   const [lastMessageCount, setLastMessageCount] = useState(0);
 
+  // Modal state
+  const [activeModal, setActiveModal] = useState<'profile' | 'publish' | 'verify' | 'help' | null>(null);
+
   // Fetch initial data
   useEffect(() => {
     fetch('/api/dashboard').then(r => r.json()).then(data => {
@@ -232,16 +235,16 @@ export default function DashboardPage() {
           <div className="sidebar-divider"></div>
           
           <div className="sidebar-section-label">Compte</div>
-          <Link href="/profile" className="sidebar-item"><span className="sidebar-icon">👤</span>Mon profil</Link>
-          <Link className="sidebar-item" href="/publish"><span className="sidebar-icon">➕</span>Nouvelle annonce</Link>
-          <Link href="/verify" className="sidebar-item">
+          <div className="sidebar-item" onClick={() => setActiveModal('profile')} style={{ cursor: 'pointer' }}><span className="sidebar-icon">👤</span>Mon profil</div>
+          <div className="sidebar-item" onClick={() => setActiveModal('publish')} style={{ cursor: 'pointer' }}><span className="sidebar-icon">➕</span>Nouvelle annonce</div>
+          <div className="sidebar-item" onClick={() => setActiveModal('verify')} style={{ cursor: 'pointer' }}>
             <span className="sidebar-icon">🎥</span>Vérification vidéo
             {dashboardData.user?.videoVerified && <span className="sidebar-badge success" style={{ background: 'var(--success, #2e7d32)', color: 'white', marginLeft: 'auto', padding: '2px 6px', borderRadius: '4px', fontSize: '10px' }}>✓ Vérifié</span>}
-          </Link>
+          </div>
           
           <div className="sidebar-bottom">
             <div className="sidebar-bottom-item" onClick={() => signOut({ callbackUrl: '/' })}>🚪 Se déconnecter</div>
-            <div className="sidebar-bottom-item" onClick={() => triggerToast('Aide…')}>❓ Aide & support</div>
+            <div className="sidebar-bottom-item" onClick={() => setActiveModal('help')}>❓ Aide & support</div>
           </div>
         </aside>
 
@@ -625,6 +628,32 @@ export default function DashboardPage() {
           </div>
 
         </main>
+      </div>
+
+      {/* MODAL IFRAME */}
+      <div className={`modal-overlay ${activeModal ? 'open' : ''}`} onClick={() => setActiveModal(null)}>
+        <div className="dashboard-modal" onClick={e => e.stopPropagation()}>
+          <div className="modal-header">
+            <h3 className="modal-title">
+              {activeModal === 'profile' ? 'Mon Profil' : 
+               activeModal === 'publish' ? 'Nouvelle Annonce' : 
+               activeModal === 'verify' ? 'Vérification Vidéo' : 
+               activeModal === 'help' ? 'Aide & Support' : ''}
+            </h3>
+            <button className="modal-close" onClick={() => setActiveModal(null)}>×</button>
+          </div>
+          <div className="modal-body-iframe">
+            {activeModal === 'profile' && <iframe src="/profile?modal=true" />}
+            {activeModal === 'publish' && <iframe src="/publish?modal=true" />}
+            {activeModal === 'verify' && <iframe src="/verify?modal=true" />}
+            {activeModal === 'help' && (
+              <div style={{ padding: '2rem', textAlign: 'center', fontFamily: "'Jost', sans-serif" }}>
+                <h3>Centre d'aide</h3>
+                <p>Contactez notre support à <strong>support@azuryachts.com</strong> ou appelez le <strong>+33 1 23 45 67 89</strong>.</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* TOAST */}
