@@ -173,20 +173,35 @@ export default function DashboardPage() {
             </div>
 
             <div className="alerts-section">
-              <div className="alert-item warn">
-                <span className="alert-icon">⏳</span>
-                <div>La réservation <strong>REF-QW5R8T</strong> (Belle Époque 44 · 10–17 sept.) est en attente de confirmation de paiement par le client.</div>
-                <button className="alert-action" onClick={() => setActiveSection('bookings')}>Voir</button>
-              </div>
-              <div className="alert-item info">
-                <span className="alert-icon">💬</span>
-                <div><strong>3 nouveaux messages</strong> non lus de clients intéressés par vos annonces.</div>
-                <button className="alert-action" onClick={() => setActiveSection('messages')}>Lire</button>
-              </div>
-              <div className="alert-item success">
-                <span className="alert-icon">✅</span>
-                <div>Votre annonce <strong>Azura Prestige 68</strong> a été validée et est maintenant en ligne.</div>
-              </div>
+              {dashboardData.bookings.filter((b: any) => b.status === 'PENDING' || b.status === 'PROOF_SUBMITTED').slice(0, 2).map((booking: any) => (
+                <div key={`alert-b-${booking.id}`} className="alert-item warn">
+                  <span className="alert-icon">⏳</span>
+                  <div>La réservation <strong>{booking.id.slice(-6).toUpperCase()}</strong> ({booking.listing.title}) est en attente {booking.status === 'PROOF_SUBMITTED' ? 'de validation du virement' : 'de paiement par le client'}.</div>
+                  <button className="alert-action" onClick={() => setActiveSection('bookings')}>Voir</button>
+                </div>
+              ))}
+              
+              {dashboardData.listings.filter((l: any) => l.status === 'ACTIVE').slice(0, 1).map((listing: any) => (
+                <div key={`alert-l-${listing.id}`} className="alert-item success">
+                  <span className="alert-icon">✅</span>
+                  <div>Votre annonce <strong>{listing.title}</strong> est active et visible par les clients.</div>
+                </div>
+              ))}
+              
+              {dashboardData.listings.filter((l: any) => l.status === 'PENDING').slice(0, 2).map((listing: any) => (
+                <div key={`alert-p-${listing.id}`} className="alert-item info">
+                  <span className="alert-icon">ℹ️</span>
+                  <div>Votre annonce <strong>{listing.title}</strong> est en cours de validation par nos équipes.</div>
+                </div>
+              ))}
+
+              {dashboardData.bookings.length === 0 && dashboardData.listings.length === 0 && (
+                <div className="alert-item info">
+                  <span className="alert-icon">👋</span>
+                  <div>Bienvenue sur votre espace annonceur. Commencez par publier votre première annonce !</div>
+                  <button className="alert-action" onClick={() => window.location.href = '/publish'}>Publier</button>
+                </div>
+              )}
             </div>
 
             <div className="kpi-grid">
