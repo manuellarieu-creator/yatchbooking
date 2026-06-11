@@ -101,7 +101,7 @@ export default function HomePage() {
       </div>
 
       {/* DESTINATIONS */}
-      <section className="destinations">
+      <section id="destinations" className="destinations">
         <div className="section-header reveal">
           <span className="section-eyebrow">Explorez le monde</span>
           <h2 className="section-title">Destinations <em>emblématiques</em></h2>
