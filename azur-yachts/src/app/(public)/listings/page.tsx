@@ -35,8 +35,8 @@ export default function ListingsPage() {
             badge: l.owner?.advertiserTier === 'PREMIUM' ? 'Populaire' : l.owner?.advertiserTier === 'PLATINIUM' ? 'Premium' : '',
             badgeColor: 'var(--gold)',
             isVerified: l.owner?.videoVerified || false,
-            img: l.images?.[0]?.url ? `url(${l.images[0].url}) center/cover` : "linear-gradient(135deg,#1a3a5a 0%,#0a2040 100%)",
-            isFav: false
+            img: l.images?.[0]?.url ? `url(${l.images[0].url})` : "linear-gradient(135deg,#1a3a5a,#0a2040)",
+            isFav: l.isFav || false
           }));
           setYachts(mapped);
         }
@@ -73,11 +73,24 @@ export default function ListingsPage() {
   const [viewMode, setViewMode] = useState('grid');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // Handlers
-  const toggleFav = (id: number) => {
-    setYachts(yachts.map(y => y.id === id ? { ...y, isFav: !y.isFav } : y));
-    const isFavNow = !yachts.find(y => y.id === id)?.isFav;
-    triggerToast(isFavNow ? 'Ajouté aux favoris' : 'Retiré des favoris');
+  const toggleFav = async (id: number) => {
+    try {
+      const res = await fetch('/api/favorites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listingId: id })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        setYachts(yachts.map(y => y.id === id ? { ...y, isFav: !y.isFav } : y));
+        triggerToast(data.action === 'added' ? 'Ajouté aux favoris' : 'Retiré des favoris');
+      } else {
+        triggerToast('Connectez-vous pour ajouter aux favoris');
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const toggleArrayFilter = (arr: string[], val: string, setter: (a: string[]) => void) => {

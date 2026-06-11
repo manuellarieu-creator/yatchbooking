@@ -80,7 +80,23 @@ export async function GET(req: NextRequest) {
       prisma.listing.count({ where }),
     ])
 
-    return NextResponse.json({ listings, total, pages: Math.ceil(total / limit) })
+    // Fetch user favorites if logged in
+    const session = await auth()
+    let userFavorites: string[] = []
+    if (session?.user) {
+      const favs = await prisma.favorite.findMany({
+        where: { userId: (session.user as any).id },
+        select: { listingId: true }
+      })
+      userFavorites = favs.map(f => f.listingId)
+    }
+
+    const mappedListings = listings.map((l) => ({
+      ...l,
+      isFav: userFavorites.includes(l.id)
+    }))
+
+    return NextResponse.json({ listings: mappedListings, total, pages: Math.ceil(total / limit) })
   } catch (error) {
     console.error('GET /api/listings error:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
