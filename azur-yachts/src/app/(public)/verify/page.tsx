@@ -8,7 +8,7 @@ import './verify.css';
 type Screen = 'intro' | 'camera' | 'uploading' | 'success' | 'pending';
 
 export default function VerificationPage() {
-  const { data: session } = useSession();
+  const { data: session } = (useSession() || {}) as any;
   const [currentScreen, setCurrentScreen] = useState<Screen>('intro');
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
