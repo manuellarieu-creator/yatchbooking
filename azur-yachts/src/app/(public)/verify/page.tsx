@@ -329,6 +329,7 @@ export default function VerificationPage() {
                 </div>
                 <div className="guide-note">
                   💡 Assurez-vous d'être dans un endroit bien éclairé et silencieux. Évitez les contre-jours (ne vous positionnez pas devant une fenêtre).
+                </div>
               </div>
               <p style={{ fontSize: '.7rem', color: 'var(--text-light)', textAlign: 'center', marginTop: '.6rem', lineHeight: 1.6 }}>En continuant, vous acceptez que votre vidéo soit examinée par notre équipe à des fins de vérification d'identité.</p>
             </div>
