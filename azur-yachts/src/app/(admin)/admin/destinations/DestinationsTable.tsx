@@ -6,7 +6,7 @@ import { Destination } from '@prisma/client';
 export default function DestinationsTable({ destinations: initialDestinations }: { destinations: Destination[] }) {
   const [destinations, setDestinations] = useState(initialDestinations);
   const [isCreating, setIsCreating] = useState(false);
-  const [formData, setFormData] = useState<Partial<Destination>>({});
+  const [formData, setFormData] = useState<Partial<Destination & { imageBase64: string }>>({});
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async (id: string) => {
