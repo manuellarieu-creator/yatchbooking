@@ -1,91 +1,15 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import './reservations.css';
-
-const RESERVATIONS = [
-  {
-    id: 'REF-CK7X9M',
-    status: 'payment',
-    type: 'Superyacht · Motor',
-    name: 'Azura Prestige 68',
-    location: "📍 Côte d'Azur, France",
-    img: 'linear-gradient(135deg,#1a3a5a,#0a2040)',
-    arrival: '14 juin 2025',
-    departure: '21 juin 2025',
-    guests: '4 adultes, 2 enfants',
-    nights: 7,
-    price: 34200,
-    priceNote: 'virement SEPA',
-    dateValue: new Date('2025-06-14').getTime(),
-  },
-  {
-    id: 'REF-BN2K4P',
-    status: 'confirmed',
-    type: 'Catamaran · Voile',
-    name: 'Liberté Bleue 52',
-    location: "📍 Santorin, Grèce",
-    img: 'linear-gradient(135deg,#1a4a6e,#0a2a40)',
-    arrival: '3 août 2025',
-    departure: '10 août 2025',
-    guests: '2 adultes',
-    nights: 7,
-    price: 20300,
-    priceNote: 'Stripe',
-    dateValue: new Date('2025-08-03').getTime(),
-  },
-  {
-    id: 'REF-QW5R8T',
-    status: 'pending',
-    type: 'Voilier classique',
-    name: 'Belle Époque 44',
-    location: "📍 Porto Cervo, Sardaigne",
-    img: 'linear-gradient(135deg,#3a2a1a,#2a1a0a)',
-    arrival: '10 sept. 2025',
-    departure: '17 sept. 2025',
-    guests: '3 adultes, 1 enfant',
-    nights: 7,
-    price: 11550,
-    priceNote: 'paiement en attente',
-    dateValue: new Date('2025-09-10').getTime(),
-  },
-  {
-    id: 'REF-MT3H7J',
-    status: 'completed',
-    type: 'Motor Yacht',
-    name: 'Sea Spirit 58',
-    location: "📍 Ibiza, Espagne",
-    img: 'linear-gradient(135deg,#0a3a2a,#052015)',
-    arrival: '12 avr. 2025',
-    departure: '19 avr. 2025',
-    guests: '6 adultes',
-    nights: 7,
-    price: 16800,
-    priceNote: 'PayPal',
-    dateValue: new Date('2025-04-12').getTime(),
-  },
-  {
-    id: 'REF-HY9P2L',
-    status: 'cancelled',
-    type: 'Voilier',
-    name: 'Adriatic Queen 46',
-    location: "📍 Dubrovnik, Croatie",
-    img: 'linear-gradient(135deg,#3a1a1a,#200a0a)',
-    arrival: '1 mai 2025',
-    departure: '8 mai 2025',
-    guests: '-',
-    nights: 7,
-    price: 9800,
-    priceNote: 'Non débité',
-    dateValue: new Date('2025-05-01').getTime(),
-  }
-];
 
 export default function ReservationsPage() {
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('date-desc');
+  const [reservationsData, setReservationsData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   
   const [modalOpen, setModalOpen] = useState('');
   const [selectedResaId, setSelectedResaId] = useState('');
@@ -94,6 +18,51 @@ export default function ReservationsPage() {
   const [toastMsg, setToastMsg] = useState('');
   const [toastIcon, setToastIcon] = useState('✅');
   const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/bookings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.bookings) {
+          const formatted = data.bookings.map((b: any) => {
+            const startDate = new Date(b.startDate);
+            const endDate = new Date(b.endDate);
+            
+            let uiStatus = 'pending';
+            if (['PAYMENT_PENDING', 'PAYMENT_RECEIVED'].includes(b.status)) uiStatus = 'payment';
+            else if (b.status === 'CONFIRMED') uiStatus = 'confirmed';
+            else if (b.status === 'COMPLETED') uiStatus = 'completed';
+            else if (['CANCELLED', 'REJECTED'].includes(b.status)) uiStatus = 'cancelled';
+
+            let guestsStr = `${b.adults} adulte${b.adults > 1 ? 's' : ''}`;
+            if (b.children > 0) guestsStr += `, ${b.children} enfant${b.children > 1 ? 's' : ''}`;
+
+            return {
+              id: b.id.substring(0, 10).toUpperCase(),
+              originalId: b.id,
+              status: uiStatus,
+              type: b.listing?.boatType || 'Yacht',
+              name: b.listing?.title || 'Bateau',
+              location: `📍 ${b.listing?.location || 'Non spécifié'}`,
+              img: b.listing?.images?.[0]?.url ? `url(${b.listing.images[0].url})` : 'linear-gradient(135deg,#1a3a5a,#0a2040)',
+              arrival: startDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }),
+              departure: endDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }),
+              guests: guestsStr,
+              nights: b.totalNights,
+              price: b.totalPrice,
+              priceNote: b.payment?.method === 'BANK_TRANSFER' ? 'Virement bancaire' : b.payment?.method || 'En attente',
+              dateValue: startDate.getTime(),
+            };
+          });
+          setReservationsData(formatted);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
 
   const triggerToast = (msg: string, icon = '✅') => {
     setToastMsg(msg);
@@ -104,7 +73,7 @@ export default function ReservationsPage() {
   };
 
   const filteredReservations = useMemo(() => {
-    return RESERVATIONS.filter(r => {
+    return reservationsData.filter(r => {
       if (activeTab !== 'all' && r.status !== activeTab) return false;
       if (searchQuery && !r.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
@@ -115,18 +84,36 @@ export default function ReservationsPage() {
       if (sortOrder === 'price-asc') return a.price - b.price;
       return 0;
     });
-  }, [activeTab, searchQuery, sortOrder]);
+  }, [reservationsData, activeTab, searchQuery, sortOrder]);
 
   const openDetail = (id: string) => {
     setSelectedResaId(id);
     setModalOpen('detail');
   };
 
-  const selectedResa = RESERVATIONS.find(r => r.id === selectedResaId);
+  const selectedResa = reservationsData.find(r => r.id === selectedResaId);
+
+  // Dynamic KPI calculations
+  const totalReservations = reservationsData.length;
+  const upcomingReservations = reservationsData.filter(r => r.status === 'confirmed').length;
+  const pendingReservations = reservationsData.filter(r => r.status === 'pending' || r.status === 'payment').length;
+  const totalSpent = reservationsData.reduce((acc, curr) => acc + curr.price, 0);
+
+  const counts = {
+    all: reservationsData.length,
+    confirmed: reservationsData.filter(r => r.status === 'confirmed').length,
+    pending: reservationsData.filter(r => r.status === 'pending').length,
+    payment: reservationsData.filter(r => r.status === 'payment').length,
+    completed: reservationsData.filter(r => r.status === 'completed').length,
+    cancelled: reservationsData.filter(r => r.status === 'cancelled').length,
+  };
+
+  if (loading) {
+    return <div className="reservations-container"><div style={{ padding: '4rem', textAlign: 'center' }}>Chargement de vos réservations...</div></div>;
+  }
 
   return (
     <div className="reservations-container">
-
 
       <div className="page-wrap">
         {/* HEADER */}
@@ -145,22 +132,22 @@ export default function ReservationsPage() {
         <div className="kpi-row">
           <div className="kpi-card reveal">
             <div className="kpi-label">Total réservations</div>
-            <div className="kpi-value">7</div>
+            <div className="kpi-value">{totalReservations}</div>
             <div className="kpi-sub">depuis votre inscription</div>
           </div>
           <div className="kpi-card reveal">
             <div className="kpi-label">À venir</div>
-            <div className="kpi-value">2</div>
+            <div className="kpi-value">{upcomingReservations}</div>
             <div className="kpi-sub">réservations confirmées</div>
           </div>
           <div className="kpi-card reveal">
             <div className="kpi-label">En attente</div>
-            <div className="kpi-value">1</div>
+            <div className="kpi-value">{pendingReservations}</div>
             <div className="kpi-sub">en cours de traitement</div>
           </div>
           <div className="kpi-card navy-card reveal">
             <div className="kpi-label">Total dépensé</div>
-            <div className="kpi-value">€18 450</div>
+            <div className="kpi-value">€{totalSpent.toLocaleString('fr-FR')}</div>
             <div className="kpi-sub">sur toutes les réservations</div>
           </div>
         </div>
@@ -169,12 +156,12 @@ export default function ReservationsPage() {
         <div className="toolbar">
           <div className="filter-tabs">
             {[
-              { id: 'all', label: 'Toutes (5)' },
-              { id: 'confirmed', label: 'Confirmées (1)' },
-              { id: 'pending', label: 'En attente (1)' },
-              { id: 'payment', label: 'Paiement (1)' },
-              { id: 'completed', label: 'Terminées (1)' },
-              { id: 'cancelled', label: 'Annulées (1)' }
+              { id: 'all', label: `Toutes (${counts.all})` },
+              { id: 'confirmed', label: `Confirmées (${counts.confirmed})` },
+              { id: 'pending', label: `En attente (${counts.pending})` },
+              { id: 'payment', label: `Paiement (${counts.payment})` },
+              { id: 'completed', label: `Terminées (${counts.completed})` },
+              { id: 'cancelled', label: `Annulées (${counts.cancelled})` }
             ].map(t => (
               <button key={t.id} className={`filter-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)}>
                 {t.label}

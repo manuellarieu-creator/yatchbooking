@@ -35,10 +35,13 @@ export async function GET(req: NextRequest) {
       where,
       include: {
         listing: {
-          select: { id: true, title: true, images: { take: 1, orderBy: { order: 'asc' } } }
+          select: { id: true, title: true, boatType: true, location: true, images: { take: 1, orderBy: { order: 'asc' } } }
         },
         client: {
           select: { id: true, firstName: true, lastName: true, avatar: true }
+        },
+        payment: {
+          select: { status: true, method: true }
         }
       },
       orderBy: { createdAt: 'desc' }
