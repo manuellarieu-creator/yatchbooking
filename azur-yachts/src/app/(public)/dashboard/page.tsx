@@ -197,8 +197,13 @@ export default function DashboardPage() {
           </button>
         </div>
         <div className="nav-right">
-          <div className="notif-btn" onClick={() => triggerToast('Toutes vos notifications sont à jour.')}>
+          <div className="notif-btn" onClick={() => triggerToast('Toutes vos notifications sont à jour.')} style={{ position: 'relative' }}>
             🔔
+            {dashboardData.user.unreadNotifications > 0 && (
+              <span className="notif-badge" style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--danger)', color: 'white', borderRadius: '50%', padding: '0.1rem 0.3rem', fontSize: '0.65rem', fontWeight: 'bold' }}>
+                {dashboardData.user.unreadNotifications}
+              </span>
+            )}
           </div>
           <div className="user-chip">
             <div className="user-av">

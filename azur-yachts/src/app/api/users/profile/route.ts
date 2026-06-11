@@ -36,7 +36,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Utilisateur introuvable' }, { status: 404 })
     }
 
-    return NextResponse.json({ profile })
+    const unreadNotifications = await prisma.notification.count({
+      where: { userId: userId, isRead: false }
+    })
+
+    return NextResponse.json({ profile: { ...profile, unreadNotifications } })
   } catch (error) {
     console.error('GET /api/users/profile error:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })

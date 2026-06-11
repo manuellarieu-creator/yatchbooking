@@ -75,6 +75,10 @@ export async function GET(req: NextRequest) {
 
     const occupancyRate = listings.length > 0 ? Math.round((confirmedBookingsCount / (listings.length * 4)) * 100) : 0 // Simplified mock formula for occupancy
 
+    const unreadNotifications = await prisma.notification.count({
+      where: { userId: userId, isRead: false }
+    })
+
     return NextResponse.json({
       user: {
         id: userId,
@@ -83,6 +87,7 @@ export async function GET(req: NextRequest) {
         tier: 'PREMIUM', // Mock for now, could be in DB
         videoVerified: dbUser?.videoVerified || false,
         role: dbUser?.role,
+        unreadNotifications,
       },
       stats: {
         revenue: totalRevenue,

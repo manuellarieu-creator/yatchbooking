@@ -148,7 +148,7 @@ export default function ProfilePage() {
             </a>
             <a className={`sidebar-nav-item ${activeTab === 'notifications' ? 'active' : ''}`} onClick={() => setActiveTab('notifications')}>
               <span className="nav-icon">🔔</span> Notifications
-              <span className="nav-badge">3</span>
+              {profile?.unreadNotifications > 0 && <span className="nav-badge">{profile.unreadNotifications}</span>}
             </a>
             <a className={`sidebar-nav-item ${activeTab === 'paiement' ? 'active' : ''}`} onClick={() => setActiveTab('paiement')}>
               <span className="nav-icon">💳</span> Moyens de paiement
