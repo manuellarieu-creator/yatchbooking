@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import './dashboard.css';
 
 type Section = 'overview' | 'listings' | 'bookings' | 'stats' | 'messages' | 'calendar';
@@ -11,24 +12,87 @@ export default function DashboardPage() {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [bookingFilter, setBookingFilter] = useState('');
-  const [dashboardData, setDashboardData] = useState<any>({ user: { firstName: '', lastName: '', tier: 'PREMIUM' }, stats: { revenue: 0, views: 0, bookingsCount: 0, occupancyRate: 0 }, listings: [], bookings: [] });
+  const [dashboardData, setDashboardData] = useState<any>({ user: { firstName: '', lastName: '', tier: 'PREMIUM', videoVerified: false }, stats: { revenue: 0, views: 0, bookingsCount: 0, occupancyRate: 0 }, listings: [], bookings: [] });
   const [isLoading, setIsLoading] = useState(true);
 
+  // Chat state
+  const [conversations, setConversations] = useState<any[]>([]);
+  const [activeConvId, setActiveConvId] = useState<string | null>(null);
+  const [chatInput, setChatInput] = useState('');
+  const [messages, setMessages] = useState<any[]>([]);
+  const [lastMessageCount, setLastMessageCount] = useState(0);
+
+  // Fetch initial data
   useEffect(() => {
     fetch('/api/dashboard').then(r => r.json()).then(data => {
       if (!data.error) setDashboardData(data);
       setIsLoading(false);
     }).catch(() => setIsLoading(false));
+
+    fetchConversations();
+    
+    // Request notification permission
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+        Notification.requestPermission();
+      }
+    }
   }, []);
-  
-  // Chat state
-  const [activeConv, setActiveConv] = useState('JD');
-  const [chatInput, setChatInput] = useState('');
-  const [messages, setMessages] = useState([
-    { id: 1, type: 'incoming', text: 'Bonjour, je suis très intéressé par votre Azura Prestige 68 pour la semaine du 14 juin. Est-ce que le yacht inclut un équipage ?', time: '14h28' },
-    { id: 2, type: 'outgoing', text: 'Bonjour Jean ! Oui, le yacht inclut un capitaine et notre chef à bord peut être ajouté en service optionnel.', time: '14h30' },
-    { id: 3, type: 'incoming', text: 'Excellent ! Est-ce que le chef à bord peut préparer des repas végétaliens ? Ma femme a des restrictions alimentaires.', time: '14h32' }
-  ]);
+
+  const fetchConversations = async () => {
+    try {
+      const res = await fetch('/api/conversations');
+      const data = await res.json();
+      if (data.conversations) {
+        setConversations(data.conversations);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchMessages = async (convId: string) => {
+    try {
+      const res = await fetch(`/api/messages?conversationId=${convId}`);
+      const data = await res.json();
+      if (data.messages) {
+        setMessages(data.messages);
+        
+        // Notify if new messages arrived and it's not the first load
+        if (lastMessageCount > 0 && data.messages.length > lastMessageCount) {
+          const newMsgs = data.messages.slice(lastMessageCount);
+          newMsgs.forEach((msg: any) => {
+            // Only notify if we didn't send it
+            if (msg.senderId !== dashboardData.user.id && typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+              new Notification(`Nouveau message de ${msg.sender.firstName}`, { body: msg.content });
+            }
+          });
+        }
+        setLastMessageCount(data.messages.length);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Polling for active conversation messages and all conversations
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchConversations();
+      if (activeConvId) {
+        fetchMessages(activeConvId);
+      }
+    }, 5000); // Poll every 5 seconds
+    
+    return () => clearInterval(interval);
+  }, [activeConvId, lastMessageCount, dashboardData.user.id]);
+
+  useEffect(() => {
+    if (activeConvId) {
+      setLastMessageCount(0); // reset when switching
+      fetchMessages(activeConvId);
+    }
+  }, [activeConvId]);
 
   const triggerToast = (msg: string) => {
     setToastMsg(msg);
@@ -37,12 +101,35 @@ export default function DashboardPage() {
     setTimeout(() => setShowToast(false), 3000);
   };
 
-  const sendMsg = () => {
-    if (!chatInput.trim()) return;
+  const sendMsg = async () => {
+    if (!chatInput.trim() || !activeConvId) return;
+    const content = chatInput;
+    setChatInput('');
+    
+    // Optimistic UI update
+    const tempId = 'temp-' + Date.now();
     const now = new Date();
     const time = `${now.getHours()}h${String(now.getMinutes()).padStart(2, '0')}`;
-    setMessages([...messages, { id: Date.now(), type: 'outgoing', text: chatInput, time }]);
-    setChatInput('');
+    
+    setMessages([...messages, { 
+      id: tempId, 
+      senderId: dashboardData.user.id, 
+      content, 
+      createdAt: now.toISOString() 
+    }]);
+
+    try {
+      await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversationId: activeConvId, content })
+      });
+      fetchMessages(activeConvId);
+      fetchConversations();
+    } catch (err) {
+      console.error(err);
+      triggerToast('Erreur lors de l\'envoi du message');
+    }
   };
 
   const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
@@ -145,12 +232,15 @@ export default function DashboardPage() {
           <div className="sidebar-divider"></div>
           
           <div className="sidebar-section-label">Compte</div>
-          <a className="sidebar-item" onClick={() => triggerToast('Redirection vers Mon profil…')}><span className="sidebar-icon">👤</span>Mon profil</a>
+          <Link href="/profile" className="sidebar-item"><span className="sidebar-icon">👤</span>Mon profil</Link>
           <Link className="sidebar-item" href="/publish"><span className="sidebar-icon">➕</span>Nouvelle annonce</Link>
-          <a className="sidebar-item" onClick={() => triggerToast('Redirection vers la vérification…')}><span className="sidebar-icon">🎥</span>Vérification vidéo</a>
+          <Link href="/verify" className="sidebar-item">
+            <span className="sidebar-icon">🎥</span>Vérification vidéo
+            {dashboardData.user?.videoVerified && <span className="sidebar-badge success" style={{ background: 'var(--success, #2e7d32)', color: 'white', marginLeft: 'auto', padding: '2px 6px', borderRadius: '4px', fontSize: '10px' }}>✓ Vérifié</span>}
+          </Link>
           
           <div className="sidebar-bottom">
-            <div className="sidebar-bottom-item" onClick={() => triggerToast('Déconnexion…')}>🚪 Se déconnecter</div>
+            <div className="sidebar-bottom-item" onClick={() => signOut({ callbackUrl: '/' })}>🚪 Se déconnecter</div>
             <div className="sidebar-bottom-item" onClick={() => triggerToast('Aide…')}>❓ Aide & support</div>
           </div>
         </aside>
@@ -385,10 +475,10 @@ export default function DashboardPage() {
               </select>
             </div>
             <div className="kpi-grid">
-              <div className="kpi-card gold"><div className="kpi-lbl">Revenus totaux</div><div className="kpi-val">€82 750</div><div className="kpi-delta up">↑ +31% vs année préc.</div></div>
-              <div className="kpi-card navy"><div className="kpi-lbl">Total réservations</div><div className="kpi-val">8</div><div className="kpi-sub">sur 6 mois</div></div>
-              <div className="kpi-card green"><div className="kpi-lbl">Vues totales</div><div className="kpi-val">1 459</div><div className="kpi-delta up">↑ +22%</div></div>
-              <div className="kpi-card orange"><div className="kpi-lbl">Taux de conversion</div><div className="kpi-val">1.8%</div><div className="kpi-sub">vues → réservations</div></div>
+              <div className="kpi-card gold"><div className="kpi-lbl">Revenus totaux</div><div className="kpi-val">€{dashboardData.stats.revenue.toLocaleString()}</div><div className="kpi-delta up">↑ Depuis l'inscription</div></div>
+              <div className="kpi-card navy"><div className="kpi-lbl">Total réservations</div><div className="kpi-val">{dashboardData.stats.bookingsCount}</div><div className="kpi-sub">Total historique</div></div>
+              <div className="kpi-card green"><div className="kpi-lbl">Vues totales</div><div className="kpi-val">{dashboardData.stats.views.toLocaleString()}</div><div className="kpi-delta up">Sur toutes les annonces</div></div>
+              <div className="kpi-card orange"><div className="kpi-lbl">Taux de conversion</div><div className="kpi-val">{dashboardData.stats.views > 0 ? ((dashboardData.stats.bookingsCount / dashboardData.stats.views) * 100).toFixed(1) : 0}%</div><div className="kpi-sub">vues → réservations</div></div>
             </div>
             <div className="stats-row">
               <div className="chart-card" style={{ marginBottom: 0 }}>
@@ -405,7 +495,7 @@ export default function DashboardPage() {
                   <circle cx="60" cy="60" r="48" fill="none" stroke="var(--navy)" strokeWidth="16" strokeDasharray="180 121" strokeDashoffset="30" transform="rotate(-90 60 60)"/>
                   <circle cx="60" cy="60" r="48" fill="none" stroke="var(--gold)" strokeWidth="16" strokeDasharray="90 211" strokeDashoffset="-150" transform="rotate(-90 60 60)"/>
                   <circle cx="60" cy="60" r="48" fill="none" stroke="#e67e22" strokeWidth="16" strokeDasharray="30 271" strokeDashoffset="-240" transform="rotate(-90 60 60)"/>
-                  <text x="60" y="57" textAnchor="middle" fontFamily="Cormorant Garamond" fontSize="18" fill="var(--navy)">€82K</text>
+                  <text x="60" y="57" textAnchor="middle" fontFamily="Cormorant Garamond" fontSize="18" fill="var(--navy)">€{dashboardData.stats.revenue >= 1000 ? (dashboardData.stats.revenue / 1000).toFixed(1) + 'K' : dashboardData.stats.revenue}</text>
                   <text x="60" y="70" textAnchor="middle" fontFamily="Jost" fontSize="8" fill="var(--text-light)">total</text>
                 </svg>
                 <div className="donut-legend">
@@ -427,55 +517,72 @@ export default function DashboardPage() {
             </div>
             <div className="messages-layout">
               <div className="conv-list">
-                <div className="conv-list-header">Conversations (5)</div>
-                <div className={`conv-item ${activeConv === 'JD' ? 'active' : ''}`} onClick={() => setActiveConv('JD')}>
-                  <div className="conv-item-top">
-                    <div className="conv-av">JD</div>
-                    <div className="conv-name">Jean Dupont</div>
-                    <div className="conv-time">14h32</div>
+                <div className="conv-list-header">Conversations ({conversations.length})</div>
+                
+                {conversations.length === 0 && (
+                  <div style={{ padding: '1rem', color: 'var(--text-light)', fontSize: '0.9rem' }}>
+                    Aucune conversation pour le moment.
                   </div>
-                  <div className="conv-preview">Est-ce que le chef à bord peut préparer des repas végétaliens ?</div>
-                </div>
-                <div className={`conv-item ${activeConv === 'SL' ? 'active' : ''}`} onClick={() => setActiveConv('SL')}>
-                  <div className="conv-item-top">
-                    <div className="conv-av">SL</div>
-                    <div className="conv-name">Sophie Lemaire</div>
-                    <div className="conv-time">11h15</div>
-                    <div className="conv-unread">2</div>
-                  </div>
-                  <div className="conv-preview">Bonjour, est-il possible de partir de Cannes plutôt que Nice ?</div>
-                </div>
-                <div className={`conv-item ${activeConv === 'MR' ? 'active' : ''}`} onClick={() => setActiveConv('MR')}>
-                  <div className="conv-item-top">
-                    <div className="conv-av">MR</div>
-                    <div className="conv-name">Marco Ricci</div>
-                    <div className="conv-time">Hier</div>
-                    <div className="conv-unread">1</div>
-                  </div>
-                  <div className="conv-preview">Parfait merci ! On se voit le 10 septembre alors.</div>
-                </div>
-              </div>
-              <div className="chat-area">
-                <div className="chat-header">
-                  <div className="chat-header-av">{activeConv}</div>
-                  <div className="chat-header-info">
-                    <div className="chat-header-name">{activeConv === 'JD' ? 'Jean Dupont' : activeConv === 'SL' ? 'Sophie Lemaire' : 'Marco Ricci'}</div>
-                    <div className="chat-header-sub">{activeConv === 'JD' ? 'Azura Prestige 68' : 'Liberté Bleue 52'} · En ligne</div>
-                  </div>
-                  <button className="btn btn-outline btn-sm" onClick={() => triggerToast('Profil client…')}>Voir le profil</button>
-                </div>
-                <div className="chat-messages">
-                  {messages.map(msg => (
-                    <div key={msg.id} className={`chat-msg ${msg.type}`}>
-                      {msg.text}
-                      <span className="chat-msg-time">{msg.time}</span>
+                )}
+                
+                {conversations.map(conv => (
+                  <div key={conv.id} className={`conv-item ${activeConvId === conv.id ? 'active' : ''}`} onClick={() => setActiveConvId(conv.id)}>
+                    <div className="conv-item-top">
+                      <div className="conv-av">{conv.otherUser.firstName?.[0] || 'U'}{conv.otherUser.lastName?.[0] || ''}</div>
+                      <div className="conv-name">{conv.otherUser.firstName} {conv.otherUser.lastName}</div>
+                      <div className="conv-time">
+                        {conv.lastMessage ? new Date(conv.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}
+                      </div>
+                      {conv.unreadCount > 0 && <div className="conv-unread">{conv.unreadCount}</div>}
                     </div>
-                  ))}
-                </div>
-                <div className="chat-input-row">
-                  <input className="chat-input" type="text" placeholder="Écrire un message…" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMsg()} />
-                  <button className="chat-send-btn" onClick={sendMsg}>➤</button>
-                </div>
+                    <div className="conv-preview">
+                      {conv.lastMessage ? conv.lastMessage.content : 'Nouvelle conversation'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="chat-area">
+                {!activeConvId ? (
+                  <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)' }}>
+                    Sélectionnez une conversation pour commencer
+                  </div>
+                ) : (
+                  <>
+                    <div className="chat-header">
+                      {(() => {
+                        const activeConvObj = conversations.find(c => c.id === activeConvId);
+                        const otherUser = activeConvObj?.otherUser || { firstName: 'Utilisateur', lastName: '' };
+                        return (
+                          <>
+                            <div className="chat-header-av">{otherUser.firstName?.[0] || 'U'}{otherUser.lastName?.[0] || ''}</div>
+                            <div className="chat-header-info">
+                              <div className="chat-header-name">{otherUser.firstName} {otherUser.lastName}</div>
+                              <div className="chat-header-sub">{activeConvObj?.listingTitle || 'Annonce supprimée'}</div>
+                            </div>
+                            <button className="btn btn-outline btn-sm" onClick={() => triggerToast('Profil utilisateur…')}>Voir le profil</button>
+                          </>
+                        );
+                      })()}
+                    </div>
+                    <div className="chat-messages">
+                      {messages.map(msg => {
+                        const isOutgoing = msg.senderId === dashboardData.user.id;
+                        const msgTime = new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        return (
+                          <div key={msg.id} className={`chat-msg ${isOutgoing ? 'outgoing' : 'incoming'}`}>
+                            {msg.content}
+                            <span className="chat-msg-time">{msgTime}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="chat-input-row">
+                      <input className="chat-input" type="text" placeholder="Écrire un message…" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMsg()} />
+                      <button className="chat-send-btn" onClick={sendMsg}>➤</button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

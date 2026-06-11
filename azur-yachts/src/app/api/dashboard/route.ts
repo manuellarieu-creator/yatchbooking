@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     // 0. Fetch User explicitly
     const dbUser = await prisma.user.findUnique({
       where: { id: userId },
-      select: { firstName: true, lastName: true }
+      select: { firstName: true, lastName: true, videoVerified: true, role: true }
     })
 
     // 1. Fetch user's listings
@@ -66,9 +66,12 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       user: {
+        id: userId,
         firstName: dbUser?.firstName || 'Utilisateur',
         lastName: dbUser?.lastName || '',
         tier: 'PREMIUM', // Mock for now, could be in DB
+        videoVerified: dbUser?.videoVerified || false,
+        role: dbUser?.role,
       },
       stats: {
         revenue: totalRevenue,
