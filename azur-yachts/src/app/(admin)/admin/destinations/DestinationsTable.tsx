@@ -70,8 +70,26 @@ export default function DestinationsTable({ destinations: initialDestinations }:
               <input type="text" className="form-input" style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '4px' }} value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} required />
             </div>
             <div>
-              <label>Image URL (optionnel)</label>
-              <input type="text" className="form-input" style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '4px' }} value={formData.imageUrl || ''} onChange={e => setFormData({...formData, imageUrl: e.target.value})} />
+              <label>Image d'arrière-plan (Upload)</label>
+              <input 
+                type="file" 
+                accept="image/*"
+                className="form-input" 
+                style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '4px' }} 
+                onChange={e => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setFormData({...formData, imageBase64: reader.result as string});
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }} 
+              />
+              {(formData as any).imageBase64 || formData.imageUrl ? (
+                <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'green' }}>✓ Image sélectionnée</div>
+              ) : null}
             </div>
             <div>
               <label>Gradient CSS (Fallback) ex: linear-gradient(135deg, #1a5a80, #0a2540)</label>
