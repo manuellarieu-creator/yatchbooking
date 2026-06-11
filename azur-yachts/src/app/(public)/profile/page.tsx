@@ -14,6 +14,25 @@ export default function ProfilePage() {
   const [tags, setTags] = useState(['Français', 'Anglais', 'Espagnol']);
   const [tagInput, setTagInput] = useState('');
 
+  const [profile, setProfile] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/users/profile')
+      .then(res => res.json())
+      .then(data => {
+        if (data.profile) {
+          setProfile(data.profile);
+          if (data.profile.languages?.length) {
+            setTags(data.profile.languages);
+          }
+        }
+      })
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, []);
+
   // Notif toggles state (mock)
   const [notifs, setNotifs] = useState<Record<string, Record<string, boolean>>>({
     resa: { email: true, push: true, sms: false },
@@ -29,6 +48,39 @@ export default function ProfilePage() {
     setShowToast(false);
     setTimeout(() => setShowToast(true), 50);
     setTimeout(() => setShowToast(false), 3200);
+  };
+
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSaving(true);
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      firstName: formData.get('firstName'),
+      lastName: formData.get('lastName'),
+      phone: formData.get('phone'),
+      bio: formData.get('bio'),
+      countryResidence: formData.get('country'),
+      languages: tags
+    };
+
+    try {
+      const res = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setProfile(result.profile);
+        triggerToast('Informations sauvegardées avec succès.');
+      } else {
+        triggerToast(result.error || 'Erreur de sauvegarde.');
+      }
+    } catch (err) {
+      triggerToast('Erreur serveur.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleTagAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -81,13 +133,13 @@ export default function ProfilePage() {
           <div className="profile-card">
             <div className="avatar-wrap">
               <div className="avatar" title="Changer la photo">
-                <span>JD</span>
+                <span>{profile?.firstName?.[0] || 'J'}{profile?.lastName?.[0] || 'D'}</span>
               </div>
               <div className="avatar-edit">✏️</div>
             </div>
-            <div className="profile-name">Jean Dupont</div>
-            <div className="profile-email">jean.dupont@gmail.com</div>
-            <div className="profile-badge">⚓ Client</div>
+            <div className="profile-name">{profile?.firstName} {profile?.lastName}</div>
+            <div className="profile-email">{profile?.email}</div>
+            <div className="profile-badge">⚓ {profile?.role === 'ADVERTISER' ? 'Annonceur' : 'Client'}</div>
             <div className="verified-tick"><span className="tick">✓</span> Email vérifié</div>
           </div>
 
@@ -119,19 +171,19 @@ export default function ProfilePage() {
 
           {/* SECTION INFOS */}
           {activeTab === 'infos' && (
-            <div className="section-panel active stagger">
+            <form className="section-panel active stagger" onSubmit={handleSave}>
               <div className="section-hd">
                 <div>
-                  <span className="section-eyebrow">Compte client</span>
+                  <span className="section-eyebrow">Compte {profile?.role === 'ADVERTISER' ? 'annonceur' : 'client'}</span>
                   <h1 className="section-title">Informations <em>personnelles</em></h1>
                 </div>
-                <span style={{ fontSize: '.75rem', color: 'var(--text-light)' }}>Dernière mise à jour : 18 mai 2025</span>
+                <span style={{ fontSize: '.75rem', color: 'var(--text-light)' }}>Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}</span>
               </div>
 
               <div className="stats-mini">
-                <div className="stat-mini-card"><div className="stat-mini-num">7</div><div className="stat-mini-lbl">Réservations</div></div>
-                <div className="stat-mini-card"><div className="stat-mini-num">€18K</div><div className="stat-mini-lbl">Dépensé</div></div>
-                <div className="stat-mini-card"><div className="stat-mini-num">4.8★</div><div className="stat-mini-lbl">Note moy. donnée</div></div>
+                <div className="stat-mini-card"><div className="stat-mini-num">{profile?._count?.bookings || 0}</div><div className="stat-mini-lbl">Réservations</div></div>
+                <div className="stat-mini-card"><div className="stat-mini-num">{profile?._count?.favorites || 0}</div><div className="stat-mini-lbl">Favoris</div></div>
+                <div className="stat-mini-card"><div className="stat-mini-num">{profile?._count?.listings || 0}</div><div className="stat-mini-lbl">Annonces publiées</div></div>
               </div>
 
               <div className="form-card">
@@ -139,11 +191,11 @@ export default function ProfilePage() {
                 <div className="form-row">
                   <div className="form-group">
                     <label className="form-label">Prénom <span className="required">*</span></label>
-                    <input className="form-input" type="text" defaultValue="Jean" />
+                    <input className="form-input" name="firstName" type="text" defaultValue={profile?.firstName || ''} required />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Nom <span className="required">*</span></label>
-                    <input className="form-input" type="text" defaultValue="Dupont" />
+                    <input className="form-input" name="lastName" type="text" defaultValue={profile?.lastName || ''} required />
                   </div>
                 </div>
                 <div className="form-row">
@@ -164,7 +216,7 @@ export default function ProfilePage() {
                 <div className="form-row full">
                   <div className="form-group">
                     <label className="form-label">Biographie <span style={{ fontWeight: 300, textTransform: 'none', letterSpacing: 0 }}>(optionnel)</span></label>
-                    <textarea className="form-textarea" defaultValue="Passionné de voile depuis l'enfance, je navigue régulièrement en Méditerranée." />
+                    <textarea className="form-textarea" name="bio" defaultValue={profile?.bio || ''} />
                   </div>
                 </div>
               </div>
@@ -174,18 +226,18 @@ export default function ProfilePage() {
                 <div className="form-row">
                   <div className="form-group">
                     <label className="form-label">Adresse email <span className="required">*</span></label>
-                    <input className="form-input" type="email" defaultValue="jean.dupont@gmail.com" />
+                    <input className="form-input" type="email" defaultValue={profile?.email || ''} readOnly disabled style={{ opacity: 0.7 }} />
                     <span className="form-hint" style={{ color: 'var(--success)' }}>✓ Email vérifié</span>
                   </div>
                   <div className="form-group">
                     <label className="form-label">Téléphone</label>
-                    <input className="form-input" type="tel" defaultValue="+33 6 12 34 56 78" />
+                    <input className="form-input" name="phone" type="tel" defaultValue={profile?.phone || ''} />
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
                     <label className="form-label">Pays de résidence</label>
-                    <select className="form-select" defaultValue="fr">
+                    <select className="form-select" name="country" defaultValue={profile?.countryResidence || "fr"}>
                       <option value="fr">🇫🇷 France</option>
                       <option value="be">🇧🇪 Belgique</option>
                       <option value="ch">🇨🇭 Suisse</option>
@@ -231,11 +283,11 @@ export default function ProfilePage() {
               <div className="save-bar">
                 <span className="save-bar-text">Les champs marqués <strong>*</strong> sont obligatoires</span>
                 <div className="save-btns">
-                  <button className="btn btn-outline" onClick={() => triggerToast('Modifications annulées.')}>Annuler</button>
-                  <button className="btn btn-gold" onClick={() => triggerToast('Informations sauvegardées avec succès.')}>Enregistrer</button>
+                  <button type="button" className="btn btn-outline" onClick={() => triggerToast('Modifications annulées.')}>Annuler</button>
+                  <button type="submit" className="btn btn-gold" disabled={isSaving}>{isSaving ? 'Enregistrement...' : 'Enregistrer'}</button>
                 </div>
               </div>
-            </div>
+            </form>
           )}
 
           {/* SECTION SECURITE */}
