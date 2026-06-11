@@ -87,9 +87,13 @@ export default function DestinationsTable({ destinations: initialDestinations }:
                   }
                 }} 
               />
-              {(formData as any).imageBase64 || formData.imageUrl ? (
-                <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'green' }}>✓ Image sélectionnée</div>
+              {(formData as any).imageBase64 ? (
+                <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'green' }}>✓ Image prête à être envoyée</div>
               ) : null}
+            </div>
+            <div>
+              <label>Ou bien, coller l'URL d'une image directement</label>
+              <input type="text" className="form-input" placeholder="https://..." style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '4px' }} value={formData.imageUrl || ''} onChange={e => setFormData({...formData, imageUrl: e.target.value})} />
             </div>
             <div>
               <label>Gradient CSS (Fallback) ex: linear-gradient(135deg, #1a5a80, #0a2540)</label>
