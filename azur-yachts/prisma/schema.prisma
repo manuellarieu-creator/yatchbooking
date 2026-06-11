@@ -82,6 +82,7 @@ model User {
   emailVerifyToken  String?
   videoVerified     Boolean         @default(false)
   videoUrl          String?
+  idCardUrl         String?
   advertiserTier    AdvertiserTier?
   countryResidence  String?
   languages         String[]

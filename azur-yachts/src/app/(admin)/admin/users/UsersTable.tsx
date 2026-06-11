@@ -210,7 +210,18 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
 
             {selectedUser.role === 'ADVERTISER' && (
               <div style={{ marginBottom: '2rem' }}>
-                <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#0f172a' }}>Fichier KYC (Vérification Vidéo)</h3>
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#0f172a' }}>Pièce d'Identité & Vidéo KYC</h3>
+                
+                {selectedUser.idCardUrl && (
+                  <div style={{ marginBottom: '1.5rem', background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                    <h4 style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: '#334155' }}>Document d'identité</h4>
+                    {selectedUser.idCardUrl.endsWith('.pdf') ? (
+                      <a href={selectedUser.idCardUrl} target="_blank" rel="noreferrer" style={{ color: '#2563eb', textDecoration: 'underline' }}>Voir le document PDF</a>
+                    ) : (
+                      <img src={selectedUser.idCardUrl} alt="Pièce d'identité" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '4px' }} />
+                    )}
+                  </div>
+                )}
                 {selectedUser.videoUrl ? (
                   <div style={{ background: '#000', borderRadius: '8px', overflow: 'hidden', marginBottom: '1rem' }}>
                     <video controls src={selectedUser.videoUrl} style={{ width: '100%', maxHeight: '350px' }} />
