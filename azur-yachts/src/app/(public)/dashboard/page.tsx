@@ -103,13 +103,12 @@ export default function DashboardPage() {
           <button className={`nav-tab ${activeSection === 'bookings' ? 'active' : ''}`} onClick={() => setActiveSection('bookings')}>Réservations</button>
           <button className={`nav-tab ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => setActiveSection('stats')}>Statistiques</button>
           <button className={`nav-tab ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => setActiveSection('messages')}>
-            Messages <span className="notif-badge" style={{ position: 'relative', top: 'auto', right: 'auto', display: 'inline-flex', marginLeft: '.3rem', width: '14px', height: '14px', fontSize: '.52rem' }}>3</span>
+            Messages
           </button>
         </div>
         <div className="nav-right">
-          <div className="notif-btn" onClick={() => triggerToast('Vous avez 2 nouvelles notifications.')}>
+          <div className="notif-btn" onClick={() => triggerToast('Toutes vos notifications sont à jour.')}>
             🔔
-            <div className="notif-badge">2</div>
           </div>
           <div className="user-chip">
             <div className="user-av">
@@ -129,10 +128,18 @@ export default function DashboardPage() {
         <aside className="sidebar">
           <div className="sidebar-section-label">Navigation</div>
           <a className={`sidebar-item ${activeSection === 'overview' ? 'active' : ''}`} onClick={() => setActiveSection('overview')}><span className="sidebar-icon">📊</span>Vue d'ensemble</a>
-          <a className={`sidebar-item ${activeSection === 'listings' ? 'active' : ''}`} onClick={() => setActiveSection('listings')}><span className="sidebar-icon">⚓</span>Mes annonces <span className="sidebar-badge gold">3</span></a>
-          <a className={`sidebar-item ${activeSection === 'bookings' ? 'active' : ''}`} onClick={() => setActiveSection('bookings')}><span className="sidebar-icon">📅</span>Réservations <span className="sidebar-badge">2</span></a>
+          <a className={`sidebar-item ${activeSection === 'listings' ? 'active' : ''}`} onClick={() => setActiveSection('listings')}>
+            <span className="sidebar-icon">⚓</span>Mes annonces 
+            {dashboardData.listings.length > 0 && <span className="sidebar-badge gold">{dashboardData.listings.length}</span>}
+          </a>
+          <a className={`sidebar-item ${activeSection === 'bookings' ? 'active' : ''}`} onClick={() => setActiveSection('bookings')}>
+            <span className="sidebar-icon">📅</span>Réservations 
+            {dashboardData.bookings.filter((b: any) => b.status === 'PENDING' || b.status === 'PROOF_SUBMITTED').length > 0 && (
+              <span className="sidebar-badge">{dashboardData.bookings.filter((b: any) => b.status === 'PENDING' || b.status === 'PROOF_SUBMITTED').length}</span>
+            )}
+          </a>
           <a className={`sidebar-item ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => setActiveSection('stats')}><span className="sidebar-icon">📈</span>Statistiques</a>
-          <a className={`sidebar-item ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => setActiveSection('messages')}><span className="sidebar-icon">💬</span>Messages <span className="sidebar-badge">3</span></a>
+          <a className={`sidebar-item ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => setActiveSection('messages')}><span className="sidebar-icon">💬</span>Messages</a>
           <a className={`sidebar-item ${activeSection === 'calendar' ? 'active' : ''}`} onClick={() => setActiveSection('calendar')}><span className="sidebar-icon">🗓</span>Calendrier</a>
           
           <div className="sidebar-divider"></div>
