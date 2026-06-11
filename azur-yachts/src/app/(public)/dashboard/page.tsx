@@ -178,7 +178,7 @@ export default function DashboardPage() {
               </div>
               <div className="kpi-card navy">
                 <div className="kpi-lbl">Réservations actives</div>
-                <div class="kpi-val">3</div>
+                <div className="kpi-val">3</div>
                 <div className="kpi-sub">dont 1 en attente paiement</div>
               </div>
               <div className="kpi-card green">

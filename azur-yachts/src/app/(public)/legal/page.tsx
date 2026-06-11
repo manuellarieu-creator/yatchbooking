@@ -125,7 +125,7 @@ export default function LegalPage() {
           <div className="hero-meta">
             <div className="hero-meta-item">📅 <strong>Dernière mise à jour :</strong> 1er janvier 2025</div>
             <div className="hero-meta-item">🌐 <strong>Droit applicable :</strong> Droit monégasque</div>
-            <div class="hero-meta-item">📍 <strong>Siège social :</strong> Monaco</div>
+            <div className="hero-meta-item">📍 <strong>Siège social :</strong> Monaco</div>
           </div>
         </div>
       </div>

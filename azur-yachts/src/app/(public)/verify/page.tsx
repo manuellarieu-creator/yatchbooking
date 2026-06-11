@@ -267,7 +267,7 @@ export default function VerificationPage() {
 
               <div className="security-row">
                 <div className="sec-chip">🔒 Chiffrement SSL</div>
-                <div class="sec-chip">🗑 Vidéo supprimée après validation</div>
+                <div className="sec-chip">🗑️ Vidéo supprimée après validation</div>
                 <div className="sec-chip">👁 Visible uniquement par notre équipe</div>
               </div>
             </div>
@@ -317,7 +317,7 @@ export default function VerificationPage() {
             <div className="camera-wrap">
               <div className={`camera-frame ${isRecording ? 'recording' : ''} ${isPreviewMode ? 'preview-mode' : ''}`} style={{ borderColor: (isCameraReady && !isRecording && !isPreviewMode) ? 'rgba(184,152,90,.4)' : undefined }}>
                 <div className="corner tl"></div><div className="corner tr"></div>
-                <div className="corner bl"></div><div class="corner br"></div>
+                <div className="corner bl"></div><div className="corner br"></div>
                 
                 <video ref={feedRef} autoPlay muted playsInline style={{ display: 'none' }}></video>
                 <video ref={playbackRef} controls style={{ display: 'none' }}></video>
