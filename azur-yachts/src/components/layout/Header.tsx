@@ -25,6 +25,9 @@ export default async function Header() {
             )}
             <Link href="/reservations" className="nav-link" style={{marginRight: '1rem'}}>Mes réservations</Link>
             <Link href="/profile" className="nav-link" style={{marginRight: '1rem'}}>Mon profil</Link>
+            {((session.user as any).role === 'ADVERTISER' || (session.user as any).role === 'ADMIN') && (
+              <Link href="/dashboard" className="nav-link" style={{marginRight: '1rem'}}>Tableau de bord</Link>
+            )}
             <div className="nav-avatar">
               {((session.user as any).firstName?.[0] || 'U').toUpperCase()}
               {((session.user as any).lastName?.[0] || '').toUpperCase()}

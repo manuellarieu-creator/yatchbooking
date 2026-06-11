@@ -116,7 +116,7 @@ export default function AuthPage() {
         triggerToast('Email ou mot de passe incorrect.');
       } else {
         triggerToast('Connexion réussie — redirection...');
-        window.location.href = '/dashboard';
+        window.location.href = '/auth'; // La middleware va rediriger vers /dashboard ou /profile selon le rôle
       }
     } catch (err) {
       triggerToast('Une erreur est survenue.');
