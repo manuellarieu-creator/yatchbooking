@@ -262,17 +262,15 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           {/* Equipment */}
           <div className="fade-in">
             <div className="sec-title">Équipements à bord</div>
-            <div className="equip-grid">
-              <div className="equip-item"><span className="equip-icon">🧭</span> Pilote automatique</div>
-              <div className="equip-item"><span className="equip-icon">🚿</span> Douche de pont</div>
-              <div className="equip-item"><span className="equip-icon">⚙️</span> Moteur hors-bord</div>
-              <div className="equip-item"><span className="equip-icon">🔥</span> Eau chaude</div>
-              <div className="equip-item"><span className="equip-icon">📡</span> GPS & VHF</div>
-              <div className="equip-item"><span className="equip-icon">🪑</span> Table de cockpit</div>
-              <div className="equip-item"><span className="equip-icon">🎵</span> Système audio</div>
-              <div className="equip-item"><span className="equip-icon">📺</span> Écran de navigation</div>
-              <div className="equip-item"><span className="equip-icon">⚓</span> Guindeau électrique</div>
-            </div>
+            {yacht.features && yacht.features.length > 0 ? (
+              <div className="equip-grid">
+                {yacht.features.map((f: string) => (
+                  <div key={f} className="equip-item"><span className="equip-icon">✔️</span> {f}</div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: 'var(--text-light)', fontStyle: 'italic', fontSize: '0.9rem' }}>Aucun équipement renseigné pour le moment.</p>
+            )}
           </div>
 
           <hr className="section-sep" />
@@ -324,12 +322,17 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           {/* Map */}
           <div className="fade-in">
             <div className="sec-title">Localisation</div>
-            <div className="map-placeholder">
-              <div className="map-pin">📍</div>
-              <div className="map-location">Port de Nice — Côte d'Azur</div>
-              <div className="map-label">43°41'39"N · 7°16'22"E<br /><small style={{ fontSize: '.65rem', opacity: .6 }}>Carte interactive disponible avec Leaflet.js en production</small></div>
+            <div className="map-placeholder" style={{ padding: 0, overflow: 'hidden' }}>
+              <iframe 
+                width="100%" 
+                height="250" 
+                frameBorder="0" 
+                style={{ border: 0 }}
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(yacht.location + ' ' + yacht.country)}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
+                allowFullScreen
+              ></iframe>
             </div>
-            <p style={{ fontSize: '.75rem', color: 'var(--text-light)', marginTop: '.6rem' }}>📍 Port Lympia, Quai des États-Unis, 06300 Nice, France</p>
+            <p style={{ fontSize: '.75rem', color: 'var(--text-light)', marginTop: '.6rem' }}>📍 {yacht.location}, {yacht.country}</p>
           </div>
 
           <hr className="section-sep" />
@@ -365,36 +368,38 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           {/* Reviews */}
           <div className="fade-in">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-              <div className="sec-title" style={{ marginBottom: 0 }}>35 Avis</div>
+              <div className="sec-title" style={{ marginBottom: 0 }}>{yacht.reviewCount || 0} Avis</div>
               <button className="add-review-btn" onClick={() => setIsReviewOpen(true)}>+ Laisser un avis</button>
             </div>
-            <div className="reviews-overview">
-              <div className="reviews-score">
-                <div className="score-big">4.5</div>
-                <span className="score-stars">★★★★½</span>
-                <div className="score-count">35 évaluations</div>
-              </div>
-              <div className="score-bars">
-                <div className="score-bar-row"><span style={{ minWidth: '45px' }}>5 étoiles</span><div className="score-bar-track"><div className="score-bar-fill" style={{ width: '66%' }}></div></div><span>66%</span></div>
-                <div className="score-bar-row"><span style={{ minWidth: '45px' }}>4 étoiles</span><div className="score-bar-track"><div className="score-bar-fill" style={{ width: '22%' }}></div></div><span>22%</span></div>
-                <div className="score-bar-row"><span style={{ minWidth: '45px' }}>3 étoiles</span><div className="score-bar-track"><div className="score-bar-fill" style={{ width: '8%' }}></div></div><span>8%</span></div>
-                <div className="score-bar-row"><span style={{ minWidth: '45px' }}>2 étoiles</span><div className="score-bar-track"><div className="score-bar-fill" style={{ width: '3%' }}></div></div><span>3%</span></div>
-                <div className="score-bar-row"><span style={{ minWidth: '45px' }}>1 étoile</span><div className="score-bar-track"><div className="score-bar-fill" style={{ width: '1%' }}></div></div><span>1%</span></div>
-              </div>
-            </div>
-            <div className="review-list">
-              <div className="review-item">
-                <div className="review-header">
-                  <div className="review-avatar">FJ</div>
-                  <div className="review-meta">
-                    <div className="review-name">Fabio Jaction</div>
-                    <div className="review-info">4 oct. 2022 · San Diego, CA</div>
+            
+            {yacht.reviewCount > 0 ? (
+              <>
+                <div className="reviews-overview">
+                  <div className="reviews-score">
+                    <div className="score-big">{yacht.averageRating || 0}</div>
+                    <span className="score-stars">★</span>
+                    <div className="score-count">{yacht.reviewCount} évaluations</div>
                   </div>
-                  <div className="review-stars">★★★★★</div>
                 </div>
-                <div className="review-text">Le yacht est immaculé, l'équipage aux petits soins. Une semaine absolument magique.</div>
-              </div>
-            </div>
+                <div className="review-list">
+                  {yacht.reviews?.map((rev: any) => (
+                    <div key={rev.id} className="review-item">
+                      <div className="review-header">
+                        <div className="review-avatar">{rev.author?.firstName?.charAt(0) || 'U'}</div>
+                        <div className="review-meta">
+                          <div className="review-name">{rev.author?.firstName} {rev.author?.lastName}</div>
+                          <div className="review-info">{new Date(rev.createdAt).toLocaleDateString()}</div>
+                        </div>
+                        <div className="review-stars">{'★'.repeat(rev.rating)}</div>
+                      </div>
+                      <div className="review-text">{rev.comment}</div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p style={{ color: 'var(--text-light)', fontStyle: 'italic', fontSize: '0.9rem' }}>Aucun avis pour le moment. Soyez le premier à partager votre expérience !</p>
+            )}
           </div>
         </div>
 
@@ -508,6 +513,11 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             <button className="reserve-btn" onClick={handleBooking} disabled={bookingLoading}>
               {bookingLoading ? 'Vérification...' : 'Réserver ce yacht'}
             </button>
+            <Link href={`/messages?new_chat_with=${yacht.ownerId}`} passHref>
+              <button className="reserve-btn" style={{ marginTop: '10px', backgroundColor: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)' }}>
+                Contacter le propriétaire
+              </button>
+            </Link>
             <div className="widget-footer-note">Vous ne serez débité qu'après confirmation de votre réservation par notre équipe.</div>
           </div>
         </div>

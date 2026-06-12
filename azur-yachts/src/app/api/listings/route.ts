@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
       latitude, longitude, maxAdults, maxChildren,
       boatType, boatLength, boatYear, requiresCaptain,
       skipperAvailable, maxRentalHours, deliveryAvailable,
-      deliveryFee, deliveryPricing, cleaningFee, images, services, availabilities, ownerId
+      deliveryFee, deliveryPricing, features, cleaningFee, images, services, availabilities, ownerId
     } = body
 
     const finalOwnerId = ((session.user as any).role === 'ADMIN' && ownerId) ? ownerId : (session.user as any).id;
@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
         latitude, longitude, maxAdults, maxChildren,
         boatType, boatLength, boatYear, requiresCaptain,
         skipperAvailable, maxRentalHours, deliveryAvailable,
-        deliveryFee, deliveryPricing, cleaningFee,
+        deliveryFee, deliveryPricing, features: features || [], cleaningFee,
         status: 'PENDING',
         ownerId: finalOwnerId,
         images: {

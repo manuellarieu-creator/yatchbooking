@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import './publish.css';
 
 const TOTAL_STEPS = 7;
+const PREDEFINED_FEATURES = ['Pilote automatique', 'Douche de pont', 'Moteur hors-bord', 'Eau chaude', 'GPS & VHF', 'Table de cockpit', 'Système audio', 'Écran de navigation', 'Guindeau électrique', 'Climatisation', 'Propulseur d\'étrave', 'Cuisine équipée', 'Bain de soleil', 'Taud de soleil'];
 
 type Service = {
   id: string;
@@ -44,6 +45,7 @@ function PublishForm() {
   const [hours, setHours] = useState('');
   const [captainReq, setCaptainReq] = useState(false);
   const [skipperOpt, setSkipperOpt] = useState(false);
+  const [features, setFeatures] = useState<string[]>([]);
 
   // Step 3
   const [photos, setPhotos] = useState<any[]>([]);
@@ -92,6 +94,7 @@ function PublishForm() {
           setHours(l.maxRentalHours?.toString() || '24');
           setCaptainReq(l.requiresCaptain);
           setSkipperOpt(l.skipperAvailable);
+          if (l.features) setFeatures(l.features);
           setDesc(l.description);
           setPriceDay(l.price?.toString() || '');
           setCleaningFee(l.cleaningFee?.toString() || '');
@@ -115,7 +118,7 @@ function PublishForm() {
     return () => clearTimeout(t);
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
-    title, boatType, year, portCountry, portCity, length, adults, children, hours, captainReq, skipperOpt,
+    title, boatType, year, portCountry, portCity, length, adults, children, hours, captainReq, skipperOpt, features,
     photos, desc, priceDay, cleaningFee, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail
   ]);
 
@@ -137,6 +140,10 @@ function PublishForm() {
       setCurrentStep(prev => prev - 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+  };
+
+  const toggleFeature = (f: string) => {
+    setFeatures(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
   };
 
   const removeLang = (l: string) => setLanguages(languages.filter(x => x !== l));
@@ -269,10 +276,9 @@ function PublishForm() {
       const payload = {
         title, description: desc, price: Number(priceDay) || 0, country: portCountry, location: portCity,
         maxAdults: Number(adults) || 1, maxChildren: Number(children) || 0,
-        boatType, boatLength: Number(length) || 0, boatYear: Number(year) || 2000,
-        requiresCaptain: captainReq, skipperAvailable: skipperOpt, 
-        maxRentalHours: Number(hours) || 24,
-        deliveryAvailable: deliveryToggle, deliveryPricing,
+        boatType, boatLength: Number(length) || 0, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
+        skipperAvailable: skipperOpt, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
+        deliveryPricing: deliveryPricing, features,
         cleaningFee: Number(cleaningFee) || 0,
         images: processedImages, services, availabilities: []
       };
@@ -567,6 +573,19 @@ function PublishForm() {
                     </label>
                   </div>
                 </div>
+
+                <div className="form-card">
+                  <div className="form-card-title">Équipements à bord</div>
+                  <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    {PREDEFINED_FEATURES.map(f => (
+                      <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                        <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
+                        {f}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="step-nav-btns">
                   <button className="btn btn-outline" onClick={handlePrev}>← Retour</button>
                   <button className="btn btn-primary" onClick={handleNext}>Continuer →</button>
