@@ -63,6 +63,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   // ── Review Modal State ──
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [reviewStars, setReviewStars] = useState(0);
+  const [reviewComment, setReviewComment] = useState('');
 
   // ── Chat State ──
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -145,6 +146,31 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
   const toggleService = (id: string) => {
     setSelectedServiceIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  };
+
+  const submitReview = async () => {
+    if (reviewStars === 0 || !reviewComment.trim()) {
+      triggerToast('Veuillez donner une note et un commentaire.');
+      return;
+    }
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listingId: yacht.id, rating: reviewStars, comment: reviewComment })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        triggerToast('Merci ! Votre avis est soumis et en attente de modération.');
+        setIsReviewOpen(false);
+        setReviewStars(0);
+        setReviewComment('');
+      } else {
+        triggerToast(data.error || 'Erreur lors de la soumission de l\'avis.');
+      }
+    } catch (e) {
+      triggerToast('Erreur réseau.');
+    }
   };
 
   const handleBooking = async () => {
@@ -634,11 +660,11 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 <span key={s} className={`star-sel ${s <= reviewStars ? 'active' : ''}`} onClick={() => setReviewStars(s)}>★</span>
               ))}
             </div>
-            <textarea className="review-textarea" placeholder="Partagez votre expérience..."></textarea>
+            <textarea className="review-textarea" placeholder="Partagez votre expérience..." value={reviewComment} onChange={e => setReviewComment(e.target.value)}></textarea>
           </div>
           <div className="modal-ft">
             <button className="modal-btn secondary" onClick={() => setIsReviewOpen(false)}>Annuler</button>
-            <button className="modal-btn primary" onClick={() => { triggerToast('Merci pour votre avis !'); setIsReviewOpen(false); }}>Publier l'avis</button>
+            <button className="modal-btn primary" onClick={submitReview}>Publier l'avis</button>
           </div>
         </div>
       </div>

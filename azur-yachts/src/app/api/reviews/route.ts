@@ -21,18 +21,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'La note doit être comprise entre 1 et 5' }, { status: 400 })
     }
 
-    // Vérifier si l'utilisateur a bien loué ce bateau
-    const pastBooking = await prisma.booking.findFirst({
-      where: {
-        clientId: userId,
-        listingId,
-        status: { in: ['COMPLETED', 'CONFIRMED'] },
-        endDate: { lte: new Date() } // La location doit être passée
-      }
-    })
+    // Vérifier si l'utilisateur a bien loué ce bateau (les admins peuvent passer outre pour tester)
+    if ((session.user as any).role !== 'ADMIN') {
+      const pastBooking = await prisma.booking.findFirst({
+        where: {
+          clientId: userId,
+          listingId,
+          status: { in: ['COMPLETED', 'CONFIRMED'] },
+          endDate: { lte: new Date() } // La location doit être passée
+        }
+      })
 
-    if (!pastBooking) {
-      return NextResponse.json({ error: 'Vous devez avoir loué ce bateau pour laisser un avis' }, { status: 403 })
+      if (!pastBooking) {
+        return NextResponse.json({ error: 'Vous devez avoir loué ce bateau pour laisser un avis' }, { status: 403 })
+      }
     }
 
     // Vérifier s'il a déjà laissé un avis
