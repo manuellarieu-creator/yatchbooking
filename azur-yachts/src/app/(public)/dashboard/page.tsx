@@ -392,58 +392,32 @@ function DashboardContent() {
               <Link href="/publish"><button className="btn btn-gold">+ Nouvelle annonce</button></Link>
             </div>
 
-            <div className="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Annonce</th>
-                    <th>Date d'ajout</th>
-                    <th>Vues</th>
-                    <th>Demandes</th>
-                    <th>Statut</th>
-                    <th style={{textAlign: 'right'}}>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {managedListings.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} style={{textAlign: 'center', padding: '2rem', color: 'var(--text-light)'}}>Aucune annonce publiée</td>
-                    </tr>
-                  ) : (
-                    managedListings.map((y: any, i: number) => (
-                      <tr key={i}>
-                        <td>
-                          <div className="td-yacht">
-                            <div className="td-yacht-img">
-                              {y.photos && y.photos.length > 0 ? (
-                                <img src={y.photos[0]} alt="" style={{width:'100%', height:'100%', objectFit:'cover'}} />
-                              ) : 'Y'}
-                            </div>
-                            <div>
-                              <div className="td-yacht-name">{y.title}</div>
-                              <div className="td-yacht-type">{y.brand} - {y.length}m</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>{new Date(y.createdAt).toLocaleDateString('fr-FR')}</td>
-                        <td>{y.views || 0}</td>
-                        <td>{y.bookings?.length || 0}</td>
-                        <td>
-                          <span className={`badge badge-${y.status.toLowerCase()}`}>
-                            {y.status === 'ACTIVE' ? 'En ligne' : y.status === 'PENDING' ? 'En attente' : y.status === 'REJECTED' ? 'Refusée' : 'Inactif'}
-                          </span>
-                        </td>
-                        <td style={{textAlign: 'right'}}>
-                          <div className="row-actions" style={{justifyContent: 'flex-end'}}>
-                            <button className="act-btn">Modifier</button>
-                            <button className="act-btn">Calendrier</button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+            <div className="listings-grid">
+              {dashboardData.listings.map((l: any) => (
+                <div className="listing-mini-card" key={l.id}>
+                  <div className="lmc-img" style={{ backgroundImage: `url(${l.images?.[0]?.url || ''})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                    <div className="lmc-img-grad"></div>
+                    <div className="lmc-badge"><span className={`badge badge-${l.status === 'ACTIVE' ? 'active' : 'pending'}`}>{l.status}</span></div>
+                  </div>
+                  <div className="lmc-body">
+                    <div className="lmc-type">{l.boatType}</div>
+                    <div className="lmc-name">{l.title}</div>
+                    <div className="lmc-stats">
+                      <span className="lmc-stat">👁 <strong>{l.viewCount || 0}</strong> vues</span>
+                      <span className="lmc-stat">📅 <strong>{l._count?.bookings || 0}</strong> résa</span>
+                      <span className="lmc-stat">⭐ <strong>{l._count?.reviews ? '4.9' : '—'}</strong></span>
+                    </div>
+                    <div className="lmc-footer">
+                      <div className="lmc-price">€{l.price} <small>/ jour</small></div>
+                      <div className="lmc-actions">
+                        <Link href={`/publish?edit=${l.id}`}><button className="lmc-btn" style={{ background: 'var(--gold)', color: 'white', border: 'none' }}>Modifier</button></Link>
+                        <Link href={`/yacht/${l.id}`}><button className="lmc-btn">Voir</button></Link>
+                        <button className="lmc-btn" onClick={() => triggerToast('Désactivation…')}>⏸</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -465,50 +439,39 @@ function DashboardContent() {
                 </select>
               </div>
             </div>
-            <div className="table-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Réservation</th>
-                    <th>Yacht</th>
-                    <th>Client</th>
-                    <th>Dates</th>
-                    <th>Montant</th>
-                    <th>Statut</th>
-                    <th style={{textAlign: 'right'}}>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {allBookings.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} style={{textAlign: 'center', padding: '2rem', color: 'var(--text-light)'}}>Aucune réservation</td>
-                    </tr>
-                  ) : (
-                    allBookings.map((b: any, i: number) => (
-                      <tr key={i}>
-                        <td><strong>#{b.id.substring(0, 6).toUpperCase()}</strong></td>
+            <div className="table-card">
+              <div className="table-header">
+                <div className="table-title">Historique complet</div>
+                <div className="table-actions">
+                  <input className="tbl-search" type="text" placeholder="Rechercher…" />
+                  <button className="btn btn-outline btn-sm" onClick={() => triggerToast('Export CSV…')}>📄 Exporter</button>
+                </div>
+              </div>
+              <div className="table-wrapper">
+                <table>
+                  <thead><tr>
+                    <th>Réf.</th><th>Bateau</th><th>Client</th><th>Dates</th><th>Nuits</th><th>Montant</th><th>Paiement</th><th>Statut</th><th>Actions</th>
+                  </tr></thead>
+                  <tbody>
+                    {filteredBookings.map((b: any) => (
+                      <tr key={b.id}>
+                        <td><strong>{b.id}</strong></td>
+                        <td>{b.boat}</td>
+                        <td>{b.client}</td><td>{b.dates}</td><td>{b.nights}</td><td><strong>{b.total}</strong></td>
+                        <td>{b.payment}</td>
+                        <td><span className={`badge ${b.badgeClass}`}>{b.badge}</span></td>
                         <td>
-                          <div className="td-yacht-name">{b.listing?.title}</div>
-                        </td>
-                        <td>{b.user?.firstName} {b.user?.lastName}</td>
-                        <td>{new Date(b.startDate).toLocaleDateString('fr-FR')} - {new Date(b.endDate).toLocaleDateString('fr-FR')}</td>
-                        <td><strong>{b.totalPrice}€</strong></td>
-                        <td>
-                          <span className={`badge badge-${b.status.toLowerCase()}`}>
-                            {b.status}
-                          </span>
-                        </td>
-                        <td style={{textAlign: 'right'}}>
-                          <button className="act-btn" onClick={() => {
-                            setSelectedBooking(b);
-                            setIsBookingModalOpen(true);
-                          }}>Détails</button>
+                          <div className="row-actions">
+                            <button className="act-btn" onClick={() => triggerToast('Détails…')}>Détails</button>
+                            {b.status !== 'cancelled' && <button className="act-btn" onClick={() => triggerToast('Facture…')}>Facture</button>}
+                            {b.status === 'pending' && <button className="act-btn danger" onClick={() => triggerToast('Annulation…')}>Annuler</button>}
+                          </div>
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
