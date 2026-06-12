@@ -48,6 +48,7 @@ export default function PublishPage() {
   // Step 3
   const [photos, setPhotos] = useState<File[]>([]);
   const [desc, setDesc] = useState('');
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Step 4
@@ -335,7 +336,7 @@ export default function PublishPage() {
               <div className="success-title">Annonce soumise !</div>
               <p className="success-sub">Votre annonce a bien été envoyée à notre équipe de validation. Vous recevrez un email de confirmation à <strong>jean.dupont@gmail.com</strong> dans les 24 à 48 heures ouvrées.<br/><br/>En attendant, vous pouvez la consulter et la modifier depuis votre tableau de bord annonceur.</p>
               <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <button className="btn btn-primary" onClick={() => triggerToast('Redirection vers le dashboard…')}>Mon tableau de bord</button>
+                <button className="btn btn-primary" onClick={() => window.location.href = '/dashboard'}>Mon tableau de bord</button>
                 <button className="btn btn-outline" onClick={() => window.location.reload()}>Publier une autre annonce</button>
               </div>
             </div>
@@ -568,7 +569,30 @@ export default function PublishPage() {
                   </div>
                   <div className="photo-grid">
                     {photos.map((f, i) => (
-                      <div key={i} className={`photo-thumb ${i === 0 ? 'first-photo' : ''}`}>
+                      <div 
+                        key={i} 
+                        className={`photo-thumb ${i === 0 ? 'first-photo' : ''}`}
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.effectAllowed = 'move';
+                          setDraggedIdx(i);
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = 'move';
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          if (draggedIdx === null || draggedIdx === i) return;
+                          const newPhotos = [...photos];
+                          const draggedPhoto = newPhotos[draggedIdx];
+                          newPhotos.splice(draggedIdx, 1);
+                          newPhotos.splice(i, 0, draggedPhoto);
+                          setPhotos(newPhotos);
+                          setDraggedIdx(null);
+                        }}
+                        style={{ cursor: 'grab' }}
+                      >
                         <img src={URL.createObjectURL(f)} className="photo-thumb-img" alt="Yacht preview" />
                         <div className="photo-thumb-overlay">
                           <button className="photo-thumb-del" onClick={(e) => { e.stopPropagation(); removePhoto(i); }}>✕</button>

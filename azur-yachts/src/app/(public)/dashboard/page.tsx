@@ -407,6 +407,7 @@ export default function DashboardPage() {
                     <div className="lmc-footer">
                       <div className="lmc-price">€{l.price} <small>/ jour</small></div>
                       <div className="lmc-actions">
+                        <Link href={`/publish?edit=${l.id}`}><button className="lmc-btn" style={{ background: 'var(--gold)', color: 'white', border: 'none' }}>Modifier</button></Link>
                         <Link href={`/yacht/${l.id}`}><button className="lmc-btn">Voir</button></Link>
                         <button className="lmc-btn" onClick={() => triggerToast('Désactivation…')}>⏸</button>
                       </div>

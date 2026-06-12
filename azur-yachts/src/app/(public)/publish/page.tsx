@@ -18,6 +18,7 @@ export default function PublishPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [savedStatus, setSavedStatus] = useState('💾 Sauvegardé');
   const isModal = typeof window !== 'undefined' && window.location.search.includes('modal=true');
+  const editId = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('edit') : null;
   
   // Step 1
   
@@ -43,8 +44,9 @@ export default function PublishPage() {
   const [skipperOpt, setSkipperOpt] = useState(false);
 
   // Step 3
-  const [photos, setPhotos] = useState<File[]>([]);
+  const [photos, setPhotos] = useState<any[]>([]);
   const [desc, setDesc] = useState('');
+  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Step 4
@@ -71,6 +73,34 @@ export default function PublishPage() {
   const [success, setSuccess] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    if (editId) {
+      fetch(`/api/listings/${editId}`).then(r => r.json()).then(data => {
+        if (data.listing) {
+          const l = data.listing;
+          setTitle(l.title);
+          setBoatType(l.boatType);
+          setYear(l.boatYear?.toString() || '');
+          setPortCountry(l.country);
+          setPortCity(l.location);
+          setLength(l.boatLength?.toString() || '');
+          setAdults(l.maxAdults);
+          setChildren(l.maxChildren);
+          setHours(l.maxRentalHours?.toString() || '24');
+          setCaptainReq(l.requiresCaptain);
+          setSkipperOpt(l.skipperAvailable);
+          setDesc(l.description);
+          setPriceDay(l.price?.toString() || '');
+          setCleaningFee(l.cleaningFee?.toString() || '');
+          if (l.services) setServices(l.services);
+          setDeliveryToggle(l.deliveryAvailable);
+          if (l.deliveryPricing) setDeliveryPricing(l.deliveryPricing as any);
+          if (l.images) setPhotos(l.images);
+        }
+      });
+    }
+  }, [editId]);
 
   // Simulating auto-save
   useEffect(() => {
@@ -215,12 +245,14 @@ export default function PublishPage() {
         boatType, boatLength: parseFloat(length), boatYear: parseInt(year), requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, maxRentalHours: parseInt(hours), deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: parseFloat(dp.fee || '0') })),
-        cleaningFee: parseFloat(cleaningFee), 
-        images: [], services, availabilities: []
+        cleaningFee: parseFloat(cleaningFee)
       };
       
-      const res = await fetch('/api/listings', {
-        method: 'POST',
+      const url = editId ? `/api/listings/${editId}` : '/api/listings';
+      const method = editId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
@@ -328,7 +360,7 @@ export default function PublishPage() {
               <div className="success-title">Annonce soumise !</div>
               <p className="success-sub">Votre annonce a bien été envoyée à notre équipe de validation. Vous recevrez un email de confirmation à <strong>jean.dupont@gmail.com</strong> dans les 24 à 48 heures ouvrées.<br/><br/>En attendant, vous pouvez la consulter et la modifier depuis votre tableau de bord annonceur.</p>
               <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <button className="btn btn-primary" onClick={() => triggerToast('Redirection vers le dashboard…')}>Mon tableau de bord</button>
+                <button className="btn btn-primary" onClick={() => window.location.href = '/dashboard'}>Mon tableau de bord</button>
                 <button className="btn btn-outline" onClick={() => window.location.reload()}>Publier une autre annonce</button>
               </div>
             </div>
@@ -341,7 +373,7 @@ export default function PublishPage() {
               <div className={`step-panel ${currentStep === 1 ? 'active' : ''}`}>
                 <div className="step-header">
                   <span className="step-eyebrow">Étape 1 / 7</span>
-                  <h1 className="step-title">Votre <em>profil</em> annonceur</h1>
+                  <h1 className="step-title">{editId ? 'Modifier votre' : 'Votre'} <em>profil</em> annonceur</h1>
                   <p className="step-desc">Ces informations seront affichées sur votre annonce pour que les clients puissent vous connaître.</p>
                 </div>
                 <div className="form-card">
@@ -537,8 +569,31 @@ export default function PublishPage() {
                   </div>
                   <div className="photo-grid">
                     {photos.map((f, i) => (
-                      <div key={i} className={`photo-thumb ${i === 0 ? 'first-photo' : ''}`}>
-                        <img src={URL.createObjectURL(f)} className="photo-thumb-img" alt="Yacht preview" />
+                      <div 
+                        key={i} 
+                        className={`photo-thumb ${i === 0 ? 'first-photo' : ''}`}
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.effectAllowed = 'move';
+                          setDraggedIdx(i);
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = 'move';
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          if (draggedIdx === null || draggedIdx === i) return;
+                          const newPhotos = [...photos];
+                          const draggedPhoto = newPhotos[draggedIdx];
+                          newPhotos.splice(draggedIdx, 1);
+                          newPhotos.splice(i, 0, draggedPhoto);
+                          setPhotos(newPhotos);
+                          setDraggedIdx(null);
+                        }}
+                        style={{ cursor: 'grab' }}
+                      >
+                        <img src={f.url ? f.url : URL.createObjectURL(f)} className="photo-thumb-img" alt="Yacht preview" />
                         <div className="photo-thumb-overlay">
                           <button className="photo-thumb-del" onClick={(e) => { e.stopPropagation(); removePhoto(i); }}>✕</button>
                         </div>

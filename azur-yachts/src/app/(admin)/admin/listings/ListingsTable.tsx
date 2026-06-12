@@ -4,12 +4,17 @@ import { useState } from 'react';
 import { Listing, ListingStatus, User } from '@prisma/client';
 import Link from 'next/link';
 
-type ListingWithOwner = Listing & { owner: { firstName: string, lastName: string, email: string } };
+type ListingWithOwner = Listing & { 
+  owner: { firstName: string, lastName: string, email: string, phone?: string | null },
+  images?: any[],
+  services?: any[]
+};
 
 export default function ListingsTable({ listings: initialListings }: { listings: ListingWithOwner[] }) {
   const [listings, setListings] = useState(initialListings);
   const [tab, setTab] = useState<'pending' | 'all'>('pending');
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [selectedListing, setSelectedListing] = useState<ListingWithOwner | null>(null);
 
   const filteredListings = tab === 'pending' 
     ? listings.filter(l => l.status === 'PENDING')
@@ -99,9 +104,9 @@ export default function ListingsTable({ listings: initialListings }: { listings:
                   <td>{new Date(listing.createdAt).toLocaleDateString('fr-FR')}</td>
                   <td>
                     <div className="action-group">
-                      <Link href={`/yachts/${listing.id}`} target="_blank" className="action-btn btn-view">
+                      <button className="action-btn btn-view" onClick={() => setSelectedListing(listing)}>
                         👁️ Voir
-                      </Link>
+                      </button>
                       
                       {listing.status === 'PENDING' && (
                         <>
@@ -139,6 +144,88 @@ export default function ListingsTable({ listings: initialListings }: { listings:
           </table>
         )}
       </div>
+
+      {selectedListing && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }} onClick={() => setSelectedListing(null)}>
+          <div style={{ backgroundColor: 'white', borderRadius: '12px', padding: '2rem', maxWidth: '800px', width: '100%', maxHeight: '90vh', overflowY: 'auto', position: 'relative' }} onClick={e => e.stopPropagation()}>
+            <button style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }} onClick={() => setSelectedListing(null)}>✕</button>
+            <h2 style={{ marginTop: 0, marginBottom: '0.5rem' }}>{selectedListing.title}</h2>
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+              <span className={`status-badge status-${selectedListing.status.toLowerCase()}`}>{selectedListing.status}</span>
+              <span style={{ fontWeight: 600 }}>€{selectedListing.price.toLocaleString('fr-FR')} / jour</span>
+              <span style={{ color: '#64748b' }}>📍 {selectedListing.location}, {selectedListing.country}</span>
+              <span style={{ color: '#64748b' }}>⛵ {selectedListing.boatType} ({selectedListing.boatLength}m)</span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Détails de l'Annonceur</h3>
+                <p><strong>Nom:</strong> {selectedListing.owner.firstName} {selectedListing.owner.lastName}</p>
+                <p><strong>Email:</strong> {selectedListing.owner.email}</p>
+                <p><strong>Téléphone:</strong> {selectedListing.owner.phone || 'Non renseigné'}</p>
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Spécifications</h3>
+                <p><strong>Capacité:</strong> {selectedListing.maxAdults} Adultes, {selectedListing.maxChildren} Enfants</p>
+                <p><strong>Année:</strong> {selectedListing.boatYear}</p>
+                <p><strong>Capitaine:</strong> {selectedListing.requiresCaptain ? 'Requis' : 'Non requis'} {selectedListing.skipperAvailable ? '(Skipper Optionnel)' : ''}</p>
+                <p><strong>Heures / jour:</strong> {selectedListing.maxRentalHours || 24}h</p>
+              </div>
+            </div>
+
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Description</h3>
+            <p style={{ whiteSpace: 'pre-wrap', color: '#475569', marginBottom: '2rem' }}>{selectedListing.description}</p>
+
+            {selectedListing.images && selectedListing.images.length > 0 && (
+              <>
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Photos ({selectedListing.images.length})</h3>
+                <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '1rem' }}>
+                  {selectedListing.images.map(img => (
+                    <img key={img.id} src={img.url} alt="Yacht" style={{ height: '100px', width: '150px', objectFit: 'cover', borderRadius: '4px' }} />
+                  ))}
+                </div>
+              </>
+            )}
+
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Tarification Additionnelle</h3>
+            <p><strong>Frais de nettoyage:</strong> €{selectedListing.cleaningFee}</p>
+            {selectedListing.deliveryAvailable && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <strong>Livraison disponible:</strong>
+                {selectedListing.deliveryPricing ? (
+                  <ul style={{ margin: '0.5rem 0 0 1.5rem', padding: 0 }}>
+                    {(selectedListing.deliveryPricing as any[]).map((dp, i) => (
+                      <li key={i}>{dp.distance} : €{dp.fee}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <span> €{selectedListing.deliveryFee || 0}</span>
+                )}
+              </div>
+            )}
+            {selectedListing.services && selectedListing.services.length > 0 && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <strong>Services additionnels:</strong>
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', padding: 0 }}>
+                  {selectedListing.services.map(svc => (
+                    <li key={svc.id}>{svc.name} - €{svc.price} ({svc.unit === 'PER_BOOKING' ? 'Par réservation' : svc.unit === 'PER_DAY' ? 'Par jour' : 'Par personne'})</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+              <button className="btn btn-outline" onClick={() => setSelectedListing(null)}>Fermer</button>
+              {selectedListing.status === 'PENDING' && (
+                <>
+                  <button className="btn btn-reject" style={{ background: '#ef4444', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer' }} onClick={() => { handleStatusUpdate(selectedListing.id, 'REJECTED'); setSelectedListing(null); }}>Rejeter</button>
+                  <button className="btn btn-approve" style={{ background: '#22c55e', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer' }} onClick={() => { handleStatusUpdate(selectedListing.id, 'ACTIVE'); setSelectedListing(null); }}>Approuver</button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
