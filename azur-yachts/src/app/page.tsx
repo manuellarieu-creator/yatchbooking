@@ -268,19 +268,19 @@ export default function HomePage() {
               id: 1,
               rating: 5,
               comment: "Une semaine en Grèce à bord de l'Azura 68 — un rêve devenu réalité. L'équipage était d'une attention extraordinaire, le yacht immaculé. Nous reviendrons sans aucun doute.",
-              author: { firstName: "Sophie", lastName: "Lemaire", country: "Paris, France" }
+              author: { firstName: "Sophie", lastName: "Lemaire", countryResidence: "Paris, France" }
             },
             {
               id: 2,
               rating: 5,
               comment: "Service irréprochable de A à Z. La réservation était simple, le yacht exactement comme sur les photos, et la Côte d'Azur depuis la mer est tout simplement magique.",
-              author: { firstName: "Marco", lastName: "Ricci", country: "Milan, Italie" }
+              author: { firstName: "Marco", lastName: "Ricci", countryResidence: "Milan, Italie" }
             },
             {
               id: 3,
               rating: 5,
               comment: "Notre anniversaire de mariage aux Caraïbes. Azur Yachts a tout planifié à la perfection — le catamaran, le chef, les excursions. Une expérience absolument mémorable.",
-              author: { firstName: "Amelia & Robert", lastName: "Chen", country: "Londres, Royaume-Uni" }
+              author: { firstName: "Amelia & Robert", lastName: "Chen", countryResidence: "Londres, Royaume-Uni" }
             }
           ]).map((review: any, i: number) => (
             <div className="testi-card" key={review.id || i}>
@@ -297,7 +297,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <div className="testi-name">{review.author?.firstName} {review.author?.lastName}</div>
-                  <div className="testi-loc">{review.author?.country || 'Client Azur Yachts'}</div>
+                  <div className="testi-loc">{review.author?.countryResidence || 'Client Azur Yachts'}</div>
                 </div>
               </div>
             </div>

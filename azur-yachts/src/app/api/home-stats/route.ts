@@ -57,7 +57,7 @@ export async function GET() {
       take: 3,
       include: {
         author: {
-          select: { firstName: true, lastName: true, avatar: true, country: true }
+          select: { firstName: true, lastName: true, avatar: true, countryResidence: true }
         },
         listing: {
           select: { title: true }
