@@ -621,7 +621,7 @@ export default function PublishPage() {
                         }}
                         style={{ cursor: 'grab' }}
                       >
-                        <img src={f.url ? f.url : URL.createObjectURL(f)} className="photo-thumb-img" alt="Yacht preview" />
+                        <img src={f instanceof File ? URL.createObjectURL(f) : f.url} className="photo-thumb-img" alt="Yacht preview" />
                         <div className="photo-thumb-overlay">
                           <button className="photo-thumb-del" onClick={(e) => { e.stopPropagation(); removePhoto(i); }}>✕</button>
                         </div>
