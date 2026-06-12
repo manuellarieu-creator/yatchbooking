@@ -19,6 +19,11 @@ export default function PublishPage() {
   const [savedStatus, setSavedStatus] = useState('💾 Sauvegardé');
   const isModal = typeof window !== 'undefined' && window.location.search.includes('modal=true');
   
+  // Admin logic
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [advertisers, setAdvertisers] = useState<any[]>([]);
+  const [selectedOwnerId, setSelectedOwnerId] = useState<string>('');
+  
   // Step 1
   const [firstName, setFirstName] = useState('Jean');
   const [lastName, setLastName] = useState('Dupont');
@@ -72,13 +77,25 @@ export default function PublishPage() {
 
   // Simulating auto-save
   useEffect(() => {
+    // Check if user is admin
+    fetch('/api/users/profile').then(res => res.json()).then(data => {
+      if (data.user?.role === 'ADMIN') {
+        setIsAdmin(true);
+        fetch('/api/admin/users/list').then(r => r.json()).then(d => {
+          if (d.users) setAdvertisers(d.users);
+        });
+      }
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
     setSavedStatus('⏳ Sauvegarde…');
     const t = setTimeout(() => setSavedStatus('💾 Sauvegardé'), 800);
     return () => clearTimeout(t);
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
     title, boatType, year, portCountry, portCity, length, adults, children, hours, captainReq, skipperOpt,
-    photos, desc, priceDay, cleaningFee, services, deliveryToggle, deliveryFee, markedDays, immediateAvail
+    photos, desc, priceDay, cleaningFee, services, deliveryToggle, deliveryFee, markedDays, immediateAvail, selectedOwnerId
   ]);
 
   const triggerToast = (msg: string) => {
@@ -197,13 +214,37 @@ export default function PublishPage() {
     return `${months[d.getMonth()]} ${d.getFullYear()}`;
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 2000);
+    
+    // Simulate real upload here... normally we upload photos, then create listing
+    // But for this UI, we just simulate the API call format.
+    try {
+      const payload = {
+        title, description: desc, price: parseFloat(priceDay), country: portCountry, location: portCity,
+        latitude: null, longitude: null, maxAdults: adults, maxChildren: children,
+        boatType, boatLength: parseFloat(length), boatYear: parseInt(year), requiresCaptain: captainReq,
+        skipperAvailable: skipperOpt, maxRentalHours: parseInt(hours), deliveryAvailable: deliveryToggle,
+        deliveryFee: parseFloat(deliveryFee || '0'), cleaningFee: parseFloat(cleaningFee), 
+        images: [], services, availabilities: [], ownerId: isAdmin ? selectedOwnerId : undefined
+      };
+      
+      const res = await fetch('/api/listings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (res.ok) {
+        setSuccess(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        alert("Erreur lors de la publication");
+      }
+    } catch (e) {
+      alert("Erreur réseau");
+    }
+    setLoading(false);
   };
 
   // Validations
@@ -315,6 +356,19 @@ export default function PublishPage() {
                 </div>
                 <div className="form-card">
                   <div className="form-card-title">Identité</div>
+                  {isAdmin && (
+                    <div className="field" style={{ background: '#fdf8f0', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #f3e8d2' }}>
+                      <label className="label" style={{ color: '#927334' }}>[Admin] Attribuer cette annonce à :</label>
+                      <select className="select" value={selectedOwnerId} onChange={e => setSelectedOwnerId(e.target.value)}>
+                        <option value="">(Moi-même)</option>
+                        {advertisers.map(adv => (
+                          <option key={adv.id} value={adv.id}>
+                            {adv.firstName} {adv.lastName} {adv.isManagedByAdmin ? '(Géré)' : ''}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   <div className="field-row">
                     <div className="field">
                       <label className="label">Prénom <span className="req">*</span></label>

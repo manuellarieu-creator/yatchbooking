@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
     if (!session?.user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
 
     const userId = (session.user as any).id;
+    const userRole = (session.user as any).role;
     const url = new URL(req.url);
     const conversationId = url.searchParams.get('conversationId');
 
@@ -15,18 +16,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'conversationId manquant' }, { status: 400 });
     }
 
-    // Vérifier que l'utilisateur participe à la conversation
-    const participant = await prisma.conversationParticipant.findUnique({
-      where: {
-        conversationId_userId: {
-          conversationId,
-          userId
+    if (userRole !== 'ADMIN') {
+      // Vérifier que l'utilisateur participe à la conversation
+      const participant = await prisma.conversationParticipant.findUnique({
+        where: {
+          conversationId_userId: {
+            conversationId,
+            userId
+          }
         }
-      }
-    });
+      });
 
-    if (!participant) {
-      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+      if (!participant) {
+        return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+      }
     }
 
     // Récupérer les messages
@@ -34,7 +37,7 @@ export async function GET(req: NextRequest) {
       where: { conversationId },
       orderBy: { createdAt: 'asc' },
       include: {
-        sender: { select: { id: true, firstName: true, lastName: true } }
+        sender: { select: { id: true, firstName: true, lastName: true, role: true } }
       }
     });
 
@@ -51,24 +54,27 @@ export async function POST(req: NextRequest) {
     if (!session?.user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
 
     const userId = (session.user as any).id;
-    const { conversationId, content } = await req.json();
+    const userRole = (session.user as any).role;
+    const { conversationId, content, displayAsUserId } = await req.json();
 
     if (!conversationId || !content) {
       return NextResponse.json({ error: 'Données manquantes' }, { status: 400 });
     }
 
-    // Vérifier que l'utilisateur participe à la conversation
-    const participant = await prisma.conversationParticipant.findUnique({
-      where: {
-        conversationId_userId: {
-          conversationId,
-          userId
+    if (userRole !== 'ADMIN') {
+      // Vérifier que l'utilisateur participe à la conversation
+      const participant = await prisma.conversationParticipant.findUnique({
+        where: {
+          conversationId_userId: {
+            conversationId,
+            userId
+          }
         }
-      }
-    });
+      });
 
-    if (!participant) {
-      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+      if (!participant) {
+        return NextResponse.json({ error: 'Accès refusé' }, { status: 403 });
+      }
     }
 
     // Créer le message
@@ -76,10 +82,12 @@ export async function POST(req: NextRequest) {
       data: {
         content,
         senderId: userId,
-        conversationId
+        conversationId,
+        isAdminReply: userRole === 'ADMIN',
+        displayAsUserId: userRole === 'ADMIN' ? displayAsUserId : null
       },
       include: {
-        sender: { select: { id: true, firstName: true, lastName: true } }
+        sender: { select: { id: true, firstName: true, lastName: true, role: true } }
       }
     });
 

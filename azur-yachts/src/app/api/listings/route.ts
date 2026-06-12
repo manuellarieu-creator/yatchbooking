@@ -119,8 +119,10 @@ export async function POST(req: NextRequest) {
       latitude, longitude, maxAdults, maxChildren,
       boatType, boatLength, boatYear, requiresCaptain,
       skipperAvailable, maxRentalHours, deliveryAvailable,
-      deliveryFee, cleaningFee, images, services, availabilities,
+      deliveryFee, cleaningFee, images, services, availabilities, ownerId
     } = body
+
+    const finalOwnerId = ((session.user as any).role === 'ADMIN' && ownerId) ? ownerId : (session.user as any).id;
 
     const listing = await prisma.listing.create({
       data: {
@@ -130,7 +132,7 @@ export async function POST(req: NextRequest) {
         skipperAvailable, maxRentalHours, deliveryAvailable,
         deliveryFee, cleaningFee,
         status: 'PENDING',
-        ownerId: (session.user as any).id,
+        ownerId: finalOwnerId,
         images: {
           create: images?.map((img: any, idx: number) => ({
             url: img.url,

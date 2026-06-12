@@ -79,6 +79,7 @@ model User {
   role              Role            @default(CLIENT)
   status            UserStatus      @default(PENDING)
   isEmailVerified   Boolean         @default(false)
+  isManagedByAdmin  Boolean         @default(false)
   emailVerifyToken  String?
   videoVerified     Boolean         @default(false)
   videoUrl          String?
