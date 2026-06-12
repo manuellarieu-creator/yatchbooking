@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 export default function GeneralSettingsPage() {
   const [satisfiedClients, setSatisfiedClients] = useState('');
   const [yearsOfExcellence, setYearsOfExcellence] = useState('');
+  const [totalYachts, setTotalYachts] = useState(0);
+  const [totalDestinations, setTotalDestinations] = useState(0);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -15,6 +17,8 @@ export default function GeneralSettingsPage() {
         if (!data.error) {
           setSatisfiedClients(data.satisfiedClients || '');
           setYearsOfExcellence(data.yearsOfExcellence || '');
+          setTotalYachts(data.totalYachts || 0);
+          setTotalDestinations(data.totalDestinations || 0);
         }
         setLoading(false);
       })
@@ -50,36 +54,74 @@ export default function GeneralSettingsPage() {
       </div>
 
       <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', maxWidth: '600px', border: '1px solid #eaeaea' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+          <div>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem', color: '#666' }}>Yachts disponibles</label>
+            <input 
+              type="text" 
+              value={totalYachts} 
+              disabled
+              style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '4px', background: '#f5f5f5', color: '#666', cursor: 'not-allowed' }}
+            />
+            <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.3rem' }}>Calculé automatiquement.</p>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem', color: '#666' }}>Destinations mondiales</label>
+            <input 
+              type="text" 
+              value={totalDestinations} 
+              disabled
+              style={{ width: '100%', padding: '0.8rem', border: '1px solid #ddd', borderRadius: '4px', background: '#f5f5f5', color: '#666', cursor: 'not-allowed' }}
+            />
+            <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.3rem' }}>Calculé automatiquement.</p>
+          </div>
+        </div>
+
+        <hr style={{ borderTop: '1px solid #eaeaea', marginBottom: '2rem' }} />
+
         <div style={{ marginBottom: '1.5rem' }}>
           <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Clients satisfaits</label>
           <input 
             type="text" 
             value={satisfiedClients} 
             onChange={(e) => setSatisfiedClients(e.target.value)}
-            style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px' }}
+            style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
             placeholder="Ex: 12K+"
           />
-          <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.3rem' }}>Affiché dans la barre de statistiques de la page d'accueil.</p>
+          <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.3rem' }}>Modifiable. S'affiche sur l'accueil.</p>
         </div>
 
-        <div style={{ marginBottom: '2rem' }}>
+        <div style={{ marginBottom: '2.5rem' }}>
           <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Années d'excellence</label>
           <input 
             type="text" 
             value={yearsOfExcellence} 
             onChange={(e) => setYearsOfExcellence(e.target.value)}
-            style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px' }}
+            style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
             placeholder="Ex: 15"
           />
-          <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.3rem' }}>Affiché dans la barre de statistiques de la page d'accueil.</p>
+          <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.3rem' }}>Modifiable. S'affiche sur l'accueil.</p>
         </div>
 
         <button 
           onClick={handleSave} 
           disabled={saving}
-          style={{ background: 'var(--ocean)', color: 'white', padding: '0.8rem 1.5rem', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}
+          style={{ 
+            background: 'var(--ocean)', 
+            color: 'white', 
+            padding: '1rem 2rem', 
+            border: 'none', 
+            borderRadius: '4px', 
+            cursor: 'pointer', 
+            fontWeight: 700, 
+            fontSize: '1.1rem',
+            width: '100%',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            transition: 'background 0.2s'
+          }}
         >
-          {saving ? 'Enregistrement...' : 'Enregistrer les paramètres'}
+          {saving ? '⏳ Sauvegarde en cours...' : '💾 Sauvegarder les modifications'}
         </button>
       </div>
     </div>

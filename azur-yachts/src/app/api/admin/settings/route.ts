@@ -16,7 +16,19 @@ export async function GET() {
       });
     }
 
-    return NextResponse.json(settings);
+    const totalYachts = await prisma.listing.count({ where: { status: 'ACTIVE' } });
+    const uniqueCountries = await prisma.listing.findMany({
+      where: { status: 'ACTIVE' },
+      select: { country: true },
+      distinct: ['country']
+    });
+    const totalDestinations = uniqueCountries.length;
+
+    return NextResponse.json({
+      ...settings,
+      totalYachts,
+      totalDestinations
+    });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
