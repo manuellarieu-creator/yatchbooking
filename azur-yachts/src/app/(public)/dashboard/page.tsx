@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -8,7 +8,7 @@ import './dashboard.css';
 
 type Section = 'overview' | 'listings' | 'bookings' | 'stats' | 'messages' | 'calendar';
 
-export default function DashboardPage() {
+function DashboardContent() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get('tab') as Section) || 'overview';
   const [activeSection, setActiveSection] = useState<Section>(initialTab);
@@ -705,5 +705,13 @@ export default function DashboardPage() {
         <div className="toast-bar"></div>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={<div style={{padding: '50px', textAlign: 'center'}}>Chargement du tableau de bord...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }
