@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { auth } from '@/auth';
 import './header.css';
 import UserMenu from './UserMenu';
+import MobileMenu from './MobileMenu';
 
 export default async function Header() {
   const session = await auth();
@@ -26,10 +27,11 @@ export default async function Header() {
           </>
         ) : (
           <>
-            <Link href="/auth"><button className="nav-btn nav-btn-outline">Connexion</button></Link>
-            <Link href="/publish"><button className="nav-btn nav-btn-gold">Mettre en location</button></Link>
+            <Link href="/auth" className="desktop-only"><button className="nav-btn nav-btn-outline">Connexion</button></Link>
+            <Link href="/publish" className="desktop-only"><button className="nav-btn nav-btn-gold">Mettre en location</button></Link>
           </>
         )}
+        <MobileMenu hasUser={!!session?.user} />
       </div>
     </nav>
   );

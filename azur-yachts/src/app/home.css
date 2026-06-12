@@ -392,3 +392,63 @@
   .home-container footer { padding: 3rem 1.5rem; }
   .home-container .yacht-img { height: 200px; }
 }
+
+/* -- INFINITE SCROLL -- */
+.infinite-scroll-wrapper {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  /* Masquer les débordements */
+}
+.infinite-scroll-wrapper::before,
+.infinite-scroll-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+.infinite-scroll-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, var(--cream), transparent);
+}
+.infinite-scroll-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, var(--cream), transparent);
+}
+
+.infinite-scroll-track {
+  display: flex;
+  width: max-content;
+  animation: scrollLeft 30s linear infinite;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+.infinite-scroll-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Override existing grids for infinite scroll */
+.infinite-scroll-track .stat {
+  min-width: 250px;
+  flex-shrink: 0;
+  border-right: none;
+}
+.infinite-scroll-track .step {
+  min-width: 300px;
+  max-width: 300px;
+  flex-shrink: 0;
+  border-right: none;
+}
+.infinite-scroll-track .testi-card {
+  min-width: 350px;
+  max-width: 350px;
+  flex-shrink: 0;
+}

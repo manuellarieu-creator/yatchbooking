@@ -118,22 +118,28 @@ export default function HomePage() {
       </section>
 
       {/* STATS BAR */}
-      <div className="stats-bar reveal">
-        <div className="stat">
-          <div className="stat-num">{stats.totalYachts !== null ? stats.totalYachts : '-'}</div>
-          <div className="stat-label">Yachts disponibles</div>
-        </div>
-        <div className="stat">
-          <div className="stat-num">{stats.totalDestinationsCount !== null ? stats.totalDestinationsCount : '-'}</div>
-          <div className="stat-label">Destinations mondiales</div>
-        </div>
-        <div className="stat">
-          <div className="stat-num">{stats.settings?.satisfiedClients || '-'}</div>
-          <div className="stat-label">Clients satisfaits</div>
-        </div>
-        <div className="stat">
-          <div className="stat-num">{stats.settings?.yearsOfExcellence || '-'}</div>
-          <div className="stat-label">Années d'excellence</div>
+      <div className="infinite-scroll-wrapper" style={{ background: 'var(--navy-mid)', padding: '2rem 0' }}>
+        <div className="infinite-scroll-track">
+          {[1, 2].map((group) => (
+            <div key={group} style={{ display: 'flex', gap: '2rem' }}>
+              <div className="stat">
+                <div className="stat-num">{stats.totalYachts !== null ? stats.totalYachts : '-'}</div>
+                <div className="stat-label">Yachts disponibles</div>
+              </div>
+              <div className="stat">
+                <div className="stat-num">{stats.totalDestinationsCount !== null ? stats.totalDestinationsCount : '-'}</div>
+                <div className="stat-label">Destinations mondiales</div>
+              </div>
+              <div className="stat">
+                <div className="stat-num">{stats.settings?.satisfiedClients || '-'}</div>
+                <div className="stat-label">Clients satisfaits</div>
+              </div>
+              <div className="stat">
+                <div className="stat-num">{stats.settings?.yearsOfExcellence || '-'}</div>
+                <div className="stat-label">Années d'excellence</div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -174,26 +180,32 @@ export default function HomePage() {
           <h2 className="section-title">Comment <em>naviguer</em> avec nous</h2>
           <p className="section-desc" style={{ color: 'rgba(255,255,255,0.45)' }}>Quatre étapes pour vivre l'expérience yacht de vos rêves.</p>
         </div>
-        <div className="steps-grid reveal">
-          <div className="step">
-            <div className="step-num">01</div>
-            <div className="step-title">Choisissez votre yacht</div>
-            <p className="step-desc">Parcourez notre flotte exclusive de 340+ embarcations de prestige, filtrées selon vos critères.</p>
-          </div>
-          <div className="step">
-            <div className="step-num">02</div>
-            <div className="step-title">Personnalisez votre croisière</div>
-            <p className="step-desc">Sélectionnez vos dates, votre itinéraire, et optez pour des services additionnels (chef, plongée…).</p>
-          </div>
-          <div className="step">
-            <div className="step-num">03</div>
-            <div className="step-title">Confirmez & payez</div>
-            <p className="step-desc">Réservation sécurisée en ligne. Acompte de 30%, solde 30 jours avant le départ.</p>
-          </div>
-          <div className="step">
-            <div className="step-num">04</div>
-            <div className="step-title">Larguez les amarres</div>
-            <p className="step-desc">Notre équipe vous accueille à bord. Votre équipage dédié prend soin de tout.</p>
+        <div className="infinite-scroll-wrapper" style={{ marginTop: '3rem' }}>
+          <div className="infinite-scroll-track" style={{ animationDuration: '40s' }}>
+            {[1, 2].map((group) => (
+              <div key={group} style={{ display: 'flex', gap: '2rem' }}>
+                <div className="step">
+                  <div className="step-num">01</div>
+                  <div className="step-title">Choisissez votre yacht</div>
+                  <p className="step-desc">Parcourez notre flotte exclusive de 340+ embarcations de prestige, filtrées selon vos critères.</p>
+                </div>
+                <div className="step">
+                  <div className="step-num">02</div>
+                  <div className="step-title">Personnalisez votre croisière</div>
+                  <p className="step-desc">Sélectionnez vos dates, votre itinéraire, et optez pour des services additionnels (chef, plongée…).</p>
+                </div>
+                <div className="step">
+                  <div className="step-num">03</div>
+                  <div className="step-title">Confirmez & payez</div>
+                  <p className="step-desc">Réservation sécurisée en ligne. Acompte de 30%, solde 30 jours avant le départ.</p>
+                </div>
+                <div className="step">
+                  <div className="step-num">04</div>
+                  <div className="step-title">Larguez les amarres</div>
+                  <p className="step-desc">Notre équipe vous accueille à bord. Votre équipage dédié prend soin de tout.</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -262,37 +274,43 @@ export default function HomePage() {
           <span className="section-eyebrow">Ils nous font confiance</span>
           <h2 className="section-title">Ce que disent<br/>nos <em>navigateurs</em></h2>
         </div>
-        <div className="testi-grid reveal">
-          {loadingStats ? (
-            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-light)'}}>
-              <div className="spinner" style={{margin: '0 auto'}}></div>
-            </div>
-          ) : stats?.reviews?.length > 0 ? (
-            stats.reviews.map((review: any, i: number) => (
-              <div className="testi-card" key={review.id || i}>
-                <span className="testi-quote">"</span>
-                <div className="testi-stars">{'★'.repeat(review.rating || 5)}{'☆'.repeat(5 - (review.rating || 5))}</div>
-                <p className="testi-text">{review.comment}</p>
-                <div className="testi-author">
-                  <div className="testi-avatar">
-                    {review.author?.avatar ? (
-                      <img src={review.author.avatar} alt="Avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
-                    ) : (
-                      (review.author?.firstName?.[0] || '') + (review.author?.lastName?.[0] || '')
-                    )}
-                  </div>
-                  <div>
-                    <div className="testi-name">{review.author?.firstName} {review.author?.lastName}</div>
-                    <div className="testi-loc">{review.author?.countryResidence || 'Client Azur Yachts'}</div>
-                  </div>
-                </div>
+        <div className="infinite-scroll-wrapper" style={{ marginTop: '3rem' }}>
+          <div className="infinite-scroll-track">
+            {loadingStats ? (
+              <div style={{width: '100%', textAlign: 'center', padding: '3rem', color: 'var(--text-light)'}}>
+                <div className="spinner" style={{margin: '0 auto'}}></div>
               </div>
-            ))
-          ) : (
-            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: '#666'}}>
-               Aucun avis client approuvé pour le moment.
-            </div>
-          )}
+            ) : stats?.reviews?.length > 0 ? (
+              [1, 2].map((group) => (
+                <div key={group} style={{ display: 'flex', gap: '2rem' }}>
+                  {stats.reviews.map((review: any, i: number) => (
+                    <div className="testi-card" key={`group${group}-review${review.id || i}`}>
+                      <span className="testi-quote">"</span>
+                      <div className="testi-stars">{'★'.repeat(review.rating || 5)}{'☆'.repeat(5 - (review.rating || 5))}</div>
+                      <p className="testi-text">{review.comment}</p>
+                      <div className="testi-author">
+                        <div className="testi-avatar">
+                          {review.author?.avatar ? (
+                            <img src={review.author.avatar} alt="Avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+                          ) : (
+                            (review.author?.firstName?.[0] || '') + (review.author?.lastName?.[0] || '')
+                          )}
+                        </div>
+                        <div>
+                          <div className="testi-name">{review.author?.firstName} {review.author?.lastName}</div>
+                          <div className="testi-loc">{review.author?.countryResidence || 'Client Azur Yachts'}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))
+            ) : (
+              <div style={{width: '100%', textAlign: 'center', padding: '3rem', color: '#666'}}>
+                 Aucun avis client approuvé pour le moment.
+              </div>
+            )}
+          </div>
         </div>
       </section>
 

@@ -1,0 +1,52 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+
+export default function MobileMenu({ hasUser }: { hasUser: boolean }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
+  return (
+    <div className="mobile-menu-container">
+      <button className="hamburger-btn" onClick={toggleMenu} aria-label="Menu">
+        <span className={`hamburger-line ${isOpen ? 'open' : ''}`}></span>
+        <span className={`hamburger-line ${isOpen ? 'open' : ''}`}></span>
+        <span className={`hamburger-line ${isOpen ? 'open' : ''}`}></span>
+      </button>
+
+      {isOpen && (
+        <div className="mobile-overlay" onClick={toggleMenu}>
+          <div className="mobile-menu-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-menu-header">
+              <Link href="/" className="nav-logo" onClick={toggleMenu}>AZUR<span>&nbsp;YACHTS</span></Link>
+              <button className="close-btn" onClick={toggleMenu}>×</button>
+            </div>
+            
+            <ul className="mobile-nav-links">
+              <li><Link href="/" onClick={toggleMenu}>Accueil</Link></li>
+              <li><Link href="/listings" onClick={toggleMenu}>Les Offres</Link></li>
+              <li><Link href="/#destinations" onClick={toggleMenu}>Destinations</Link></li>
+              <li><Link href="/about" onClick={toggleMenu}>À propos</Link></li>
+              <li><Link href="/contact" onClick={toggleMenu}>Contact</Link></li>
+            </ul>
+
+            <div className="mobile-nav-actions">
+              {!hasUser && (
+                <>
+                  <Link href="/auth" onClick={toggleMenu}>
+                    <button className="nav-btn nav-btn-outline w-full mb-2">Connexion</button>
+                  </Link>
+                  <Link href="/publish" onClick={toggleMenu}>
+                    <button className="nav-btn nav-btn-gold w-full">Mettre en location</button>
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
