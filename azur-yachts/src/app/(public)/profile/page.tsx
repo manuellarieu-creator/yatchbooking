@@ -162,10 +162,12 @@ export default function ProfilePage() {
             
             {profile?.role === 'ADMIN' && (
               <div style={{ marginTop: '2rem', padding: '0 1.5rem' }}>
-                <Link href="/admin">
-                  <button className="nav-btn-gold" style={{ width: '100%', padding: '0.8rem', cursor: 'pointer' }}>
-                    Aller à l'Espace Admin
-                  </button>
+                <Link 
+                  href="/admin" 
+                  className="nav-btn-gold" 
+                  style={{ display: 'block', textAlign: 'center', width: '100%', padding: '0.8rem', cursor: 'pointer', textDecoration: 'none' }}
+                >
+                  Aller à l'Espace Admin
                 </Link>
               </div>
             )}
