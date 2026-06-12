@@ -233,13 +233,22 @@ export default function PublishPage() {
     return `${months[d.getMonth()]} ${d.getFullYear()}`;
   };
 
-  const getBase64 = (file: any) => new Promise<string>((resolve, reject) => {
-    if (file.url) return resolve(file.url);
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = error => reject(error);
-  });
+  const uploadToCloudinary = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'azur_proofs'); // Use existing preset
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dt7v4cuxm'}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      return data.secure_url;
+    } catch (e) {
+      console.error(e);
+      return 'https://placehold.co/600x400/223/fff?text=Upload+Failed';
+    }
+  };
 
   const handlePublish = async () => {
     setLoading(true);
@@ -247,8 +256,8 @@ export default function PublishPage() {
     try {
       const processedImages = await Promise.all(photos.map(async (p, idx) => {
         if (p.url) return p;
-        const base64 = await getBase64(p);
-        return { url: base64, publicId: `new_${idx}` };
+        const secure_url = await uploadToCloudinary(p);
+        return { url: secure_url, publicId: `new_${idx}_${Date.now()}` };
       }));
       const payload = {
         title, description: desc, price: parseFloat(priceDay), country: portCountry, location: portCity,

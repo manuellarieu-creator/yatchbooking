@@ -208,16 +208,16 @@ export default function YachtPage({ params }: { params: { id: string } }) {
       {/* ── GALLERY ── */}
       <div className="gallery">
         <div className="gallery-main" onClick={() => { setLightboxIndex(0); setIsLightboxOpen(true); }}>
-          <div className="gallery-bg" style={{ backgroundImage: `url(${yacht.images?.[0]?.url || ''})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+          <div className="gallery-bg" style={{ backgroundImage: `url(${yacht.images?.[0]?.url || 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
           <button className="gallery-share" onClick={(e) => { e.stopPropagation(); triggerToast('Lien copié dans le presse-papiers.'); }}>🔗</button>
           <button className={`gallery-fav ${isFav ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); setIsFav(!isFav); }}>{isFav ? '❤️' : '♡'}</button>
           <button className="gallery-more-btn" onClick={(e) => { e.stopPropagation(); setLightboxIndex(0); setIsLightboxOpen(true); }}>📷 Voir les {totalPhotos} photos</button>
         </div>
         <div className="gallery-thumb" onClick={() => { setLightboxIndex(1); setIsLightboxOpen(true); }}>
-          <div className="gallery-bg" style={{ backgroundImage: `url(${yacht.images?.[1]?.url || ''})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+          <div className="gallery-bg" style={{ backgroundImage: `url(${yacht.images?.[1]?.url || 'https://images.unsplash.com/photo-1605281317010-52c286e7a2b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
         </div>
         <div className="gallery-thumb" onClick={() => { setLightboxIndex(2); setIsLightboxOpen(true); }}>
-          <div className="gallery-bg" style={{ backgroundImage: `url(${yacht.images?.[2]?.url || ''})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
+          <div className="gallery-bg" style={{ backgroundImage: `url(${yacht.images?.[2]?.url || 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
         </div>
       </div>
 
