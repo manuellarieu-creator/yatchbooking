@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db as prisma } from '@/lib/db'
 import {
-  sendBankTransferReminder1,
-  sendBankTransferReminder2,
-  sendBookingCancelled,
-} from '@/lib/resend'
+  emailVirementRelance1,
+  emailVirementRelance2,
+  emailBookingCancelled,
+} from '@/lib/email'
 
 export async function GET(req: NextRequest) {
   // Verify cron secret
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
     })
 
     for (const payment of needsReminder1) {
-      await sendBankTransferReminder1(
+      await emailVirementRelance1(
         payment.booking.client.email,
         payment.booking.client.firstName,
         payment.bankTransferRef || payment.bookingId,
@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
     })
 
     for (const payment of needsReminder2) {
-      await sendBankTransferReminder2(
+      await emailVirementRelance2(
         payment.booking.client.email,
         payment.booking.client.firstName,
         payment.bankTransferRef || payment.bookingId,
@@ -111,7 +111,7 @@ export async function GET(req: NextRequest) {
         where: { id: payment.id },
         data: { status: 'FAILED' },
       })
-      await sendBookingCancelled(
+      await emailBookingCancelled(
         payment.booking.client.email,
         payment.booking.client.firstName,
         payment.bankTransferRef || payment.bookingId,

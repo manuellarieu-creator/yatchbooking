@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { sendOtpEmail } from '@/lib/resend';
+import crypto from 'crypto';
 
 export async function POST(req: Request) {
   try {
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const isAdvertiser = role === 'ADVERTISER';
-    const otp = isAdvertiser ? Math.floor(100000 + Math.random() * 900000).toString() : null;
+    const token = isAdvertiser ? Math.floor(100000 + Math.random() * 900000).toString() : crypto.randomUUID();
 
     // Créer le nouvel utilisateur
     const newUser = await db.user.create({
@@ -54,13 +55,16 @@ export async function POST(req: Request) {
         password: hashedPassword,
         role: isAdvertiser ? 'ADVERTISER' : 'CLIENT',
         status: isAdvertiser ? 'PENDING' : 'ACTIVE',
-        isEmailVerified: !isAdvertiser,
-        emailVerifyToken: otp,
+        isEmailVerified: false, // On force la vérification pour tout le monde
+        emailVerifyToken: token,
       },
     });
 
-    if (isAdvertiser && otp) {
-      await sendOtpEmail(email, firstName, otp);
+    if (isAdvertiser) {
+      await sendOtpEmail(email, firstName, token);
+    } else {
+      const { emailVerification } = await import('@/lib/email');
+      await emailVerification(email, firstName, token);
     }
 
     return NextResponse.json(
