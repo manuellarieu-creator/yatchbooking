@@ -281,12 +281,12 @@ function PublishForm() {
       }));
 
       const payload = {
-        title, description: desc, price: parseFloat(priceDay), country: portCountry, location: portCity,
-        latitude: null, longitude: null, maxAdults: adults, maxChildren: children,
-        boatType, boatLength: parseFloat(length), boatYear: parseInt(year), requiresCaptain: captainReq,
-        skipperAvailable: skipperOpt, maxRentalHours: parseInt(hours), deliveryAvailable: deliveryToggle,
-        deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: parseFloat(dp.fee || '0') })),
-        cleaningFee: parseFloat(cleaningFee), 
+        title, description: desc, price: Number(priceDay) || 0, country: portCountry, location: portCity,
+        latitude: null, longitude: null, maxAdults: Number(adults) || 1, maxChildren: Number(children) || 0,
+        boatType, boatLength: Number(length) || 0, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
+        skipperAvailable: skipperOpt, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
+        deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: Number(dp.fee) || 0 })),
+        cleaningFee: Number(cleaningFee) || 0, 
         images: processedImages, services, availabilities: [], ownerId: isAdmin ? selectedOwnerId : undefined
       };
       

@@ -57,6 +57,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const body = await req.json()
     const { images, services, availabilities, ownerId, ...data } = body;
 
+    if (ownerId && (session.user as any).role === 'ADMIN') {
+      data.ownerId = ownerId;
+    }
+
     if (images) {
       data.images = {
         deleteMany: {},
@@ -87,6 +91,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
     return NextResponse.json({ listing: updated })
   } catch (error) {
+    console.error('Error updating listing:', error);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
