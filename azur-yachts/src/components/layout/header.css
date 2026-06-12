@@ -87,6 +87,11 @@
 .mobile-menu-container { display: none; }
 .desktop-only { display: flex; }
 
+/* Cacher l'icône user invité sur desktop */
+@media (min-width: 901px) {
+  .guest-user-menu { display: none !important; }
+}
+
 @media (max-width: 900px) {
   .nav-top { padding: 0 1rem; }
   .nav-links { display: none !important; }

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 
-export default function UserMenu({ user }: { user?: any }) {
+export default function UserMenu({ user, guestClass = '' }: { user?: any, guestClass?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +25,7 @@ export default function UserMenu({ user }: { user?: any }) {
   const initials = user ? `${(user.firstName?.[0] || 'U').toUpperCase()}${(user.lastName?.[0] || '').toUpperCase()}` : '👤';
 
   return (
-    <div className="user-menu-container" ref={menuRef}>
+    <div className={`user-menu-container ${guestClass}`} ref={menuRef}>
       <div className="user-menu-trigger" onClick={() => setIsOpen(!isOpen)}>
         {user && <span className="user-menu-name">{user.firstName} {user.lastName}</span>}
         <div className="nav-avatar" style={!user ? { background: 'transparent', border: '1px solid var(--gold)', color: 'var(--gold)' } : {}}>
