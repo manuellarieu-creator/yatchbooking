@@ -77,14 +77,10 @@ export default function PublishPage() {
 
   // Simulating auto-save
   useEffect(() => {
-    // Check if user is admin
-    fetch('/api/users/profile').then(res => res.json()).then(data => {
-      if (data.user?.role === 'ADMIN') {
-        setIsAdmin(true);
-        fetch('/api/admin/users/list').then(r => r.json()).then(d => {
-          if (d.users) setAdvertisers(d.users);
-        });
-      }
+    // We are in the admin route, so we directly fetch the advertisers
+    setIsAdmin(true);
+    fetch('/api/admin/users/list').then(r => r.json()).then(d => {
+      if (d.users) setAdvertisers(d.users);
     }).catch(() => {});
   }, []);
 
