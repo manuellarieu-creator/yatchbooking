@@ -55,18 +55,10 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   const [adults, setAdults] = useState(0);
   const [children, setChildren] = useState(0);
   const [pets, setPets] = useState('non');
-  
-  const [services, setServices] = useState({
-    chef: false,
-    snorkeling: false,
-    delivery: false
-  });
-
+  const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
   const [discountCode, setDiscountCode] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
   
-  const BASE_PRICE = yacht?.price || 0;
-  const CLEANING_FEE = yacht?.cleaningFee || 0;
 
   // ── Review Modal State ──
   const [isReviewOpen, setIsReviewOpen] = useState(false);
@@ -119,13 +111,18 @@ export default function YachtPage({ params }: { params: { id: string } }) {
     let nights = Math.ceil(diff / (1000 * 3600 * 24));
     if (nights <= 0) return null;
 
-    const base = nights * BASE_PRICE;
+    const base = nights * yacht.price;
     let servTotal = 0;
-    if (services.chef) servTotal += 1400; // Mock: assume per week/booking
-    if (services.snorkeling) servTotal += 200;
-    if (services.delivery) servTotal += 500;
+    selectedServiceIds.forEach(id => {
+      const s = yacht.services?.find((x: any) => x.id === id);
+      if (s) {
+        if (s.unit === 'PER_BOOKING') servTotal += s.price;
+        else if (s.unit === 'PER_DAY') servTotal += s.price * nights;
+        else if (s.unit === 'PER_PERSON') servTotal += s.price * (adults + children);
+      }
+    });
 
-    const subTotal = base + CLEANING_FEE + servTotal;
+    const subTotal = base + yacht.cleaningFee + servTotal;
     const discount = discountApplied ? Math.floor(subTotal * 0.1) : 0;
     const total = subTotal - discount;
 
@@ -142,6 +139,10 @@ export default function YachtPage({ params }: { params: { id: string } }) {
     } else {
       triggerToast('Code promo invalide.');
     }
+  };
+
+  const toggleService = (id: string) => {
+    setSelectedServiceIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
   const handleBooking = async () => {
@@ -163,7 +164,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           children,
           pets: pets === 'oui',
           specialRequests: '',
-          services: [] // On pourrait envoyer les IDs des services ici si mappé
+          selectedServicesIds: selectedServiceIds
         })
       });
 
@@ -471,24 +472,20 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                   <div className="service-name required-label">Nettoyage</div>
                   <div className="service-unit">par réservation</div>
                 </div>
-                <div className="service-price">€350</div>
+                <div className="service-price">€{yacht.cleaningFee.toLocaleString()}</div>
               </div>
-              <div className="service-item" onClick={() => setServices(s => ({ ...s, chef: !s.chef }))}>
-                <div className={`service-check ${services.chef ? 'checked' : ''}`}></div>
-                <div className="service-info">
-                  <div className="service-name">Chef à bord</div>
-                  <div className="service-unit">par semaine</div>
+              {yacht.services?.map((s: any) => (
+                <div key={s.id} className="service-item" onClick={() => toggleService(s.id)}>
+                  <div className={`service-check ${selectedServiceIds.includes(s.id) ? 'checked' : ''}`}></div>
+                  <div className="service-info">
+                    <div className="service-name">{s.name}</div>
+                    <div className="service-unit">
+                      {s.unit === 'PER_BOOKING' ? 'par réservation' : s.unit === 'PER_DAY' ? 'par jour' : 'par personne'}
+                    </div>
+                  </div>
+                  <div className="service-price">€{s.price.toLocaleString()}</div>
                 </div>
-                <div className="service-price">€1 400</div>
-              </div>
-              <div className="service-item" onClick={() => setServices(s => ({ ...s, snorkeling: !s.snorkeling }))}>
-                <div className={`service-check ${services.snorkeling ? 'checked' : ''}`}></div>
-                <div className="service-info">
-                  <div className="service-name">Équipement snorkeling</div>
-                  <div className="service-unit">par réservation</div>
-                </div>
-                <div className="service-price">€200</div>
-              </div>
+              ))}
             </div>
 
             <div className="discount-row">
