@@ -7,16 +7,12 @@ import './home.css';
 export default function HomePage() {
   const [featuredYachts, setFeaturedYachts] = useState<any[]>([]);
   const [stats, setStats] = useState<any>({
-    totalYachts: 0,
-    destinations: [
-      { name: "Côte d'Azur", count: 0, gradient: 'linear-gradient(135deg, #1a5a80, #0a2540)', isLarge: true },
-      { name: "Grèce", count: 0, gradient: 'linear-gradient(135deg, #2d6a8a, #0f3a5a)', isLarge: false },
-      { name: "Caraïbes", count: 0, gradient: 'linear-gradient(135deg, #1a4a3a, #0a2a20)', isLarge: false },
-      { name: "Bali", count: 0, gradient: 'linear-gradient(135deg, #4a2a1a, #2a1a0a)', isLarge: false }
-    ],
-    totalDestinationsCount: 68,
-    settings: { satisfiedClients: "12K+", yearsOfExcellence: "15" }
+    totalYachts: null,
+    destinations: [],
+    totalDestinationsCount: null,
+    settings: null
   });
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -48,8 +44,9 @@ export default function HomePage() {
         if (data.destinations) {
           setStats(data);
         }
+        setLoadingStats(false);
       })
-      .catch(console.error);
+      .catch(() => setLoadingStats(false));
   }, []);
 
   return (
@@ -104,19 +101,19 @@ export default function HomePage() {
       {/* STATS BAR */}
       <div className="stats-bar reveal">
         <div className="stat">
-          <div className="stat-num">{stats.totalYachts || 340}</div>
+          <div className="stat-num">{stats.totalYachts !== null ? stats.totalYachts : '-'}</div>
           <div className="stat-label">Yachts disponibles</div>
         </div>
         <div className="stat">
-          <div className="stat-num">{stats.totalDestinationsCount || 68}</div>
+          <div className="stat-num">{stats.totalDestinationsCount !== null ? stats.totalDestinationsCount : '-'}</div>
           <div className="stat-label">Destinations mondiales</div>
         </div>
         <div className="stat">
-          <div className="stat-num">{stats.settings?.satisfiedClients || '12K+'}</div>
+          <div className="stat-num">{stats.settings?.satisfiedClients || '-'}</div>
           <div className="stat-label">Clients satisfaits</div>
         </div>
         <div className="stat">
-          <div className="stat-num">{stats.settings?.yearsOfExcellence || '15'}</div>
+          <div className="stat-num">{stats.settings?.yearsOfExcellence || '-'}</div>
           <div className="stat-label">Années d'excellence</div>
         </div>
       </div>
@@ -129,7 +126,11 @@ export default function HomePage() {
           <p className="section-desc">Des criques cachées de la Méditerranée aux eaux turquoise des Caraïbes, choisissez votre horizon.</p>
         </div>
         <div className="dest-grid reveal">
-          {stats.destinations.length > 0 ? stats.destinations.map((dest: any, i: number) => (
+          {loadingStats ? (
+            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-light)'}}>
+              <div className="spinner" style={{margin: '0 auto'}}></div>
+            </div>
+          ) : stats.destinations.length > 0 ? stats.destinations.map((dest: any, i: number) => (
             <Link href={`/listings?location=${encodeURIComponent(dest.name)}`} key={dest.id || i} className={`dest-card ${dest.isLarge ? 'large' : ''}`} style={{ textDecoration: 'none' }}>
               <div className="dest-bg" style={{ 
                 background: dest.imageUrl ? `url('${dest.imageUrl}') center/cover` : (dest.gradient || 'linear-gradient(135deg, #1a5a80, #0a2540)') 
