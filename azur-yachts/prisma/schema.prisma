@@ -168,6 +168,7 @@ model Listing {
   maxRentalHours    Int?
   deliveryAvailable Boolean       @default(false)
   deliveryFee       Float?
+  deliveryPricing   Json?
   cleaningFee       Float
   averageRating     Float         @default(0)
   reviewCount       Int           @default(0)

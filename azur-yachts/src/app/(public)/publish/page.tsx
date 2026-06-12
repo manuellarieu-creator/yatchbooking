@@ -58,7 +58,7 @@ export default function PublishPage() {
   const [svcUnit, setSvcUnit] = useState('PER_BOOKING');
   const [svcDesc, setSvcDesc] = useState('');
   const [deliveryToggle, setDeliveryToggle] = useState(false);
-  const [deliveryFee, setDeliveryFee] = useState('');
+  const [deliveryPricing, setDeliveryPricing] = useState<{distance: string, fee: string}[]>([]);
 
   // Step 6
   const [calMode, setCalMode] = useState<'available' | 'blocked'>('available');
@@ -84,7 +84,7 @@ export default function PublishPage() {
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
     title, boatType, year, portCountry, portCity, length, adults, children, hours, captainReq, skipperOpt,
-    photos, desc, priceDay, cleaningFee, services, deliveryToggle, deliveryFee, markedDays, immediateAvail
+    photos, desc, priceDay, cleaningFee, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail
   ]);
 
   const triggerToast = (msg: string) => {
@@ -214,7 +214,8 @@ export default function PublishPage() {
         latitude: null, longitude: null, maxAdults: adults, maxChildren: children,
         boatType, boatLength: parseFloat(length), boatYear: parseInt(year), requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, maxRentalHours: parseInt(hours), deliveryAvailable: deliveryToggle,
-        deliveryFee: parseFloat(deliveryFee || '0'), cleaningFee: parseFloat(cleaningFee), 
+        deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: parseFloat(dp.fee || '0') })),
+        cleaningFee: parseFloat(cleaningFee), 
         images: [], services, availabilities: []
       };
       
@@ -663,8 +664,29 @@ export default function PublishPage() {
                   </div>
                   {deliveryToggle && (
                     <div style={{ marginTop: '.9rem' }}>
-                      <label className="label">Frais de livraison (€) <span className="req">*</span></label>
-                      <input className="input" type="number" min="0" value={deliveryFee} onChange={e => setDeliveryFee(e.target.value)} placeholder="Ex : 500" />
+                      <label className="label">Tarifs de livraison par distance/zone <span className="req">*</span></label>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        {deliveryPricing.map((dp, idx) => (
+                          <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <input className="input" type="text" value={dp.distance} onChange={e => {
+                              const newDp = [...deliveryPricing];
+                              newDp[idx].distance = e.target.value;
+                              setDeliveryPricing(newDp);
+                            }} placeholder="Ex: < 50km ou Monaco" style={{ flex: 1 }} />
+                            <input className="input" type="number" min="0" value={dp.fee} onChange={e => {
+                              const newDp = [...deliveryPricing];
+                              newDp[idx].fee = e.target.value;
+                              setDeliveryPricing(newDp);
+                            }} placeholder="Prix (€)" style={{ width: '120px' }} />
+                            <button className="btn btn-outline" style={{ padding: '0.5rem 0.75rem' }} onClick={() => {
+                              setDeliveryPricing(deliveryPricing.filter((_, i) => i !== idx));
+                            }}>✕</button>
+                          </div>
+                        ))}
+                        <button className="btn btn-outline" style={{ alignSelf: 'flex-start', marginTop: '0.5rem', padding: '0.5rem 1rem', fontSize: '0.85rem' }} onClick={() => {
+                          setDeliveryPricing([...deliveryPricing, { distance: '', fee: '' }]);
+                        }}>+ Ajouter un tarif</button>
+                      </div>
                     </div>
                   )}
                 </div>
