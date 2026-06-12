@@ -369,6 +369,13 @@ function PublishForm() {
 
   return (
     <div className="publish-page-container">
+      {isModal && (
+        <style>{`
+          .admin-sidebar { display: none !important; }
+          .admin-main { margin-left: 0 !important; padding: 0 !important; max-width: 100% !important; width: 100% !important; }
+          .publish-page-container { min-height: 100% !important; }
+        `}</style>
+      )}
       {/* NAV */}
       {!isModal && (
         <nav className="pub-nav">
