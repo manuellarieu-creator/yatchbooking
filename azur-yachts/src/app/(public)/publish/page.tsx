@@ -233,19 +233,31 @@ export default function PublishPage() {
     return `${months[d.getMonth()]} ${d.getFullYear()}`;
   };
 
+  const getBase64 = (file: any) => new Promise<string>((resolve, reject) => {
+    if (file.url) return resolve(file.url);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = error => reject(error);
+  });
+
   const handlePublish = async () => {
     setLoading(true);
     
-    // Simulate real upload here... normally we upload photos, then create listing
-    // But for this UI, we just simulate the API call format.
     try {
+      const processedImages = await Promise.all(photos.map(async (p, idx) => {
+        if (p.url) return p;
+        const base64 = await getBase64(p);
+        return { url: base64, publicId: `new_${idx}` };
+      }));
       const payload = {
         title, description: desc, price: parseFloat(priceDay), country: portCountry, location: portCity,
         latitude: null, longitude: null, maxAdults: adults, maxChildren: children,
         boatType, boatLength: parseFloat(length), boatYear: parseInt(year), requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, maxRentalHours: parseInt(hours), deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: parseFloat(dp.fee || '0') })),
-        cleaningFee: parseFloat(cleaningFee)
+        cleaningFee: parseFloat(cleaningFee),
+        images: processedImages, services, availabilities: []
       };
       
       const url = editId ? `/api/listings/${editId}` : '/api/listings';

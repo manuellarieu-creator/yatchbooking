@@ -103,10 +103,15 @@ export default function ListingsTable({ listings: initialListings }: { listings:
                   </td>
                   <td>{new Date(listing.createdAt).toLocaleDateString('fr-FR')}</td>
                   <td>
-                    <div className="action-group">
+                    <div className="action-group" style={{ display: 'flex', gap: '0.25rem' }}>
                       <button className="action-btn btn-view" onClick={() => setSelectedListing(listing)}>
                         👁️ Voir
                       </button>
+                      <Link href={`/admin/listings/create?edit=${listing.id}`}>
+                        <button className="action-btn btn-view" style={{ backgroundColor: '#f59e0b', color: 'white', border: 'none' }}>
+                          ✏️ Éditer
+                        </button>
+                      </Link>
                       
                       {listing.status === 'PENDING' && (
                         <>

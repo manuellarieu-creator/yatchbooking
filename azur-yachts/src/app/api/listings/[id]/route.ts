@@ -55,9 +55,34 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
 
     const body = await req.json()
+    const { images, services, availabilities, ownerId, ...data } = body;
+
+    if (images) {
+      data.images = {
+        deleteMany: {},
+        create: images.map((img: any, idx: number) => ({
+          url: img.url,
+          publicId: img.publicId,
+          order: idx + 1,
+        }))
+      };
+    }
+    if (services) {
+      data.services = {
+        deleteMany: {},
+        create: services.map((svc: any) => ({
+          name: svc.name,
+          price: svc.price,
+          unit: svc.unit,
+          description: svc.description,
+          isRequired: svc.isRequired || false,
+        }))
+      };
+    }
+
     const updated = await prisma.listing.update({
       where: { id: params.id },
-      data: { ...body, status: (session.user as any).role === 'ADMIN' ? body.status : 'PENDING' },
+      data: { ...data, status: (session.user as any).role === 'ADMIN' ? data.status || listing.status : 'PENDING' },
     })
 
     return NextResponse.json({ listing: updated })

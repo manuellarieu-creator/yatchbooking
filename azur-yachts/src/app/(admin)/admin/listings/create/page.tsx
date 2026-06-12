@@ -18,9 +18,10 @@ export default function PublishPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [savedStatus, setSavedStatus] = useState('💾 Sauvegardé');
   const isModal = typeof window !== 'undefined' && window.location.search.includes('modal=true');
+  const editId = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('edit') : null;
   
   // Admin logic
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(true);
   const [advertisers, setAdvertisers] = useState<any[]>([]);
   const [selectedOwnerId, setSelectedOwnerId] = useState<string>('');
   
@@ -46,7 +47,7 @@ export default function PublishPage() {
   const [skipperOpt, setSkipperOpt] = useState(false);
 
   // Step 3
-  const [photos, setPhotos] = useState<File[]>([]);
+  const [photos, setPhotos] = useState<any[]>([]);
   const [desc, setDesc] = useState('');
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -76,14 +77,47 @@ export default function PublishPage() {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
 
-  // Simulating auto-save
   useEffect(() => {
-    // We are in the admin route, so we directly fetch the advertisers
-    setIsAdmin(true);
-    fetch('/api/admin/users/list').then(r => r.json()).then(d => {
-      if (d.users) setAdvertisers(d.users);
-    }).catch(() => {});
+    async function fetchUsers() {
+      try {
+        const res = await fetch('/api/admin/users');
+        const data = await res.json();
+        if (data.users) {
+          setAdvertisers(data.users);
+        }
+      } catch (err) {}
+    }
+    fetchUsers();
   }, []);
+
+  useEffect(() => {
+    if (editId) {
+      fetch(`/api/listings/${editId}`).then(r => r.json()).then(data => {
+        if (data.listing) {
+          const l = data.listing;
+          setSelectedOwnerId(l.ownerId);
+          setTitle(l.title);
+          setBoatType(l.boatType);
+          setYear(l.boatYear?.toString() || '');
+          setPortCountry(l.country);
+          setPortCity(l.location);
+          setLength(l.boatLength?.toString() || '');
+          setAdults(l.maxAdults);
+          setChildren(l.maxChildren);
+          setHours(l.maxRentalHours?.toString() || '24');
+          setCaptainReq(l.requiresCaptain);
+          setSkipperOpt(l.skipperAvailable);
+          setDesc(l.description);
+          setPriceDay(l.price?.toString() || '');
+          setCleaningFee(l.cleaningFee?.toString() || '');
+          if (l.services) setServices(l.services);
+          setDeliveryToggle(l.deliveryAvailable);
+          if (l.deliveryPricing) setDeliveryPricing(l.deliveryPricing as any);
+          if (l.images) setPhotos(l.images);
+        }
+      });
+    }
+  }, [editId]);
 
   useEffect(() => {
     setSavedStatus('⏳ Sauvegarde…');
@@ -211,12 +245,24 @@ export default function PublishPage() {
     return `${months[d.getMonth()]} ${d.getFullYear()}`;
   };
 
+  const getBase64 = (file: any) => new Promise<string>((resolve, reject) => {
+    if (file.url) return resolve(file.url);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = error => reject(error);
+  });
+
   const handlePublish = async () => {
     setLoading(true);
     
-    // Simulate real upload here... normally we upload photos, then create listing
-    // But for this UI, we just simulate the API call format.
     try {
+      const processedImages = await Promise.all(photos.map(async (p, idx) => {
+        if (p.url) return p;
+        const base64 = await getBase64(p);
+        return { url: base64, publicId: `new_${idx}` };
+      }));
+
       const payload = {
         title, description: desc, price: parseFloat(priceDay), country: portCountry, location: portCity,
         latitude: null, longitude: null, maxAdults: adults, maxChildren: children,
@@ -224,11 +270,14 @@ export default function PublishPage() {
         skipperAvailable: skipperOpt, maxRentalHours: parseInt(hours), deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: parseFloat(dp.fee || '0') })),
         cleaningFee: parseFloat(cleaningFee), 
-        images: [], services, availabilities: [], ownerId: isAdmin ? selectedOwnerId : undefined
+        images: processedImages, services, availabilities: [], ownerId: isAdmin ? selectedOwnerId : undefined
       };
       
-      const res = await fetch('/api/listings', {
-        method: 'POST',
+      const url = editId ? `/api/listings/${editId}` : '/api/listings';
+      const method = editId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
@@ -593,7 +642,7 @@ export default function PublishPage() {
                         }}
                         style={{ cursor: 'grab' }}
                       >
-                        <img src={URL.createObjectURL(f)} className="photo-thumb-img" alt="Yacht preview" />
+                        <img src={f.url ? f.url : URL.createObjectURL(f)} className="photo-thumb-img" alt="Yacht preview" />
                         <div className="photo-thumb-overlay">
                           <button className="photo-thumb-del" onClick={(e) => { e.stopPropagation(); removePhoto(i); }}>✕</button>
                         </div>
