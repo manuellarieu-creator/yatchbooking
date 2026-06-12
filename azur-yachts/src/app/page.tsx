@@ -13,7 +13,9 @@ export default function HomePage() {
       { name: "Grèce", count: 0, gradient: 'linear-gradient(135deg, #2d6a8a, #0f3a5a)', isLarge: false },
       { name: "Caraïbes", count: 0, gradient: 'linear-gradient(135deg, #1a4a3a, #0a2a20)', isLarge: false },
       { name: "Bali", count: 0, gradient: 'linear-gradient(135deg, #4a2a1a, #2a1a0a)', isLarge: false }
-    ]
+    ],
+    totalDestinationsCount: 68,
+    settings: { satisfiedClients: "12K+", yearsOfExcellence: "15" }
   });
 
   useEffect(() => {
@@ -102,19 +104,19 @@ export default function HomePage() {
       {/* STATS BAR */}
       <div className="stats-bar reveal">
         <div className="stat">
-          <div className="stat-num">340<span className="stat-unit">+</span></div>
+          <div className="stat-num">{stats.totalYachts || 340}</div>
           <div className="stat-label">Yachts disponibles</div>
         </div>
         <div className="stat">
-          <div className="stat-num">68</div>
+          <div className="stat-num">{stats.totalDestinationsCount || 68}</div>
           <div className="stat-label">Destinations mondiales</div>
         </div>
         <div className="stat">
-          <div className="stat-num">12K<span className="stat-unit">+</span></div>
+          <div className="stat-num">{stats.settings?.satisfiedClients || '12K+'}</div>
           <div className="stat-label">Clients satisfaits</div>
         </div>
         <div className="stat">
-          <div className="stat-num">15</div>
+          <div className="stat-num">{stats.settings?.yearsOfExcellence || '15'}</div>
           <div className="stat-label">Années d'excellence</div>
         </div>
       </div>

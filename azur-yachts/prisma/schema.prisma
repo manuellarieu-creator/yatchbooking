@@ -419,3 +419,10 @@ model Blacklist {
   reason    String?
   createdAt DateTime @default(now())
 }
+
+model PlatformSettings {
+  id               String   @id @default("default")
+  satisfiedClients String   @default("12K+")
+  yearsOfExcellence String  @default("15")
+  updatedAt        DateTime @updatedAt
+}
