@@ -164,6 +164,7 @@ export default function ProfilePage() {
               <div style={{ marginTop: '2rem', padding: '0 1.5rem' }}>
                 <Link 
                   href="/admin" 
+                  target="_blank"
                   className="nav-btn-gold" 
                   style={{ display: 'block', textAlign: 'center', width: '100%', padding: '0.8rem', cursor: 'pointer', textDecoration: 'none' }}
                 >
