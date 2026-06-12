@@ -116,9 +116,11 @@ export default function YachtPage({ params }: { params: { id: string } }) {
     selectedServiceIds.forEach(id => {
       const s = yacht.services?.find((x: any) => x.id === id);
       if (s) {
-        if (s.unit === 'PER_BOOKING') servTotal += s.price;
-        else if (s.unit === 'PER_DAY') servTotal += s.price * nights;
-        else if (s.unit === 'PER_PERSON') servTotal += s.price * (adults + children);
+        const price = Number(s.price) || 0;
+        if (s.unit === 'PER_BOOKING') servTotal += price;
+        else if (s.unit === 'PER_DAY') servTotal += price * nights;
+        else if (s.unit === 'PER_PERSON') servTotal += price * Math.max(1, adults + children);
+        else servTotal += price; // Fallback
       }
     });
 
