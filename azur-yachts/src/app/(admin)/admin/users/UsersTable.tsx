@@ -250,7 +250,7 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
               )}
             </div>
 
-            {selectedUser.role === 'ADVERTISER' && (
+            {selectedUser.role === 'ADVERTISER' && !selectedUser.isManagedByAdmin && (
               <div style={{ marginBottom: '2rem' }}>
                 <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#0f172a' }}>Pièce d'Identité & Vidéo KYC</h3>
                 
