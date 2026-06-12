@@ -90,9 +90,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     })
 
     return NextResponse.json({ listing: updated })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating listing:', error);
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+    return NextResponse.json({ error: error?.message || 'Erreur serveur' }, { status: 500 })
   }
 }
 

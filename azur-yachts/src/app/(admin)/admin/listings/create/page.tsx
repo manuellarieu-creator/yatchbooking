@@ -303,7 +303,8 @@ function PublishForm() {
         setSuccess(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        alert("Erreur lors de la publication");
+        const errData = await res.json().catch(() => ({}));
+        alert("Erreur lors de la publication : " + (errData.error || ""));
       }
     } catch (e) {
       alert("Erreur réseau");
