@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect, ChangeEvent, DragEvent, KeyboardEvent } from 'react';
-import Link from 'next/link';
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import './publish.css';
 
 const TOTAL_STEPS = 7;
@@ -14,18 +15,12 @@ type Service = {
   desc?: string;
 };
 
-export default function PublishPage() {
+function PublishForm() {
+  const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const [savedStatus, setSavedStatus] = useState('💾 Sauvegardé');
-  const [isModal, setIsModal] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsModal(window.location.search.includes('modal=true'));
-      setEditId(new URLSearchParams(window.location.search).get('edit'));
-    }
-  }, []);
+  const isModal = searchParams.get('modal') === 'true';
+  const editId = searchParams.get('edit');
 
   // Step 1
   
@@ -353,7 +348,7 @@ export default function PublishPage() {
       {!isModal && (
         <nav className="pub-nav">
           <button className="nav-exit" onClick={() => window.history.back()}>← Quitter</button>
-          <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
+          <a href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></a>
           <div className="nav-right">
             <span className="nav-save">{savedStatus}</span>
           </div>
@@ -946,5 +941,13 @@ export default function PublishPage() {
         <div className="toast-bar"></div>
       </div>
     </div>
+  );
+}
+
+export default function PublishPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Chargement...</div>}>
+      <PublishForm />
+    </Suspense>
   );
 }
