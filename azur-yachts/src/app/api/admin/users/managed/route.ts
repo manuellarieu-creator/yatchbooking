@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { firstName, lastName, email, phone } = body
+    const { firstName, lastName, email, phone, languages, countryResidence, advertiserTier } = body
 
     if (!firstName || !lastName) {
       return NextResponse.json({ error: 'Le prénom et le nom sont requis' }, { status: 400 })
@@ -43,6 +43,9 @@ export async function POST(req: NextRequest) {
         lastName,
         email: safeEmail,
         phone: phone || null,
+        languages: languages || [],
+        countryResidence: countryResidence || null,
+        advertiserTier: advertiserTier || 'STANDARD',
         password: hashedPassword,
         role: 'ADVERTISER', // Un profil géré est toujours un annonceur
         status: 'ACTIVE', // On l'active directement

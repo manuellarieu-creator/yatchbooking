@@ -21,6 +21,12 @@ enum UserStatus {
   REJECTED
 }
 
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum AdvertiserTier {
   STANDARD
   PREMIUM
@@ -289,14 +295,15 @@ model PaymentSettings {
 }
 
 model Review {
-  id        String   @id @default(cuid())
+  id        String       @id @default(cuid())
   rating    Int
-  comment   String   @db.Text
-  listing   Listing  @relation(fields: [listingId], references: [id])
+  comment   String       @db.Text
+  status    ReviewStatus @default(PENDING)
+  listing   Listing      @relation(fields: [listingId], references: [id])
   listingId String
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User         @relation(fields: [authorId], references: [id])
   authorId  String
-  createdAt DateTime @default(now())
+  createdAt DateTime     @default(now())
 }
 
 model Conversation {

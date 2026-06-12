@@ -359,7 +359,18 @@ export default function PublishPage() {
                   {isAdmin && (
                     <div className="field" style={{ background: '#fdf8f0', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #f3e8d2' }}>
                       <label className="label" style={{ color: '#927334' }}>[Admin] Attribuer cette annonce à :</label>
-                      <select className="select" value={selectedOwnerId} onChange={e => setSelectedOwnerId(e.target.value)}>
+                      <select className="select" value={selectedOwnerId} onChange={e => {
+                        const val = e.target.value;
+                        setSelectedOwnerId(val);
+                        const adv = advertisers.find(a => a.id === val);
+                        if (adv) {
+                          setFirstName(adv.firstName || '');
+                          setLastName(adv.lastName || '');
+                          setPhone(adv.phone || '');
+                          if (adv.countryResidence) setCountry(adv.countryResidence);
+                          if (adv.languages && adv.languages.length > 0) setLanguages(adv.languages);
+                        }
+                      }}>
                         <option value="">(Moi-même)</option>
                         {advertisers.map(adv => (
                           <option key={adv.id} value={adv.id}>

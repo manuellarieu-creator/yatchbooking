@@ -196,6 +196,52 @@ export default function AdminMessagesClient() {
             </div>
           )}
         </div>
+
+        {/* RIGHT SIDEBAR (PROFILE INFO) */}
+        {selectedConv?.advertiser && (
+          <div style={{ width: '300px', borderLeft: '1px solid #e2e8f0', background: '#fff', padding: '1.5rem', overflowY: 'auto' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#0f172a' }}>Fiche Annonceur</h3>
+            
+            <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #e2e8f0' }}>
+              <div style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.2rem', color: '#0f172a' }}>
+                {selectedConv.advertiser.firstName} {selectedConv.advertiser.lastName}
+              </div>
+              <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.8rem' }}>
+                {selectedConv.advertiser.isManagedByAdmin ? '⭐ Profil Géré (Conciergerie)' : 'Propriétaire Standard'}
+              </div>
+              <div style={{ fontSize: '0.85rem', marginBottom: '0.3rem', color: '#334155' }}>
+                <strong>Email :</strong> {selectedConv.advertiser.email ? selectedConv.advertiser.email.replace(/(.{1})(.*)(@.*)/, '$1***$3') : 'Non renseigné'}
+              </div>
+              <div style={{ fontSize: '0.85rem', marginBottom: '0.3rem', color: '#334155' }}>
+                <strong>Tél :</strong> {selectedConv.advertiser.phone ? selectedConv.advertiser.phone.replace(/.(?=.{2})/g, '*') : 'Non renseigné'}
+              </div>
+            </div>
+
+            <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#334155' }}>
+              <strong>Note globale :</strong> {selectedConv.advertiser.averageRating ? <span style={{ color: '#d97706', fontWeight: 600 }}>{selectedConv.advertiser.averageRating} / 5 ⭐</span> : 'Aucun avis'}
+            </div>
+
+            <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#334155' }}>
+              <strong>Pays :</strong> {selectedConv.advertiser.countryResidence || 'Non renseigné'}
+            </div>
+
+            <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#334155' }}>
+              <strong>Langues :</strong> 
+              <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', marginTop: '0.3rem' }}>
+                {selectedConv.advertiser.languages?.length > 0 ? selectedConv.advertiser.languages.map((l: string, i: number) => (
+                  <span key={i} style={{ background: '#e2e8f0', padding: '0.15rem 0.4rem', borderRadius: '4px', fontSize: '0.75rem', color: '#475569' }}>{l}</span>
+                )) : 'Non renseigné'}
+              </div>
+            </div>
+
+            <div style={{ fontSize: '0.85rem', color: '#334155' }}>
+              <strong>Statut / Rang :</strong>
+              <div style={{ marginTop: '0.3rem', display: 'inline-block', background: selectedConv.advertiser.advertiserTier === 'PLATINIUM' ? '#e2e8f0' : selectedConv.advertiser.advertiserTier === 'PREMIUM' ? '#fef08a' : '#fdf8f0', color: '#927334', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 600 }}>
+                {selectedConv.advertiser.advertiserTier === 'STANDARD' ? 'GOLD' : selectedConv.advertiser.advertiserTier || 'GOLD'}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

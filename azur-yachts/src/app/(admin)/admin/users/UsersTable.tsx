@@ -16,7 +16,7 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
 
   // Managed Profile Modal State
   const [showManagedModal, setShowManagedModal] = useState(false);
-  const [managedData, setManagedData] = useState({ firstName: '', lastName: '', email: '', phone: '' });
+  const [managedData, setManagedData] = useState({ firstName: '', lastName: '', email: '', phone: '', languages: '', countryResidence: '', advertiserTier: 'STANDARD' });
 
   const filteredUsers = tab === 'pending' 
     ? users.filter(u => u.status === 'PENDING')
@@ -79,17 +79,22 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
       return;
     }
     setLoadingId('creating_managed');
+    const payload = {
+      ...managedData,
+      languages: managedData.languages.split(',').map(l => l.trim()).filter(l => l),
+    };
+
     try {
       const res = await fetch('/api/admin/users/managed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(managedData),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (res.ok && data.user) {
         setUsers([data.user, ...users]);
         setShowManagedModal(false);
-        setManagedData({ firstName: '', lastName: '', email: '', phone: '' });
+        setManagedData({ firstName: '', lastName: '', email: '', phone: '', languages: '', countryResidence: '', advertiserTier: 'STANDARD' });
       } else {
         alert(data.error || "Erreur lors de la création");
       }
@@ -379,14 +384,43 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
                 </div>
               </div>
               
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#334155' }}>Email (optionnel)</label>
-                <input type="email" value={managedData.email} onChange={e => setManagedData({...managedData, email: e.target.value})} placeholder="Laissé vide, un email fictif sera généré" style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#334155' }}>Email (optionnel)</label>
+                  <input type="email" value={managedData.email} onChange={e => setManagedData({...managedData, email: e.target.value})} placeholder="Email fictif généré sinon" style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#334155' }}>Téléphone (optionnel)</label>
+                  <input type="tel" value={managedData.phone} onChange={e => setManagedData({...managedData, phone: e.target.value})} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+                </div>
               </div>
-              
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#334155' }}>Pays de résidence</label>
+                  <select value={managedData.countryResidence} onChange={e => setManagedData({...managedData, countryResidence: e.target.value})} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                    <option value="">Sélectionner</option>
+                    <option value="France">France</option>
+                    <option value="Belgique">Belgique</option>
+                    <option value="Suisse">Suisse</option>
+                    <option value="Espagne">Espagne</option>
+                    <option value="Italie">Italie</option>
+                    <option value="Royaume-Uni">Royaume-Uni</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#334155' }}>Rang annonceur</label>
+                  <select value={managedData.advertiserTier} onChange={e => setManagedData({...managedData, advertiserTier: e.target.value})} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                    <option value="STANDARD">Gold (Standard)</option>
+                    <option value="PREMIUM">Premium</option>
+                    <option value="PLATINIUM">Platinium</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#334155' }}>Téléphone (optionnel)</label>
-                <input type="tel" value={managedData.phone} onChange={e => setManagedData({...managedData, phone: e.target.value})} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#334155' }}>Langues (séparées par une virgule)</label>
+                <input type="text" value={managedData.languages} onChange={e => setManagedData({...managedData, languages: e.target.value})} placeholder="ex: Français, Anglais, Espagnol" style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>

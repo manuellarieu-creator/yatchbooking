@@ -14,7 +14,13 @@ export async function GET(req: NextRequest) {
         participants: {
           include: {
             user: {
-              select: { id: true, firstName: true, lastName: true, avatar: true, role: true }
+              select: { 
+                id: true, firstName: true, lastName: true, avatar: true, role: true,
+                email: true, phone: true, languages: true, countryResidence: true, advertiserTier: true, isManagedByAdmin: true,
+                listings: {
+                  select: { averageRating: true }
+                }
+              }
             }
           }
         },
@@ -31,7 +37,20 @@ export async function GET(req: NextRequest) {
     const formattedConversations = conversations.map(conv => {
       // Find the client and the advertiser
       const client = conv.participants.find(p => p.user.role === 'CLIENT')?.user;
-      const advertiser = conv.participants.find(p => p.user.role === 'ADVERTISER')?.user;
+      const rawAdvertiser = conv.participants.find(p => p.user.role === 'ADVERTISER')?.user;
+      
+      let advertiser = null;
+      if (rawAdvertiser) {
+        let advertiserRating = 0;
+        if (rawAdvertiser.listings && rawAdvertiser.listings.length > 0) {
+          const total = rawAdvertiser.listings.reduce((acc, l) => acc + (l.averageRating || 0), 0);
+          advertiserRating = parseFloat((total / rawAdvertiser.listings.length).toFixed(1));
+        }
+        advertiser = {
+          ...rawAdvertiser,
+          averageRating: advertiserRating
+        };
+      }
       
       return {
         id: conv.id,
