@@ -88,6 +88,14 @@
   .nav-top { padding: 0 1.5rem; }
   .nav-links { display: none; }
   .nav-link { display: none; }
+  .desktop-only { display: none !important; }
+  .user-menu-name { display: none; }
+  .user-menu-arrow { display: none; }
+  .mobile-menu-container { display: block; }
+}
+
+@media (min-width: 769px) {
+  .mobile-menu-container { display: none !important; }
 }
 
 /* -- USER MENU DROPDOWN -- */
@@ -196,16 +204,6 @@
   font-size: 0.6rem;
   margin-left: 0.2rem;
   opacity: 0.8;
-}
-
-/* -- MOBILE MENU -- */
-.mobile-menu-container {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .desktop-only { display: none !important; }
-  .mobile-menu-container { display: block; margin-left: 1rem; }
 }
 
 .hamburger-btn {

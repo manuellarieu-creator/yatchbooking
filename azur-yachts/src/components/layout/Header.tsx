@@ -11,6 +11,7 @@ export default async function Header() {
     <nav className="nav-top">
       <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
       
+      {/* Desktop: liens de navigation classiques */}
       <ul className="nav-links">
         <li><Link href="/">Accueil</Link></li>
         <li><Link href="/listings">Les Offres</Link></li>
@@ -20,19 +21,21 @@ export default async function Header() {
       </ul>
       
       <div className="nav-right">
-        <MobileMenu />
-        {session?.user ? (
-          <>
-            <UserMenu user={session.user} />
-          </>
-        ) : (
+        {/* Desktop uniquement: boutons Connexion / Mettre en location */}
+        {!session?.user && (
           <>
             <Link href="/auth" className="desktop-only"><button className="nav-btn nav-btn-outline">Connexion</button></Link>
             <Link href="/publish" className="desktop-only"><button className="nav-btn nav-btn-gold">Mettre en location</button></Link>
-            <UserMenu user={null} className="mobile-only" />
           </>
         )}
+
+        {/* Mobile uniquement: hamburger menu */}
+        <MobileMenu />
+
+        {/* Icône utilisateur — toujours visible, un seul rendu */}
+        <UserMenu user={session?.user || null} />
       </div>
     </nav>
   );
 }
+
