@@ -57,6 +57,7 @@ function PublishForm() {
   // Step 4
   const [priceDay, setPriceDay] = useState('');
   const [cleaningFee, setCleaningFee] = useState('');
+  const [securityDeposit, setSecurityDeposit] = useState('');
 
   // Step 5
   const [services, setServices] = useState<Service[]>([]);
@@ -99,6 +100,7 @@ function PublishForm() {
           setDesc(l.description);
           setPriceDay(l.price?.toString() || '');
           setCleaningFee(l.cleaningFee?.toString() || '');
+          setSecurityDeposit(l.securityDeposit?.toString() || '');
           if (l.services) setServices(l.services);
           setDeliveryToggle(l.deliveryAvailable);
           if (l.deliveryPricing) setDeliveryPricing(l.deliveryPricing as any);
@@ -120,7 +122,7 @@ function PublishForm() {
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
     title, boatType, year, portCountry, portCity, length, adults, children, hours, captainReq, skipperOpt, features,
-    photos, desc, priceDay, cleaningFee, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail
+    photos, desc, priceDay, cleaningFee, securityDeposit, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail
   ]);
 
   const triggerToast = (msg: string) => {
@@ -291,6 +293,7 @@ function PublishForm() {
         skipperAvailable: skipperOpt, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing, features,
         cleaningFee: Number(cleaningFee) || 0,
+        securityDeposit: Number(securityDeposit) || 0,
         images: processedImages, services, availabilities: []
       };
       
@@ -706,6 +709,13 @@ function PublishForm() {
                       <label className="label">Frais de nettoyage (€) <span className="req">*</span></label>
                       <input className="input" type="number" min="0" value={cleaningFee} onChange={e => setCleaningFee(e.target.value)} placeholder="Ex : 350" />
                       <span className="hint">Obligatoires — ajoutés automatiquement à chaque réservation</span>
+                    </div>
+                  </div>
+                  <div className="field-row">
+                    <div className="field">
+                      <label className="label">Caution (€) <span className="req">*</span></label>
+                      <input className="input" type="number" min="0" value={securityDeposit} onChange={e => setSecurityDeposit(e.target.value)} placeholder="Ex : 1500" />
+                      <span className="hint">Sera demandée avant l'embarquement (empreinte bancaire)</span>
                     </div>
                   </div>
                   <div className="info-box navy" style={{ marginTop: '.5rem' }}>

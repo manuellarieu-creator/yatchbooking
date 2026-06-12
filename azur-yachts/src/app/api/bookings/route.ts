@@ -146,6 +146,7 @@ export async function POST(req: NextRequest) {
         totalNights,
         basePrice,
         cleaningFee,
+        securityDeposit: listing.securityDeposit || 0,
         deliveryFee,
         servicesTotal,
         totalPrice,

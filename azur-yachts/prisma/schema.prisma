@@ -171,6 +171,7 @@ model Listing {
   deliveryPricing   Json?
   features          String[]      @default([])
   cleaningFee       Float
+  securityDeposit   Float         @default(0)
   averageRating     Float         @default(0)
   reviewCount       Int           @default(0)
   viewCount         Int           @default(0)
@@ -226,6 +227,7 @@ model Booking {
   servicesTotal    Float         @default(0)
   discountAmount   Float         @default(0)
   discountCode     String?
+  securityDeposit  Float         @default(0)
   totalPrice       Float
   adults           Int
   children         Int

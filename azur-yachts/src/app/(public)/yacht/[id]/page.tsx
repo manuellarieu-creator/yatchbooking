@@ -498,6 +498,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               <div className="recap" style={{ display: 'block' }}>
                 <div className="recap-row"><span className="label">€{yacht.price.toLocaleString()} × {totals.nights} nuits</span><span className="value">€{totals.base.toLocaleString()}</span></div>
                 <div className="recap-row"><span className="label">Nettoyage (obligatoire)</span><span className="value">€{yacht.cleaningFee.toLocaleString()}</span></div>
+                {yacht.securityDeposit > 0 && <div className="recap-row" style={{ color: 'var(--text-light)' }}><span className="label">Caution (empreinte)</span><span className="value">€{yacht.securityDeposit.toLocaleString()}</span></div>}
                 {totals.servTotal > 0 && <div className="recap-row"><span className="label">Services additionnels</span><span className="value">€{totals.servTotal.toLocaleString()}</span></div>}
                 {discountApplied && <div className="recap-row discount"><span className="label">Réduction (10%)</span><span className="value">−€{totals.discount.toLocaleString()}</span></div>}
                 <div className="recap-row total">
