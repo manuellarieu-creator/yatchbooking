@@ -51,13 +51,19 @@ export async function GET(req: NextRequest) {
     let totalRevenue = 0
     let totalViews = 0
     let confirmedBookingsCount = 0
+    let totalReviews = 0
+    let sumOfRatings = 0
 
     const revenueByListingMap: Record<string, { title: string, revenue: number }> = {}
     
     listings.forEach(listing => {
       totalViews += listing.viewCount
       revenueByListingMap[listing.id] = { title: listing.title, revenue: 0 }
+      totalReviews += listing.reviewCount
+      sumOfRatings += (listing.averageRating || 0) * (listing.reviewCount || 0)
     })
+    
+    const averageRating = totalReviews > 0 ? Number((sumOfRatings / totalReviews).toFixed(1)) : 0;
 
     allBookings.forEach(booking => {
       if (['CONFIRMED', 'COMPLETED', 'PAYMENT_RECEIVED'].includes(booking.status)) {
@@ -94,6 +100,8 @@ export async function GET(req: NextRequest) {
         views: totalViews,
         bookingsCount: allBookings.length,
         occupancyRate: occupancyRate > 100 ? 100 : occupancyRate,
+        averageRating,
+        totalReviews,
         revenueByListing,
       },
       listings,

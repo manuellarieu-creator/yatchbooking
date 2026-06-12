@@ -15,7 +15,7 @@ function DashboardContent() {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [bookingFilter, setBookingFilter] = useState('');
-  const [dashboardData, setDashboardData] = useState<any>({ user: { firstName: '', lastName: '', tier: 'PREMIUM', videoVerified: false }, stats: { revenue: 0, views: 0, bookingsCount: 0, occupancyRate: 0 }, listings: [], bookings: [] });
+  const [dashboardData, setDashboardData] = useState<any>({ user: { firstName: '', lastName: '', tier: 'PREMIUM', videoVerified: false }, stats: { revenue: 0, views: 0, bookingsCount: 0, occupancyRate: 0, averageRating: 0, totalReviews: 0 }, listings: [], bookings: [] });
   const [isLoading, setIsLoading] = useState(true);
 
   // Chat state
@@ -330,8 +330,8 @@ function DashboardContent() {
               </div>
               <div className="kpi-card orange">
                 <div className="kpi-lbl">Note moyenne</div>
-                <div className="kpi-val">4.9★</div>
-                <div className="kpi-sub">Basé sur 24 avis</div>
+                <div className="kpi-val">{dashboardData.stats.averageRating || 0}★</div>
+                <div className="kpi-sub">Basé sur {dashboardData.stats.totalReviews || 0} avis</div>
               </div>
             </div>
 
