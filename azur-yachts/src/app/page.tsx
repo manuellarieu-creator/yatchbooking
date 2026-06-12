@@ -128,7 +128,7 @@ export default function HomePage() {
         </div>
         <div className="dest-grid reveal">
           {stats.destinations.length > 0 ? stats.destinations.map((dest: any, i: number) => (
-            <div key={dest.id || i} className={`dest-card ${dest.isLarge ? 'large' : ''}`}>
+            <Link href={`/listings?location=${encodeURIComponent(dest.name)}`} key={dest.id || i} className={`dest-card ${dest.isLarge ? 'large' : ''}`} style={{ textDecoration: 'none' }}>
               <div className="dest-bg" style={{ 
                 background: dest.imageUrl ? `url('${dest.imageUrl}') center/cover` : (dest.gradient || 'linear-gradient(135deg, #1a5a80, #0a2540)') 
               }}></div>
@@ -138,7 +138,7 @@ export default function HomePage() {
                 <div className="dest-name">{dest.name}</div>
                 <div className="dest-count">{dest.count} yachts disponibles</div>
               </div>
-            </div>
+            </Link>
           )) : (
             <p style={{ color: 'rgba(255,255,255,0.6)' }}>Aucune destination pour le moment.</p>
           )}
