@@ -10,9 +10,28 @@ export default function HomePage() {
     totalYachts: null,
     destinations: [],
     totalDestinationsCount: null,
-    settings: null
+    settings: null,
+    reviews: []
   });
   const [loadingStats, setLoadingStats] = useState(true);
+  const [email, setEmail] = useState('');
+  const [newsStatus, setNewsStatus] = useState('');
+
+  const handleNewsletter = async () => {
+    if (!email) return;
+    setNewsStatus('saving');
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) setNewsStatus('success');
+      else setNewsStatus('error');
+    } catch {
+      setNewsStatus('error');
+    }
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -244,42 +263,45 @@ export default function HomePage() {
           <h2 className="section-title">Ce que disent<br/>nos <em>navigateurs</em></h2>
         </div>
         <div className="testi-grid reveal">
-          <div className="testi-card">
-            <span className="testi-quote">"</span>
-            <div className="testi-stars">★★★★★</div>
-            <p className="testi-text">Une semaine en Grèce à bord de l'Azura 68 — un rêve devenu réalité. L'équipage était d'une attention extraordinaire, le yacht immaculé. Nous reviendrons sans aucun doute.</p>
-            <div className="testi-author">
-              <div className="testi-avatar">SL</div>
-              <div>
-                <div className="testi-name">Sophie Lemaire</div>
-                <div className="testi-loc">Paris, France</div>
+          {(stats?.reviews?.length > 0 ? stats.reviews : [
+            {
+              id: 1,
+              rating: 5,
+              comment: "Une semaine en Grèce à bord de l'Azura 68 — un rêve devenu réalité. L'équipage était d'une attention extraordinaire, le yacht immaculé. Nous reviendrons sans aucun doute.",
+              author: { firstName: "Sophie", lastName: "Lemaire", country: "Paris, France" }
+            },
+            {
+              id: 2,
+              rating: 5,
+              comment: "Service irréprochable de A à Z. La réservation était simple, le yacht exactement comme sur les photos, et la Côte d'Azur depuis la mer est tout simplement magique.",
+              author: { firstName: "Marco", lastName: "Ricci", country: "Milan, Italie" }
+            },
+            {
+              id: 3,
+              rating: 5,
+              comment: "Notre anniversaire de mariage aux Caraïbes. Azur Yachts a tout planifié à la perfection — le catamaran, le chef, les excursions. Une expérience absolument mémorable.",
+              author: { firstName: "Amelia & Robert", lastName: "Chen", country: "Londres, Royaume-Uni" }
+            }
+          ]).map((review: any, i: number) => (
+            <div className="testi-card" key={review.id || i}>
+              <span className="testi-quote">"</span>
+              <div className="testi-stars">{'★'.repeat(review.rating || 5)}{'☆'.repeat(5 - (review.rating || 5))}</div>
+              <p className="testi-text">{review.comment}</p>
+              <div className="testi-author">
+                <div className="testi-avatar">
+                  {review.author?.avatar ? (
+                    <img src={review.author.avatar} alt="Avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+                  ) : (
+                    (review.author?.firstName?.[0] || '') + (review.author?.lastName?.[0] || '')
+                  )}
+                </div>
+                <div>
+                  <div className="testi-name">{review.author?.firstName} {review.author?.lastName}</div>
+                  <div className="testi-loc">{review.author?.country || 'Client Azur Yachts'}</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="testi-card">
-            <span className="testi-quote">"</span>
-            <div className="testi-stars">★★★★★</div>
-            <p className="testi-text">Service irréprochable de A à Z. La réservation était simple, le yacht exactement comme sur les photos, et la Côte d'Azur depuis la mer est tout simplement magique.</p>
-            <div className="testi-author">
-              <div className="testi-avatar">MR</div>
-              <div>
-                <div className="testi-name">Marco Ricci</div>
-                <div className="testi-loc">Milan, Italie</div>
-              </div>
-            </div>
-          </div>
-          <div className="testi-card">
-            <span className="testi-quote">"</span>
-            <div className="testi-stars">★★★★★</div>
-            <p className="testi-text">Notre anniversaire de mariage aux Caraïbes. Azur Yachts a tout planifié à la perfection — le catamaran, le chef, les excursions. Une expérience absolument mémorable.</p>
-            <div className="testi-author">
-              <div className="testi-avatar">AR</div>
-              <div>
-                <div className="testi-name">Amelia & Robert Chen</div>
-                <div className="testi-loc">Londres, Royaume-Uni</div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -290,8 +312,28 @@ export default function HomePage() {
           <p>Rejoignez 8 000+ passionnés de navigation</p>
         </div>
         <div className="newsletter-form">
-          <input className="newsletter-input" type="email" placeholder="Votre adresse e-mail" />
-          <button className="newsletter-submit">S'abonner</button>
+          {newsStatus === 'success' ? (
+            <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
+              Merci pour votre inscription !
+            </div>
+          ) : (
+            <>
+              <input 
+                className="newsletter-input" 
+                type="email" 
+                placeholder="Votre adresse e-mail" 
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+              <button 
+                className="newsletter-submit" 
+                onClick={handleNewsletter}
+                disabled={newsStatus === 'saving' || !email}
+              >
+                {newsStatus === 'saving' ? '...' : "S'abonner"}
+              </button>
+            </>
+          )}
         </div>
       </div>
 

@@ -27,6 +27,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <Link href="/admin/messages" className="admin-nav-link">💬 Messagerie</Link>
           <Link href="/admin/reviews" className="admin-nav-link">⭐ Avis & Modération</Link>
           <Link href="/admin/blacklist" className="admin-nav-link">⛔ Blacklist</Link>
+          <Link href="/admin/newsletter" className="admin-nav-link">📧 Newsletter</Link>
           <Link href="/admin/settings/general" className="admin-nav-link">⚙️ Paramètres</Link>
         </nav>
         <div className="admin-logout">

@@ -50,11 +50,27 @@ export async function GET() {
       };
     }));
 
+    // Fetch top 3 approved reviews
+    const topReviews = await prisma.review.findMany({
+      where: { status: 'APPROVED', rating: { gte: 4 } },
+      orderBy: { createdAt: 'desc' },
+      take: 3,
+      include: {
+        author: {
+          select: { firstName: true, lastName: true, avatar: true, country: true }
+        },
+        listing: {
+          select: { title: true }
+        }
+      }
+    });
+
     return NextResponse.json({ 
       totalYachts, 
       totalDestinationsCount,
       settings: platformSettings,
-      destinations 
+      destinations,
+      reviews: topReviews
     });
   } catch (error) {
     console.error('Home stats API error:', error);
