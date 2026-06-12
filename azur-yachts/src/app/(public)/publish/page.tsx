@@ -238,13 +238,18 @@ function PublishForm() {
   const uploadToCloudinary = async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'azur_proofs'); // Use existing preset
+    formData.append('upload_preset', 'azur_yachts'); // Standardize preset name
     try {
       const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dt7v4cuxm'}/image/upload`, {
         method: 'POST',
         body: formData
       });
       const data = await res.json();
+      if (!res.ok) {
+        console.error('Cloudinary upload error:', data);
+        alert(`Erreur d'upload de photo : ${data.error?.message || 'Erreur inconnue'}`);
+        return 'https://placehold.co/600x400/223/fff?text=Upload+Failed';
+      }
       return data.secure_url;
     } catch (e) {
       console.error(e);
