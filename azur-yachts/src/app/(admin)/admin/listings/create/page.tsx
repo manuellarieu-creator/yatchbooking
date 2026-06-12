@@ -866,7 +866,7 @@ export default function PublishPage() {
                   <div className="preview-img">
                     <div className="preview-img-grid"></div>
                     {photos.length > 0 ? (
-                      <img src={URL.createObjectURL(photos[0])} alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={photos[0] instanceof File ? URL.createObjectURL(photos[0]) : (photos[0].url || 'https://placehold.co/600x400/223/fff?text=No+Image')} alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
                       <div className="preview-img-placeholder">⚓</div>
                     )}
