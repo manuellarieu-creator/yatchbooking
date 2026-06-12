@@ -368,7 +368,7 @@ export default function ListingsPage() {
                   <Link href={`/yacht/${yacht.id}`} key={yacht.id} className="yacht-card" style={{ animationDelay: `${i * 0.06}s` }}>
                     <div className="card-img">
                       <div className="card-img-inner" style={{ 
-                        backgroundImage: yacht.imgUrl ? `url('${yacht.imgUrl}')` : 'linear-gradient(135deg,#1a3a5a,#0a2040)',
+                        backgroundImage: yacht.imgUrl ? `url('${yacht.imgUrl}')` : `url('https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center'
                       }}></div>
