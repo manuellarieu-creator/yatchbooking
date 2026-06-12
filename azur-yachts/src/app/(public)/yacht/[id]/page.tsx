@@ -327,20 +327,31 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           <div className="fade-in">
             <div className="sec-title">Informations propriétaire</div>
             <div className="owner-card">
-              <div className="owner-avatar">FJ</div>
+              <div className="owner-avatar">
+                {yacht.owner?.avatar ? (
+                  <img src={yacht.owner.avatar} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  (yacht.owner?.firstName?.charAt(0) || '') + (yacht.owner?.lastName?.charAt(0) || '')
+                )}
+              </div>
               <div className="owner-info">
-                <div className="owner-name">Fabio Jaction</div>
-                <div className="owner-stars">★★★★★ <span>(25 avis)</span></div>
+                <div className="owner-name">{yacht.owner?.firstName} {yacht.owner?.lastName}</div>
+                <div className="owner-stars">
+                  {'★'.repeat(Math.round(yacht.averageRating || 0)) || 'Nouveau'} 
+                  {yacht._count?.reviews > 0 && <span> ({yacht._count.reviews} avis)</span>}
+                </div>
                 <div className="owner-meta">
-                  <div className="owner-meta-item"><strong>Membre depuis</strong> Jan. 2014</div>
+                  <div className="owner-meta-item"><strong>Membre depuis</strong> {yacht.owner?.createdAt ? new Date(yacht.owner.createdAt).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' }) : 'Récent'}</div>
                   <div className="owner-meta-item"><strong>Taux de réponse</strong> +85%</div>
                   <div className="owner-meta-item"><strong>Délai de réponse</strong> &lt; 1h</div>
                 </div>
-                <div className="owner-langs">
-                  <span className="lang-chip">🇫🇷 Français</span>
-                  <span className="lang-chip">🇬🇧 Anglais</span>
-                  <span className="lang-chip">🇮🇹 Italien</span>
-                </div>
+                {yacht.owner?.languages && yacht.owner.languages.length > 0 && (
+                  <div className="owner-langs">
+                    {yacht.owner.languages.map((lang: string, i: number) => (
+                      <span key={i} className="lang-chip">{lang}</span>
+                    ))}
+                  </div>
+                )}
               </div>
               <button className="msg-btn" onClick={() => setIsChatOpen(true)}>💬 Message</button>
             </div>
