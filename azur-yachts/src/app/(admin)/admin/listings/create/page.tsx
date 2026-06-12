@@ -19,7 +19,10 @@ export default function PublishPage() {
   const [savedStatus, setSavedStatus] = useState('💾 Sauvegardé');
   const isModal = typeof window !== 'undefined' && window.location.search.includes('modal=true');
   
-  // Step 1
+  // Admin logic
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [advertisers, setAdvertisers] = useState<any[]>([]);
+  const [selectedOwnerId, setSelectedOwnerId] = useState<string>('');
   
   // Step 1
   const [firstName, setFirstName] = useState('Jean');
@@ -74,7 +77,15 @@ export default function PublishPage() {
 
   // Simulating auto-save
   useEffect(() => {
-    // Basic setup if needed
+    // Check if user is admin
+    fetch('/api/users/profile').then(res => res.json()).then(data => {
+      if (data.user?.role === 'ADMIN') {
+        setIsAdmin(true);
+        fetch('/api/admin/users/list').then(r => r.json()).then(d => {
+          if (d.users) setAdvertisers(d.users);
+        });
+      }
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -84,7 +95,7 @@ export default function PublishPage() {
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
     title, boatType, year, portCountry, portCity, length, adults, children, hours, captainReq, skipperOpt,
-    photos, desc, priceDay, cleaningFee, services, deliveryToggle, deliveryFee, markedDays, immediateAvail
+    photos, desc, priceDay, cleaningFee, services, deliveryToggle, deliveryFee, markedDays, immediateAvail, selectedOwnerId
   ]);
 
   const triggerToast = (msg: string) => {
@@ -215,7 +226,7 @@ export default function PublishPage() {
         boatType, boatLength: parseFloat(length), boatYear: parseInt(year), requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, maxRentalHours: parseInt(hours), deliveryAvailable: deliveryToggle,
         deliveryFee: parseFloat(deliveryFee || '0'), cleaningFee: parseFloat(cleaningFee), 
-        images: [], services, availabilities: []
+        images: [], services, availabilities: [], ownerId: isAdmin ? selectedOwnerId : undefined
       };
       
       const res = await fetch('/api/listings', {
@@ -345,6 +356,30 @@ export default function PublishPage() {
                 </div>
                 <div className="form-card">
                   <div className="form-card-title">Identité</div>
+                  {isAdmin && (
+                    <div className="field" style={{ background: '#fdf8f0', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #f3e8d2' }}>
+                      <label className="label" style={{ color: '#927334' }}>[Admin] Attribuer cette annonce à :</label>
+                      <select className="select" value={selectedOwnerId} onChange={e => {
+                        const val = e.target.value;
+                        setSelectedOwnerId(val);
+                        const adv = advertisers.find(a => a.id === val);
+                        if (adv) {
+                          setFirstName(adv.firstName || '');
+                          setLastName(adv.lastName || '');
+                          setPhone(adv.phone || '');
+                          if (adv.countryResidence) setCountry(adv.countryResidence);
+                          if (adv.languages && adv.languages.length > 0) setLanguages(adv.languages);
+                        }
+                      }}>
+                        <option value="">(Moi-même)</option>
+                        {advertisers.map(adv => (
+                          <option key={adv.id} value={adv.id}>
+                            {adv.firstName} {adv.lastName} {adv.isManagedByAdmin ? '(Géré)' : ''}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   <div className="field-row">
                     <div className="field">
                       <label className="label">Prénom <span className="req">*</span></label>

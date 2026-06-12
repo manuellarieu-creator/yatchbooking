@@ -48,7 +48,7 @@ export default function ListingsTable({ listings: initialListings }: { listings:
           <h1 className="admin-title">Annonces Yachts</h1>
           <p className="admin-subtitle">Modérez et validez les nouvelles annonces soumises par les annonceurs.</p>
         </div>
-        <Link href="/publish" style={{ background: '#0f172a', color: '#fff', padding: '0.75rem 1.5rem', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Link href="/admin/listings/create" style={{ background: '#0f172a', color: '#fff', padding: '0.75rem 1.5rem', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
           <span>+</span> Ajouter une annonce
         </Link>
       </div>
