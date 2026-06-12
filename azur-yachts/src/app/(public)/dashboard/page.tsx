@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import './dashboard.css';
 
 type Section = 'overview' | 'listings' | 'bookings' | 'stats' | 'messages' | 'calendar';
 
 export default function DashboardPage() {
-  const [activeSection, setActiveSection] = useState<Section>('overview');
+  const searchParams = useSearchParams();
+  const initialTab = (searchParams.get('tab') as Section) || 'overview';
+  const [activeSection, setActiveSection] = useState<Section>(initialTab);
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [bookingFilter, setBookingFilter] = useState('');

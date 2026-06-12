@@ -513,7 +513,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             <button className="reserve-btn" onClick={handleBooking} disabled={bookingLoading}>
               {bookingLoading ? 'Vérification...' : 'Réserver ce yacht'}
             </button>
-            <Link href={`/messages?new_chat_with=${yacht.ownerId}`} passHref>
+            <Link href={`/dashboard?tab=messages&new_chat_with=${yacht.ownerId}`} passHref>
               <button className="reserve-btn" style={{ marginTop: '10px', backgroundColor: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)' }}>
                 Contacter le propriétaire
               </button>

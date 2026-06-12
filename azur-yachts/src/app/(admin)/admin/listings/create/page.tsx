@@ -49,6 +49,7 @@ function PublishForm() {
   const [captainReq, setCaptainReq] = useState(false);
   const [skipperOpt, setSkipperOpt] = useState(false);
   const [features, setFeatures] = useState<string[]>([]);
+  const [customFeature, setCustomFeature] = useState('');
 
   // Step 3
   const [photos, setPhotos] = useState<any[]>([]);
@@ -162,6 +163,16 @@ function PublishForm() {
 
   const toggleFeature = (f: string) => {
     setFeatures(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
+  };
+
+  const addCustomFeature = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && customFeature.trim()) {
+      e.preventDefault();
+      if (!features.includes(customFeature.trim())) {
+        setFeatures([...features, customFeature.trim()]);
+      }
+      setCustomFeature('');
+    }
   };
 
   const removeLang = (l: string) => setLanguages(languages.filter(x => x !== l));
@@ -626,13 +637,24 @@ function PublishForm() {
 
                 <div className="form-card">
                   <div className="form-card-title">Équipements à bord</div>
-                  <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    {PREDEFINED_FEATURES.map(f => (
+                  <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                    {Array.from(new Set([...PREDEFINED_FEATURES, ...features])).map(f => (
                       <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
                         <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
                         {f}
                       </label>
                     ))}
+                  </div>
+                  <div className="field">
+                    <label className="label">Ajouter un équipement personnalisé</label>
+                    <input 
+                      type="text" 
+                      className="input" 
+                      placeholder="Appuyez sur Entrée pour ajouter..." 
+                      value={customFeature} 
+                      onChange={e => setCustomFeature(e.target.value)} 
+                      onKeyDown={addCustomFeature} 
+                    />
                   </div>
                 </div>
 
