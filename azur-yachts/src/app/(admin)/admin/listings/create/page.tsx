@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, ChangeEvent, DragEvent, KeyboardEvent } from 'react';
 import Link from 'next/link';
-import './publish.css';
+import '@/app/(public)/publish/publish.css';
 
 const TOTAL_STEPS = 7;
 
