@@ -20,18 +20,18 @@ export default async function Header() {
       </ul>
       
       <div className="nav-right">
+        <MobileMenu />
         {session?.user ? (
           <>
-            {/* The dropdown handles the user links now */}
             <UserMenu user={session.user} />
           </>
         ) : (
           <>
             <Link href="/auth" className="desktop-only"><button className="nav-btn nav-btn-outline">Connexion</button></Link>
             <Link href="/publish" className="desktop-only"><button className="nav-btn nav-btn-gold">Mettre en location</button></Link>
+            <UserMenu user={null} className="mobile-only" />
           </>
         )}
-        <MobileMenu hasUser={!!session?.user} />
       </div>
     </nav>
   );

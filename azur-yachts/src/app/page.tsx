@@ -118,7 +118,7 @@ export default function HomePage() {
       </section>
 
       {/* STATS BAR */}
-      <div className="infinite-scroll-wrapper" style={{ background: 'var(--navy-mid)', padding: '2rem 0' }}>
+      <div className="infinite-scroll-wrapper stats-bar-wrapper" style={{ background: 'var(--navy-mid)', padding: '2rem 0' }}>
         <div className="infinite-scroll-track">
           {[1, 2].map((group) => (
             <div key={group} style={{ display: 'flex', gap: '2rem' }}>
@@ -180,7 +180,7 @@ export default function HomePage() {
           <h2 className="section-title">Comment <em>naviguer</em> avec nous</h2>
           <p className="section-desc" style={{ color: 'rgba(255,255,255,0.45)' }}>Quatre étapes pour vivre l'expérience yacht de vos rêves.</p>
         </div>
-        <div className="infinite-scroll-wrapper" style={{ marginTop: '3rem' }}>
+        <div className="infinite-scroll-wrapper steps-wrapper" style={{ marginTop: '3rem' }}>
           <div className="infinite-scroll-track" style={{ animationDuration: '40s' }}>
             {[1, 2].map((group) => (
               <div key={group} style={{ display: 'flex', gap: '2rem' }}>
@@ -274,7 +274,7 @@ export default function HomePage() {
           <span className="section-eyebrow">Ils nous font confiance</span>
           <h2 className="section-title">Ce que disent<br/>nos <em>navigateurs</em></h2>
         </div>
-        <div className="infinite-scroll-wrapper" style={{ marginTop: '3rem' }}>
+        <div className="infinite-scroll-wrapper testi-wrapper" style={{ marginTop: '3rem' }}>
           <div className="infinite-scroll-track">
             {loadingStats ? (
               <div style={{width: '100%', textAlign: 'center', padding: '3rem', color: 'var(--text-light)'}}>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-export default function MobileMenu({ hasUser }: { hasUser: boolean }) {
+export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -31,19 +31,6 @@ export default function MobileMenu({ hasUser }: { hasUser: boolean }) {
               <li><Link href="/about" onClick={toggleMenu}>À propos</Link></li>
               <li><Link href="/contact" onClick={toggleMenu}>Contact</Link></li>
             </ul>
-
-            <div className="mobile-nav-actions">
-              {!hasUser && (
-                <>
-                  <Link href="/auth" onClick={toggleMenu}>
-                    <button className="nav-btn nav-btn-outline w-full mb-2">Connexion</button>
-                  </Link>
-                  <Link href="/publish" onClick={toggleMenu}>
-                    <button className="nav-btn nav-btn-gold w-full">Mettre en location</button>
-                  </Link>
-                </>
-              )}
-            </div>
           </div>
         </div>
       )}
