@@ -7,6 +7,7 @@ export default function GeneralSettingsPage() {
   const [yearsOfExcellence, setYearsOfExcellence] = useState('');
   const [totalYachts, setTotalYachts] = useState(0);
   const [totalDestinations, setTotalDestinations] = useState(0);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -19,6 +20,7 @@ export default function GeneralSettingsPage() {
           setYearsOfExcellence(data.yearsOfExcellence || '');
           setTotalYachts(data.totalYachts || 0);
           setTotalDestinations(data.totalDestinations || 0);
+          setMaintenanceMode(data.maintenanceMode || false);
         }
         setLoading(false);
       })
@@ -31,7 +33,7 @@ export default function GeneralSettingsPage() {
       const res = await fetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ satisfiedClients, yearsOfExcellence })
+        body: JSON.stringify({ satisfiedClients, yearsOfExcellence, maintenanceMode })
       });
       if (res.ok) {
         alert('Paramètres enregistrés avec succès !');
@@ -102,6 +104,24 @@ export default function GeneralSettingsPage() {
             placeholder="Ex: 15"
           />
           <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.3rem' }}>Modifiable. S'affiche sur l'accueil.</p>
+        </div>
+
+        <hr style={{ borderTop: '1px solid #eaeaea', marginBottom: '2rem' }} />
+
+        <div style={{ marginBottom: '2.5rem', background: maintenanceMode ? '#fff3f3' : '#f9f9f9', padding: '1.5rem', borderRadius: '8px', border: `1px solid ${maintenanceMode ? '#fcc' : '#eee'}`, display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+          <input 
+            type="checkbox" 
+            checked={maintenanceMode}
+            onChange={(e) => setMaintenanceMode(e.target.checked)}
+            style={{ width: '20px', height: '20px', marginTop: '4px', cursor: 'pointer' }}
+          />
+          <div>
+            <label style={{ display: 'block', fontWeight: 700, color: maintenanceMode ? '#d32f2f' : '#333', fontSize: '1.1rem', marginBottom: '0.3rem' }}>Mode Maintenance</label>
+            <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>
+              Activez cette option pour empêcher l'accès au site public (les clients verront une page de maintenance). 
+              L'accès à l'interface d'administration reste toujours possible.
+            </p>
+          </div>
         </div>
 
         <button 

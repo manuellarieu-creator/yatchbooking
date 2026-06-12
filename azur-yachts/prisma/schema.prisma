@@ -424,5 +424,6 @@ model PlatformSettings {
   id               String   @id @default("default")
   satisfiedClients String   @default("12K+")
   yearsOfExcellence String  @default("15")
+  maintenanceMode  Boolean  @default(false)
   updatedAt        DateTime @updatedAt
 }

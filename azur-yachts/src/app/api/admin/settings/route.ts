@@ -12,7 +12,7 @@ export async function GET() {
     let settings = await prisma.platformSettings.findUnique({ where: { id: 'default' } });
     if (!settings) {
       settings = await prisma.platformSettings.create({
-        data: { id: 'default', satisfiedClients: '12K+', yearsOfExcellence: '15' }
+        data: { id: 'default', satisfiedClients: '12K+', yearsOfExcellence: '15', maintenanceMode: false }
       });
     }
 
@@ -42,12 +42,12 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const { satisfiedClients, yearsOfExcellence } = await req.json();
+    const { satisfiedClients, yearsOfExcellence, maintenanceMode } = await req.json();
 
     const settings = await prisma.platformSettings.upsert({
       where: { id: 'default' },
-      update: { satisfiedClients, yearsOfExcellence },
-      create: { id: 'default', satisfiedClients, yearsOfExcellence }
+      update: { satisfiedClients, yearsOfExcellence, maintenanceMode: Boolean(maintenanceMode) },
+      create: { id: 'default', satisfiedClients, yearsOfExcellence, maintenanceMode: Boolean(maintenanceMode) }
     });
 
     return NextResponse.json(settings);
