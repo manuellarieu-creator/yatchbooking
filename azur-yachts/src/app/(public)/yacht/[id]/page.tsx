@@ -555,7 +555,12 @@ export default function YachtPage({ params }: { params: { id: string } }) {
       {/* ── LIGHTBOX OVERLAY ── */}
       <div className={`lightbox ${isLightboxOpen ? 'open' : ''}`} onClick={() => setIsLightboxOpen(false)}>
         <button className="lb-close" onClick={() => setIsLightboxOpen(false)}>×</button>
-        <div className="lb-bg" onClick={e => e.stopPropagation()} style={{ background: `linear-gradient(135deg, var(--navy-mid), var(--navy))` }}></div>
+        <div className="lb-bg" onClick={e => e.stopPropagation()} style={{ 
+          backgroundImage: yacht.images?.[lightboxIndex]?.url ? `url(${yacht.images[lightboxIndex].url})` : `linear-gradient(135deg, var(--navy-mid), var(--navy))`,
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}></div>
         <div className="lightbox-controls" onClick={e => e.stopPropagation()}>
           <button className="lb-btn" onClick={() => setLightboxIndex((lightboxIndex - 1 + totalPhotos) % totalPhotos)}>‹</button>
           <span className="lb-counter">{lightboxIndex + 1} / {totalPhotos}</span>
