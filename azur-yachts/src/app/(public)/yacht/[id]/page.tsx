@@ -476,6 +476,16 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 </div>
                 <div className="service-price">€{yacht.cleaningFee.toLocaleString()}</div>
               </div>
+              {yacht.securityDeposit > 0 && (
+                <div className="service-item" style={{ opacity: 0.9 }}>
+                  <div className="service-check required"></div>
+                  <div className="service-info">
+                    <div className="service-name required-label">Caution (empreinte)</div>
+                    <div className="service-unit">non débitée</div>
+                  </div>
+                  <div className="service-price">€{yacht.securityDeposit.toLocaleString()}</div>
+                </div>
+              )}
               {yacht.services?.map((s: any) => (
                 <div key={s.id} className="service-item" onClick={() => toggleService(s.id)}>
                   <div className={`service-check ${selectedServiceIds.includes(s.id) ? 'checked' : ''}`}></div>
