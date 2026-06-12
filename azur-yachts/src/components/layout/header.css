@@ -87,7 +87,7 @@
 .mobile-menu-container { display: none; }
 .desktop-only { display: flex; }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .nav-top { padding: 0 1rem; }
   .nav-links { display: none !important; }
   .nav-link { display: none !important; }
