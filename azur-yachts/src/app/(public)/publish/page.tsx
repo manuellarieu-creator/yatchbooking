@@ -17,9 +17,16 @@ type Service = {
 export default function PublishPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [savedStatus, setSavedStatus] = useState('💾 Sauvegardé');
-  const isModal = typeof window !== 'undefined' && window.location.search.includes('modal=true');
-  const editId = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('edit') : null;
-  
+  const [isModal, setIsModal] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsModal(window.location.search.includes('modal=true'));
+      setEditId(new URLSearchParams(window.location.search).get('edit'));
+    }
+  }, []);
+
   // Step 1
   
   // Step 1

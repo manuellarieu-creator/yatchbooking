@@ -107,10 +107,8 @@ export default function ListingsTable({ listings: initialListings }: { listings:
                       <button className="action-btn btn-view" onClick={() => setSelectedListing(listing)}>
                         👁️ Voir
                       </button>
-                      <Link href={`/admin/listings/create?edit=${listing.id}`}>
-                        <button className="action-btn btn-view" style={{ backgroundColor: '#f59e0b', color: 'white', border: 'none' }}>
-                          ✏️ Éditer
-                        </button>
+                      <Link href={`/admin/listings/create?edit=${listing.id}`} className="action-btn btn-view" style={{ backgroundColor: '#f59e0b', color: 'white', border: 'none', display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}>
+                        ✏️ Éditer
                       </Link>
                       
                       {listing.status === 'PENDING' && (
