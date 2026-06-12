@@ -15,6 +15,7 @@ export default function ListingsTable({ listings: initialListings }: { listings:
   const [tab, setTab] = useState<'pending' | 'all'>('pending');
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [selectedListing, setSelectedListing] = useState<ListingWithOwner | null>(null);
+  const [editingListingId, setEditingListingId] = useState<string | null>(null);
 
   const filteredListings = tab === 'pending' 
     ? listings.filter(l => l.status === 'PENDING')
@@ -107,9 +108,9 @@ export default function ListingsTable({ listings: initialListings }: { listings:
                       <button className="action-btn btn-view" onClick={() => setSelectedListing(listing)}>
                         👁️ Voir
                       </button>
-                      <Link href={`/admin/listings/create?edit=${listing.id}`} className="action-btn btn-view" style={{ backgroundColor: '#f59e0b', color: 'white', border: 'none', display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}>
+                      <button className="action-btn btn-view" onClick={() => setEditingListingId(listing.id)} style={{ backgroundColor: '#f59e0b', color: 'white', border: 'none', display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}>
                         ✏️ Éditer
-                      </Link>
+                      </button>
                       
                       {listing.status === 'PENDING' && (
                         <>
@@ -226,6 +227,23 @@ export default function ListingsTable({ listings: initialListings }: { listings:
                 </>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL EDITION */}
+      {editingListingId && (
+        <div className="admin-modal" onClick={() => { setEditingListingId(null); window.location.reload(); }}>
+          <div className="admin-modal-content" style={{ width: '90vw', maxWidth: '1200px', height: '90vh', padding: 0, display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+            <div className="admin-modal-header" style={{ padding: '1rem', borderBottom: '1px solid #eee' }}>
+              <h3 style={{ margin: 0 }}>Modifier l'annonce</h3>
+              <button className="admin-modal-close" onClick={() => { setEditingListingId(null); window.location.reload(); }}>✕</button>
+            </div>
+            <iframe 
+              src={`/admin/listings/create?edit=${editingListingId}&modal=true`} 
+              style={{ width: '100%', flex: 1, border: 'none', borderRadius: '0 0 12px 12px' }} 
+              title="Edit Listing"
+            />
           </div>
         </div>
       )}
