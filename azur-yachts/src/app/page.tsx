@@ -263,45 +263,36 @@ export default function HomePage() {
           <h2 className="section-title">Ce que disent<br/>nos <em>navigateurs</em></h2>
         </div>
         <div className="testi-grid reveal">
-          {(stats?.reviews?.length > 0 ? stats.reviews : [
-            {
-              id: 1,
-              rating: 5,
-              comment: "Une semaine en Grèce à bord de l'Azura 68 — un rêve devenu réalité. L'équipage était d'une attention extraordinaire, le yacht immaculé. Nous reviendrons sans aucun doute.",
-              author: { firstName: "Sophie", lastName: "Lemaire", countryResidence: "Paris, France" }
-            },
-            {
-              id: 2,
-              rating: 5,
-              comment: "Service irréprochable de A à Z. La réservation était simple, le yacht exactement comme sur les photos, et la Côte d'Azur depuis la mer est tout simplement magique.",
-              author: { firstName: "Marco", lastName: "Ricci", countryResidence: "Milan, Italie" }
-            },
-            {
-              id: 3,
-              rating: 5,
-              comment: "Notre anniversaire de mariage aux Caraïbes. Azur Yachts a tout planifié à la perfection — le catamaran, le chef, les excursions. Une expérience absolument mémorable.",
-              author: { firstName: "Amelia & Robert", lastName: "Chen", countryResidence: "Londres, Royaume-Uni" }
-            }
-          ]).map((review: any, i: number) => (
-            <div className="testi-card" key={review.id || i}>
-              <span className="testi-quote">"</span>
-              <div className="testi-stars">{'★'.repeat(review.rating || 5)}{'☆'.repeat(5 - (review.rating || 5))}</div>
-              <p className="testi-text">{review.comment}</p>
-              <div className="testi-author">
-                <div className="testi-avatar">
-                  {review.author?.avatar ? (
-                    <img src={review.author.avatar} alt="Avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
-                  ) : (
-                    (review.author?.firstName?.[0] || '') + (review.author?.lastName?.[0] || '')
-                  )}
-                </div>
-                <div>
-                  <div className="testi-name">{review.author?.firstName} {review.author?.lastName}</div>
-                  <div className="testi-loc">{review.author?.countryResidence || 'Client Azur Yachts'}</div>
+          {loadingStats ? (
+            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-light)'}}>
+              <div className="spinner" style={{margin: '0 auto'}}></div>
+            </div>
+          ) : stats?.reviews?.length > 0 ? (
+            stats.reviews.map((review: any, i: number) => (
+              <div className="testi-card" key={review.id || i}>
+                <span className="testi-quote">"</span>
+                <div className="testi-stars">{'★'.repeat(review.rating || 5)}{'☆'.repeat(5 - (review.rating || 5))}</div>
+                <p className="testi-text">{review.comment}</p>
+                <div className="testi-author">
+                  <div className="testi-avatar">
+                    {review.author?.avatar ? (
+                      <img src={review.author.avatar} alt="Avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+                    ) : (
+                      (review.author?.firstName?.[0] || '') + (review.author?.lastName?.[0] || '')
+                    )}
+                  </div>
+                  <div>
+                    <div className="testi-name">{review.author?.firstName} {review.author?.lastName}</div>
+                    <div className="testi-loc">{review.author?.countryResidence || 'Client Azur Yachts'}</div>
+                  </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: '#666'}}>
+               Aucun avis client approuvé pour le moment.
             </div>
-          ))}
+          )}
         </div>
       </section>
 
