@@ -92,7 +92,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ listing: updated })
   } catch (error: any) {
     console.error('Error updating listing:', error);
-    return NextResponse.json({ error: error?.message || 'Erreur serveur' }, { status: 500 })
+    const msg = error?.message || 'Erreur serveur';
+    const lines = msg.split('\n');
+    const reason = lines.slice(-5).join('\n');
+    return NextResponse.json({ error: reason }, { status: 500 })
   }
 }
 
