@@ -163,6 +163,7 @@ model Listing {
   boatType          String
   boatLength        Float?
   boatYear          Int
+  cabins            Int?
   requiresCaptain   Boolean       @default(false)
   skipperAvailable  Boolean       @default(false)
   maxRentalHours    Int?

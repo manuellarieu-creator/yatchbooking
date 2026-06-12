@@ -265,7 +265,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             <h1 className="listing-title">{yacht.title}</h1>
             <div className="listing-quick-stats">
               <span className="quick-stat">👥 <strong>{yacht.maxAdults}</strong> adultes max</span>
-              <span className="quick-stat">🛏 <strong>{Math.max(1, Math.floor(yacht.maxAdults/2))}</strong> cabines</span>
+              {yacht.cabins ? <span className="quick-stat">🛏 <strong>{yacht.cabins}</strong> cabines</span> : null}
               <span className="quick-stat">📏 <strong>{yacht.boatLength} m</strong></span>
               <span className="quick-stat">⏱ <strong>{yacht.maxRentalHours || 24}h</strong> loc. max</span>
               {yacht.requiresCaptain ? <span className="quick-stat">⚓ Captain Required</span> : null}

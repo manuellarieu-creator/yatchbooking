@@ -37,11 +37,12 @@ function PublishForm() {
   const [title, setTitle] = useState('');
   const [boatType, setBoatType] = useState('');
   const [year, setYear] = useState('');
-  const [portCountry, setPortCountry] = useState('');
+  const [portCountry, setPortCountry] = useState('France');
   const [portCity, setPortCity] = useState('');
   const [length, setLength] = useState('');
-  const [adults, setAdults] = useState(2);
-  const [children, setChildren] = useState(0);
+  const [cabins, setCabins] = useState('');
+  const [adults, setAdults] = useState(8);
+  const [children, setChildren] = useState(2);
   const [hours, setHours] = useState('');
   const [captainReq, setCaptainReq] = useState(false);
   const [skipperOpt, setSkipperOpt] = useState(false);
@@ -91,6 +92,7 @@ function PublishForm() {
           setPortCountry(l.country);
           setPortCity(l.location);
           setLength(l.boatLength?.toString() || '');
+          setCabins(l.cabins?.toString() || '');
           setAdults(l.maxAdults);
           setChildren(l.maxChildren);
           setHours(l.maxRentalHours?.toString() || '24');
@@ -121,7 +123,7 @@ function PublishForm() {
     return () => clearTimeout(t);
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
-    title, boatType, year, portCountry, portCity, length, adults, children, hours, captainReq, skipperOpt, features,
+    title, boatType, year, portCountry, portCity, length, cabins, adults, children, hours, captainReq, skipperOpt, features,
     photos, desc, priceDay, cleaningFee, securityDeposit, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail
   ]);
 
@@ -529,6 +531,10 @@ function PublishForm() {
                   <div className="field">
                     <label className="label">Longueur (en mètres)</label>
                     <input className="input" type="number" min="1" max="200" value={length} onChange={e => setLength(e.target.value)} placeholder="Ex : 20.5" />
+                  </div>
+                  <div className="field">
+                    <label className="label">Nombre de cabines</label>
+                    <input className="input" type="number" min="0" max="50" value={cabins} onChange={e => setCabins(e.target.value)} placeholder="Ex : 3" />
                   </div>
                 </div>
 

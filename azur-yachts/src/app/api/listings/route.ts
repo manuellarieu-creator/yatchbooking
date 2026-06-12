@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
     const {
       title, description, price, country, location,
       latitude, longitude, maxAdults, maxChildren,
-      boatType, boatLength, boatYear, requiresCaptain,
+      boatType, boatLength, boatYear, cabins, requiresCaptain,
       skipperAvailable, maxRentalHours, deliveryAvailable,
       deliveryFee, deliveryPricing, features, cleaningFee, securityDeposit, images, services, availabilities, ownerId
     } = body
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
       data: {
         title, description, price, country, location,
         latitude, longitude, maxAdults, maxChildren,
-        boatType, boatLength, boatYear, requiresCaptain,
+        boatType, boatLength, boatYear, cabins: cabins ? Number(cabins) : null, requiresCaptain,
         skipperAvailable, maxRentalHours, deliveryAvailable,
         deliveryFee, deliveryPricing, features: features || [], cleaningFee, securityDeposit: securityDeposit || 0,
         status: 'PENDING',
