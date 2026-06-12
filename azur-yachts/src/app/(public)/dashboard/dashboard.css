@@ -477,9 +477,14 @@
   outline: none;
   cursor: pointer;
 }
+.dashboard-container .table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 .dashboard-container table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 700px; /* Prevent squishing on mobile */
 }
 .dashboard-container thead th {
   padding: .75rem 1.25rem;
