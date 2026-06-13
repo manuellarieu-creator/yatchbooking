@@ -280,3 +280,52 @@ export async function emailNewMessage(
     `),
   })
 }
+
+// 13. Virement validé (client)
+export async function emailBankTransferValidated(
+  to: string, name: string,
+  amount: number, boat: string,
+  start: string, end: string
+) {
+  return resend.emails.send({
+    from: FROM, to,
+    subject: `Confirmation de votre paiement et de votre réservation - Azur Yachts`,
+    html: base(`
+      <h2>Virement bancaire reçu</h2>
+      <p>Bonjour ${name},</p>
+      <p>Nous avons le plus grand plaisir de vous confirmer la bonne réception de votre virement bancaire d'un montant de <strong>€${amount.toLocaleString('fr-FR')}</strong>.</p>
+      <p>Par conséquent, votre réservation pour le magnifique yacht <strong>${boat}</strong> est désormais <strong>totalement confirmée</strong> pour la période du <strong>${start}</strong> au <strong>${end}</strong>.</p>
+      <div class="box">
+        <strong>Instructions importantes pour votre embarquement :</strong><br><br>
+        - Le rendez-vous est fixé au port d'attache du navire.<br>
+        - N'oubliez pas de vous munir de votre pièce d'identité et de votre permis bateau si applicable.<br>
+        - Un état des lieux sera réalisé à votre arrivée.
+      </div>
+      <p>Nous restons à votre entière disposition pour toute demande supplémentaire afin de préparer au mieux votre sortie en mer.</p>
+      <a href="${APP_URL}/bookings" class="btn">Voir ma réservation</a>
+    `),
+  })
+}
+
+// 14. Virement rejeté (client)
+export async function emailBankTransferRejected(
+  to: string, name: string,
+  boat: string, start: string, end: string, reason: string
+) {
+  return resend.emails.send({
+    from: FROM, to,
+    subject: `Problème concernant votre paiement par virement - Azur Yachts`,
+    html: base(`
+      <h2>Paiement par virement non validé</h2>
+      <p>Bonjour ${name},</p>
+      <p>Nous vous contactons concernant votre réservation pour le yacht <strong>${boat}</strong> (du ${start} au ${end}).</p>
+      <p>Malheureusement, nous n'avons pas pu valider votre paiement par virement bancaire pour la raison suivante :</p>
+      <div class="box-red">
+        <strong>${reason}</strong>
+      </div>
+      <p>En conséquence, le statut de votre réservation est actuellement mis en attente ou rejeté.</p>
+      <p>Nous vous invitons à nous contacter dans les plus brefs délais ou à procéder à un nouveau paiement depuis votre espace client pour sécuriser votre réservation.</p>
+      <a href="${APP_URL}/dashboard" class="btn">Aller à mon espace client</a>
+    `),
+  })
+}

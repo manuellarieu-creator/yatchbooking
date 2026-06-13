@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import './dashboard.css';
 
-type Section = 'overview' | 'listings' | 'bookings' | 'stats' | 'messages' | 'calendar';
+type Section = 'overview' | 'listings' | 'bookings' | 'stats' | 'messages' | 'calendar' | 'reviews';
 
 function DashboardContent() {
   const searchParams = useSearchParams();
@@ -26,7 +26,15 @@ function DashboardContent() {
   const [lastMessageCount, setLastMessageCount] = useState(0);
 
   // Modal state
-  const [activeModal, setActiveModal] = useState<'profile' | 'publish' | 'verify' | 'help' | null>(null);
+  const [activeModal, setActiveModal] = useState<'profile' | 'publish' | 'verify' | 'help' | 'modifyBooking' | 'review' | null>(null);
+  const [selectedBookingForMod, setSelectedBookingForMod] = useState<any>(null);
+  const [modNewStart, setModNewStart] = useState('');
+  const [modNewEnd, setModNewEnd] = useState('');
+  const [modNote, setModNote] = useState('');
+  const [selectedBookingForReview, setSelectedBookingForReview] = useState<any>(null);
+  const [reviewType, setReviewType] = useState<'SITE' | 'OWNER'>('SITE');
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
 
   // Fetch initial data
   useEffect(() => {
@@ -239,6 +247,7 @@ function DashboardContent() {
           <a className={`sidebar-item ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => setActiveSection('stats')}><span className="sidebar-icon">📈</span>Statistiques</a>
           <a className={`sidebar-item ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => setActiveSection('messages')}><span className="sidebar-icon">💬</span>Messages</a>
           <a className={`sidebar-item ${activeSection === 'calendar' ? 'active' : ''}`} onClick={() => setActiveSection('calendar')}><span className="sidebar-icon">🗓</span>Calendrier</a>
+          <a className={`sidebar-item ${activeSection === 'reviews' ? 'active' : ''}`} onClick={() => setActiveSection('reviews')}><span className="sidebar-icon">⭐</span>Avis</a>
           
           <div className="sidebar-divider"></div>
           
@@ -318,10 +327,10 @@ function DashboardContent() {
                 <div className="kpi-val">€{dashboardData.stats.revenue.toLocaleString()}</div>
                 <div className="kpi-delta up">↑ +18% vs mois dernier</div>
               </div>
-              <div className="kpi-card navy">
+              <div className="kpi-card navy" onClick={() => setActiveSection('bookings')} style={{ cursor: 'pointer' }}>
                 <div className="kpi-lbl">Réservations actives</div>
                 <div className="kpi-val">{dashboardData.stats.bookingsCount}</div>
-                <div className="kpi-sub">dont 1 en attente paiement</div>
+                <div className="kpi-sub">Cliquez pour voir les détails</div>
               </div>
               <div className="kpi-card green">
                 <div className="kpi-lbl">Taux d'occupation</div>
@@ -464,6 +473,9 @@ function DashboardContent() {
                           <div className="row-actions">
                             <button className="act-btn" onClick={() => triggerToast('Détails…')}>Détails</button>
                             {b.status !== 'cancelled' && <button className="act-btn" onClick={() => triggerToast('Facture…')}>Facture</button>}
+                            {(b.status === 'confirmed' || b.status === 'pending') && (
+                              <button className="act-btn" style={{ color: 'var(--gold)' }} onClick={() => { setSelectedBookingForMod(b); setActiveModal('modifyBooking'); }}>Modifier</button>
+                            )}
                             {b.status === 'pending' && <button className="act-btn danger" onClick={() => triggerToast('Annulation…')}>Annuler</button>}
                           </div>
                         </td>
@@ -672,6 +684,43 @@ function DashboardContent() {
             </div>
           </div>
 
+          {/* ══════ AVIS ══════ */}
+          <div className={`section-panel ${activeSection === 'reviews' ? 'active' : ''}`}>
+            <div className="page-hd">
+              <div className="page-hd-left">
+                <span className="page-eyebrow">Avis</span>
+                <h1 className="page-title">Laissez un <em>avis</em></h1>
+                <p className="page-sub">Partagez votre expérience avec la communauté.</p>
+              </div>
+            </div>
+            
+            <div className="table-card">
+              <div className="table-header">
+                <div className="table-title">Vos réservations (pour laisser un avis)</div>
+              </div>
+              <div className="table-wrapper">
+                <table>
+                  <thead><tr><th>Bateau</th><th>Dates</th><th>Actions</th></tr></thead>
+                  <tbody>
+                    {dashboardData.bookings.length === 0 ? (
+                      <tr><td colSpan={3} style={{ textAlign: 'center', padding: '2rem' }}>Aucune réservation pour le moment.</td></tr>
+                    ) : (
+                      dashboardData.bookings.map((b: any) => (
+                        <tr key={b.id}>
+                          <td>{b.listing.title}</td>
+                          <td>{new Date(b.startDate).toLocaleDateString()} - {new Date(b.endDate).toLocaleDateString()}</td>
+                          <td>
+                            <button className="btn btn-gold btn-sm" onClick={() => { setSelectedBookingForReview(b); setActiveModal('review'); }}>Laisser un avis</button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
         </main>
       </div>
 
@@ -695,6 +744,95 @@ function DashboardContent() {
               <div style={{ padding: '2rem', textAlign: 'center', fontFamily: "'Jost', sans-serif" }}>
                 <h3>Centre d'aide</h3>
                 <p>Contactez notre support à <strong>support@azuryachts.com</strong> ou appelez le <strong>+33 1 23 45 67 89</strong>.</p>
+              </div>
+            )}
+            {activeModal === 'modifyBooking' && selectedBookingForMod && (
+              <div style={{ padding: '2rem', fontFamily: "'Jost', sans-serif" }}>
+                <h3>Modifier la réservation {selectedBookingForMod.id.slice(-6).toUpperCase()}</h3>
+                <p style={{ color: 'var(--text-light)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                  Un supplément de 40€ sera appliqué si la modification est approuvée.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <label>Nouvelle date de début</label>
+                    <input type="date" style={{ width: '100%', padding: '0.5rem', marginTop: '0.2rem' }} value={modNewStart} onChange={e => setModNewStart(e.target.value)} />
+                  </div>
+                  <div>
+                    <label>Nouvelle date de fin</label>
+                    <input type="date" style={{ width: '100%', padding: '0.5rem', marginTop: '0.2rem' }} value={modNewEnd} onChange={e => setModNewEnd(e.target.value)} />
+                  </div>
+                  <div>
+                    <label>Motif / Note pour le propriétaire</label>
+                    <textarea style={{ width: '100%', padding: '0.5rem', marginTop: '0.2rem', minHeight: '80px' }} value={modNote} onChange={e => setModNote(e.target.value)} />
+                  </div>
+                  <button className="btn btn-gold" onClick={async () => {
+                    if (!modNewStart || !modNewEnd) return triggerToast('Veuillez sélectionner les dates');
+                    try {
+                      const res = await fetch(`/api/bookings/${selectedBookingForMod.id}/modify`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ newStart: modNewStart, newEnd: modNewEnd, note: modNote })
+                      });
+                      const data = await res.json();
+                      if (data.success) {
+                        triggerToast('Demande envoyée !');
+                        setActiveModal(null);
+                      } else {
+                        triggerToast(data.error);
+                      }
+                    } catch (e) {
+                      triggerToast('Erreur réseau');
+                    }
+                  }}>
+                    Soumettre la demande
+                  </button>
+                </div>
+              </div>
+            )}
+            {activeModal === 'review' && selectedBookingForReview && (
+              <div style={{ padding: '2rem', fontFamily: "'Jost', sans-serif" }}>
+                <h3>Laisser un avis pour {selectedBookingForReview.listing.title}</h3>
+                
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', marginBottom: '1rem' }}>
+                  <label><input type="radio" name="reviewType" checked={reviewType === 'SITE'} onChange={() => setReviewType('SITE')} /> Sur le Site</label>
+                  <label><input type="radio" name="reviewType" checked={reviewType === 'OWNER'} onChange={() => setReviewType('OWNER')} /> Sur le Propriétaire</label>
+                </div>
+                
+                <div style={{ marginBottom: '1rem' }}>
+                  <label>Note (/5)</label>
+                  <input type="number" min="1" max="5" style={{ width: '100%', padding: '0.5rem', marginTop: '0.2rem' }} value={reviewRating} onChange={e => setReviewRating(Number(e.target.value))} />
+                </div>
+                
+                <div style={{ marginBottom: '1rem' }}>
+                  <label>Votre avis</label>
+                  <textarea style={{ width: '100%', padding: '0.5rem', marginTop: '0.2rem', minHeight: '100px' }} value={reviewComment} onChange={e => setReviewComment(e.target.value)} />
+                </div>
+                
+                <button className="btn btn-gold" onClick={async () => {
+                  if (!reviewComment) return triggerToast('Le commentaire est requis');
+                  try {
+                    const res = await fetch('/api/reviews', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        listingId: selectedBookingForReview.listing.id,
+                        targetUserId: selectedBookingForReview.listing.ownerId,
+                        targetType: reviewType,
+                        rating: reviewRating,
+                        comment: reviewComment
+                      })
+                    });
+                    if (res.ok) {
+                      triggerToast('Avis publié !');
+                      setActiveModal(null);
+                    } else {
+                      const data = await res.json();
+                      triggerToast(data.error);
+                    }
+                  } catch (e) {
+                    triggerToast('Erreur réseau');
+                  }
+                }}>Publier mon avis</button>
               </div>
             )}
           </div>

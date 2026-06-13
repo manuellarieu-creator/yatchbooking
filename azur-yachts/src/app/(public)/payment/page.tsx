@@ -25,10 +25,16 @@ function PaymentContent() {
   const [successStatus, setSuccessStatus] = useState<'bank' | 'bank_proof' | null>(null);
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [bankSettings, setBankSettings] = useState<any>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    fetch('/api/payments/settings')
+      .then(res => res.json())
+      .then(data => setBankSettings(data))
+      .catch(console.error);
+
     if (bookingId) {
       fetch(`/api/bookings/${bookingId}`)
         .then(res => res.json())
@@ -243,19 +249,19 @@ function PaymentContent() {
               <div className="bank-details-card">
                 <div className="bank-detail-row">
                   <span className="bank-detail-label">Nom du titulaire</span>
-                  <span className="bank-detail-value">Azur Yachts SAM <button className="copy-btn" onClick={() => handleCopy('Azur Yachts SAM')}>Copier</button></span>
+                  <span className="bank-detail-value">{bankSettings?.bankAccountName || '-'} <button className="copy-btn" onClick={() => handleCopy(bankSettings?.bankAccountName || '')}>Copier</button></span>
                 </div>
                 <div className="bank-detail-row">
                   <span className="bank-detail-label">IBAN</span>
-                  <span className="bank-detail-value">MC93 1234 5678 9012 3456 7890 123 <button className="copy-btn" onClick={() => handleCopy('MC93 1234 5678 9012 3456 7890 123')}>Copier</button></span>
+                  <span className="bank-detail-value">{bankSettings?.bankIban || '-'} <button className="copy-btn" onClick={() => handleCopy(bankSettings?.bankIban || '')}>Copier</button></span>
                 </div>
                 <div className="bank-detail-row">
                   <span className="bank-detail-label">BIC / SWIFT</span>
-                  <span className="bank-detail-value">CMCIMC2A <button className="copy-btn" onClick={() => handleCopy('CMCIMC2A')}>Copier</button></span>
+                  <span className="bank-detail-value">{bankSettings?.bankBic || '-'} <button className="copy-btn" onClick={() => handleCopy(bankSettings?.bankBic || '')}>Copier</button></span>
                 </div>
                 <div className="bank-detail-row">
                   <span className="bank-detail-label">Nom de la banque</span>
-                  <span className="bank-detail-value">Crédit Mutuel Monaco</span>
+                  <span className="bank-detail-value">{bankSettings?.bankName || '-'}</span>
                 </div>
               </div>
 

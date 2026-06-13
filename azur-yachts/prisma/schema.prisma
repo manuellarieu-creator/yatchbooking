@@ -27,6 +27,12 @@ enum ReviewStatus {
   REJECTED
 }
 
+enum ReviewTargetType {
+  SITE
+  OWNER
+  LISTING
+}
+
 enum AdvertiserTier {
   STANDARD
   PREMIUM
@@ -105,7 +111,8 @@ model User {
   sessions          Session[]
   listings          Listing[]
   bookings          Booking[]
-  reviews           Review[]
+  reviews           Review[]        @relation("ReviewAuthor")
+  receivedReviews   Review[]        @relation("ReviewTarget")
   sentMessages      Message[]
   conversations     ConversationParticipant[]
   notifications     Notification[]
@@ -237,6 +244,11 @@ model Booking {
   deliveryPort     String?
   status           BookingStatus @default(PENDING)
   adminNote        String?
+  modificationStatus String?
+  requestedStartDate DateTime?
+  requestedEndDate   DateTime?
+  requestedNote      String?       @db.Text
+  modificationFee    Float         @default(0)
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
   listing          Listing       @relation(fields: [listingId], references: [id])
@@ -300,15 +312,18 @@ model PaymentSettings {
 }
 
 model Review {
-  id        String       @id @default(cuid())
-  rating    Int
-  comment   String       @db.Text
-  status    ReviewStatus @default(PENDING)
-  listing   Listing      @relation(fields: [listingId], references: [id])
-  listingId String
-  author    User         @relation(fields: [authorId], references: [id])
-  authorId  String
-  createdAt DateTime     @default(now())
+  id           String           @id @default(cuid())
+  rating       Int
+  comment      String           @db.Text
+  status       ReviewStatus     @default(PENDING)
+  targetType   ReviewTargetType @default(LISTING)
+  listing      Listing?         @relation(fields: [listingId], references: [id])
+  listingId    String?
+  targetUser   User?            @relation("ReviewTarget", fields: [targetUserId], references: [id])
+  targetUserId String?
+  author       User             @relation("ReviewAuthor", fields: [authorId], references: [id])
+  authorId     String
+  createdAt    DateTime         @default(now())
 }
 
 model Conversation {

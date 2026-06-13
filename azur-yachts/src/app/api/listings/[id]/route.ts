@@ -15,9 +15,16 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
             id: true, firstName: true, lastName: true,
             avatar: true, videoVerified: true, advertiserTier: true,
             languages: true, createdAt: true,
+            receivedReviews: {
+              where: { targetType: 'OWNER' },
+              include: { author: { select: { id: true, firstName: true, lastName: true, avatar: true } } },
+              orderBy: { createdAt: 'desc' },
+              take: 5
+            }
           },
         },
         reviews: {
+          where: { targetType: 'LISTING' },
           include: { author: { select: { id: true, firstName: true, lastName: true, avatar: true } } },
           orderBy: { createdAt: 'desc' },
           take: 10,

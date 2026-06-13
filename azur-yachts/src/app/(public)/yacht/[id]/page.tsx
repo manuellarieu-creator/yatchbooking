@@ -327,18 +327,29 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           <div className="fade-in">
             <div className="sec-title">Informations propriétaire</div>
             <div className="owner-card">
-              <div className="owner-avatar">
-                {yacht.owner?.avatar ? (
-                  <img src={yacht.owner.avatar} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
-                ) : (
-                  (yacht.owner?.firstName?.charAt(0) || '') + (yacht.owner?.lastName?.charAt(0) || '')
-                )}
-              </div>
+              <Link href={`/profile/${yacht.owner?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="owner-avatar">
+                  {yacht.owner?.avatar ? (
+                    <img src={yacht.owner.avatar} alt="Avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                  ) : (
+                    (yacht.owner?.firstName?.charAt(0) || '') + (yacht.owner?.lastName?.charAt(0) || '')
+                  )}
+                </div>
+              </Link>
               <div className="owner-info">
-                <div className="owner-name">{yacht.owner?.firstName} {yacht.owner?.lastName}</div>
+                <Link href={`/profile/${yacht.owner?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <div className="owner-name">{yacht.owner?.firstName} {yacht.owner?.lastName}</div>
+                </Link>
                 <div className="owner-stars">
-                  {'★'.repeat(Math.round(yacht.averageRating || 0)) || 'Nouveau'} 
-                  {yacht._count?.reviews > 0 && <span> ({yacht._count.reviews} avis)</span>}
+                  {(() => {
+                    const revs = yacht.owner?.receivedReviews || [];
+                    const avg = revs.length ? (revs.reduce((a:any, b:any) => a + b.rating, 0) / revs.length).toFixed(1) : 0;
+                    return avg > 0 ? (
+                      <>
+                        {'★'.repeat(Math.round(Number(avg)))} <span>({revs.length} avis propriétaire)</span>
+                      </>
+                    ) : 'Nouveau propriétaire';
+                  })()}
                 </div>
                 <div className="owner-meta">
                   <div className="owner-meta-item"><strong>Membre depuis</strong> {yacht.owner?.createdAt ? new Date(yacht.owner.createdAt).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' }) : 'Récent'}</div>
@@ -355,6 +366,27 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               </div>
               <button className="msg-btn" onClick={() => setIsChatOpen(true)}>💬 Message</button>
             </div>
+            
+            {/* Owner Reviews */}
+            {yacht.owner?.receivedReviews?.length > 0 && (
+              <div style={{ marginTop: '1.5rem' }}>
+                <h4 style={{ fontSize: '1rem', marginBottom: '1rem' }}>Avis sur {yacht.owner.firstName}</h4>
+                <div className="review-list" style={{ gap: '1rem' }}>
+                  {yacht.owner.receivedReviews.map((rev: any) => (
+                    <div key={rev.id} className="review-item" style={{ padding: '1rem', background: '#fcfcfc', border: '1px solid var(--sand)', borderRadius: '8px' }}>
+                      <div className="review-header">
+                        <div className="review-avatar" style={{ width: '30px', height: '30px', fontSize: '0.8rem' }}>{rev.author?.firstName?.charAt(0) || 'U'}</div>
+                        <div className="review-meta">
+                          <div className="review-name" style={{ fontSize: '0.9rem' }}>{rev.author?.firstName} {rev.author?.lastName}</div>
+                        </div>
+                        <div className="review-stars" style={{ fontSize: '0.8rem' }}>{'★'.repeat(rev.rating)}</div>
+                      </div>
+                      <div className="review-text" style={{ fontSize: '0.85rem' }}>{rev.comment}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <hr className="section-sep" />
