@@ -11,19 +11,9 @@ export default async function Header() {
   // DASHBOARD-STYLE HEADER FOR LOGGED IN USERS
   if (session?.user) {
     return (
-      <nav className="top-nav" style={{ 
-        background: '#0a1628', 
-        color: '#fff', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between', 
-        padding: '0 2.5rem', 
-        height: '64px', 
-        position: 'sticky', 
-        top: 0, 
-        zIndex: 100 
-      }}>
-        <div className="nav-left desktop-only-nav" style={{ display: 'flex', gap: '2rem' }}>
+      <nav className="nav-top" style={{ padding: '0 2.5rem', zIndex: 1050, borderBottom: 'none' }}>
+        <div className="nav-left desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          <Link href="/" className="nav-logo" style={{ marginRight: '1rem' }}>AZUR<span>&nbsp;YACHTS</span></Link>
           <Link href="/reservations" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>RÉSERVATIONS</Link>
           <Link href="/dashboard?tab=messages" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>MESSAGES</Link>
           <Link href="/favorites" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>FAVORIS</Link>
@@ -32,7 +22,7 @@ export default async function Header() {
         {/* On mobile, keep the right side clear so GlobalMobileNav can handle it */}
         <div className="mobile-only-nav" style={{ flex: 1 }}></div>
 
-        <div className="nav-right desktop-only-nav" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+        <div className="nav-right desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <InAppNotifications />
           <UserMenu user={session.user} />
         </div>
