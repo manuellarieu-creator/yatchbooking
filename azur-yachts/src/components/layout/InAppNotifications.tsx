@@ -86,10 +86,10 @@ export default function InAppNotifications() {
           overflow: 'hidden',
           color: 'var(--text, #111827)'
         }}>
-          <div style={{ padding: '1rem', borderBottom: '1px solid var(--border, #e5e7eb)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ padding: '1rem', borderBottom: '1px solid var(--border, #e5e7eb)', position: 'relative', textAlign: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '1rem', color: 'var(--text, #111827)' }}>Notifications</h3>
             {unreadCount > 0 && (
-              <button onClick={markAllAsRead} style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '0.75rem', cursor: 'pointer' }}>
+              <button onClick={markAllAsRead} style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--gold)', fontSize: '0.75rem', cursor: 'pointer' }}>
                 Tout marquer comme lu
               </button>
             )}
