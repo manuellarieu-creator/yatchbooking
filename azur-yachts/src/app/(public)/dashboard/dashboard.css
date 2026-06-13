@@ -171,6 +171,11 @@
   overflow-y: auto;
   flex-shrink: 0;
 }
+@media(max-width: 900px) {
+  .dashboard-container .sidebar.desktop-only {
+    display: none !important;
+  }
+}
 .dashboard-container .sidebar-section-label {
   font-size: .58rem;
   text-transform: uppercase;
