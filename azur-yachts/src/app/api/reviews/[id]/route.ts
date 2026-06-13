@@ -29,19 +29,21 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     })
 
     // Mettre à jour la note moyenne du bateau après suppression
-    const aggregate = await prisma.review.aggregate({
-      where: { listingId: review.listingId },
-      _avg: { rating: true },
-      _count: { id: true }
-    })
+    if (review.listingId) {
+      const aggregate = await prisma.review.aggregate({
+        where: { listingId: review.listingId },
+        _avg: { rating: true },
+        _count: { id: true }
+      })
 
-    await prisma.listing.update({
-      where: { id: review.listingId },
-      data: {
-        averageRating: aggregate._avg.rating || 0,
-        reviewCount: aggregate._count.id
-      }
-    })
+      await prisma.listing.update({
+        where: { id: review.listingId },
+        data: {
+          averageRating: aggregate._avg.rating || 0,
+          reviewCount: aggregate._count.id
+        }
+      })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
