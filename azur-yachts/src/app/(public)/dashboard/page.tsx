@@ -299,23 +299,80 @@ function DashboardContent() {
           {/* ══════ OVERVIEW ══════ */}
           {isLoading && <div style={{padding: '50px', textAlign: 'center'}}>Chargement du tableau de bord...</div>}
           <div className={`section-panel ${activeSection === 'overview' ? 'active' : ''}`}>
-            <div className="verify-banner" style={{ display: 'none' }}>
-              <div className="verify-banner-icon">🎥</div>
-              <div className="verify-banner-text">
-                <div className="vb-title">Complétez votre vérification d'identité vidéo</div>
-                <div className="vb-sub">Nécessaire pour publier des annonces et obtenir le badge ✓ Vérifié</div>
-              </div>
-              <button className="btn btn-gold btn-sm verify-banner-btn" onClick={() => triggerToast('Redirection vers la vérification vidéo…')}>Vérifier maintenant →</button>
-            </div>
+            {dashboardData.user?.role === 'CLIENT' ? (
+              <>
+                <div className="page-hd">
+                  <div className="page-hd-left">
+                    <span className="page-eyebrow">Tableau de bord</span>
+                    <h1 className="page-title">Bonjour, <em>{dashboardData.user.firstName}</em> 👋</h1>
+                    <p className="page-sub">Prêt pour votre prochaine aventure nautique ?</p>
+                  </div>
+                  <Link href="/listings"><button className="btn btn-gold">⛵ Réserver un yacht</button></Link>
+                </div>
 
-            <div className="page-hd">
-              <div className="page-hd-left">
-                <span className="page-eyebrow">Tableau de bord</span>
-                <h1 className="page-title">Bonjour, <em>{dashboardData.user.firstName || 'Partenaire'}</em> 👋</h1>
-                <p className="page-sub">Voici un résumé de votre activité · {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-              </div>
-              <Link href="/publish"><button className="btn btn-gold">⚓ Nouvelle annonce</button></Link>
-            </div>
+                <div className="kpi-grid">
+                  <Link href="/reservations" className="kpi-card navy" style={{ textDecoration: 'none', cursor: 'pointer', color: 'inherit' }}>
+                    <div className="kpi-lbl" style={{ color: 'white' }}>Mes Réservations</div>
+                    <div className="kpi-val">{dashboardData.bookings?.length || 0}</div>
+                    <div className="kpi-sub" style={{ color: 'rgba(255,255,255,0.7)' }}>Total depuis l'inscription</div>
+                  </Link>
+                  <Link href="/favorites" className="kpi-card gold" style={{ textDecoration: 'none', cursor: 'pointer', color: 'inherit' }}>
+                    <div className="kpi-lbl">Mes Favoris</div>
+                    <div className="kpi-val">❤️</div>
+                    <div className="kpi-sub">Voir vos bateaux sauvegardés</div>
+                  </Link>
+                  <div className="kpi-card green" onClick={() => setActiveSection('messages')} style={{ cursor: 'pointer' }}>
+                    <div className="kpi-lbl">Messages</div>
+                    <div className="kpi-val">💬</div>
+                    <div className="kpi-sub">Vos conversations</div>
+                  </div>
+                </div>
+
+                <div className="table-card" style={{ marginTop: '2rem' }}>
+                  <div className="table-header">
+                    <div className="table-title">Vos dernières réservations</div>
+                    <Link href="/reservations"><button className="btn btn-outline btn-sm">Voir tout</button></Link>
+                  </div>
+                  {dashboardData.bookings?.length === 0 ? (
+                    <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-light)' }}>
+                      Vous n'avez pas encore de réservation.
+                    </div>
+                  ) : (
+                    <table>
+                      <thead><tr><th>Référence</th><th>Bateau</th><th>Dates</th><th>Statut</th></tr></thead>
+                      <tbody>
+                        {dashboardData.bookings?.slice(0, 5).map((b: any) => (
+                          <tr key={b.id}>
+                            <td><strong>{b.id.slice(-6).toUpperCase()}</strong></td>
+                            <td>{b.listing?.title || 'Bateau non spécifié'}</td>
+                            <td>{new Date(b.startDate).toLocaleDateString()}</td>
+                            <td><span className={`badge badge-${b.status?.toLowerCase()}`}>{b.status}</span></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="verify-banner" style={{ display: 'none' }}>
+                  <div className="verify-banner-icon">🎥</div>
+                  <div className="verify-banner-text">
+                    <div className="vb-title">Complétez votre vérification d'identité vidéo</div>
+                    <div className="vb-sub">Nécessaire pour publier des annonces et obtenir le badge ✓ Vérifié</div>
+                  </div>
+                  <button className="btn btn-gold btn-sm verify-banner-btn" onClick={() => triggerToast('Redirection vers la vérification vidéo…')}>Vérifier maintenant →</button>
+                </div>
+
+                <div className="page-hd">
+                  <div className="page-hd-left">
+                    <span className="page-eyebrow">Tableau de bord</span>
+                    <h1 className="page-title">Bonjour, <em>{dashboardData.user?.firstName || 'Partenaire'}</em> 👋</h1>
+                    <p className="page-sub">Voici un résumé de votre activité · {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  </div>
+                  <Link href="/publish"><button className="btn btn-gold">⚓ Nouvelle annonce</button></Link>
+                </div>
 
             <div className="alerts-section">
               {dashboardData.bookings.filter((b: any) => b.status === 'PENDING' || b.status === 'PROOF_SUBMITTED').slice(0, 2).map((booking: any) => (
@@ -417,6 +474,8 @@ function DashboardContent() {
                 </tbody>
               </table>
             </div>
+            </div>
+            )}
           </div>
 
           {/* ══════ MES ANNONCES ══════ */}
@@ -666,7 +725,20 @@ function DashboardContent() {
                       })}
                     </div>
                     <div className="chat-input-row">
-                      <input className="chat-input" type="text" placeholder="Écrire un message…" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMsg()} />
+                      <textarea 
+                        className="chat-input" 
+                        placeholder="Écrire un message…" 
+                        value={chatInput} 
+                        onChange={e => setChatInput(e.target.value)} 
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            sendMsg();
+                          }
+                        }}
+                        rows={1}
+                        style={{ resize: 'none', fontFamily: 'inherit', borderRadius: '20px', minHeight: '42px', padding: '0.75rem 1rem' }}
+                      />
                       <button className="chat-send-btn" onClick={sendMsg}>➤</button>
                     </div>
                   </>

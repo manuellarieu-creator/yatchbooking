@@ -544,13 +544,18 @@ function ReservationsContent() {
           </div>
           
           <div className="modal-footer" style={{ padding: '1rem', background: '#fff', borderTop: '1px solid #e2e8f0', display: 'flex', gap: '0.5rem' }}>
-            <input 
-              type="text" 
+            <textarea 
               placeholder="Écrivez votre message..." 
               value={chatInput} 
               onChange={e => setChatInput(e.target.value)} 
-              onKeyDown={e => e.key === 'Enter' && sendMsg()}
-              style={{ flex: 1, padding: '0.75rem 1rem', borderRadius: '24px', border: '1px solid #cbd5e1', outline: 'none' }} 
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMsg();
+                }
+              }}
+              rows={1}
+              style={{ flex: 1, padding: '0.75rem 1rem', borderRadius: '20px', border: '1px solid #cbd5e1', outline: 'none', resize: 'none', fontFamily: 'inherit' }} 
             />
             <button 
               onClick={sendMsg}
