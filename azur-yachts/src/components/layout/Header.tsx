@@ -8,56 +8,58 @@ import InAppNotifications from '@/components/layout/InAppNotifications';
 export default async function Header() {
   const session = await auth();
 
-  // DASHBOARD-STYLE HEADER FOR LOGGED IN USERS
-  if (session?.user) {
-    return (
-      <nav className="nav-top" style={{ zIndex: 1050, borderBottom: 'none' }}>
-        <Link href="/" className="nav-logo" style={{ marginRight: '1rem' }}>AZUR<span>&nbsp;YACHTS</span></Link>
-        
-        <div className="nav-center desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-          <Link href="/" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>ACCUEIL</Link>
-          <Link href="/listings" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>LES OFFRES</Link>
-          <Link href="/reservations" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>RÉSERVATIONS</Link>
-          <Link href="/dashboard?tab=messages" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>MESSAGES</Link>
-          <Link href="/favorites" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>FAVORIS</Link>
-        </div>
-        
-        {/* On mobile, keep the right side clear so GlobalMobileNav can handle it */}
-        <div className="mobile-only-nav" style={{ flex: 1 }}></div>
+  return (
+    <>
+      {/* ─── DESKTOP HEADER FOR LOGGED IN USERS ─── */}
+      {session?.user && (
+        <nav className="nav-top desktop-only" style={{ zIndex: 1050, borderBottom: 'none' }}>
+          <Link href="/" className="nav-logo" style={{ marginRight: '1rem' }}>AZUR<span>&nbsp;YACHTS</span></Link>
+          
+          <div className="nav-center" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+            <Link href="/" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>ACCUEIL</Link>
+            <Link href="/listings" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>LES OFFRES</Link>
+            <Link href="/reservations" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>RÉSERVATIONS</Link>
+            <Link href="/dashboard?tab=messages" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>MESSAGES</Link>
+            <Link href="/favorites" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>FAVORIS</Link>
+          </div>
 
-        <div className="nav-right desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <InAppNotifications />
-          <UserMenu user={session.user} />
+          <div className="nav-right" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <InAppNotifications />
+            <UserMenu user={session.user} />
+          </div>
+        </nav>
+      )}
+
+      {/* ─── STANDARD HEADER (GUESTS EVERYWHERE + LOGGED IN MOBILE) ─── */}
+      <nav className={`nav-top ${session?.user ? 'mobile-only' : ''}`}>
+        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
+        
+        {/* Desktop: liens de navigation classiques */}
+        <ul className="nav-links">
+          <li><Link href="/">Accueil</Link></li>
+          <li><Link href="/listings">Les Offres</Link></li>
+          <li><Link href="/#destinations">Destinations</Link></li>
+          <li><Link href="/about">À propos</Link></li>
+          <li><Link href="/contact">Contact</Link></li>
+        </ul>
+        
+        <div className="nav-right">
+          {/* Desktop uniquement: boutons Connexion / Mettre en location */}
+          {!session?.user && (
+            <>
+              <Link href="/auth" className="desktop-only"><button className="nav-btn nav-btn-outline">Connexion</button></Link>
+              <Link href="/publish" className="desktop-only"><button className="nav-btn nav-btn-gold">Mettre en location</button></Link>
+            </>
+          )}
+
+          {/* Icône utilisateur — sur desktop uniquement si connecté, toujours sur mobile */}
+          <UserMenu user={session?.user || null} guestClass={!session?.user ? 'guest-user-menu' : ''} />
+
+          {/* Mobile uniquement: hamburger menu */}
+          <MobileMenu />
         </div>
       </nav>
-    );
-  }
-
-  // DEFAULT WHITE HEADER FOR GUESTS
-  return (
-    <nav className="nav-top">
-      <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-      
-      {/* Desktop: liens de navigation classiques */}
-      <ul className="nav-links">
-        <li><Link href="/">Accueil</Link></li>
-        <li><Link href="/listings">Les Offres</Link></li>
-        <li><Link href="/#destinations">Destinations</Link></li>
-        <li><Link href="/about">À propos</Link></li>
-        <li><Link href="/contact">Contact</Link></li>
-      </ul>
-      
-      <div className="nav-right">
-        {/* Desktop uniquement: boutons Connexion / Mettre en location */}
-        <Link href="/auth" className="desktop-only"><button className="nav-btn nav-btn-outline">Connexion</button></Link>
-        <Link href="/publish" className="desktop-only"><button className="nav-btn nav-btn-gold">Mettre en location</button></Link>
-
-        <UserMenu user={null} guestClass="guest-user-menu" />
-
-        {/* Mobile uniquement: hamburger menu */}
-        <MobileMenu />
-      </div>
-    </nav>
+    </>
   );
 }
 

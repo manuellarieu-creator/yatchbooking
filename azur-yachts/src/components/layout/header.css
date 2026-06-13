@@ -86,6 +86,7 @@
 /* Base: hide mobile elements */
 .mobile-menu-container { display: none; }
 .desktop-only { display: flex; }
+.mobile-only { display: none !important; }
 
 /* Cacher l'icône user invité sur desktop */
 @media (min-width: 901px) {
@@ -98,6 +99,7 @@
   .nav-links { display: none !important; }
   .nav-link { display: none !important; }
   .desktop-only { display: none !important; }
+  .mobile-only { display: flex !important; }
   .user-menu-name { display: none !important; }
   .user-menu-arrow { display: none !important; }
   .mobile-menu-container { display: flex; align-items: center; }
