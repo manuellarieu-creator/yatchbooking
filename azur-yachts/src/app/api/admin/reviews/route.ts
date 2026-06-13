@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
     const reviews = await prisma.review.findMany({
       include: {
         listing: { select: { id: true, title: true } },
+        targetUser: { select: { id: true, firstName: true, lastName: true } },
         author: { select: { id: true, firstName: true, lastName: true, email: true } },
       },
       orderBy: { createdAt: 'desc' }

@@ -8,8 +8,10 @@ type Review = {
   rating: number;
   comment: string;
   status: ReviewStatus;
+  targetType: string;
   createdAt: string;
-  listing: { id: string; title: string };
+  listing?: { id: string; title: string };
+  targetUser?: { id: string; firstName: string; lastName: string };
   author: { id: string; firstName: string; lastName: string; email: string };
 };
 
@@ -104,7 +106,11 @@ export default function AdminReviewsPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.2rem' }}>
-                      {review.rating} / 5 ⭐ sur {review.listing.title}
+                      {review.rating} / 5 ⭐ sur {
+                        review.targetType === 'SITE' ? 'le Site' :
+                        review.targetType === 'OWNER' ? `le Propriétaire (${review.targetUser?.firstName || ''} ${review.targetUser?.lastName || ''})` :
+                        review.listing?.title || 'Annonce supprimée'
+                      }
                     </div>
                     <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
                       Par {review.author.firstName} {review.author.lastName} ({review.author.email}) le {new Date(review.createdAt).toLocaleDateString('fr-FR')}
