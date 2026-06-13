@@ -99,6 +99,15 @@ export async function POST(req: NextRequest) {
       include: { participants: true }
     });
 
+    // Determine the sender name to display
+    let senderName = message.sender?.firstName || 'Quelqu\'un';
+    if (message.isAdminReply && message.displayAsUserId) {
+      const displayUser = await prisma.user.findUnique({ where: { id: message.displayAsUserId }, select: { firstName: true } });
+      if (displayUser) {
+        senderName = displayUser.firstName;
+      }
+    }
+
     // Notify other participants
     const notificationsToCreate: any[] = [];
 
@@ -107,7 +116,7 @@ export async function POST(req: NextRequest) {
         notificationsToCreate.push({
           userId: p.userId,
           title: "Nouveau message",
-          body: `Vous avez reçu un nouveau message de ${message.sender?.firstName || 'Quelqu\'un'}.`,
+          body: `Vous avez reçu un nouveau message de ${senderName}.`,
           type: "NEW_MESSAGE",
           link: `/dashboard`
         });
@@ -115,11 +124,34 @@ export async function POST(req: NextRequest) {
         sendPushNotification(
           p.userId,
           "Nouveau message",
-          `Vous avez reçu un nouveau message de ${message.sender?.firstName || 'Quelqu\'un'}.`,
-          `/dashboard` // or appropriate message center link
+          `Vous avez reçu un nouveau message de ${senderName}.`,
+          `/dashboard`
         );
       }
     }
+
+    // Notify the admins (if they are not participants)
+    const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
+    admins.forEach(admin => {
+      // Check if admin is already a participant
+      const isParticipant = updatedConv.participants.some(p => p.userId === admin.id);
+      if (!isParticipant) {
+        notificationsToCreate.push({
+          userId: admin.id,
+          title: "Nouveau message (Admin)",
+          body: `Un nouveau message a été envoyé par ${senderName}.`,
+          type: "NEW_MESSAGE",
+          link: `/admin/messages`
+        });
+
+        sendPushNotification(
+          admin.id,
+          "Nouveau message (Admin)",
+          `Un nouveau message a été envoyé par ${senderName}.`,
+          `/admin/messages`
+        );
+      }
+    });
 
     if (notificationsToCreate.length > 0) {
       await prisma.notification.createMany({

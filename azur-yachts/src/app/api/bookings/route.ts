@@ -209,13 +209,25 @@ export async function POST(req: NextRequest) {
       `/reservations/${booking.id}`
     );
 
-    // Notify the owner
+    // Notify the owner (Web Push)
     sendPushNotification(
       listing.ownerId,
       "Nouvelle demande de réservation",
       `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
-      `/dashboard` // or similar advertiser dashboard URL
+      `/dashboard`
     );
+
+    // Notify the admins (Web Push)
+    admins.forEach(admin => {
+      if (admin.id !== listing.ownerId && admin.id !== (session.user as any).id) {
+        sendPushNotification(
+          admin.id,
+          "Nouvelle demande de réservation (Admin)",
+          `Une nouvelle demande a été faite pour ${listing.title}.`,
+          `/admin/bookings`
+        );
+      }
+    });
 
     return NextResponse.json({ booking }, { status: 201 })
   } catch (error) {
