@@ -18,10 +18,12 @@
   box-shadow: 4px 0 24px rgba(0,0,0,0.2);
   max-width: 80vw;
   font-family: 'Jost', sans-serif;
+  visibility: hidden;
 }
 
 .global-sidebar.open {
   transform: translateX(0);
+  visibility: visible;
 }
 
 .global-sidebar .sidebar-mobile-header {
@@ -138,24 +140,24 @@
 }
 
 @media(max-width: 900px) {
+  .top-nav {
+    display: none;
+  }
+
   .mobile-sub-nav {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background: var(--navy, #0a1628);
+    background: var(--navy);
     padding: 0.5rem 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+    position: sticky;
+    top: 65px;
+    z-index: 990;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  /* Prevent content from hiding behind bottom nav */
-  body {
-    padding-bottom: 60px;
-  }
+  /* Removed body padding-bottom */
 
   .mobile-sub-nav .msn-btn {
     display: flex;

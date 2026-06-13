@@ -41,7 +41,7 @@ export default async function RootLayout({
       </head>
       <body>
         <MaintenanceGuard isMaintenance={!!settings?.maintenanceMode} isAdmin={!!isAdmin}>
-          <HeaderVisibility>
+          <HeaderVisibility isLoggedIn={!!session?.user}>
             <Header />
           </HeaderVisibility>
           {session?.user && <GlobalMobileNav />}

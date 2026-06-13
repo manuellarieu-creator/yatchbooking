@@ -35,14 +35,13 @@
 /* ── TOP NAV ── */
 .dashboard-container .top-nav {
   background: var(--navy);
-  height: 64px;
-  padding: 0 2rem;
+  color: var(--white);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(184, 152, 90, .2);
+  padding: 0 2.5rem;
   position: sticky;
-  top: 0;
+  top: 64px; /* Header is 64px tall */
   z-index: 100;
 }
 .dashboard-container .nav-logo {
