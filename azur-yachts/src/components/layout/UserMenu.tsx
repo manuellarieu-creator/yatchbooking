@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { UserCircle } from 'lucide-react';
+import { User } from 'lucide-react';
 
 export default function UserMenu({ user, guestClass = '' }: { user?: any, guestClass?: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function UserMenu({ user, guestClass = '' }: { user?: any, guestC
     await signOut({ callbackUrl: '/' });
   };
 
-  const initials = user ? `${(user.firstName?.[0] || 'U').toUpperCase()}${(user.lastName?.[0] || '').toUpperCase()}` : <UserCircle size={22} color="var(--gold, #b8985a)" />;
+  const initials = user ? `${(user.firstName?.[0] || 'U').toUpperCase()}${(user.lastName?.[0] || '').toUpperCase()}` : <User size={22} color="var(--gold, #b8985a)" strokeWidth={2.5} />;
 
   return (
     <div className={`user-menu-container ${guestClass}`} ref={menuRef}>
@@ -56,9 +56,6 @@ export default function UserMenu({ user, guestClass = '' }: { user?: any, guestC
             </>
           ) : (
             <>
-              <div className="user-dropdown-header">
-                <strong>Mon Compte</strong>
-              </div>
               <div className="user-dropdown-body">
                 <Link href="/auth?tab=login" className="dropdown-item" onClick={() => setIsOpen(false)}>Connexion</Link>
                 <Link href="/auth?tab=register" className="dropdown-item" onClick={() => setIsOpen(false)}>Inscription</Link>
