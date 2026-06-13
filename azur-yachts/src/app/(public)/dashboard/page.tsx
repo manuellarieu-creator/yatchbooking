@@ -77,7 +77,7 @@ function DashboardContent() {
           const newMsgs = data.messages.slice(lastMessageCount);
           newMsgs.forEach((msg: any) => {
             // Only notify if we didn't send it
-            if (msg.senderId !== dashboardData.user.id && typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+            if (msg.senderId !== dashboardData?.user?.id && typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
               new Notification(`Nouveau message de ${msg.sender.firstName}`, { body: msg.content });
             }
           });
@@ -99,7 +99,7 @@ function DashboardContent() {
     }, 5000); // Poll every 5 seconds
     
     return () => clearInterval(interval);
-  }, [activeConvId, lastMessageCount, dashboardData.user.id]);
+  }, [activeConvId, lastMessageCount, dashboardData?.user?.id]);
 
   useEffect(() => {
     if (activeConvId) {
@@ -127,7 +127,7 @@ function DashboardContent() {
     
     setMessages([...messages, { 
       id: tempId, 
-      senderId: dashboardData.user.id, 
+      senderId: dashboardData?.user?.id, 
       content, 
       createdAt: now.toISOString() 
     }]);
