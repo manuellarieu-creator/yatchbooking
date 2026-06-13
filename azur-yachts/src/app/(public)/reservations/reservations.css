@@ -377,15 +377,21 @@
   .reservations-container .resa-card { grid-template-columns: 1fr; }
   .reservations-container .resa-img { height: 200px; }
   .reservations-container .resa-img-inner { min-height: 200px; }
-  .reservations-container .resa-actions { flex-direction: row; border-left: none; border-top: 1px solid var(--sand); min-width: unset; align-items: center; }
-  .reservations-container .resa-btns { flex-direction: row; width: auto; }
+  .reservations-container .resa-actions { flex-direction: column; border-left: none; border-top: 1px solid var(--sand); min-width: unset; align-items: stretch; gap: 1rem; }
+  .reservations-container .resa-price { text-align: left; display: flex; justify-content: space-between; align-items: center; }
+  .reservations-container .resa-btns { flex-direction: column; width: 100%; }
   .reservations-container .kpi-row { grid-template-columns: repeat(2, 1fr); }
   .reservations-container .nav-top { padding: 0 1.5rem; }
   .reservations-container .page-wrap { padding: 2rem 1.25rem 4rem; }
 }
 @media (max-width: 600px) {
-  .reservations-container .filter-tabs { flex-wrap: wrap; }
-  .reservations-container .toolbar { flex-direction: column; align-items: flex-start; }
-  .reservations-container .kpi-row { grid-template-columns: 1fr 1fr; }
-  .reservations-container .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .reservations-container .filter-tabs { flex-wrap: wrap; gap: 0.5rem; }
+  .reservations-container .toolbar { flex-direction: column; align-items: stretch; }
+  .reservations-container .toolbar-right { flex-direction: column; align-items: stretch; width: 100%; }
+  .reservations-container .search-box { width: 100%; }
+  .reservations-container .search-box input { width: 100%; }
+  .reservations-container .kpi-row { grid-template-columns: 1fr; }
+  .reservations-container .page-header { flex-direction: column; align-items: stretch; gap: 1rem; }
+  .reservations-container .page-header .btn-gold { width: 100% !important; text-align: center; }
+  .reservations-container .resa-meta { flex-direction: column; gap: 0.5rem; }
 }
