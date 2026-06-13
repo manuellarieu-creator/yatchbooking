@@ -14,6 +14,13 @@ function DashboardContent() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get('tab') as Section) || 'overview';
   const [activeSection, setActiveSection] = useState<Section>(initialTab);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab') as Section;
+    if (tab) {
+      setActiveSection(tab);
+    }
+  }, [searchParams]);
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [bookingFilter, setBookingFilter] = useState('');
