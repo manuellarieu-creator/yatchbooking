@@ -8,6 +8,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [yacht, setYacht] = useState<any>(null);
+  const [similarYachts, setSimilarYachts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
 
@@ -17,6 +18,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
         const res = await fetch(`/api/listings/${params.id}`);
         const data = await res.json();
         if (data.listing) setYacht(data.listing);
+        if (data.similar) setSimilarYachts(data.similar);
       } catch (err) {
         console.error(err);
       } finally {
@@ -610,20 +612,26 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           
           <div className="similar-slider-wrap">
             <div className="similar-slider">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="similar-card">
-                  <div className="sim-img" style={{ background: `linear-gradient(135deg, var(--navy-mid), var(--navy))` }}></div>
+              {similarYachts.length > 0 ? similarYachts.map((sim: any) => (
+                <div key={sim.id} className="similar-card" onClick={() => window.location.href = `/yacht/${sim.id}`}>
+                  <div className="sim-img" style={{ 
+                    backgroundImage: sim.images?.[0]?.url ? `url(${sim.images[0].url})` : 'none',
+                    background: sim.images?.[0]?.url ? 'none' : `linear-gradient(135deg, var(--navy-mid), var(--navy))`,
+                    backgroundSize: 'cover', backgroundPosition: 'center'
+                  }}></div>
                   <div className="sim-body">
-                    <div className="sim-type">Yacht Moteur</div>
-                    <div className="sim-name">Liberté Bleue</div>
-                    <div className="sim-loc">Cannes, France</div>
+                    <div className="sim-type">{sim.boatType}</div>
+                    <div className="sim-name">{sim.title}</div>
+                    <div className="sim-loc">{sim.location}, {sim.country}</div>
                     <div className="sim-footer">
-                      <div className="sim-price">€3 200 <small>/ j</small></div>
-                      <div className="sim-rating"><span className="star">★</span> 4.8</div>
+                      <div className="sim-price">€{sim.price} <small>/ j</small></div>
+                      <div className="sim-rating"><span className="star">★</span> {sim.averageRating || 5.0}</div>
                     </div>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div style={{ padding: '2rem', color: 'var(--text-light)' }}>Aucun bateau similaire trouvé.</div>
+              )}
             </div>
             <button className="slider-arrow slider-prev">‹</button>
             <button className="slider-arrow slider-next">›</button>

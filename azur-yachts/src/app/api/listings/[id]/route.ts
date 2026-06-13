@@ -43,7 +43,19 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       data: { viewCount: { increment: 1 } },
     })
 
-    return NextResponse.json({ listing })
+    // Fetch similar listings
+    const similar = await prisma.listing.findMany({
+      where: {
+        id: { not: params.id },
+        status: 'ACTIVE'
+      },
+      include: {
+        images: { orderBy: { order: 'asc' }, take: 1 }
+      },
+      take: 4,
+    });
+
+    return NextResponse.json({ listing, similar })
   } catch (error) {
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
