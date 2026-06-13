@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Notify other participants
-    const notificationsToCreate = [];
+    const notificationsToCreate: any[] = [];
 
     for (const p of updatedConv.participants) {
       if (p.userId !== userId) {
