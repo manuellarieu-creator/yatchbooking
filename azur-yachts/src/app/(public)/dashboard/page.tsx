@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import InAppNotifications from '@/components/layout/InAppNotifications';
 import Link from 'next/link';
@@ -37,6 +37,18 @@ function DashboardContent() {
   const [reviewType, setReviewType] = useState<'SITE' | 'OWNER'>('SITE');
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
+  
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (activeSection === 'messages') {
+      scrollToBottom();
+    }
+  }, [messages, activeSection]);
 
   // Fetch initial data
   useEffect(() => {
@@ -727,6 +739,7 @@ function DashboardContent() {
                           </div>
                         );
                       })}
+                      <div ref={messagesEndRef} />
                     </div>
                     <div className="chat-input-row">
                       <textarea 
