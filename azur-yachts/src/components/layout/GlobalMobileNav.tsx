@@ -14,6 +14,10 @@ export default function GlobalMobileNav() {
   
   // Modals inside Global Nav
   const [activeModal, setActiveModal] = useState<'profile' | 'publish' | 'verify' | 'help' | null>(null);
+  const { data: session } = useSession();
+
+  // Masquer sur la landing page
+  if (pathname === '/') return null;
 
   useEffect(() => {
     fetch('/api/user/nav-data')
