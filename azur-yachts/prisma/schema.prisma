@@ -121,6 +121,7 @@ model User {
   twoFactorSecret       String?
   favorites         Favorite[]
   pushSubscriptions PushSubscription[]
+  notificationPreferences Json?
 }
 
 model Account {

@@ -52,6 +52,10 @@ export default function ProfilePage() {
           if (data.profile.languages?.length) {
             setTags(data.profile.languages);
           }
+          if (data.profile.notificationPreferences) {
+            // Merge with default to ensure no missing keys
+            setNotifs(prev => ({ ...prev, ...data.profile.notificationPreferences }));
+          }
         }
       })
       .catch(console.error)
@@ -87,6 +91,26 @@ export default function ProfilePage() {
     setShowToast(false);
     setTimeout(() => setShowToast(true), 50);
     setTimeout(() => setShowToast(false), 3200);
+  };
+
+  const saveNotifs = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/profile/notifications', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(notifs)
+      });
+      if (res.ok) {
+        triggerToast('Préférences de notifications sauvegardées.');
+      } else {
+        triggerToast('Erreur lors de la sauvegarde des notifications.');
+      }
+    } catch (e) {
+      triggerToast('Erreur serveur.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -548,9 +572,11 @@ export default function ProfilePage() {
               </div>
 
               <div className="save-bar">
-                <span className="save-bar-text">Vos préférences sont sauvegardées automatiquement</span>
+                <span className="save-bar-text">Modifiez vos préférences puis enregistrez.</span>
                 <div className="save-btns">
-                  <button className="btn btn-gold" onClick={() => triggerToast('Préférences sauvegardées.')}>Enregistrer</button>
+                  <button className="btn btn-gold" onClick={saveNotifs} disabled={isSaving}>
+                    {isSaving ? 'Enregistrement...' : 'Enregistrer'}
+                  </button>
                 </div>
               </div>
             </div>

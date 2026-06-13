@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
         countryResidence: true,
         role: true,
         status: true,
+        notificationPreferences: true,
         createdAt: true,
         _count: {
           select: { listings: true, bookings: true, favorites: true }
