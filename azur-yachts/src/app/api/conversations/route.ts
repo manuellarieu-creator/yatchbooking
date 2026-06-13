@@ -59,3 +59,61 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
+    const userId = (session.user as any).id;
+    const body = await req.json();
+    const { listingId, ownerId } = body;
+
+    if (!listingId || !ownerId) {
+      return NextResponse.json({ error: 'Données manquantes' }, { status: 400 });
+    }
+
+    if (userId === ownerId) {
+      return NextResponse.json({ error: 'Vous ne pouvez pas vous contacter vous-même' }, { status: 400 });
+    }
+
+    const listing = await prisma.listing.findUnique({ where: { id: listingId } });
+    
+    // Check if a conversation already exists
+    const existing = await prisma.conversation.findFirst({
+      where: {
+        listingId,
+        participants: {
+          every: {
+            userId: { in: [userId, ownerId] }
+          }
+        }
+      }
+    });
+
+    if (existing) {
+      return NextResponse.json({ conversation: existing });
+    }
+
+    // Create a new conversation
+    const newConv = await prisma.conversation.create({
+      data: {
+        listingId,
+        listingTitle: listing?.title || 'Annonce',
+        participants: {
+          create: [
+            { userId: userId },
+            { userId: ownerId }
+          ]
+        }
+      }
+    });
+
+    return NextResponse.json({ conversation: newConv });
+  } catch (error) {
+    console.error('POST /api/conversations error:', error);
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+  }
+}

@@ -19,10 +19,18 @@ export default function ReservationsPage() {
   const [toastIcon, setToastIcon] = useState('✅');
   const [showToast, setShowToast] = useState(false);
 
+  const [currentUserId, setCurrentUserId] = useState<string>('');
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [activeConvId, setActiveConvId] = useState<string>('');
+  const [activeChatResa, setActiveChatResa] = useState<any>(null);
+  const [chatInput, setChatInput] = useState('');
+  const [messages, setMessages] = useState<any[]>([]);
+
   useEffect(() => {
     fetch('/api/bookings')
       .then(res => res.json())
       .then(data => {
+        if (data.userId) setCurrentUserId(data.userId);
         if (data.bookings) {
           const formatted = data.bookings.map((b: any) => {
             const startDate = new Date(b.startDate);
@@ -52,6 +60,8 @@ export default function ReservationsPage() {
               price: b.totalPrice,
               priceNote: b.payment?.method === 'BANK_TRANSFER' ? 'Virement bancaire' : b.payment?.method || 'En attente',
               dateValue: startDate.getTime(),
+              listingId: b.listing?.id,
+              ownerId: b.listing?.ownerId,
             };
           });
           setReservationsData(formatted);
@@ -71,6 +81,84 @@ export default function ReservationsPage() {
     setTimeout(() => setShowToast(true), 50);
     setTimeout(() => setShowToast(false), 3200);
   };
+
+  const startChat = async (resa: any) => {
+    if (!resa.listingId || !resa.ownerId) {
+      triggerToast('Informations incomplètes pour contacter le propriétaire', '⚠️');
+      return;
+    }
+    setToastMsg('Ouverture de la messagerie...');
+    setToastIcon('💬');
+    setShowToast(true);
+    
+    try {
+      const res = await fetch('/api/conversations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listingId: resa.listingId, ownerId: resa.ownerId })
+      });
+      const data = await res.json();
+      setShowToast(false);
+      
+      if (data.conversation) {
+        setActiveConvId(data.conversation.id);
+        setActiveChatResa(resa);
+        setChatModalOpen(true);
+        fetchMessages(data.conversation.id);
+      } else {
+        triggerToast(data.error || 'Erreur lors de la création de la conversation', '❌');
+      }
+    } catch (err) {
+      setShowToast(false);
+      triggerToast('Erreur réseau', '❌');
+    }
+  };
+
+  const fetchMessages = async (convId: string) => {
+    try {
+      const res = await fetch(`/api/messages?conversationId=${convId}`);
+      const data = await res.json();
+      if (data.messages) setMessages(data.messages);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const sendMsg = async () => {
+    if (!chatInput.trim() || !activeConvId) return;
+    const content = chatInput;
+    setChatInput('');
+    
+    const tempId = 'temp-' + Date.now();
+    const now = new Date();
+    setMessages(prev => [...prev, { 
+      id: tempId, 
+      senderId: currentUserId, 
+      content, 
+      createdAt: now.toISOString() 
+    }]);
+
+    try {
+      await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conversationId: activeConvId, content })
+      });
+      fetchMessages(activeConvId);
+    } catch (err) {
+      console.error(err);
+      triggerToast("Erreur lors de l'envoi du message");
+    }
+  };
+
+  useEffect(() => {
+    if (chatModalOpen && activeConvId) {
+      const interval = setInterval(() => {
+        fetchMessages(activeConvId);
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [chatModalOpen, activeConvId]);
 
   const filteredReservations = useMemo(() => {
     return reservationsData.filter(r => {
@@ -289,21 +377,21 @@ export default function ReservationsPage() {
                     <>
                       <button className="btn btn-gold" onClick={() => setModalOpen('upload')}>📎 Renvoyer preuve</button>
                       <button className="btn btn-primary" onClick={() => openDetail(resa.id)}>Voir les détails</button>
-                      <button className="btn btn-outline" onClick={() => triggerToast('Redirection vers la messagerie...', '💬')}>💬 Contacter</button>
+                      <button className="btn btn-outline" onClick={() => startChat(resa)}>💬 Contacter</button>
                     </>
                   )}
                   {resa.status === 'confirmed' && (
                     <>
                       <button className="btn btn-primary" onClick={() => openDetail(resa.id)}>Voir les détails</button>
                       <button className="btn btn-outline" onClick={() => triggerToast('Téléchargement du bon...', '📄')}>📄 Bon de réservation</button>
-                      <button className="btn btn-outline" onClick={() => triggerToast('Redirection vers la messagerie...', '💬')}>💬 Contacter</button>
+                      <button className="btn btn-outline" onClick={() => startChat(resa)}>💬 Contacter</button>
                       <button className="btn btn-danger" onClick={() => triggerToast("Demande d'annulation envoyée à l'équipe.", '⚠️')}>Demander annulation</button>
                     </>
                   )}
                   {resa.status === 'pending' && (
                     <>
                       <button className="btn btn-primary" onClick={() => openDetail(resa.id)}>Voir les détails</button>
-                      <button className="btn btn-outline" onClick={() => triggerToast('Redirection vers la messagerie...', '💬')}>💬 Contacter</button>
+                      <button className="btn btn-outline" onClick={() => startChat(resa)}>💬 Contacter</button>
                       <button className="btn btn-danger" onClick={() => triggerToast('Réservation annulée.', '❌')}>Annuler</button>
                     </>
                   )}
@@ -407,6 +495,66 @@ export default function ReservationsPage() {
           <div className="modal-footer">
             <button className="modal-btn secondary" onClick={() => setModalOpen('')}>Annuler</button>
             <button className="modal-btn primary" onClick={() => { if(fileSelected) { setModalOpen(''); triggerToast('Preuve envoyée ! Notre équipe va la vérifier.', '🚀'); setFileSelected(null); } else { triggerToast('Veuillez sélectionner un fichier', '⚠️'); } }}>ENVOYER</button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── CHAT MODAL ── */}
+      <div className={`modal-overlay ${chatModalOpen ? 'open' : ''}`}>
+        <div className="modal" style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column', height: '80vh' }}>
+          <div className="modal-header">
+            <div>
+              <span className="modal-title">Contacter le propriétaire</span>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginTop: '0.25rem' }}>{activeChatResa?.name}</div>
+            </div>
+            <button className="modal-close" onClick={() => setChatModalOpen(false)}>✕</button>
+          </div>
+          
+          <div className="modal-body" style={{ flex: 1, overflowY: 'auto', padding: '1rem', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {messages.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-light)', fontSize: '0.9rem' }}>
+                Envoyez un message au propriétaire pour toute question concernant votre réservation.
+              </div>
+            )}
+            
+            {messages.map(msg => {
+              const isOutgoing = msg.senderId === currentUserId;
+              const msgTime = new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+              return (
+                <div key={msg.id} style={{
+                  maxWidth: '85%',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '12px',
+                  alignSelf: isOutgoing ? 'flex-end' : 'flex-start',
+                  background: isOutgoing ? 'var(--navy)' : '#fff',
+                  color: isOutgoing ? '#fff' : 'var(--text-main)',
+                  border: isOutgoing ? 'none' : '1px solid #e2e8f0',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                }}>
+                  <div style={{ lineHeight: 1.4 }}>{msg.content}</div>
+                  <div style={{ fontSize: '0.7rem', marginTop: '0.4rem', textAlign: 'right', opacity: 0.7, color: isOutgoing ? '#e2e8f0' : 'var(--text-light)' }}>
+                    {msgTime}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          <div className="modal-footer" style={{ padding: '1rem', background: '#fff', borderTop: '1px solid #e2e8f0', display: 'flex', gap: '0.5rem' }}>
+            <input 
+              type="text" 
+              placeholder="Écrivez votre message..." 
+              value={chatInput} 
+              onChange={e => setChatInput(e.target.value)} 
+              onKeyDown={e => e.key === 'Enter' && sendMsg()}
+              style={{ flex: 1, padding: '0.75rem 1rem', borderRadius: '24px', border: '1px solid #cbd5e1', outline: 'none' }} 
+            />
+            <button 
+              onClick={sendMsg}
+              style={{ width: '42px', height: '42px', borderRadius: '50%', background: 'var(--gold)', color: '#fff', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              ➤
+            </button>
           </div>
         </div>
       </div>

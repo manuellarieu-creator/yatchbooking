@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
       where,
       include: {
         listing: {
-          select: { id: true, title: true, boatType: true, location: true, images: { take: 1, orderBy: { order: 'asc' } } }
+          select: { id: true, title: true, boatType: true, location: true, ownerId: true, images: { take: 1, orderBy: { order: 'asc' } } }
         },
         client: {
           select: { id: true, firstName: true, lastName: true, avatar: true }
@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: 'desc' }
     })
 
-    return NextResponse.json({ bookings })
+    return NextResponse.json({ bookings, userId })
   } catch (error) {
     console.error('GET /api/bookings error:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })

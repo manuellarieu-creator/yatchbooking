@@ -12,10 +12,9 @@ export async function GET(req: NextRequest) {
     const userId = (session.user as any).id
     const role = (session.user as any).role
 
-    // Ensure the user is an advertiser or admin
-    if (role !== 'ADVERTISER' && role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Accès refusé' }, { status: 403 })
-    }
+    // Tous les utilisateurs peuvent accéder à ce dashboard, mais on cachera des sections dans l'UI selon le rôle
+    // On ne bloque plus l'accès pour les CLIENTS
+
 
     // 0. Fetch User explicitly
     const dbUser = await prisma.user.findUnique({
