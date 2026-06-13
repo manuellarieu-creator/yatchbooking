@@ -20,7 +20,10 @@ export async function GET(req: NextRequest) {
     const pendingBookingsCount = await prisma.booking.count({ 
       where: { 
         listing: { ownerId: userId },
-        status: { in: ['PENDING', 'PROOF_SUBMITTED'] } 
+        OR: [
+          { status: 'PENDING' },
+          { payment: { status: 'PROOF_SUBMITTED' } }
+        ]
       }
     });
 
