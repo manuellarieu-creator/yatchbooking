@@ -276,7 +276,7 @@ export default function AuthPage() {
                     <div className="field">
                       <label className="field-label">Adresse email <span className="req">*</span></label>
                       <div className="field-input-wrap">
-                        <input className={`field-input ${errors.loginEmail ? 'error' : ''}`} type="email" id="loginEmail" value={formData.loginEmail} onChange={handleInputChange} placeholder="votre@email.com" />
+                        <input className={`field-input ${errors.loginEmail ? 'error' : ''}`} type="email" id="loginEmail" value={formData.loginEmail} onChange={handleInputChange} onKeyDown={(e) => e.key === 'Enter' && handleLogin()} placeholder="votre@email.com" />
                       </div>
                       {errors.loginEmail && <span className="field-error visible">Email invalide ou introuvable.</span>}
                     </div>
@@ -284,7 +284,7 @@ export default function AuthPage() {
                     <div className="field">
                       <label className="field-label">Mot de passe <span className="req">*</span></label>
                       <div className="field-input-wrap">
-                        <input className={`field-input ${errors.loginPwd ? 'error' : ''}`} type={pwdVisible ? 'text' : 'password'} id="loginPwd" value={formData.loginPwd} onChange={handleInputChange} placeholder="••••••••••" />
+                        <input className={`field-input ${errors.loginPwd ? 'error' : ''}`} type={pwdVisible ? 'text' : 'password'} id="loginPwd" value={formData.loginPwd} onChange={handleInputChange} onKeyDown={(e) => e.key === 'Enter' && handleLogin()} placeholder="••••••••••" />
                         <button className="field-eye" onClick={() => setPwdVisible(!pwdVisible)}>{pwdVisible ? '🙈' : '👁'}</button>
                       </div>
                       {errors.loginPwd && <span className="field-error visible">Mot de passe incorrect.</span>}
@@ -314,6 +314,7 @@ export default function AuthPage() {
                         type="text" 
                         value={otpInput} 
                         onChange={(e) => setOtpInput(e.target.value.replace(/[^0-9]/g, ''))} 
+                        onKeyDown={(e) => e.key === 'Enter' && otpInput.length === 6 && handleLogin()}
                         placeholder="123456" 
                         maxLength={6} 
                       />
