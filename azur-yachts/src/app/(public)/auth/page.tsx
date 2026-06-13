@@ -117,7 +117,7 @@ export default function AuthPage() {
         payload.otp = otpInput;
       }
 
-      const res = await signIn('credentials', payload);
+      const res = await signIn('credentials', payload) as any;
 
       if (res?.error) {
         if (res.error.includes('2FA_REQUIRED')) {
