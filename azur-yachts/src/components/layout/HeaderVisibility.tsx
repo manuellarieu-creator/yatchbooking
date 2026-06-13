@@ -17,7 +17,7 @@ function HeaderContent({ children }: { children: React.ReactNode }) {
 export default function HeaderVisibility({ children, isLoggedIn }: { children: React.ReactNode, isLoggedIn?: boolean }) {
   return (
     <Suspense fallback={null}>
-      <HeaderContent isLoggedIn={isLoggedIn}>{children}</HeaderContent>
+      <HeaderContent>{children}</HeaderContent>
     </Suspense>
   );
 }
