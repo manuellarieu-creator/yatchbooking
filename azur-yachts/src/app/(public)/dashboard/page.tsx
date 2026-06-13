@@ -205,10 +205,16 @@ function DashboardContent() {
       <div className="top-nav">
         <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
         <div className="nav-center">
-          <button className={`nav-tab ${activeSection === 'overview' ? 'active' : ''}`} onClick={() => setActiveSection('overview')}>Vue d'ensemble</button>
-          <button className={`nav-tab ${activeSection === 'listings' ? 'active' : ''}`} onClick={() => setActiveSection('listings')}>Mes annonces</button>
+          {dashboardData.user?.role !== 'CLIENT' && (
+            <>
+              <button className={`nav-tab ${activeSection === 'overview' ? 'active' : ''}`} onClick={() => setActiveSection('overview')}>Vue d'ensemble</button>
+              <button className={`nav-tab ${activeSection === 'listings' ? 'active' : ''}`} onClick={() => setActiveSection('listings')}>Mes annonces</button>
+            </>
+          )}
           <button className={`nav-tab ${activeSection === 'bookings' ? 'active' : ''}`} onClick={() => setActiveSection('bookings')}>Réservations</button>
-          <button className={`nav-tab ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => setActiveSection('stats')}>Statistiques</button>
+          {dashboardData.user?.role !== 'CLIENT' && (
+            <button className={`nav-tab ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => setActiveSection('stats')}>Statistiques</button>
+          )}
           <button className={`nav-tab ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => setActiveSection('messages')}>
             Messages
           </button>

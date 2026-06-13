@@ -24,10 +24,41 @@ export default function InAppNotifications() {
 
   useEffect(() => {
     fetchNotifications();
-    // Rafraîchissement périodique (facultatif mais utile)
-    const interval = setInterval(fetchNotifications, 60000);
+    // Rafraîchissement périodique (facultatif mais utile) - réduit à 10s
+    const interval = setInterval(fetchNotifications, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  const prevUnreadCount = useRef(unreadCount);
+
+  useEffect(() => {
+    // Jouer un son si le nombre de non-lus a augmenté
+    if (unreadCount > prevUnreadCount.current && prevUnreadCount.current !== -1) {
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioCtx) {
+          const ctx = new AudioCtx();
+          const osc = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, ctx.currentTime);
+          
+          gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+          
+          osc.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          
+          osc.start();
+          osc.stop(ctx.currentTime + 0.5);
+        }
+      } catch (e) {
+        console.log("Impossible de jouer le son de notification", e);
+      }
+    }
+    prevUnreadCount.current = unreadCount;
+  }, [unreadCount]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
