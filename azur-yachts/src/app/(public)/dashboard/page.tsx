@@ -312,9 +312,9 @@ function DashboardContent() {
 
                 <div className="kpi-grid">
                   <Link href="/reservations" className="kpi-card navy" style={{ textDecoration: 'none', cursor: 'pointer', color: 'inherit' }}>
-                    <div className="kpi-lbl" style={{ color: 'white' }}>Mes Réservations</div>
+                    <div className="kpi-lbl">Mes Réservations</div>
                     <div className="kpi-val">{dashboardData.bookings?.length || 0}</div>
-                    <div className="kpi-sub" style={{ color: 'rgba(255,255,255,0.7)' }}>Total depuis l'inscription</div>
+                    <div className="kpi-sub">Total depuis l'inscription</div>
                   </Link>
                   <Link href="/favorites" className="kpi-card gold" style={{ textDecoration: 'none', cursor: 'pointer', color: 'inherit' }}>
                     <div className="kpi-lbl">Mes Favoris</div>
