@@ -12,6 +12,7 @@ export default function AuthPage() {
   const [mode, setMode] = useState<Mode>('login');
   const [role, setRole] = useState<Role>(null);
   const [step, setStep] = useState<number>(1);
+  const [loginStep, setLoginStep] = useState<number>(1);
   const [otpInput, setOtpInput] = useState<string>('');
   const [showSuccess, setShowSuccess] = useState(false);
   
@@ -107,14 +108,26 @@ export default function AuthPage() {
 
     setLoading(true);
     try {
-      const res = await signIn('credentials', {
+      const payload: any = {
         email: formData.loginEmail,
         password: formData.loginPwd,
         redirect: false,
-      });
+      };
+      if (loginStep === 2 && otpInput) {
+        payload.otp = otpInput;
+      }
+
+      const res = await signIn('credentials', payload);
 
       if (res?.error) {
-        triggerToast('Email ou mot de passe incorrect.');
+        if (res.error.includes('2FA_REQUIRED')) {
+          setLoginStep(2);
+          triggerToast('Code de sécurité envoyé.');
+        } else if (res.error.includes('OTP_INVALID')) {
+          triggerToast('Code de sécurité invalide.');
+        } else {
+          triggerToast('Email ou mot de passe incorrect.');
+        }
       } else {
         triggerToast('Connexion réussie — redirection...');
         window.location.href = '/dashboard'; // Redirection vers le dashboard comme demandé
@@ -193,6 +206,7 @@ export default function AuthPage() {
   const switchMode = (m: Mode) => {
     setMode(m);
     setStep(1);
+    setLoginStep(1);
     setShowSuccess(false);
     setForgotSuccess(false);
   };
@@ -257,33 +271,60 @@ export default function AuthPage() {
                   <p className="form-subtitle">Accédez à vos réservations, vos favoris et votre profil.</p>
                 </div>
 
-                <div className="field">
-                  <label className="field-label">Adresse email <span className="req">*</span></label>
-                  <div className="field-input-wrap">
-                    <input className={`field-input ${errors.loginEmail ? 'error' : ''}`} type="email" id="loginEmail" value={formData.loginEmail} onChange={handleInputChange} placeholder="votre@email.com" />
-                  </div>
-                  {errors.loginEmail && <span className="field-error visible">Email invalide ou introuvable.</span>}
-                </div>
+                {loginStep === 1 ? (
+                  <>
+                    <div className="field">
+                      <label className="field-label">Adresse email <span className="req">*</span></label>
+                      <div className="field-input-wrap">
+                        <input className={`field-input ${errors.loginEmail ? 'error' : ''}`} type="email" id="loginEmail" value={formData.loginEmail} onChange={handleInputChange} placeholder="votre@email.com" />
+                      </div>
+                      {errors.loginEmail && <span className="field-error visible">Email invalide ou introuvable.</span>}
+                    </div>
 
-                <div className="field">
-                  <label className="field-label">Mot de passe <span className="req">*</span></label>
-                  <div className="field-input-wrap">
-                    <input className={`field-input ${errors.loginPwd ? 'error' : ''}`} type={pwdVisible ? 'text' : 'password'} id="loginPwd" value={formData.loginPwd} onChange={handleInputChange} placeholder="••••••••••" />
-                    <button className="field-eye" onClick={() => setPwdVisible(!pwdVisible)}>{pwdVisible ? '🙈' : '👁'}</button>
-                  </div>
-                  {errors.loginPwd && <span className="field-error visible">Mot de passe incorrect.</span>}
-                  <a className="forgot-link" onClick={() => switchMode('forgot')}>Mot de passe oublié ?</a>
-                </div>
+                    <div className="field">
+                      <label className="field-label">Mot de passe <span className="req">*</span></label>
+                      <div className="field-input-wrap">
+                        <input className={`field-input ${errors.loginPwd ? 'error' : ''}`} type={pwdVisible ? 'text' : 'password'} id="loginPwd" value={formData.loginPwd} onChange={handleInputChange} placeholder="••••••••••" />
+                        <button className="field-eye" onClick={() => setPwdVisible(!pwdVisible)}>{pwdVisible ? '🙈' : '👁'}</button>
+                      </div>
+                      {errors.loginPwd && <span className="field-error visible">Mot de passe incorrect.</span>}
+                      <a className="forgot-link" onClick={() => switchMode('forgot')}>Mot de passe oublié ?</a>
+                    </div>
 
-                <div className="check-row">
-                  <div className={`check-box-custom ${rememberChecked ? 'checked' : ''}`} onClick={() => setRememberChecked(!rememberChecked)}></div>
-                  <label className="check-label" onClick={() => setRememberChecked(!rememberChecked)}>Se souvenir de moi (30 jours)</label>
-                </div>
+                    <div className="check-row">
+                      <div className={`check-box-custom ${rememberChecked ? 'checked' : ''}`} onClick={() => setRememberChecked(!rememberChecked)}></div>
+                      <label className="check-label" onClick={() => setRememberChecked(!rememberChecked)}>Se souvenir de moi (30 jours)</label>
+                    </div>
 
-                <button className={`submit-btn ${loading ? 'loading' : ''}`} onClick={handleLogin} disabled={loading}>
-                  Se connecter
-                  <div className="submit-btn-loader"><div className="spinner"></div></div>
-                </button>
+                    <button className={`submit-btn ${loading ? 'loading' : ''}`} onClick={handleLogin} disabled={loading}>
+                      Se connecter
+                      <div className="submit-btn-loader"><div className="spinner"></div></div>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="info-box info" style={{marginBottom: '1rem'}}>
+                      🔒 Une double authentification est activée sur votre compte. Un code vient de vous être envoyé.
+                    </div>
+                    <div className="field">
+                      <label className="field-label" style={{textAlign: 'center', display: 'block'}}>Code de sécurité</label>
+                      <input 
+                        className="field-input" 
+                        style={{letterSpacing:'0.4em', fontSize:'1.4rem', textAlign:'center', fontWeight: 'bold'}} 
+                        type="text" 
+                        value={otpInput} 
+                        onChange={(e) => setOtpInput(e.target.value.replace(/[^0-9]/g, ''))} 
+                        placeholder="123456" 
+                        maxLength={6} 
+                      />
+                    </div>
+                    <button className={`submit-btn ${loading ? 'loading' : ''}`} onClick={handleLogin} disabled={loading || otpInput.length !== 6}>
+                      Valider le code
+                      <div className="submit-btn-loader"><div className="spinner"></div></div>
+                    </button>
+                    <button className="back-link" style={{marginTop:'1rem', display:'block', textAlign:'center', width:'100%'}} onClick={() => setLoginStep(1)}>← Retour</button>
+                  </>
+                )}
 
                 <div className="or-divider">ou</div>
                 <div className="social-auth">

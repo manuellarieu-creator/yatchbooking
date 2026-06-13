@@ -308,3 +308,20 @@ export async function sendOtpEmail(email: string, firstName: string, otp: string
     `),
   })
 }
+
+export async function send2faEmail(email: string, firstName: string, otp: string) {
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: 'Code de sécurité (2FA) — Azur Yachts',
+    html: baseTemplate(`
+      <h2 class="title">Connexion sécurisée</h2>
+      <p class="text">Bonjour ${firstName},</p>
+      <p class="text">Une tentative de connexion a été détectée. Veuillez utiliser le code de sécurité suivant pour accéder à votre compte :</p>
+      <div style="background: #fdf8f0; border: 2px dashed #d4b57a; padding: 1.5rem; text-align: center; font-size: 2rem; font-weight: bold; letter-spacing: 0.2em; color: #b8985a; margin: 1.5rem 0;">
+        ${otp}
+      </div>
+      <p class="text">Ce code est valide pendant 10 minutes. Si vous n'avez pas tenté de vous connecter, veuillez ignorer cet email et modifier votre mot de passe si nécessaire.</p>
+    `),
+  })
+}

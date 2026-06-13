@@ -17,6 +17,12 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  
+  const [securitySettings, setSecuritySettings] = useState({
+    twoFactorEmailEnabled: false,
+    twoFactorSmsEnabled: false,
+  });
+  const [sessions, setSessions] = useState<any[]>([]);
 
   const isModal = typeof window !== 'undefined' && window.location.search.includes('modal=true');
 
@@ -33,6 +39,20 @@ export default function ProfilePage() {
       })
       .catch(console.error)
       .finally(() => setIsLoading(false));
+
+    fetch('/api/profile/security')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) setSecuritySettings(data);
+      })
+      .catch(console.error);
+
+    fetch('/api/sessions')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setSessions(data);
+      })
+      .catch(console.error);
   }, []);
 
   // Notif toggles state (mock)
@@ -103,6 +123,35 @@ export default function ProfilePage() {
         [channel]: !prev[category][channel]
       }
     }));
+  };
+
+  const toggle2FA = async (type: 'email' | 'sms') => {
+    const updated = {
+      ...securitySettings,
+      [type === 'email' ? 'twoFactorEmailEnabled' : 'twoFactorSmsEnabled']: !securitySettings[type === 'email' ? 'twoFactorEmailEnabled' : 'twoFactorSmsEnabled']
+    };
+    setSecuritySettings(updated);
+    try {
+      await fetch('/api/profile/security', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+      triggerToast(`2FA par ${type} mise à jour.`);
+    } catch (err) {
+      triggerToast('Erreur serveur.');
+    }
+  };
+
+  const deleteSession = async (id?: string) => {
+    try {
+      const url = id ? `/api/sessions?id=${id}` : '/api/sessions';
+      await fetch(url, { method: 'DELETE' });
+      triggerToast(id ? 'Session déconnectée.' : 'Toutes les autres sessions déconnectées.');
+      fetch('/api/sessions').then(res => res.json()).then(data => { if(Array.isArray(data)) setSessions(data) });
+    } catch (err) {
+      triggerToast('Erreur serveur.');
+    }
   };
 
   const getPwdStrength = () => {
@@ -360,7 +409,7 @@ export default function ProfilePage() {
                     <div className="toggle-desc">Un code de confirmation sera envoyé à votre téléphone.</div>
                   </div>
                   <label className="toggle">
-                    <input type="checkbox" onChange={() => triggerToast('2FA par SMS mise à jour.')} />
+                    <input type="checkbox" checked={securitySettings.twoFactorSmsEnabled} onChange={() => toggle2FA('sms')} />
                     <span className="toggle-slider"></span>
                   </label>
                 </div>
@@ -370,7 +419,7 @@ export default function ProfilePage() {
                     <div className="toggle-desc">Un lien de connexion sécurisé sera envoyé par email.</div>
                   </div>
                   <label className="toggle">
-                    <input type="checkbox" defaultChecked onChange={() => triggerToast('2FA par email mise à jour.')} />
+                    <input type="checkbox" checked={securitySettings.twoFactorEmailEnabled} onChange={() => toggle2FA('email')} />
                     <span className="toggle-slider"></span>
                   </label>
                 </div>
@@ -378,19 +427,26 @@ export default function ProfilePage() {
 
               <div className="form-card">
                 <div className="form-card-title">Sessions actives</div>
-                <div className="activity-item">
-                  <div className="activity-dot"></div>
-                  <div className="activity-text"><strong>Chrome — MacOS</strong><br/>Paris, France · Session actuelle</div>
-                  <span style={{ fontSize: '.7rem', background: 'var(--success-bg)', color: 'var(--success)', padding: '.2rem .6rem', border: '1px solid var(--success-bdr)' }}>Actuelle</span>
-                </div>
-                <div className="activity-item">
-                  <div className="activity-dot grey"></div>
-                  <div className="activity-text"><strong>Safari — iPhone</strong><br/>Paris, France · Il y a 2 jours</div>
-                  <button className="btn btn-sm btn-outline" onClick={() => triggerToast('Session déconnectée.')}>Déconnecter</button>
-                </div>
-                <div style={{ paddingTop: '1rem', borderTop: '1px solid var(--sand)', marginTop: '.5rem' }}>
-                  <button className="btn btn-danger btn-sm" onClick={() => setModalOpen('deconnect')}>Déconnecter toutes les autres sessions</button>
-                </div>
+                {sessions.map((session, i) => (
+                  <div className="activity-item" key={session.id || i}>
+                    <div className={`activity-dot ${i === 0 ? '' : 'grey'}`}></div>
+                    <div className="activity-text">
+                      <strong>{session.deviceInfo || 'Appareil inconnu'}</strong><br/>
+                      {session.location || 'Localisation inconnue'} · {i === 0 ? 'Session actuelle' : 'Dernière activité: ' + new Date(session.lastActiveAt).toLocaleString('fr-FR')}
+                    </div>
+                    {i === 0 ? (
+                      <span style={{ fontSize: '.7rem', background: 'var(--success-bg)', color: 'var(--success)', padding: '.2rem .6rem', border: '1px solid var(--success-bdr)' }}>Actuelle</span>
+                    ) : (
+                      <button className="btn btn-sm btn-outline" onClick={() => deleteSession(session.id)}>Déconnecter</button>
+                    )}
+                  </div>
+                ))}
+                {sessions.length > 1 && (
+                  <div style={{ paddingTop: '1rem', borderTop: '1px solid var(--sand)', marginTop: '.5rem' }}>
+                    <button className="btn btn-danger btn-sm" onClick={() => { setModalOpen('deconnect'); deleteSession(); }}>Déconnecter toutes les autres sessions</button>
+                  </div>
+                )}
+                {sessions.length === 0 && <div className="activity-item"><div className="activity-text">Chargement des sessions...</div></div>}
               </div>
             </div>
           )}

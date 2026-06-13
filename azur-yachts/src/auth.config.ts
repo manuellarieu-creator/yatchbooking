@@ -10,6 +10,7 @@ export const authConfig = {
         token.id = user.id;
         token.role = (user as any).role;
         token.status = (user as any).status;
+        token.sessionToken = (user as any).sessionToken;
       }
       if (trigger === 'update' && session?.user) {
         if (session.user.status) token.status = session.user.status;
@@ -21,6 +22,7 @@ export const authConfig = {
         session.user.id = token.id as string;
         (session.user as any).role = token.role;
         (session.user as any).status = token.status;
+        (session as any).sessionToken = token.sessionToken;
       }
       return session;
     },
