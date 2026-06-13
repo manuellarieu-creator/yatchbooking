@@ -2,7 +2,24 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import './profile.css';
+
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState('infos');
@@ -115,14 +132,54 @@ export default function ProfilePage() {
     }
   };
 
-  const toggleNotif = (category: string, channel: string) => {
+  const toggleNotif = async (category: string, channel: string) => {
+    const isCurrentlyOn = notifs[category][channel];
+    const willBeOn = !isCurrentlyOn;
+
     setNotifs(prev => ({
       ...prev,
-      [category]: {
-        ...prev[category],
-        [channel]: !prev[category][channel]
-      }
+      [category]: { ...prev[category], [channel]: willBeOn }
     }));
+
+    if (channel === 'push' && willBeOn) {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        triggerToast("Les notifications Push ne sont pas supportées sur ce navigateur.");
+        return;
+      }
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+        if (!vapidPublicKey) {
+          console.warn("Clé VAPID publique manquante !");
+          return;
+        }
+
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+        });
+
+        const res = await fetch('/api/push', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(subscription)
+        });
+
+        if (res.ok) {
+          triggerToast("Notifications Push activées !");
+        } else {
+          throw new Error("Erreur serveur lors de l'abonnement");
+        }
+      } catch (error) {
+        console.error("Erreur Push:", error);
+        triggerToast("Erreur lors de l'activation des Push.");
+        // Revert UI
+        setNotifs(prev => ({
+          ...prev,
+          [category]: { ...prev[category], [channel]: false }
+        }));
+      }
+    }
   };
 
   const toggle2FA = async (type: 'email' | 'sms') => {

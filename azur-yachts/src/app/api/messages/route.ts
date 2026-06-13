@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db as prisma } from '@/lib/db';
 import { auth } from '@/auth';
+import { sendPushNotification } from '@/lib/webpush';
 
 export async function GET(req: NextRequest) {
   try {
@@ -92,10 +93,23 @@ export async function POST(req: NextRequest) {
     });
 
     // Mettre à jour l'updatedAt de la conversation
-    await prisma.conversation.update({
+    const updatedConv = await prisma.conversation.update({
       where: { id: conversationId },
-      data: { updatedAt: new Date() }
+      data: { updatedAt: new Date() },
+      include: { participants: true }
     });
+
+    // Notify other participants
+    for (const p of updatedConv.participants) {
+      if (p.userId !== userId) {
+        sendPushNotification(
+          p.userId,
+          "Nouveau message",
+          `Vous avez reçu un nouveau message de ${message.sender?.firstName || 'Quelqu\'un'}.`,
+          `/dashboard` // or appropriate message center link
+        );
+      }
+    }
 
     return NextResponse.json({ message }, { status: 201 });
   } catch (error) {

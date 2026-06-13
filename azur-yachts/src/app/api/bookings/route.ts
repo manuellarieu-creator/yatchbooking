@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db as prisma } from '@/lib/db'
 import { auth } from '@/auth'
+import { sendPushNotification } from '@/lib/webpush'
 import { calculateNights } from '@/lib/utils'
 
 export async function GET(req: NextRequest) {
@@ -161,6 +162,22 @@ export async function POST(req: NextRequest) {
         }
       }
     })
+
+    // Notify the client
+    sendPushNotification(
+      (session.user as any).id,
+      "Demande envoyée",
+      `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
+      `/reservations/${booking.id}`
+    );
+
+    // Notify the owner
+    sendPushNotification(
+      listing.ownerId,
+      "Nouvelle demande de réservation",
+      `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
+      `/dashboard` // or similar advertiser dashboard URL
+    );
 
     return NextResponse.json({ booking }, { status: 201 })
   } catch (error) {
