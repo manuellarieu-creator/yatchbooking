@@ -16,6 +16,20 @@ export async function POST(req: NextRequest) {
 
     await prisma.newsletter.create({ data: { email } });
 
+    // Notifier les administrateurs
+    const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
+    for (const admin of admins) {
+      await prisma.notification.create({
+        data: {
+          type: 'ACCOUNT_APPROVED',
+          title: 'Nouvel abonné Newsletter',
+          body: `${email} vient de s'abonner à la newsletter.`,
+          userId: admin.id,
+          link: '/admin/newsletter'
+        }
+      });
+    }
+
     return NextResponse.json({ message: 'Inscription réussie' });
   } catch (error) {
     console.error('Newsletter error:', error);

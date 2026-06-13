@@ -66,6 +66,20 @@ export async function POST(req: NextRequest) {
       }).catch(() => {}); // Ignorer si le champ n'existe pas dans le modèle User
     }
 
+    // Notifier les administrateurs
+    const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
+    for (const admin of admins) {
+      await prisma.notification.create({
+        data: {
+          type: 'ACCOUNT_APPROVED',
+          title: 'Nouvel Avis',
+          body: `Un nouvel avis (${rating}/5) a été laissé pour ${tType}.`,
+          userId: admin.id,
+          link: '/admin/reviews'
+        }
+      });
+    }
+
     return NextResponse.json({ review }, { status: 201 })
   } catch (error) {
     console.error('POST /api/reviews error:', error)

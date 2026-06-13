@@ -34,7 +34,7 @@ function DashboardContent() {
   const [modNewEnd, setModNewEnd] = useState('');
   const [modNote, setModNote] = useState('');
   const [selectedBookingForReview, setSelectedBookingForReview] = useState<any>(null);
-  const [reviewType, setReviewType] = useState<'SITE' | 'OWNER'>('SITE');
+  const [reviewType, setReviewType] = useState<'SITE' | 'OWNER' | 'LISTING'>('LISTING');
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
   
@@ -910,9 +910,10 @@ function DashboardContent() {
               <div style={{ padding: '2rem', fontFamily: "'Jost', sans-serif" }}>
                 <h3>Laisser un avis pour {selectedBookingForReview.listing.title}</h3>
                 
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', marginBottom: '1rem' }}>
-                  <label><input type="radio" name="reviewType" checked={reviewType === 'SITE'} onChange={() => setReviewType('SITE')} /> Sur le Site</label>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                  <label><input type="radio" name="reviewType" checked={reviewType === 'LISTING'} onChange={() => setReviewType('LISTING')} /> Sur l'annonce (Bateau)</label>
                   <label><input type="radio" name="reviewType" checked={reviewType === 'OWNER'} onChange={() => setReviewType('OWNER')} /> Sur le Propriétaire</label>
+                  <label><input type="radio" name="reviewType" checked={reviewType === 'SITE'} onChange={() => setReviewType('SITE')} /> Sur le Site</label>
                 </div>
                 
                 <div style={{ marginBottom: '1rem' }}>
