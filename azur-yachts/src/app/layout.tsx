@@ -5,6 +5,7 @@ import HeaderVisibility from "@/components/layout/HeaderVisibility";
 import MaintenanceGuard from "@/components/MaintenanceGuard";
 import { db as prisma } from "@/lib/db";
 import { auth } from "@/auth";
+import GlobalMobileNav from "@/components/layout/GlobalMobileNav";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -42,6 +43,7 @@ export default async function RootLayout({
           <HeaderVisibility>
             <Header />
           </HeaderVisibility>
+          {session?.user && <GlobalMobileNav />}
           {children}
         </MaintenanceGuard>
       </body>

@@ -1,0 +1,279 @@
+/* Global Mobile Nav Styles */
+
+/* Base sidebar styles (copied from dashboard.css) */
+.global-sidebar {
+  width: 220px;
+  background: var(--white, #ffffff);
+  border-right: 1px solid var(--sand, #e8e0d0);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1050;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 24px rgba(0,0,0,0.2);
+  max-width: 80vw;
+  font-family: 'Jost', sans-serif;
+}
+
+.global-sidebar.open {
+  transform: translateX(0);
+}
+
+.global-sidebar .sidebar-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--sand, #e8e0d0);
+}
+
+.global-sidebar .nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-decoration: none;
+}
+
+.global-sidebar .sidebar-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-mid, #4a4a6a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.global-sidebar .sidebar-section-label {
+  font-size: .58rem;
+  text-transform: uppercase;
+  letter-spacing: .2em;
+  color: var(--text-light, #8a8aaa);
+  padding: .5rem 1.25rem .3rem;
+  margin-top: .5rem;
+}
+
+.global-sidebar .sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .72rem 1.25rem;
+  font-size: .78rem;
+  color: var(--text-mid, #4a4a6a);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all .2s;
+  text-decoration: none;
+}
+
+.global-sidebar .sidebar-item:hover {
+  background: var(--sand-light, #f3ede3);
+  color: var(--navy, #0a1628);
+  border-left-color: var(--sand, #e8e0d0);
+}
+
+.global-sidebar .sidebar-icon {
+  font-size: .95rem;
+  flex-shrink: 0;
+}
+
+.global-sidebar .sidebar-badge {
+  margin-left: auto;
+  background: var(--danger, #c0392b);
+  color: #fff;
+  font-size: .58rem;
+  padding: .1rem .45rem;
+  border-radius: 99px;
+  font-weight: 600;
+}
+.global-sidebar .sidebar-badge.gold {
+  background: var(--gold, #b8985a);
+}
+
+.global-sidebar .sidebar-divider {
+  height: 1px;
+  background: var(--sand, #e8e0d0);
+  margin: .75rem 1.25rem;
+}
+
+.global-sidebar .sidebar-bottom {
+  margin-top: auto;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--sand, #e8e0d0);
+}
+
+.global-sidebar .sidebar-bottom-item {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: .75rem;
+  color: var(--text-light, #8a8aaa);
+  cursor: pointer;
+  padding: .4rem 0;
+  transition: color .2s;
+}
+
+.global-sidebar .sidebar-bottom-item:hover {
+  color: var(--navy, #0a1628);
+}
+
+/* OVERLAY */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.7);
+  z-index: 1040;
+  backdrop-filter: blur(2px);
+}
+
+/* MOBILE NAV BAR (Bottom) */
+.mobile-sub-nav {
+  display: none;
+}
+
+@media(max-width: 900px) {
+  .mobile-sub-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--navy, #0a1628);
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  
+  /* Prevent content from hiding behind bottom nav */
+  body {
+    padding-bottom: 60px;
+  }
+
+  .mobile-sub-nav .msn-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    background: transparent;
+    border: none;
+    color: var(--gold, #b8985a);
+    font-size: 0.65rem;
+    font-family: 'Jost', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .mobile-sub-nav .msn-btn span {
+    opacity: 0.8;
+  }
+  
+  .mobile-sub-nav .msn-notif-wrap .notif-btn {
+    width: auto;
+    height: auto;
+    background: transparent;
+    border: none;
+    font-size: inherit;
+    padding: 0;
+  }
+  .mobile-sub-nav .msn-notif-wrap .notif-badge {
+    top: -5px;
+    right: -10px;
+    border: 2px solid var(--navy, #0a1628);
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: var(--danger, #c0392b);
+    border-radius: 50%;
+    font-size: .55rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.85);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: var(--white, #ffffff);
+  display: flex;
+  flex-direction: column;
+  transform: translateY(20px) scale(0.98);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+  border: 1px solid var(--sand, #e8e0d0);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.modal-overlay.open .modal {
+  transform: translateY(0) scale(1);
+}
+
+.modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--sand, #e8e0d0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--cream, #faf8f4);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: var(--navy, #0a1628);
+  font-weight: 400;
+  margin: 0;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid var(--sand, #e8e0d0);
+  background: transparent;
+  font-size: 1.5rem;
+  color: var(--text-light, #8a8aaa);
+  transition: all 0.2s;
+  border-radius: 50%;
+}
+
+.modal-close:hover {
+  border-color: var(--danger, #c0392b);
+  color: var(--danger, #c0392b);
+  background: var(--danger-bg, #fef0f0);
+}

@@ -427,10 +427,15 @@
   .profile-container .page-wrap { grid-template-columns: 1fr; }
   .profile-container .sidebar { position: static; }
   .profile-container .form-row { grid-template-columns: 1fr; }
-  .profile-container .form-row.three { grid-template-columns: 1fr 1fr; }
+  .profile-container .form-row.three { grid-template-columns: 1fr; }
   .profile-container .nav-top { padding: 0 1.5rem; }
   .profile-container .page-wrap { padding: 1.5rem 1rem 4rem; }
+  .profile-container .form-card { padding: 1.5rem 1rem; }
+  .profile-container .save-bar { flex-direction: column; gap: 1rem; text-align: center; }
+  .profile-container .section-hd { flex-direction: column; align-items: flex-start; gap: 1rem; }
 }
 @media (max-width: 560px) {
-  .profile-container .stats-mini { grid-template-columns: 1fr 1fr; }
+  .profile-container .stats-mini { grid-template-columns: 1fr; }
+  .profile-container .toggle-row { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .profile-container .notif-row { flex-direction: column; align-items: flex-start; }
 }

@@ -28,7 +28,7 @@ function DashboardContent() {
   const [lastMessageCount, setLastMessageCount] = useState(0);
 
   // Mobile state
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // Removed isSidebarOpen since it's now handled by GlobalMobileNav
 
   // Modal state
   const [activeModal, setActiveModal] = useState<'profile' | 'publish' | 'verify' | 'help' | 'modifyBooking' | 'review' | null>(null);
@@ -249,95 +249,7 @@ function DashboardContent() {
         </div>
       </div>
 
-      {/* MOBILE SUB-NAV */}
-      <div className="mobile-sub-nav">
-        <button className="msn-btn" onClick={() => setIsSidebarOpen(true)}>
-          <Menu size={20} color="var(--gold, #b8985a)" />
-          <span>Menu</span>
-        </button>
-        <Link href="/" className="msn-btn">
-          <Home size={20} color="var(--gold, #b8985a)" />
-          <span>Accueil</span>
-        </Link>
-        <div className="msn-btn msn-notif-wrap">
-          <InAppNotifications />
-          <span>Notifs</span>
-        </div>
-        <button className="msn-btn" onClick={() => setActiveModal('profile')}>
-          <Settings size={20} color="var(--gold, #b8985a)" />
-          <span>Profil</span>
-        </button>
-      </div>
-
       <div className="app-layout">
-        {/* OVERLAY FOR SIDEBAR ON MOBILE */}
-        {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
-        
-        {/* SIDEBAR */}
-        <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          <div className="sidebar-mobile-header">
-            <span className="nav-logo" style={{ color: 'var(--navy)' }}>AZUR<span>&nbsp;YACHTS</span></span>
-            <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}><X size={24} /></button>
-          </div>
-          <div className="sidebar-section-label">Navigation</div>
-          
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'overview' ? 'active' : ''}`} onClick={() => { setActiveSection('overview'); setIsSidebarOpen(false); }}><span className="sidebar-icon">📊</span>Vue d'ensemble</a>
-          )}
-          
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'listings' ? 'active' : ''}`} onClick={() => { setActiveSection('listings'); setIsSidebarOpen(false); }}>
-              <span className="sidebar-icon">⚓</span>Mes annonces 
-              {dashboardData.listings.length > 0 && <span className="sidebar-badge gold">{dashboardData.listings.length}</span>}
-            </a>
-          )}
-
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'bookings' ? 'active' : ''}`} onClick={() => { setActiveSection('bookings'); setIsSidebarOpen(false); }}>
-              <span className="sidebar-icon">📅</span>Réservations Reçues
-              {dashboardData.bookings.filter((b: any) => b.status === 'PENDING' || b.status === 'PROOF_SUBMITTED').length > 0 && (
-                <span className="sidebar-badge">{dashboardData.bookings.filter((b: any) => b.status === 'PENDING' || b.status === 'PROOF_SUBMITTED').length}</span>
-              )}
-            </a>
-          )}
-
-          <Link href="/reservations" className="sidebar-item" onClick={() => setIsSidebarOpen(false)} style={{ textDecoration: 'none' }}><span className="sidebar-icon">🏖️</span>Mes réservations</Link>
-
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => { setActiveSection('stats'); setIsSidebarOpen(false); }}><span className="sidebar-icon">📈</span>Statistiques</a>
-          )}
-          
-          <a className={`sidebar-item ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => { setActiveSection('messages'); setIsSidebarOpen(false); }}><span className="sidebar-icon">💬</span>Messages</a>
-          
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'calendar' ? 'active' : ''}`} onClick={() => { setActiveSection('calendar'); setIsSidebarOpen(false); }}><span className="sidebar-icon">🗓</span>Calendrier</a>
-          )}
-          
-          <a className={`sidebar-item ${activeSection === 'reviews' ? 'active' : ''}`} onClick={() => { setActiveSection('reviews'); setIsSidebarOpen(false); }}><span className="sidebar-icon">⭐</span>Avis</a>
-          
-          <div className="sidebar-divider"></div>
-          
-          <div className="sidebar-section-label">Compte</div>
-          <div className="sidebar-item" onClick={() => { setActiveModal('profile'); setIsSidebarOpen(false); }} style={{ cursor: 'pointer' }}><span className="sidebar-icon">👤</span>Mon profil</div>
-          <Link href="/favorites" className="sidebar-item" onClick={() => setIsSidebarOpen(false)} style={{ textDecoration: 'none' }}><span className="sidebar-icon">❤️</span>Mes favoris</Link>
-
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <div className="sidebar-item" onClick={() => { setActiveModal('publish'); setIsSidebarOpen(false); }} style={{ cursor: 'pointer' }}><span className="sidebar-icon">➕</span>Nouvelle annonce</div>
-          )}
-
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <div className="sidebar-item" onClick={() => { setActiveModal('verify'); setIsSidebarOpen(false); }} style={{ cursor: 'pointer' }}>
-              <span className="sidebar-icon">🎥</span>Vérification vidéo
-              {dashboardData.user?.videoVerified && <span className="sidebar-badge success" style={{ background: 'var(--success, #2e7d32)', color: 'white', marginLeft: 'auto', padding: '2px 6px', borderRadius: '4px', fontSize: '10px' }}>✓ Vérifié</span>}
-            </div>
-          )}
-          
-          <div className="sidebar-bottom">
-            <div className="sidebar-bottom-item" onClick={() => { signOut({ callbackUrl: '/' }); setIsSidebarOpen(false); }}>🚪 Se déconnecter</div>
-            <div className="sidebar-bottom-item" onClick={() => { setActiveModal('help'); setIsSidebarOpen(false); }}>❓ Aide & support</div>
-          </div>
-        </aside>
-
         {/* MAIN */}
         <main className="main">
           
