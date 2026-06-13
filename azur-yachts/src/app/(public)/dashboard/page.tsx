@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Menu, Home, Bell, Settings, X } from 'lucide-react';
 import InAppNotifications from '@/components/layout/InAppNotifications';
+import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -223,115 +224,14 @@ function DashboardContent() {
 
   return (
     <div className="dashboard-container">
-      {/* TOP NAV */}
-      <div className="top-nav">
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
-        <div className="nav-center">
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <>
-              <button className={`nav-tab ${activeSection === 'overview' ? 'active' : ''}`} onClick={() => setActiveSection('overview')}>Vue d'ensemble</button>
-              <button className={`nav-tab ${activeSection === 'listings' ? 'active' : ''}`} onClick={() => setActiveSection('listings')}>Mes annonces</button>
-            </>
-          )}
-          <button className={`nav-tab ${activeSection === 'bookings' ? 'active' : ''}`} onClick={() => setActiveSection('bookings')}>Réservations</button>
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <button className={`nav-tab ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => setActiveSection('stats')}>Statistiques</button>
-          )}
-          <button className={`nav-tab ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => setActiveSection('messages')}>
-            Messages
-          </button>
-        </div>
-        <div className="nav-right desktop-only-nav">
-          <InAppNotifications />
-          <div className="user-chip" onClick={() => setActiveModal('profile')}>
-            <div className="user-av">
-              {dashboardData.user.firstName?.[0] || 'U'}
-              {dashboardData.user.lastName?.[0] || ''}
-            </div>
-            <div>
-              <div className="user-name">{dashboardData.user.firstName} {dashboardData.user.lastName}</div>
-              {dashboardData.user.tier && <div className="user-tier">⭐ {dashboardData.user.tier}</div>}
-            </div>
-          </div>
-        </div>
-      </div>
+
 
       <div className="app-layout">
-        {/* SIDEBAR (Desktop) */}
-        <aside className="sidebar desktop-only" style={{ display: 'flex' }}>
-          <div className="sidebar-section-label">Navigation</div>
-          
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <div className={`sidebar-item ${activeSection === 'overview' ? 'active' : ''}`} onClick={() => setActiveSection('overview')}>
-              <span className="sidebar-icon">📊</span>Vue d'ensemble
-            </div>
-          )}
-          
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <div className={`sidebar-item ${activeSection === 'listings' ? 'active' : ''}`} onClick={() => setActiveSection('listings')}>
-              <span className="sidebar-icon">⚓</span>Mes annonces 
-              {dashboardData.listings?.length > 0 && <span className="sidebar-badge gold">{dashboardData.listings.length}</span>}
-            </div>
-          )}
-
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <div className={`sidebar-item ${activeSection === 'bookings' ? 'active' : ''}`} onClick={() => setActiveSection('bookings')}>
-              <span className="sidebar-icon">📅</span>Réservations Reçues
-            </div>
-          )}
-
-          <div className="sidebar-item" onClick={() => window.location.href='/reservations'}>
-            <span className="sidebar-icon">🏖️</span>Mes réservations
-          </div>
-
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <div className={`sidebar-item ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => setActiveSection('stats')}>
-              <span className="sidebar-icon">📈</span>Statistiques
-            </div>
-          )}
-          
-          <div className={`sidebar-item ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => setActiveSection('messages')}>
-            <span className="sidebar-icon">💬</span>Messages
-          </div>
-          
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <div className={`sidebar-item ${activeSection === 'calendar' ? 'active' : ''}`} onClick={() => setActiveSection('calendar')}>
-              <span className="sidebar-icon">🗓</span>Calendrier
-            </div>
-          )}
-          
-          <div className={`sidebar-item ${activeSection === 'reviews' ? 'active' : ''}`} onClick={() => setActiveSection('reviews')}>
-            <span className="sidebar-icon">⭐</span>Avis
-          </div>
-          
-          <div className="sidebar-divider"></div>
-          
-          <div className="sidebar-section-label">Compte</div>
-          <div className="sidebar-item" onClick={() => setActiveModal('profile')}>
-            <span className="sidebar-icon">👤</span>Mon profil
-          </div>
-          <div className="sidebar-item" onClick={() => window.location.href='/favorites'}>
-            <span className="sidebar-icon">❤️</span>Mes favoris
-          </div>
-
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <div className="sidebar-item" onClick={() => setActiveModal('publish')}>
-              <span className="sidebar-icon">➕</span>Nouvelle annonce
-            </div>
-          )}
-
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <div className="sidebar-item" onClick={() => setActiveModal('verify')}>
-              <span className="sidebar-icon">🎥</span>Vérification vidéo
-            </div>
-          )}
-          
-          <div className="sidebar-bottom">
-            <div className="sidebar-bottom-item" onClick={() => { signOut({ callbackUrl: '/' }); }}>
-              🚪 Se déconnecter
-            </div>
-          </div>
-        </aside>
+        <DashboardSidebar 
+          activeSection={activeSection} 
+          setActiveSection={setActiveSection} 
+          setActiveModal={setActiveModal} 
+        />
 
         {/* MAIN */}
         <main className="main">

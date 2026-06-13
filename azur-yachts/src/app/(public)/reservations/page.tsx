@@ -3,6 +3,8 @@
 import { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import DashboardSidebar from '@/components/layout/DashboardSidebar';
+import '../dashboard/dashboard.css';
 import './reservations.css';
 
 function ReservationsContent() {
@@ -204,11 +206,14 @@ function ReservationsContent() {
   }
 
   return (
-    <div className="reservations-container">
-
-      <div className="page-wrap">
-        {/* HEADER */}
-        <div className="page-header">
+    <div className="dashboard-container reservations-container">
+      <div className="app-layout">
+        <DashboardSidebar activeSection="reservations" />
+        
+        <main className="main">
+          <div className="page-wrap" style={{ padding: '0' }}>
+            {/* HEADER */}
+            <div className="page-header">
           <div className="page-header-left">
             <span className="page-eyebrow">Espace client</span>
             <h1 className="page-title">Mes <em>réservations</em></h1>
@@ -425,6 +430,8 @@ function ReservationsContent() {
             <button className="pag-btn">›</button>
           </div>
         </div>
+          </div>
+        </main>
       </div>
 
       {/* ── DETAIL MODAL ── */}

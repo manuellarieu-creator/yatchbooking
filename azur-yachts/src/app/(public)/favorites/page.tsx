@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import DashboardSidebar from '@/components/layout/DashboardSidebar';
+import '../dashboard/dashboard.css';
 import './favorites.css';
 
 export default function FavoritesPage() {
@@ -59,8 +61,12 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div className="favorites-container">
-      <div className="page-wrap">
+    <div className="dashboard-container favorites-container">
+      <div className="app-layout">
+        <DashboardSidebar activeSection="favorites" />
+        
+        <main className="main">
+          <div className="page-wrap" style={{ padding: '0' }}>
         {/* HEADER */}
         <div className="page-header">
           <div className="page-header-left">
@@ -107,8 +113,10 @@ export default function FavoritesPage() {
                 </div>
               </Link>
             ))
-          )}
+            )}
+          </div>
         </div>
+        </main>
       </div>
 
       {/* TOAST */}
