@@ -6,8 +6,8 @@ import { signOut } from 'next-auth/react';
 
 interface DashboardSidebarProps {
   activeSection: string;
-  setActiveSection?: (section: string) => void;
-  setActiveModal?: (modal: 'profile' | 'publish' | 'verify') => void;
+  setActiveSection?: (section: any) => void;
+  setActiveModal?: (modal: 'profile' | 'publish' | 'verify' | any) => void;
 }
 
 export default function DashboardSidebar({ activeSection, setActiveSection, setActiveModal }: DashboardSidebarProps) {
