@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Menu, Home, Settings, X } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import InAppNotifications from '@/components/layout/InAppNotifications';
 
 export default function GlobalMobileNav() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [navData, setNavData] = useState<any>(null);
   
@@ -24,8 +25,8 @@ export default function GlobalMobileNav() {
       .catch(console.error);
   }, []);
 
-  // Hide on landing page
-  if (pathname === '/') {
+  // Hide on landing page or in modals
+  if (pathname === '/' || searchParams.get('modal') === 'true') {
     return null;
   }
 

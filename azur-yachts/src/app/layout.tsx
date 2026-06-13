@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from 'react';
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import HeaderVisibility from "@/components/layout/HeaderVisibility";
@@ -44,7 +45,11 @@ export default async function RootLayout({
           <HeaderVisibility isLoggedIn={!!session?.user}>
             <Header />
           </HeaderVisibility>
-          {session?.user && <GlobalMobileNav />}
+          {session?.user && (
+            <Suspense fallback={null}>
+              <GlobalMobileNav />
+            </Suspense>
+          )}
           {children}
         </MaintenanceGuard>
       </body>
