@@ -197,19 +197,21 @@
   cursor: pointer;
   padding: 0.25rem 0.5rem 0.25rem 0.25rem;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  transition: background 0.2s;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s;
 }
 .user-menu-trigger:hover {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--gold, #b8985a);
 }
 .user-menu-name {
-  color: var(--navy);
+  color: #fff;
   font-size: 0.9rem;
   font-weight: 500;
 }
 .user-menu-arrow {
-  color: var(--navy);
+  color: var(--gold, #b8985a);
   font-size: 0.6rem;
   margin-left: 0.2rem;
   opacity: 0.8;
@@ -217,20 +219,25 @@
 
 .hamburger-btn {
   background: transparent;
-  border: none;
+  border: 1px solid #ffffff;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding: 5px;
+  padding: 6px 8px;
   z-index: 110;
+  transition: border-color 0.2s;
+}
+.hamburger-btn:hover {
+  border-color: var(--gold, #b8985a);
 }
 
 .hamburger-line {
   display: block;
-  width: 24px;
+  width: 22px;
   height: 2px;
-  background: var(--gold);
+  background: var(--gold, #b8985a);
   transition: all 0.3s ease;
 }
 

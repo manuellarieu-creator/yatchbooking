@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
+import { UserCircle } from 'lucide-react';
 
 export default function UserMenu({ user, guestClass = '' }: { user?: any, guestClass?: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,13 +23,13 @@ export default function UserMenu({ user, guestClass = '' }: { user?: any, guestC
     await signOut({ callbackUrl: '/' });
   };
 
-  const initials = user ? `${(user.firstName?.[0] || 'U').toUpperCase()}${(user.lastName?.[0] || '').toUpperCase()}` : '👤';
+  const initials = user ? `${(user.firstName?.[0] || 'U').toUpperCase()}${(user.lastName?.[0] || '').toUpperCase()}` : <UserCircle size={22} color="var(--gold, #b8985a)" />;
 
   return (
     <div className={`user-menu-container ${guestClass}`} ref={menuRef}>
       <div className="user-menu-trigger" onClick={() => setIsOpen(!isOpen)}>
         {user && <span className="user-menu-name">{user.firstName} {user.lastName}</span>}
-        <div className="nav-avatar" style={!user ? { background: 'transparent', border: '1px solid var(--gold)', color: 'var(--gold)' } : {}}>
+        <div className="nav-avatar" style={!user ? { background: 'transparent', border: 'none' } : {}}>
           {initials}
         </div>
         <span className="user-menu-arrow">▼</span>
