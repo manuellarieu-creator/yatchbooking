@@ -1,0 +1,81 @@
+# 🚤 Azur Yachts - Récapitulatif Global du Projet
+
+*Date de mise à jour : 13 Juin 2026*
+
+Ce document synthétise l'état actuel du projet **Azur Yachts** (YachtBooking), ce qui a été implémenté et les tâches restantes ou points d'attention avant un lancement en production.
+
+---
+
+## 🛠️ Stack Technique & Architecture
+- **Frontend / Framework** : Next.js 14 (App Router), React 18
+- **Styling & UI** : Tailwind CSS, Shadcn UI, Radix UI, Framer Motion
+- **Backend & BDD** : Prisma ORM, PostgreSQL (via `@prisma/adapter-pg`)
+- **Authentification** : NextAuth (v5 beta) avec JWT, OTP, 2FA (Email/SMS)
+- **Paiements** : Stripe (Intents & Webhooks), Virements bancaires gérés manuellement
+- **Emails & Notifications** : Resend (Emails), Web-Push, Twilio (SMS)
+- **Stockage Médias** : Cloudinary (Images, Selfies vidéo, Pièces d'identité)
+- **Temps Réel** : Socket.io (Messagerie instantanée)
+
+---
+
+## ✅ Ce qui est DÉJÀ FAIT (Fonctionnalités Implémentées)
+
+### 1. Authentification & Sécurité (Users)
+- Inscription et Connexion (Rôles : `CLIENT`, `ADVERTISER`, `ADMIN`).
+- Vérification d'email et réinitialisation de mot de passe.
+- Système **KYC** avancé : upload de pièces d'identité (recto/verso) et vérification par vidéo selfie.
+- Authentification à double facteur (2FA) par Email et SMS.
+- Gestion des sessions et des appareils connectés.
+
+### 2. Espace Annonces (Listings / Yachts)
+- Pages publiques de recherche (`/yachts`) et de détails (`/yacht/[id]`).
+- Publication par les annonceurs (`/publish`) avec gestion des caractéristiques techniques (longueur, année, cabines).
+- Gestion fine des prix : prix de base, caution, frais de nettoyage, frais de livraison, services additionnels.
+- Gestion des disponibilités (Availabilities).
+
+### 3. Réservations (Bookings)
+- Tunnel de réservation avec sélection de dates, calcul des frais totaux, gestion des enfants/adultes.
+- Demandes de modifications de réservations.
+- Suivi du statut de la réservation (`PENDING`, `CONFIRMED`, `COMPLETED`, `CANCELLED`).
+
+### 4. Paiements & Facturation
+- Intégration **Stripe** (Paiement par CB, Webhooks pour confirmation auto).
+- Intégration des **Virements Bancaires** (Upload d'une preuve de virement par le client).
+- Page sécurisée de paiement propre à la réservation.
+
+### 5. Messagerie inter-utilisateurs & Notifications
+- Système de **Conversations** (Chat en temps réel ou asynchrone).
+- Notifications In-App et Web-Push pour différents événements (nouvelle résa, nouveau message, approbation).
+
+### 6. Backoffice Administration (`/admin/*`)
+- Tableau de bord avec statistiques (Dashboard).
+- Validation KYC des utilisateurs et approbation/rejet des comptes.
+- Gestion des annonces (Approbation des nouveaux yachts).
+- Validation des paiements (notamment virements bancaires).
+- Gestion dynamique des Destinations de la page d'accueil.
+- Gestion des Avis (Reviews), de la Blacklist, de la Newsletter.
+- Interface de paramétrage général (Réglages Plateforme, Activer/Désactiver Stripe ou Virements).
+
+### 7. Autres
+- Système d'Avis (Reviews) sur les yachts, les propriétaires ou le site global.
+- Système de Favoris.
+- Pages de Contenu (FAQ, À propos, Mentions légales).
+
+---
+
+## 🔴 Ce qu'il RESTE À FAIRE (Tâches & Points de Vigilance)
+
+### Finalisations Techniques
+- [ ] **Modifications de Réservations** : Terminer le flux de notification à l'Admin lors d'une demande de modification de réservation par le client (actuellement un `TODO` dans `api/bookings/[id]/modify/route.ts`).
+- [ ] **Temps Réel** : Valider que le serveur Socket.io est bien déployé et fonctionnel dans l'environnement de production (les WebSockets demandent souvent une configuration spécifique selon l'hébergeur).
+
+### Préparation à la Production (DevOps & Configuration)
+- [ ] **Domaine et Emails** : Valider le domaine de production sur **Resend** (pour éviter que les emails tombent en SPAM).
+- [ ] **Stripe (Live)** : Passer les clés Stripe en mode "Live" et configurer l'URL exacte du Webhook de production sur le Dashboard Stripe.
+- [ ] **Twilio (Live)** : S'assurer que le compte Twilio est provisionné pour l'envoi de SMS en volume pour le 2FA.
+- [ ] **Cloudinary** : Vérifier les limites de stockage et la politique de rétention (notamment pour les vidéos KYC, s'il faut les supprimer après X temps pour le RGPD).
+- [ ] **Base de Données** : S'assurer que les sauvegardes automatisées (Backups) sont activées sur Neon/Postgres.
+
+### Expérience Utilisateur & SEO
+- [x] **SEO** : Optimiser les balises `metadata` (Titre, Description, OpenGraph) sur les pages publiques (`/yacht/[id]`, `/yachts`, Accueil). *Sitemap et Robots.txt ajoutés.*
+- [ ] **Tests de bout-en-bout (E2E)** : Faire un test grandeur nature du tunnel complet en condition réelle : `Création Annonceur -> KYC -> Validation Admin -> Dépôt Annonce -> Inscription Client -> Réservation -> Paiement -> Validation`.
