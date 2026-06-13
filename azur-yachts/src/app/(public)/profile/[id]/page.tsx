@@ -51,7 +51,7 @@ export default function PublicProfilePage({ params }: { params: { id: string } }
           <div style={{ borderTop: '1px solid var(--sand)', paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-light)' }}>Note moyenne</span>
-              <strong>{avgRating > 0 ? `${avgRating} ★` : 'Nouveau'}</strong>
+              <strong>{Number(avgRating) > 0 ? `${avgRating} ★` : 'Nouveau'}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-light)' }}>Avis reçus</span>
