@@ -11,9 +11,10 @@ export default async function Header() {
   // DASHBOARD-STYLE HEADER FOR LOGGED IN USERS
   if (session?.user) {
     return (
-      <nav className="nav-top" style={{ padding: '0 2.5rem', zIndex: 1050, borderBottom: 'none' }}>
-        <div className="nav-left desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-          <Link href="/" className="nav-logo" style={{ marginRight: '1rem' }}>AZUR<span>&nbsp;YACHTS</span></Link>
+      <nav className="nav-top" style={{ zIndex: 1050, borderBottom: 'none' }}>
+        <Link href="/" className="nav-logo" style={{ marginRight: '1rem' }}>AZUR<span>&nbsp;YACHTS</span></Link>
+        
+        <div className="nav-center desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
           <Link href="/" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>ACCUEIL</Link>
           <Link href="/listings" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>LES OFFRES</Link>
           <Link href="/reservations" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>RÉSERVATIONS</Link>
