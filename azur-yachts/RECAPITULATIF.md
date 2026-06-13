@@ -61,22 +61,30 @@ Ce document synthétise l'état actuel du projet **Azur Yachts** (YachtBooking),
 - Système de Favoris.
 - Pages de Contenu (FAQ, À propos, Mentions légales).
 
+### 8. Améliorations UI / UX (Récentes)
+- Header conditionnel : "Navy Dashboard Header" (bleu marine) exclusif sur Desktop pour les connectés, et Header Classique (blanc avec menu hamburger) sur Mobile et pour les invités.
+- Ajout de la soumission du formulaire de connexion via la touche "Entrée".
+- Refonte et centralisation de la Sidebar Desktop pour le Dashboard, Favoris et Réservations.
+- Support du SEO de base (balises dynamiques, Sitemap dynamique et Robots.txt).
+
 ---
 
 ## 🔴 Ce qu'il RESTE À FAIRE (Tâches & Points de Vigilance)
 
-### Finalisations Techniques
-- [ ] **Notifications (Préférences)** : Utiliser les préférences de notifications sauvegardées dans le profil pour conditionner l'envoi effectif des emails et SMS (ex: vérifier `user.notificationPreferences.resa.email` avant d'envoyer un mail de confirmation).
-- [ ] **Modifications de Réservations** : Terminer le flux de notification à l'Admin lors d'une demande de modification de réservation par le client (actuellement un `TODO` dans `api/bookings/[id]/modify/route.ts`).
-- [ ] **Temps Réel** : Valider que le serveur Socket.io est bien déployé et fonctionnel dans l'environnement de production (les WebSockets demandent souvent une configuration spécifique selon l'hébergeur).
+### Finalisations Techniques & Profil
+- [ ] **Notifications (Préférences)** : Utiliser les préférences de notifications sauvegardées dans le profil pour conditionner l'envoi effectif des emails et SMS (les fondations logiques sont prêtes, reste l'intégration lors de l'envoi).
+- [ ] **Activités du compte (Profil)** : Rendre les informations de l'historique d'activité dynamiques (elles sont actuellement en dur).
+- [ ] **Zone Sensible & Clôture de compte** : Évaluer l'utilité de la "Zone sensible" et renommer la suppression en "Clôture de compte".
+- [ ] **Paiement par Virement** : Clarifier le texte pour le client concernant le virement bancaire (préciser que la confirmation n'est pas immédiate).
+- [ ] **Modifications de Réservations** : Terminer le flux de notification à l'Admin lors d'une demande de modification de réservation par le client.
+- [ ] **Temps Réel** : Valider que le serveur Socket.io est bien déployé et fonctionnel dans l'environnement de production.
 
 ### Préparation à la Production (DevOps & Configuration)
-- [ ] **Domaine et Emails** : Valider le domaine de production sur **Resend** (pour éviter que les emails tombent en SPAM).
-- [ ] **Stripe (Live)** : Passer les clés Stripe en mode "Live" et configurer l'URL exacte du Webhook de production sur le Dashboard Stripe.
+- [ ] **Domaine et Emails** : Valider le domaine de production sur **Resend**.
+- [ ] **Stripe (Live)** : Passer les clés Stripe en mode "Live" et configurer l'URL exacte du Webhook de production.
 - [ ] **Twilio (Live)** : S'assurer que le compte Twilio est provisionné pour l'envoi de SMS en volume pour le 2FA.
-- [ ] **Cloudinary** : Vérifier les limites de stockage et la politique de rétention (notamment pour les vidéos KYC, s'il faut les supprimer après X temps pour le RGPD).
-- [ ] **Base de Données** : S'assurer que les sauvegardes automatisées (Backups) sont activées sur Neon/Postgres.
+- [ ] **Cloudinary** : Vérifier les limites de stockage et la politique de rétention (KYC).
+- [ ] **Base de Données** : S'assurer que les sauvegardes automatisées (Backups) sont activées.
 
-### Expérience Utilisateur & SEO
-- [x] **SEO** : Optimiser les balises `metadata` (Titre, Description, OpenGraph) sur les pages publiques (`/yacht/[id]`, `/yachts`, Accueil). *Sitemap et Robots.txt ajoutés.*
+### Expérience Utilisateur & Tests
 - [ ] **Tests de bout-en-bout (E2E)** : Faire un test grandeur nature du tunnel complet en condition réelle : `Création Annonceur -> KYC -> Validation Admin -> Dépôt Annonce -> Inscription Client -> Réservation -> Paiement -> Validation`.
