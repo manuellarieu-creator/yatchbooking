@@ -50,9 +50,9 @@ export async function GET() {
       };
     }));
 
-    // Fetch top 3 approved reviews
+    // Fetch top 3 approved SITE reviews
     const topReviews = await prisma.review.findMany({
-      where: { status: 'APPROVED', rating: { gte: 4 } },
+      where: { status: 'APPROVED', targetType: 'SITE', rating: { gte: 4 } },
       orderBy: { createdAt: 'desc' },
       take: 3,
       include: {

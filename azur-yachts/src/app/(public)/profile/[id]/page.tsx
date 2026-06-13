@@ -6,6 +6,7 @@ import Link from 'next/link';
 export default function PublicProfilePage({ params }: { params: { id: string } }) {
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchUser() {
@@ -50,12 +51,13 @@ export default function PublicProfilePage({ params }: { params: { id: string } }
 
           <div style={{ borderTop: '1px solid var(--sand)', paddingTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-light)' }}>Note moyenne</span>
-              <strong>{Number(avgRating) > 0 ? `${avgRating} ★` : 'Nouveau'}</strong>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-light)' }}>Avis reçus</span>
-              <strong>{user.receivedReviews?.length || 0}</strong>
+              <span style={{ color: 'var(--text-light)' }}>Avis</span>
+              <strong 
+                onClick={() => user.receivedReviews?.length > 0 && setIsReviewsModalOpen(true)}
+                style={{ cursor: user.receivedReviews?.length > 0 ? 'pointer' : 'default', textDecoration: user.receivedReviews?.length > 0 ? 'underline' : 'none', color: 'var(--gold)' }}
+              >
+                {Number(avgRating) > 0 ? `${avgRating} ★ (${user.receivedReviews.length} avis)` : 'Nouveau'}
+              </strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-light)' }}>Membre depuis</span>
@@ -116,32 +118,44 @@ export default function PublicProfilePage({ params }: { params: { id: string } }
             <p style={{ color: 'var(--text-light)', fontStyle: 'italic', marginBottom: '3rem' }}>Aucune annonce active.</p>
           )}
 
-          <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-heading)', marginBottom: '1.5rem' }}>Avis ({user.receivedReviews?.length || 0})</h3>
-          {user.receivedReviews?.length > 0 ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              {user.receivedReviews.map((rev: any) => (
-                <div key={rev.id} style={{ padding: '1.5rem', background: '#fcfcfc', border: '1px solid var(--sand)', borderRadius: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.8rem' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--navy-mid)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '1rem' }}>
-                      {rev.author?.avatar ? <img src={rev.author.avatar} style={{ width: '100%', height: '100%', borderRadius: '50%' }} alt="" /> : rev.author?.firstName?.charAt(0) || 'U'}
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 600 }}>{rev.author?.firstName} {rev.author?.lastName}</div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{new Date(rev.createdAt).toLocaleDateString()}</div>
-                    </div>
-                    <div style={{ marginLeft: 'auto', color: 'var(--gold)' }}>
-                      {'★'.repeat(rev.rating)}
-                    </div>
-                  </div>
-                  <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.5, color: 'var(--text-mid)' }}>{rev.comment}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p style={{ color: 'var(--text-light)', fontStyle: 'italic' }}>Aucun avis pour le moment.</p>
-          )}
         </div>
       </div>
+
+      {/* REVIEWS MODAL */}
+      {isReviewsModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setIsReviewsModalOpen(false)}>
+          <div style={{ background: 'white', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '600px', maxHeight: '80vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-heading)' }}>Avis sur {user.firstName}</h3>
+              <button onClick={() => setIsReviewsModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+            </div>
+            
+            {user.receivedReviews?.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {user.receivedReviews.map((rev: any) => (
+                  <div key={rev.id} style={{ padding: '1.5rem', background: '#fcfcfc', border: '1px solid var(--sand)', borderRadius: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.8rem' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--navy-mid)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '1rem' }}>
+                        {rev.author?.avatar ? <img src={rev.author.avatar} style={{ width: '100%', height: '100%', borderRadius: '50%' }} alt="" /> : rev.author?.firstName?.charAt(0) || 'U'}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{rev.author?.firstName} {rev.author?.lastName}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{new Date(rev.createdAt).toLocaleDateString()}</div>
+                      </div>
+                      <div style={{ marginLeft: 'auto', color: 'var(--gold)' }}>
+                        {'★'.repeat(rev.rating)}
+                      </div>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.5, color: 'var(--text-mid)' }}>{rev.comment}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: 'var(--text-light)', fontStyle: 'italic' }}>Aucun avis pour le moment.</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

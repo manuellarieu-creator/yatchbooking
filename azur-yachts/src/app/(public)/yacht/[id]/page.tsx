@@ -67,6 +67,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   const [reviewStars, setReviewStars] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
   const [reviewType, setReviewType] = useState<'SITE' | 'OWNER' | 'LISTING'>('LISTING');
+  const [isListingReviewsModalOpen, setIsListingReviewsModalOpen] = useState(false);
 
   // ── Chat State ──
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -271,6 +272,14 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 {yacht.owner?.advertiserTier && <span className="listing-badge badge-platinium">⚓ {yacht.owner.advertiserTier}</span>}
               </div>
             </div>
+            <div 
+              onClick={() => yacht.reviewCount > 0 && setIsListingReviewsModalOpen(true)} 
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem', cursor: yacht.reviewCount > 0 ? 'pointer' : 'default', textDecoration: yacht.reviewCount > 0 ? 'underline' : 'none', color: 'var(--text-mid)', fontSize: '0.95rem' }}
+            >
+              <span style={{ color: 'var(--gold)', fontSize: '1.1rem' }}>★</span>
+              <strong style={{ color: 'var(--text)' }}>{yacht.averageRating > 0 ? yacht.averageRating : 'Nouveau'}</strong>
+              {yacht.reviewCount > 0 && <span>({yacht.reviewCount} avis)</span>}
+            </div>
             <h1 className="listing-title">{yacht.title}</h1>
             <div className="listing-quick-stats">
               <span className="quick-stat">👥 <strong>{yacht.maxAdults}</strong> adultes max</span>
@@ -446,39 +455,6 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
           <hr className="section-sep" />
 
-          {/* Reviews */}
-          <div className="fade-in">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-              <div className="sec-title" style={{ marginBottom: 0 }}>{yacht.reviewCount || 0} Avis</div>
-              <button className="add-review-btn" onClick={() => setIsReviewOpen(true)}>+ Laisser un avis</button>
-            </div>
-            
-            {yacht.reviewCount > 0 ? (
-              <>
-                <div className="reviews-overview">
-                  <div className="reviews-score">
-                    <div className="score-big">{yacht.averageRating || 0}</div>
-                    <span className="score-stars">★</span>
-                    <div className="score-count">{yacht.reviewCount} évaluations</div>
-                  </div>
-                </div>
-                <div className="review-list">
-                  {yacht.reviews?.map((rev: any) => (
-                    <div key={rev.id} className="review-item">
-                      <div className="review-header">
-                        <div className="review-avatar">{rev.author?.firstName?.charAt(0) || 'U'}</div>
-                        <div className="review-meta">
-                          <div className="review-name">{rev.author?.firstName} {rev.author?.lastName}</div>
-                          <div className="review-info">{new Date(rev.createdAt).toLocaleDateString()}</div>
-                        </div>
-                        <div className="review-stars">{'★'.repeat(rev.rating)}</div>
-                      </div>
-                      <div className="review-text">{rev.comment}</div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
               <p style={{ color: 'var(--text-light)', fontStyle: 'italic', fontSize: '0.9rem' }}>Aucun avis pour le moment. Soyez le premier à partager votre expérience !</p>
             )}
           </div>
@@ -712,7 +688,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             <button className="modal-x" onClick={() => setIsReviewOpen(false)}>×</button>
           </div>
           <div className="modal-bd">
-            <div style={{ fontSize: '.85rem', color: 'var(--text-mid)' }}>Comment s'est passée votre expérience à bord du Azura Prestige 68 ?</div>
+            <div style={{ fontSize: '.85rem', color: 'var(--text-mid)' }}>Comment s'est passée votre expérience à bord du {yacht.title} ?</div>
             
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
               <label><input type="radio" name="reviewType" checked={reviewType === 'LISTING'} onChange={() => setReviewType('LISTING')} /> Sur l'annonce</label>
@@ -733,6 +709,50 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
+
+      {/* ── LISTING REVIEWS MODAL ── */}
+      {isListingReviewsModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setIsListingReviewsModalOpen(false)}>
+          <div style={{ background: 'white', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '600px', maxHeight: '80vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-heading)' }}>Avis sur {yacht.title}</h3>
+              <button onClick={() => setIsListingReviewsModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+            </div>
+            
+            <div className="reviews-overview" style={{ marginBottom: '2rem' }}>
+              <div className="reviews-score" style={{ justifyContent: 'center' }}>
+                <div className="score-big">{yacht.averageRating || 0}</div>
+                <span className="score-stars" style={{ color: 'var(--gold)', fontSize: '2rem', lineHeight: 1 }}>★</span>
+                <div className="score-count">{yacht.reviewCount} évaluations</div>
+              </div>
+            </div>
+
+            {yacht.reviews?.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {yacht.reviews.map((rev: any) => (
+                  <div key={rev.id} style={{ padding: '1.5rem', background: '#fcfcfc', border: '1px solid var(--sand)', borderRadius: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.8rem' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--navy-mid)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '1rem' }}>
+                        {rev.author?.avatar ? <img src={rev.author.avatar} style={{ width: '100%', height: '100%', borderRadius: '50%' }} alt="" /> : rev.author?.firstName?.charAt(0) || 'U'}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{rev.author?.firstName} {rev.author?.lastName}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{new Date(rev.createdAt).toLocaleDateString()}</div>
+                      </div>
+                      <div style={{ marginLeft: 'auto', color: 'var(--gold)' }}>
+                        {'★'.repeat(rev.rating)}
+                      </div>
+                    </div>
+                    <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.5, color: 'var(--text-mid)' }}>{rev.comment}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: 'var(--text-light)', fontStyle: 'italic', textAlign: 'center' }}>Aucun avis pour le moment.</p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* TOAST */}
       <div className={`toast ${showToast ? 'show' : ''}`}>
