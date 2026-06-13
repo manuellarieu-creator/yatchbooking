@@ -611,10 +611,12 @@ export default function ProfilePage() {
                   <div className="toggle-info"><div className="toggle-label">PayPal</div><div className="toggle-desc">jean.dupont@gmail.com · Compte lié</div></div>
                   <button className="btn btn-sm btn-outline" onClick={() => triggerToast('Compte dissocié.')}>Dissocier</button>
                 </div>
-                <div className="toggle-row">
-                  <div className="toggle-info"><div className="toggle-label">Virement bancaire</div><div className="toggle-desc">Pour les remboursements</div></div>
-                  <button className="btn btn-sm btn-gold" onClick={() => setModalOpen('iban')}>Ajouter un IBAN</button>
-                </div>
+                {profile?.role === 'ADVERTISER' && (
+                  <div className="toggle-row">
+                    <div className="toggle-info"><div className="toggle-label">Virement bancaire</div><div className="toggle-desc">Pour recevoir les paiements de vos locations</div></div>
+                    <button className="btn btn-sm btn-gold" onClick={() => setModalOpen('iban')}>Ajouter un IBAN</button>
+                  </div>
+                )}
               </div>
             </div>
           )}
