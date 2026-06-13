@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import './reservations.css';
 
-export default function ReservationsPage() {
-  const [activeTab, setActiveTab] = useState('all');
+function ReservationsContent() {
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get('tab') || 'all';
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('date-desc');
   const [reservationsData, setReservationsData] = useState<any[]>([]);
@@ -566,5 +569,13 @@ export default function ReservationsPage() {
         <div className="toast-bar"></div>
       </div>
     </div>
+  );
+}
+
+export default function ReservationsPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '4rem', textAlign: 'center' }}>Chargement...</div>}>
+      <ReservationsContent />
+    </Suspense>
   );
 }

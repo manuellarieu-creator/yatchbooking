@@ -190,9 +190,19 @@ export default function ProfilePage() {
               </div>
 
               <div className="stats-mini">
-                <div className="stat-mini-card"><div className="stat-mini-num">{profile?._count?.bookings || 0}</div><div className="stat-mini-lbl">Réservations</div></div>
-                <div className="stat-mini-card"><div className="stat-mini-num">{profile?._count?.favorites || 0}</div><div className="stat-mini-lbl">Favoris</div></div>
-                <div className="stat-mini-card"><div className="stat-mini-num">{profile?._count?.listings || 0}</div><div className="stat-mini-lbl">Annonces publiées</div></div>
+                <Link href="/reservations" className="stat-mini-card" style={{ textDecoration: 'none', color: 'inherit' }}><div className="stat-mini-num">{profile?._count?.bookings || 0}</div><div className="stat-mini-lbl">Réservations</div></Link>
+                <Link href="/favorites" className="stat-mini-card" style={{ textDecoration: 'none', color: 'inherit' }}><div className="stat-mini-num">{profile?._count?.favorites || 0}</div><div className="stat-mini-lbl">Favoris</div></Link>
+                {profile?.role === 'CLIENT' ? (
+                  <Link href="/reservations?tab=cancelled" className="stat-mini-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <div className="stat-mini-num">{profile?.cancelledCount || 0}</div>
+                    <div className="stat-mini-lbl">Annulations</div>
+                  </Link>
+                ) : (
+                  <Link href="/dashboard?tab=listings" className="stat-mini-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <div className="stat-mini-num">{profile?._count?.listings || 0}</div>
+                    <div className="stat-mini-lbl">Annonces publiées</div>
+                  </Link>
+                )}
               </div>
 
               <div className="form-card">

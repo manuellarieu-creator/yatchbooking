@@ -40,7 +40,14 @@ export async function GET(req: NextRequest) {
       where: { userId: userId, isRead: false }
     })
 
-    return NextResponse.json({ profile: { ...profile, unreadNotifications } })
+    const cancelledCount = await prisma.booking.count({
+      where: {
+        clientId: userId,
+        status: 'CANCELLED'
+      }
+    })
+
+    return NextResponse.json({ profile: { ...profile, unreadNotifications, cancelledCount } })
   } catch (error) {
     console.error('GET /api/users/profile error:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })

@@ -38,8 +38,8 @@ export const authConfig = {
         const role = (auth.user as any).role;
         const status = (auth.user as any).status;
 
-        // Bloquer l'accès au dashboard et /publish pour les clients
-        if ((nextUrl.pathname.startsWith('/dashboard') || nextUrl.pathname.startsWith('/publish')) && role === 'CLIENT') {
+        // Bloquer l'accès à /publish pour les clients
+        if (nextUrl.pathname.startsWith('/publish') && role === 'CLIENT') {
           return Response.redirect(new URL('/profile', nextUrl));
         }
 
