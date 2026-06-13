@@ -163,7 +163,27 @@ export async function POST(req: NextRequest) {
       }
     })
 
-    // Notify the client
+    // Create in-app notifications
+    await prisma.notification.createMany({
+      data: [
+        {
+          userId: (session.user as any).id,
+          title: "Demande envoyée",
+          message: `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
+          type: "BOOKING",
+          link: `/reservations/${booking.id}`
+        },
+        {
+          userId: listing.ownerId,
+          title: "Nouvelle demande de réservation",
+          message: `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
+          type: "BOOKING",
+          link: `/dashboard`
+        }
+      ]
+    });
+
+    // Notify the client (Web Push)
     sendPushNotification(
       (session.user as any).id,
       "Demande envoyée",

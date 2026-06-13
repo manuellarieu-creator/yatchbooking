@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import Link from 'next/link';
+import InAppNotifications from '@/components/layout/InAppNotifications';
 import './admin.css';
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
@@ -16,7 +17,10 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       <aside className="admin-sidebar">
         <div className="admin-brand">
           <Link href="/">AZUR<span>YACHTS</span></Link>
-          <div className="admin-badge">Admin</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div className="admin-badge">Admin</div>
+            <InAppNotifications />
+          </div>
         </div>
         <nav className="admin-nav">
           <Link href="/admin/users" className="admin-nav-link">👥 Annonceurs & Utilisateurs</Link>

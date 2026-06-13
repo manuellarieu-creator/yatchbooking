@@ -100,8 +100,18 @@ export async function POST(req: NextRequest) {
     });
 
     // Notify other participants
+    const notificationsToCreate = [];
+
     for (const p of updatedConv.participants) {
       if (p.userId !== userId) {
+        notificationsToCreate.push({
+          userId: p.userId,
+          title: "Nouveau message",
+          message: `Vous avez reçu un nouveau message de ${message.sender?.firstName || 'Quelqu\'un'}.`,
+          type: "MESSAGE",
+          link: `/dashboard`
+        });
+
         sendPushNotification(
           p.userId,
           "Nouveau message",
@@ -109,6 +119,12 @@ export async function POST(req: NextRequest) {
           `/dashboard` // or appropriate message center link
         );
       }
+    }
+
+    if (notificationsToCreate.length > 0) {
+      await prisma.notification.createMany({
+        data: notificationsToCreate
+      });
     }
 
     return NextResponse.json({ message }, { status: 201 });

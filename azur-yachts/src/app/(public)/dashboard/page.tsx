@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import InAppNotifications from '@/components/layout/InAppNotifications';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -212,14 +214,7 @@ function DashboardContent() {
           </button>
         </div>
         <div className="nav-right">
-          <div className="notif-btn" onClick={() => triggerToast('Toutes vos notifications sont à jour.')} style={{ position: 'relative' }}>
-            🔔
-            {dashboardData.user.unreadNotifications > 0 && (
-              <span className="notif-badge" style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'var(--danger)', color: 'white', borderRadius: '50%', padding: '0.1rem 0.3rem', fontSize: '0.65rem', fontWeight: 'bold' }}>
-                {dashboardData.user.unreadNotifications}
-              </span>
-            )}
-          </div>
+          <InAppNotifications />
           <div className="user-chip">
             <div className="user-av">
               {dashboardData.user.firstName?.[0] || 'U'}
