@@ -344,7 +344,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                   {(() => {
                     const revs = yacht.owner?.receivedReviews || [];
                     const avg = revs.length ? (revs.reduce((a:any, b:any) => a + b.rating, 0) / revs.length).toFixed(1) : 0;
-                    return avg > 0 ? (
+                    return Number(avg) > 0 ? (
                       <>
                         {'★'.repeat(Math.round(Number(avg)))} <span>({revs.length} avis propriétaire)</span>
                       </>
