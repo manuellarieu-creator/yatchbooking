@@ -455,8 +455,10 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
           <hr className="section-sep" />
 
-              <p style={{ color: 'var(--text-light)', fontStyle: 'italic', fontSize: '0.9rem' }}>Aucun avis pour le moment. Soyez le premier à partager votre expérience !</p>
-            )}
+          {/* Leave a review CTA */}
+          <div className="fade-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 0' }}>
+            <h3 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '1.4rem' }}>Avez-vous voyagé sur ce bateau ?</h3>
+            <button className="add-review-btn" onClick={() => setIsReviewOpen(true)}>+ Laisser un avis</button>
           </div>
         </div>
 
