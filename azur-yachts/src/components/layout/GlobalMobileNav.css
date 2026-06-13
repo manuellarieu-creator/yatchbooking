@@ -2,7 +2,7 @@
 
 /* Base sidebar styles (copied from dashboard.css) */
 .global-sidebar {
-  width: 220px;
+  width: 260px;
   background: var(--white, #ffffff);
   border-right: 1px solid var(--sand, #e8e0d0);
   display: flex;
@@ -36,9 +36,9 @@
 
 .global-sidebar .nav-logo {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  letter-spacing: .15em;
+  letter-spacing: .1em;
   text-decoration: none;
 }
 
