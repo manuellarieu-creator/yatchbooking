@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense, useRef } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Menu, Home, Bell, Settings, X } from 'lucide-react';
 import InAppNotifications from '@/components/layout/InAppNotifications';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -26,6 +26,9 @@ function DashboardContent() {
   const [chatInput, setChatInput] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
   const [lastMessageCount, setLastMessageCount] = useState(0);
+
+  // Mobile state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Modal state
   const [activeModal, setActiveModal] = useState<'profile' | 'publish' | 'verify' | 'help' | 'modifyBooking' | 'review' | null>(null);
@@ -231,9 +234,9 @@ function DashboardContent() {
             Messages
           </button>
         </div>
-        <div className="nav-right">
+        <div className="nav-right desktop-only-nav">
           <InAppNotifications />
-          <div className="user-chip">
+          <div className="user-chip" onClick={() => setActiveModal('profile')}>
             <div className="user-av">
               {dashboardData.user.firstName?.[0] || 'U'}
               {dashboardData.user.lastName?.[0] || ''}
@@ -246,9 +249,36 @@ function DashboardContent() {
         </div>
       </div>
 
+      {/* MOBILE SUB-NAV */}
+      <div className="mobile-sub-nav">
+        <button className="msn-btn" onClick={() => setIsSidebarOpen(true)}>
+          <Menu size={20} color="var(--gold, #b8985a)" />
+          <span>Menu</span>
+        </button>
+        <Link href="/" className="msn-btn">
+          <Home size={20} color="var(--gold, #b8985a)" />
+          <span>Accueil</span>
+        </Link>
+        <div className="msn-btn msn-notif-wrap">
+          <InAppNotifications />
+          <span>Notifs</span>
+        </div>
+        <button className="msn-btn" onClick={() => setActiveModal('profile')}>
+          <Settings size={20} color="var(--gold, #b8985a)" />
+          <span>Profil</span>
+        </button>
+      </div>
+
       <div className="app-layout">
+        {/* OVERLAY FOR SIDEBAR ON MOBILE */}
+        {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+        
         {/* SIDEBAR */}
-        <aside className="sidebar">
+        <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+          <div className="sidebar-mobile-header">
+            <span className="nav-logo" style={{ color: 'var(--navy)' }}>AZUR<span>&nbsp;YACHTS</span></span>
+            <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}><X size={24} /></button>
+          </div>
           <div className="sidebar-section-label">Navigation</div>
           
           {dashboardData.user?.role !== 'CLIENT' && (

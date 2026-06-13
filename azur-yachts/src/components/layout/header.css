@@ -94,6 +94,7 @@
 
 @media (max-width: 900px) {
   .nav-top { padding: 0 1rem; }
+  .nav-logo { font-size: 1.15rem; }
   .nav-links { display: none !important; }
   .nav-link { display: none !important; }
   .desktop-only { display: none !important; }
