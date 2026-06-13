@@ -102,14 +102,14 @@
   .mobile-menu-container { display: flex; align-items: center; }
   .nav-right { display: flex; align-items: center; gap: 0.5rem; }
   .nav-right .user-menu-trigger { padding: 0.2rem; }
-  /* Séparateur visuel | entre hamburger et icône user */
-  .mobile-menu-container::after {
+  /* Séparateur visuel | entre icône user et hamburger */
+  .mobile-menu-container::before {
     content: "";
     display: block;
     width: 1px;
     height: 20px;
     background: rgba(184,152,90,0.4);
-    margin-left: 0.75rem;
+    margin-right: 0.75rem;
   }
 }
 

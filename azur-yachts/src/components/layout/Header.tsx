@@ -29,11 +29,11 @@ export default async function Header() {
           </>
         )}
 
-        {/* Mobile uniquement: hamburger menu */}
-        <MobileMenu />
-
         {/* Icône utilisateur — sur desktop uniquement si connecté, toujours sur mobile */}
         <UserMenu user={session?.user || null} guestClass={!session?.user ? 'guest-user-menu' : ''} />
+
+        {/* Mobile uniquement: hamburger menu */}
+        <MobileMenu />
       </div>
     </nav>
   );

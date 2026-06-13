@@ -21,7 +21,6 @@ export default function MobileMenu() {
           <div className="mobile-menu-panel" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-menu-header">
               <Link href="/" className="nav-logo" onClick={toggleMenu}>AZUR<span>&nbsp;YACHTS</span></Link>
-              <button className="close-btn" onClick={toggleMenu}>×</button>
             </div>
             
             <ul className="mobile-nav-links">
