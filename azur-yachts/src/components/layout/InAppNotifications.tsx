@@ -52,7 +52,8 @@ export default function InAppNotifications() {
   const markAsRead = async (id: string) => {
     try {
       await fetch(`/api/notifications/${id}/read`, { method: 'PUT' });
-      setNotifications(notifications.map(n => n.id === id ? { ...n, isRead: true } : n));
+      // Remove the read notification from the list entirely
+      setNotifications(notifications.filter(n => n.id !== id));
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (e) {
       console.error(e);
@@ -76,15 +77,16 @@ export default function InAppNotifications() {
           top: '120%',
           right: 0,
           width: '320px',
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border)',
+          background: 'var(--bg-card, #ffffff)',
+          border: '1px solid var(--border, #e5e7eb)',
           borderRadius: '8px',
           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           zIndex: 1000,
-          overflow: 'hidden'
+          overflow: 'hidden',
+          color: 'var(--text, #111827)'
         }}>
-          <div style={{ padding: '1rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '1rem', color: 'var(--text)' }}>Notifications</h3>
+          <div style={{ padding: '1rem', borderBottom: '1px solid var(--border, #e5e7eb)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: 0, fontSize: '1rem', color: 'var(--text, #111827)' }}>Notifications</h3>
             {unreadCount > 0 && (
               <button onClick={markAllAsRead} style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '0.75rem', cursor: 'pointer' }}>
                 Tout marquer comme lu
@@ -107,13 +109,13 @@ export default function InAppNotifications() {
                 }}>
                   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '0.85rem', fontWeight: notif.isRead ? 500 : 700, color: 'var(--text)', marginBottom: '0.25rem' }}>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text, #111827)', marginBottom: '0.25rem' }}>
                         {notif.title}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-mid)', lineHeight: 1.4 }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-mid, #4b5563)', lineHeight: 1.4 }}>
                         {notif.body}
                       </div>
-                      <div style={{ fontSize: '0.65rem', color: 'var(--text-light)', marginTop: '0.4rem' }}>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--text-light, #9ca3af)', marginTop: '0.4rem' }}>
                         {new Date(notif.createdAt).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })}
                       </div>
                     </div>

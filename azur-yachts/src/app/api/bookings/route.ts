@@ -163,24 +163,42 @@ export async function POST(req: NextRequest) {
       }
     })
 
+    // Fetch admins
+    const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
+    
+    const notificationsData: any[] = [
+      {
+        userId: (session.user as any).id,
+        title: "Demande envoyée",
+        body: `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
+        type: "BOOKING_NEW",
+        link: `/reservations/${booking.id}`
+      },
+      {
+        userId: listing.ownerId,
+        title: "Nouvelle demande de réservation",
+        body: `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
+        type: "BOOKING_NEW",
+        link: `/dashboard`
+      }
+    ];
+
+    admins.forEach(admin => {
+      // Don't duplicate if admin is already the owner or the client
+      if (admin.id !== listing.ownerId && admin.id !== (session.user as any).id) {
+        notificationsData.push({
+          userId: admin.id,
+          title: "Nouvelle demande de réservation (Admin)",
+          body: `Une nouvelle demande a été faite pour ${listing.title}.`,
+          type: "BOOKING_NEW",
+          link: `/admin/bookings`
+        });
+      }
+    });
+
     // Create in-app notifications
     await prisma.notification.createMany({
-      data: [
-        {
-          userId: (session.user as any).id,
-          title: "Demande envoyée",
-          body: `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
-          type: "BOOKING_NEW",
-          link: `/reservations/${booking.id}`
-        },
-        {
-          userId: listing.ownerId,
-          title: "Nouvelle demande de réservation",
-          body: `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
-          type: "BOOKING_NEW",
-          link: `/dashboard`
-        }
-      ]
+      data: notificationsData
     });
 
     // Notify the client (Web Push)

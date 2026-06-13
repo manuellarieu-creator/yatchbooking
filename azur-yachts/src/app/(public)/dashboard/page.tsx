@@ -222,7 +222,7 @@ function DashboardContent() {
             </div>
             <div>
               <div className="user-name">{dashboardData.user.firstName} {dashboardData.user.lastName}</div>
-              <div className="user-tier">⭐ {dashboardData.user.tier}</div>
+              {dashboardData.user.tier && <div className="user-tier">⭐ {dashboardData.user.tier}</div>}
             </div>
           </div>
         </div>

@@ -101,7 +101,7 @@ export async function GET(req: NextRequest) {
         id: userId,
         firstName: dbUser?.firstName || 'Utilisateur',
         lastName: dbUser?.lastName || '',
-        tier: 'PREMIUM', // Mock for now, could be in DB
+        tier: dbUser?.role === 'ADVERTISER' ? 'PREMIUM' : null,
         videoVerified: dbUser?.videoVerified || false,
         role: dbUser?.role,
         unreadNotifications,
