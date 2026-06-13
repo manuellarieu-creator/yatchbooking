@@ -66,6 +66,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [reviewStars, setReviewStars] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
+  const [reviewType, setReviewType] = useState<'SITE' | 'OWNER' | 'LISTING'>('LISTING');
 
   // ── Chat State ──
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -159,7 +160,13 @@ export default function YachtPage({ params }: { params: { id: string } }) {
       const res = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ listingId: yacht.id, rating: reviewStars, comment: reviewComment })
+        body: JSON.stringify({ 
+          listingId: yacht.id, 
+          targetUserId: yacht.ownerId,
+          targetType: reviewType,
+          rating: reviewStars, 
+          comment: reviewComment 
+        })
       });
       const data = await res.json();
       if (res.ok) {
@@ -706,6 +713,13 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           </div>
           <div className="modal-bd">
             <div style={{ fontSize: '.85rem', color: 'var(--text-mid)' }}>Comment s'est passée votre expérience à bord du Azura Prestige 68 ?</div>
+            
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+              <label><input type="radio" name="reviewType" checked={reviewType === 'LISTING'} onChange={() => setReviewType('LISTING')} /> Sur l'annonce</label>
+              <label><input type="radio" name="reviewType" checked={reviewType === 'OWNER'} onChange={() => setReviewType('OWNER')} /> Sur le Propriétaire</label>
+              <label><input type="radio" name="reviewType" checked={reviewType === 'SITE'} onChange={() => setReviewType('SITE')} /> Sur le Site</label>
+            </div>
+
             <div className="star-selector">
               {[1, 2, 3, 4, 5].map(s => (
                 <span key={s} className={`star-sel ${s <= reviewStars ? 'active' : ''}`} onClick={() => setReviewStars(s)}>★</span>
