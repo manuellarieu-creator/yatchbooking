@@ -282,18 +282,18 @@ function DashboardContent() {
           <div className="sidebar-section-label">Navigation</div>
           
           {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'overview' ? 'active' : ''}`} onClick={() => setActiveSection('overview')}><span className="sidebar-icon">📊</span>Vue d'ensemble</a>
+            <a className={`sidebar-item ${activeSection === 'overview' ? 'active' : ''}`} onClick={() => { setActiveSection('overview'); setIsSidebarOpen(false); }}><span className="sidebar-icon">📊</span>Vue d'ensemble</a>
           )}
           
           {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'listings' ? 'active' : ''}`} onClick={() => setActiveSection('listings')}>
+            <a className={`sidebar-item ${activeSection === 'listings' ? 'active' : ''}`} onClick={() => { setActiveSection('listings'); setIsSidebarOpen(false); }}>
               <span className="sidebar-icon">⚓</span>Mes annonces 
               {dashboardData.listings.length > 0 && <span className="sidebar-badge gold">{dashboardData.listings.length}</span>}
             </a>
           )}
 
           {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'bookings' ? 'active' : ''}`} onClick={() => setActiveSection('bookings')}>
+            <a className={`sidebar-item ${activeSection === 'bookings' ? 'active' : ''}`} onClick={() => { setActiveSection('bookings'); setIsSidebarOpen(false); }}>
               <span className="sidebar-icon">📅</span>Réservations Reçues
               {dashboardData.bookings.filter((b: any) => b.status === 'PENDING' || b.status === 'PROOF_SUBMITTED').length > 0 && (
                 <span className="sidebar-badge">{dashboardData.bookings.filter((b: any) => b.status === 'PENDING' || b.status === 'PROOF_SUBMITTED').length}</span>
@@ -301,40 +301,40 @@ function DashboardContent() {
             </a>
           )}
 
-          <Link href="/reservations" className="sidebar-item" style={{ textDecoration: 'none' }}><span className="sidebar-icon">🏖️</span>Mes réservations</Link>
+          <Link href="/reservations" className="sidebar-item" onClick={() => setIsSidebarOpen(false)} style={{ textDecoration: 'none' }}><span className="sidebar-icon">🏖️</span>Mes réservations</Link>
 
           {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => setActiveSection('stats')}><span className="sidebar-icon">📈</span>Statistiques</a>
+            <a className={`sidebar-item ${activeSection === 'stats' ? 'active' : ''}`} onClick={() => { setActiveSection('stats'); setIsSidebarOpen(false); }}><span className="sidebar-icon">📈</span>Statistiques</a>
           )}
           
-          <a className={`sidebar-item ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => setActiveSection('messages')}><span className="sidebar-icon">💬</span>Messages</a>
+          <a className={`sidebar-item ${activeSection === 'messages' ? 'active' : ''}`} onClick={() => { setActiveSection('messages'); setIsSidebarOpen(false); }}><span className="sidebar-icon">💬</span>Messages</a>
           
           {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'calendar' ? 'active' : ''}`} onClick={() => setActiveSection('calendar')}><span className="sidebar-icon">🗓</span>Calendrier</a>
+            <a className={`sidebar-item ${activeSection === 'calendar' ? 'active' : ''}`} onClick={() => { setActiveSection('calendar'); setIsSidebarOpen(false); }}><span className="sidebar-icon">🗓</span>Calendrier</a>
           )}
           
-          <a className={`sidebar-item ${activeSection === 'reviews' ? 'active' : ''}`} onClick={() => setActiveSection('reviews')}><span className="sidebar-icon">⭐</span>Avis</a>
+          <a className={`sidebar-item ${activeSection === 'reviews' ? 'active' : ''}`} onClick={() => { setActiveSection('reviews'); setIsSidebarOpen(false); }}><span className="sidebar-icon">⭐</span>Avis</a>
           
           <div className="sidebar-divider"></div>
           
           <div className="sidebar-section-label">Compte</div>
-          <div className="sidebar-item" onClick={() => setActiveModal('profile')} style={{ cursor: 'pointer' }}><span className="sidebar-icon">👤</span>Mon profil</div>
-          <Link href="/favorites" className="sidebar-item" style={{ textDecoration: 'none' }}><span className="sidebar-icon">❤️</span>Mes favoris</Link>
+          <div className="sidebar-item" onClick={() => { setActiveModal('profile'); setIsSidebarOpen(false); }} style={{ cursor: 'pointer' }}><span className="sidebar-icon">👤</span>Mon profil</div>
+          <Link href="/favorites" className="sidebar-item" onClick={() => setIsSidebarOpen(false)} style={{ textDecoration: 'none' }}><span className="sidebar-icon">❤️</span>Mes favoris</Link>
 
           {dashboardData.user?.role !== 'CLIENT' && (
-            <div className="sidebar-item" onClick={() => setActiveModal('publish')} style={{ cursor: 'pointer' }}><span className="sidebar-icon">➕</span>Nouvelle annonce</div>
+            <div className="sidebar-item" onClick={() => { setActiveModal('publish'); setIsSidebarOpen(false); }} style={{ cursor: 'pointer' }}><span className="sidebar-icon">➕</span>Nouvelle annonce</div>
           )}
 
           {dashboardData.user?.role !== 'CLIENT' && (
-            <div className="sidebar-item" onClick={() => setActiveModal('verify')} style={{ cursor: 'pointer' }}>
+            <div className="sidebar-item" onClick={() => { setActiveModal('verify'); setIsSidebarOpen(false); }} style={{ cursor: 'pointer' }}>
               <span className="sidebar-icon">🎥</span>Vérification vidéo
               {dashboardData.user?.videoVerified && <span className="sidebar-badge success" style={{ background: 'var(--success, #2e7d32)', color: 'white', marginLeft: 'auto', padding: '2px 6px', borderRadius: '4px', fontSize: '10px' }}>✓ Vérifié</span>}
             </div>
           )}
           
           <div className="sidebar-bottom">
-            <div className="sidebar-bottom-item" onClick={() => signOut({ callbackUrl: '/' })}>🚪 Se déconnecter</div>
-            <div className="sidebar-bottom-item" onClick={() => setActiveModal('help')}>❓ Aide & support</div>
+            <div className="sidebar-bottom-item" onClick={() => { signOut({ callbackUrl: '/' }); setIsSidebarOpen(false); }}>🚪 Se déconnecter</div>
+            <div className="sidebar-bottom-item" onClick={() => { setActiveModal('help'); setIsSidebarOpen(false); }}>❓ Aide & support</div>
           </div>
         </aside>
 
@@ -707,7 +707,7 @@ function DashboardContent() {
               </div>
             </div>
             <div className="messages-layout">
-              <div className="conv-list">
+              <div className={`conv-list ${activeConvId ? 'mobile-hidden' : ''}`}>
                 <div className="conv-list-header">Conversations ({conversations.length})</div>
                 
                 {conversations.length === 0 && (
@@ -733,7 +733,7 @@ function DashboardContent() {
                 ))}
               </div>
               
-              <div className="chat-area">
+              <div className={`chat-area ${!activeConvId ? 'mobile-hidden' : ''}`}>
                 {!activeConvId ? (
                   <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: 'var(--text-light)' }}>
                     Sélectionnez une conversation pour commencer
@@ -746,6 +746,7 @@ function DashboardContent() {
                         const otherUser = activeConvObj?.otherUser || { firstName: 'Utilisateur', lastName: '' };
                         return (
                           <>
+                            <button className="chat-back-btn desktop-hidden" onClick={() => setActiveConvId(null)}>‹</button>
                             <div className="chat-header-av">{otherUser.firstName?.[0] || 'U'}{otherUser.lastName?.[0] || ''}</div>
                             <div className="chat-header-info">
                               <div className="chat-header-name">{otherUser.firstName} {otherUser.lastName}</div>

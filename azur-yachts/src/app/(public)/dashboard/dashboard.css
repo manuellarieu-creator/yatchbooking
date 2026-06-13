@@ -952,6 +952,16 @@
   align-items: center;
   gap: .75rem;
 }
+.dashboard-container .chat-back-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--navy);
+  cursor: pointer;
+  padding: 0 0.5rem 0 0;
+  display: flex;
+  align-items: center;
+}
 .dashboard-container .chat-header-av {
   width: 36px;
   height: 36px;
@@ -1159,6 +1169,7 @@
 @media(min-width: 901px) {
   .dashboard-container .mobile-sub-nav { display: none; }
   .dashboard-container .sidebar-mobile-header { display: none; }
+  .dashboard-container .desktop-hidden { display: none !important; }
 }
 
 @media(max-width: 900px) {
@@ -1251,6 +1262,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  /* MESSAGES MOBILE UX */
+  .dashboard-container .mobile-hidden {
+    display: none !important;
+  }
+  .dashboard-container .conv-list {
+    display: block; /* Override previous display:none */
   }
 
   .dashboard-container .kpi-grid { grid-template-columns: 1fr 1fr; }
