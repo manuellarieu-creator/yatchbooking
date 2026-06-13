@@ -40,6 +40,7 @@ export default function ProfilePage() {
     twoFactorSmsEnabled: false,
   });
   const [sessions, setSessions] = useState<any[]>([]);
+  const [activities, setActivities] = useState<any[]>([]);
 
   const isModal = typeof window !== 'undefined' && window.location.search.includes('modal=true');
 
@@ -72,6 +73,13 @@ export default function ProfilePage() {
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setSessions(data);
+      })
+      .catch(console.error);
+
+    fetch('/api/profile/activity')
+      .then(res => res.json())
+      .then(data => {
+        if (data.activity) setActivities(data.activity);
       })
       .catch(console.error);
   }, []);
@@ -632,16 +640,22 @@ export default function ProfilePage() {
               <div className="form-card">
                 <div className="form-card-title">Historique récent</div>
                 <div className="activity-list">
-                  <div className="activity-item">
-                    <div className="activity-dot"></div>
-                    <div className="activity-text"><strong>Connexion réussie</strong> — Chrome · MacOS<br/>Paris, France</div>
-                    <span className="activity-time">Aujourd'hui, 09h14</span>
-                  </div>
-                  <div className="activity-item">
-                    <div className="activity-dot"></div>
-                    <div className="activity-text"><strong>Réservation créée</strong> — REF-CK7X9M<br/>Azura Prestige 68</div>
-                    <span className="activity-time">Hier, 14h18</span>
-                  </div>
+                  {activities.length > 0 ? activities.map((act, i) => (
+                    <div className="activity-item" key={act.id || i}>
+                      <div className={`activity-dot ${i === 0 ? '' : 'grey'}`}></div>
+                      <div className="activity-text">
+                        <strong>{act.title}</strong> — {act.details.split('·')[0]}
+                        {act.details.includes('·') && <><br/>{act.details.split('·')[1]}</>}
+                      </div>
+                      <span className="activity-time">
+                        {new Date(act.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                  )) : (
+                    <div className="activity-item">
+                      <div className="activity-text" style={{ color: 'var(--text-light)' }}>Chargement ou aucune activité récente...</div>
+                    </div>
+                  )}
                 </div>
               </div>
 

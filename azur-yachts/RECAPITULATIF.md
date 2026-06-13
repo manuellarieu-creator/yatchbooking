@@ -66,6 +66,7 @@ Ce document synthétise l'état actuel du projet **Azur Yachts** (YachtBooking),
 ## 🔴 Ce qu'il RESTE À FAIRE (Tâches & Points de Vigilance)
 
 ### Finalisations Techniques
+- [ ] **Notifications (Préférences)** : Utiliser les préférences de notifications sauvegardées dans le profil pour conditionner l'envoi effectif des emails et SMS (ex: vérifier `user.notificationPreferences.resa.email` avant d'envoyer un mail de confirmation).
 - [ ] **Modifications de Réservations** : Terminer le flux de notification à l'Admin lors d'une demande de modification de réservation par le client (actuellement un `TODO` dans `api/bookings/[id]/modify/route.ts`).
 - [ ] **Temps Réel** : Valider que le serveur Socket.io est bien déployé et fonctionnel dans l'environnement de production (les WebSockets demandent souvent une configuration spécifique selon l'hébergeur).
 
