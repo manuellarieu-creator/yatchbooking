@@ -294,8 +294,8 @@ export default function ProfilePage() {
             <a className={`sidebar-nav-item ${activeTab === 'activite' ? 'active' : ''}`} onClick={() => setActiveTab('activite')}>
               <span className="nav-icon">📱</span> Activité du compte
             </a>
-            <a className={`sidebar-nav-item ${activeTab === 'zone-sensible' ? 'active' : ''}`} onClick={() => setActiveTab('zone-sensible')}>
-              <span className="nav-icon" style={{ color: '#ef4444' }}>⚠️</span> Zone sensible
+            <a className={`sidebar-nav-item ${activeTab === 'danger' ? 'active' : ''}`} onClick={() => setActiveTab('danger')}>
+              <span className="nav-icon" style={{ color: '#ef4444' }}>⚠️</span> Supprimer mon compte
             </a>
             
             {profile?.role === 'ADMIN' && (
@@ -673,7 +673,7 @@ export default function ProfilePage() {
           {activeTab === 'danger' && (
             <div className="section-panel active stagger">
               <div className="section-hd">
-                <div><span className="section-eyebrow">Zone sensible</span><h1 className="section-title">Actions <em>irréversibles</em></h1></div>
+                <div><span className="section-eyebrow">Clôture</span><h1 className="section-title">Supprimer mon <em>compte</em></h1></div>
               </div>
 
               <div style={{ background: 'var(--sand-light)', borderLeft: '3px solid var(--gold)', padding: '1rem 1.25rem', marginBottom: '1.5rem', fontSize: '.82rem', color: 'var(--text-mid)', lineHeight: 1.7 }}>
