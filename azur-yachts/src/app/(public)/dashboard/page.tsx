@@ -474,7 +474,7 @@ function DashboardContent() {
                 </tbody>
               </table>
             </div>
-            </div>
+              </>
             )}
           </div>
 
