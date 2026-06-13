@@ -172,14 +172,14 @@ export async function POST(req: NextRequest) {
         title: "Demande envoyée",
         body: `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
         type: "BOOKING_NEW",
-        link: `/reservations/${booking.id}`
+        link: `/reservations`
       },
       {
         userId: listing.ownerId,
         title: "Nouvelle demande de réservation",
         body: `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
         type: "BOOKING_NEW",
-        link: `/dashboard`
+        link: `/dashboard?tab=bookings`
       }
     ];
 
@@ -206,7 +206,7 @@ export async function POST(req: NextRequest) {
       (session.user as any).id,
       "Demande envoyée",
       `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
-      `/reservations/${booking.id}`
+      `/reservations`
     );
 
     // Notify the owner (Web Push)
@@ -214,7 +214,7 @@ export async function POST(req: NextRequest) {
       listing.ownerId,
       "Nouvelle demande de réservation",
       `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
-      `/dashboard`
+      `/dashboard?tab=bookings`
     );
 
     // Notify the admins (Web Push)

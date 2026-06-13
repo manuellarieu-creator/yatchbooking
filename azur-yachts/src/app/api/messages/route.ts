@@ -118,14 +118,14 @@ export async function POST(req: NextRequest) {
           title: "Nouveau message",
           body: `Vous avez reçu un nouveau message de ${senderName}.`,
           type: "NEW_MESSAGE",
-          link: `/dashboard`
+          link: `/dashboard?tab=messages`
         });
 
         sendPushNotification(
           p.userId,
           "Nouveau message",
           `Vous avez reçu un nouveau message de ${senderName}.`,
-          `/dashboard`
+          `/dashboard?tab=messages`
         );
       }
     }
