@@ -283,9 +283,7 @@ function DashboardContent() {
             <a className={`sidebar-item ${activeSection === 'calendar' ? 'active' : ''}`} onClick={() => setActiveSection('calendar')}><span className="sidebar-icon">🗓</span>Calendrier</a>
           )}
           
-          {dashboardData.user?.role !== 'CLIENT' && (
-            <a className={`sidebar-item ${activeSection === 'reviews' ? 'active' : ''}`} onClick={() => setActiveSection('reviews')}><span className="sidebar-icon">⭐</span>Avis</a>
-          )}
+          <a className={`sidebar-item ${activeSection === 'reviews' ? 'active' : ''}`} onClick={() => setActiveSection('reviews')}><span className="sidebar-icon">⭐</span>Avis</a>
           
           <div className="sidebar-divider"></div>
           
