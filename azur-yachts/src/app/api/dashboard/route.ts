@@ -34,15 +34,27 @@ export async function GET(req: NextRequest) {
 
     const listingIds = listings.map(l => l.id)
 
-    // 2. Fetch bookings related to user's listings (all for stats)
-    const allBookings = await prisma.booking.findMany({
-      where: { listingId: { in: listingIds } },
-      include: {
-        client: { select: { firstName: true, lastName: true, avatar: true } },
-        listing: { select: { title: true, boatType: true } }
-      },
-      orderBy: { createdAt: 'desc' }
-    })
+    // 2. Fetch bookings related to user's listings (all for stats) or client bookings
+    let allBookings;
+    if (dbUser?.role === 'CLIENT') {
+      allBookings = await prisma.booking.findMany({
+        where: { clientId: userId },
+        include: {
+          client: { select: { firstName: true, lastName: true, avatar: true } },
+          listing: { select: { title: true, boatType: true } }
+        },
+        orderBy: { createdAt: 'desc' }
+      })
+    } else {
+      allBookings = await prisma.booking.findMany({
+        where: { listingId: { in: listingIds } },
+        include: {
+          client: { select: { firstName: true, lastName: true, avatar: true } },
+          listing: { select: { title: true, boatType: true } }
+        },
+        orderBy: { createdAt: 'desc' }
+      })
+    }
 
     const bookings = allBookings.slice(0, 10); // Last 10 bookings for the table
 

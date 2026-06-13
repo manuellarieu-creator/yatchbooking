@@ -15,7 +15,7 @@ function DashboardContent() {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [bookingFilter, setBookingFilter] = useState('');
-  const [dashboardData, setDashboardData] = useState<any>({ user: { firstName: '', lastName: '', tier: 'PREMIUM', videoVerified: false }, stats: { revenue: 0, views: 0, bookingsCount: 0, occupancyRate: 0, averageRating: 0, totalReviews: 0 }, listings: [], bookings: [] });
+  const [dashboardData, setDashboardData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Chat state
@@ -177,6 +177,10 @@ function DashboardContent() {
     return grid;
   };
 
+  if (isLoading || !dashboardData) {
+    return <div style={{padding: '50px', textAlign: 'center'}}>Chargement du tableau de bord...</div>;
+  }
+
   const bookings = dashboardData.bookings.map((b: any) => ({
     id: b.id,
     boat: b.listing.title,
@@ -297,7 +301,6 @@ function DashboardContent() {
         <main className="main">
           
           {/* ══════ OVERVIEW ══════ */}
-          {isLoading && <div style={{padding: '50px', textAlign: 'center'}}>Chargement du tableau de bord...</div>}
           <div className={`section-panel ${activeSection === 'overview' ? 'active' : ''}`}>
             {dashboardData.user?.role === 'CLIENT' ? (
               <>
