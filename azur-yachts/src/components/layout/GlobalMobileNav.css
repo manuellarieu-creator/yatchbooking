@@ -140,15 +140,16 @@
 }
 
 @media(max-width: 900px) {
-  .top-nav {
-    display: none;
+  /* Use !important and tag body to overrule dashboard.css specificity */
+  body .dashboard-container .top-nav {
+    display: none !important;
   }
 
   .mobile-sub-nav {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background: var(--navy);
+    background: var(--navy, #0a1628);
     padding: 0.5rem 0;
     position: sticky;
     top: 65px;
