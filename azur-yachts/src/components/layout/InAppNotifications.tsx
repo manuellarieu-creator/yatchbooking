@@ -75,7 +75,8 @@ export default function InAppNotifications() {
         <div style={{
           position: 'absolute',
           top: '120%',
-          right: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
           width: '320px',
           background: 'var(--bg-card, #ffffff)',
           border: '1px solid var(--border, #e5e7eb)',

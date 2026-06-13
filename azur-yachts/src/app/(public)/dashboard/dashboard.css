@@ -942,6 +942,8 @@
 .dashboard-container .chat-area {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 .dashboard-container .chat-header {
   padding: .85rem 1.25rem;
