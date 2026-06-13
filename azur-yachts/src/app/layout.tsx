@@ -6,6 +6,7 @@ import MaintenanceGuard from "@/components/MaintenanceGuard";
 import { db as prisma } from "@/lib/db";
 import { auth } from "@/auth";
 import GlobalMobileNav from "@/components/layout/GlobalMobileNav";
+import "@/components/layout/GlobalMobileNav.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(

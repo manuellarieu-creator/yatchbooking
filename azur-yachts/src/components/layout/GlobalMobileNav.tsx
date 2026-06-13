@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { Menu, Home, Settings, X } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import InAppNotifications from '@/components/layout/InAppNotifications';
-import './GlobalMobileNav.css';
 
 export default function GlobalMobileNav() {
   const pathname = usePathname();
