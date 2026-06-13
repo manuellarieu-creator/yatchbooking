@@ -169,15 +169,15 @@ export async function POST(req: NextRequest) {
         {
           userId: (session.user as any).id,
           title: "Demande envoyée",
-          message: `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
-          type: "BOOKING",
+          body: `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
+          type: "BOOKING_NEW",
           link: `/reservations/${booking.id}`
         },
         {
           userId: listing.ownerId,
           title: "Nouvelle demande de réservation",
-          message: `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
-          type: "BOOKING",
+          body: `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
+          type: "BOOKING_NEW",
           link: `/dashboard`
         }
       ]

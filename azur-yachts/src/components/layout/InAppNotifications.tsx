@@ -111,7 +111,7 @@ export default function InAppNotifications() {
                         {notif.title}
                       </div>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-mid)', lineHeight: 1.4 }}>
-                        {notif.message}
+                        {notif.body}
                       </div>
                       <div style={{ fontSize: '0.65rem', color: 'var(--text-light)', marginTop: '0.4rem' }}>
                         {new Date(notif.createdAt).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })}

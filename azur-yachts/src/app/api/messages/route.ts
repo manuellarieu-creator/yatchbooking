@@ -107,8 +107,8 @@ export async function POST(req: NextRequest) {
         notificationsToCreate.push({
           userId: p.userId,
           title: "Nouveau message",
-          message: `Vous avez reçu un nouveau message de ${message.sender?.firstName || 'Quelqu\'un'}.`,
-          type: "MESSAGE",
+          body: `Vous avez reçu un nouveau message de ${message.sender?.firstName || 'Quelqu\'un'}.`,
+          type: "NEW_MESSAGE",
           link: `/dashboard`
         });
 
