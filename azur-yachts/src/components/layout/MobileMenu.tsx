@@ -19,10 +19,6 @@ export default function MobileMenu() {
       {isOpen && (
         <div className="mobile-overlay" onClick={toggleMenu}>
           <div className="mobile-menu-panel" onClick={(e) => e.stopPropagation()}>
-            <div className="mobile-menu-header">
-              <Link href="/" className="nav-logo" onClick={toggleMenu}>AZUR<span>&nbsp;YACHTS</span></Link>
-            </div>
-            
             <ul className="mobile-nav-links">
               <li><Link href="/" onClick={toggleMenu}>Accueil</Link></li>
               <li><Link href="/listings" onClick={toggleMenu}>Les Offres</Link></li>
