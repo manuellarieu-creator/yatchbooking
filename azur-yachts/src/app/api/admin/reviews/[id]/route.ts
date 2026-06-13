@@ -22,7 +22,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     // Optionnel : Si l'avis est approuvé ou modifié, on pourrait recalculer la moyenne du listing
     // Mais pour faire simple, la moyenne peut être calculée dynamiquement ou par un trigger.
     // Mettons à jour le listing si on approuve
-    if (status === 'APPROVED' || status === 'REJECTED') {
+    if ((status === 'APPROVED' || status === 'REJECTED') && review.listingId) {
       const allApproved = await prisma.review.findMany({
         where: { listingId: review.listingId, status: 'APPROVED' }
       });
@@ -56,18 +56,20 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     });
 
     // Recalcul de la moyenne après suppression
-    const allApproved = await prisma.review.findMany({
-      where: { listingId: review.listingId, status: 'APPROVED' }
-    });
-    
-    const avg = allApproved.length > 0 
-      ? allApproved.reduce((acc, r) => acc + r.rating, 0) / allApproved.length 
-      : 0;
+    if (review.listingId) {
+      const allApproved = await prisma.review.findMany({
+        where: { listingId: review.listingId, status: 'APPROVED' }
+      });
+      
+      const avg = allApproved.length > 0 
+        ? allApproved.reduce((acc, r) => acc + r.rating, 0) / allApproved.length 
+        : 0;
 
-    await prisma.listing.update({
-      where: { id: review.listingId },
-      data: { averageRating: avg, reviewCount: allApproved.length }
-    });
+      await prisma.listing.update({
+        where: { id: review.listingId },
+        data: { averageRating: avg, reviewCount: allApproved.length }
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
