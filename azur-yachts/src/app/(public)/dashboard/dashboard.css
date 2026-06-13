@@ -1275,7 +1275,6 @@
   .dashboard-container .listings-grid { grid-template-columns: 1fr 1fr; }
   .dashboard-container .calendar-grid-wrap { grid-template-columns: 1fr; }
   .dashboard-container .messages-layout { grid-template-columns: 1fr; }
-  .dashboard-container .conv-list { display: none; }
   .dashboard-container .stats-row { grid-template-columns: 1fr; }
 }
 @media(max-width: 600px) {
