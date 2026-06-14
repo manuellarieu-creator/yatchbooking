@@ -76,7 +76,7 @@ Ce document synthétise l'état actuel du projet **Azur Yachts** (YachtBooking),
 - [x] **Activités du compte (Profil)** : Historique d'activité désormais entièrement dynamique — réservations (création + changement de statut), annonces, connexions, avis, paiements et favoris.
 - [x] **Zone Sensible → Clôture de compte** : Section renommée « Clôturer mon compte », libellés et descriptions améliorés, modal de confirmation mis à jour.
 - [x] **Paiement par Virement** : Textes clarifiés sur les 2 pages de paiement — encart « confirmation non immédiate » ajouté dès la sélection, rappels renforcés dans les instructions et l'écran de succès.
-- [ ] **Modifications de Réservations** : Terminer le flux de notification à l'Admin lors d'une demande de modification de réservation par le client.
+- [x] **Modifications de Réservations** : Le flux est terminé : une demande de modification par le client envoie désormais une notification in-app et push aux Admins.
 - [ ] **Temps Réel** : Valider que le serveur Socket.io est bien déployé et fonctionnel dans l'environnement de production.
 
 ### Préparation à la Production (DevOps & Configuration)

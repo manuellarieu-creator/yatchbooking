@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db as prisma } from '@/lib/db';
 import { auth } from '@/auth';
+import { sendPushNotification } from '@/lib/webpush';
+import { shouldNotify } from '@/lib/notifications';
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -12,7 +14,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const { newStart, newEnd, note } = await req.json();
 
     const booking = await prisma.booking.findUnique({
-      where: { id: params.id }
+      where: { id: params.id },
+      include: {
+        listing: { select: { title: true } },
+        client: { select: { firstName: true, lastName: true } }
+      }
     });
 
     if (!booking || booking.clientId !== session.user.id) {
@@ -38,12 +44,39 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       }
     });
 
-    // TODO: Transmettre notification à l'admin pour approbation
-    // Pour cet exercice, on peut imaginer un email envoyé à l'admin ou une notification en DB
+    // Notification aux admins pour approbation
+    const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
+    const notificationsToCreate = [];
+
+    for (const admin of admins) {
+      notificationsToCreate.push({
+        userId: admin.id,
+        title: "Demande de modification",
+        body: `${booking.client.firstName} a demandé à modifier la réservation REF-${booking.id.slice(-6).toUpperCase()} (${booking.listing.title}).`,
+        type: "BOOKING_NEW",
+        link: `/admin/bookings`
+      });
+
+      // Push conditionné par préférences
+      if (await shouldNotify(admin.id, 'BOOKING_NEW', 'push')) {
+        sendPushNotification(
+          admin.id,
+          "Demande de modification",
+          `${booking.client.firstName} souhaite modifier la réservation pour ${booking.listing.title}.`,
+          `/admin/bookings`
+        );
+      }
+    }
+
+    if (notificationsToCreate.length > 0) {
+      await prisma.notification.createMany({
+        data: notificationsToCreate
+      });
+    }
 
     return NextResponse.json({ success: true, message: 'Demande de modification envoyée avec succès.' });
   } catch (error) {
-    console.error(error);
+    console.error('Modify booking error:', error);
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
   }
 }
