@@ -295,7 +295,7 @@ export default function ProfilePage() {
               <span className="nav-icon">📱</span> Activité du compte
             </a>
             <a className={`sidebar-nav-item ${activeTab === 'danger' ? 'active' : ''}`} onClick={() => setActiveTab('danger')}>
-              <span className="nav-icon" style={{ color: '#ef4444' }}>⚠️</span> Supprimer mon compte
+              <span className="nav-icon" style={{ color: '#ef4444' }}>⚠️</span> Clôturer mon compte
             </a>
             
             {profile?.role === 'ADMIN' && (
@@ -673,28 +673,28 @@ export default function ProfilePage() {
           {activeTab === 'danger' && (
             <div className="section-panel active stagger">
               <div className="section-hd">
-                <div><span className="section-eyebrow">Clôture</span><h1 className="section-title">Supprimer mon <em>compte</em></h1></div>
+                <div><span className="section-eyebrow">Clôture</span><h1 className="section-title">Clôturer mon <em>compte</em></h1></div>
               </div>
 
               <div style={{ background: 'var(--sand-light)', borderLeft: '3px solid var(--gold)', padding: '1rem 1.25rem', marginBottom: '1.5rem', fontSize: '.82rem', color: 'var(--text-mid)', lineHeight: 1.7 }}>
-                ⚠️ Les actions de cette section sont <strong>définitives</strong>.
+                ⚠️ Les actions de cette section sont <strong>définitives</strong>. Veuillez les considérer avec attention.
               </div>
 
               <div className="danger-zone">
-                <div className="danger-zone-title">Actions sensibles</div>
+                <div className="danger-zone-title">Gestion du compte</div>
                 <div className="danger-item">
                   <div className="danger-item-info">
                     <div className="danger-item-title">Suspendre temporairement mon compte</div>
-                    <div className="danger-item-desc">Votre profil sera masqué.</div>
+                    <div className="danger-item-desc">Votre profil et vos annonces seront masqués. Vous pourrez réactiver votre compte à tout moment.</div>
                   </div>
                   <button className="btn btn-sm btn-danger" onClick={() => setModalOpen('suspend')}>Suspendre</button>
                 </div>
                 <div className="danger-item">
                   <div className="danger-item-info">
-                    <div className="danger-item-title">Supprimer définitivement mon compte</div>
-                    <div className="danger-item-desc">Toutes vos données seront effacées.</div>
+                    <div className="danger-item-title">Clôturer définitivement mon compte</div>
+                    <div className="danger-item-desc">Toutes vos données personnelles, réservations et annonces seront définitivement supprimées. Cette action est irréversible.</div>
                   </div>
-                  <button className="btn btn-sm btn-danger" onClick={() => setModalOpen('delete')}>Supprimer</button>
+                  <button className="btn btn-sm btn-danger" onClick={() => setModalOpen('delete')}>Clôturer</button>
                 </div>
               </div>
             </div>
@@ -718,7 +718,7 @@ export default function ProfilePage() {
               {modalOpen === 'addcard' && 'Ajouter une carte'}
               {modalOpen === 'iban' && 'Ajouter un IBAN'}
               {modalOpen === 'suspend' && 'Suspendre le compte'}
-              {modalOpen === 'delete' && 'Supprimer le compte'}
+              {modalOpen === 'delete' && 'Clôturer le compte'}
             </h3>
             <button className="modal-close" onClick={() => setModalOpen('')}>×</button>
           </div>
@@ -726,7 +726,7 @@ export default function ProfilePage() {
             {modalOpen === 'deconnect' && <p style={{ fontSize: '.85rem' }}>Êtes-vous sûr de vouloir déconnecter toutes les autres sessions ? Vous resterez connecté uniquement sur cet appareil.</p>}
             {modalOpen === 'delete' && (
               <>
-                <p style={{ fontSize: '.85rem', color: 'var(--danger)', marginBottom: '1rem' }}>Cette action est irréversible. Toutes vos données seront perdues.</p>
+                <p style={{ fontSize: '.85rem', color: 'var(--danger)', marginBottom: '1rem' }}>Cette action est irréversible. Toutes vos données personnelles, réservations et historique seront définitivement supprimés.</p>
                 <input className="form-input" type="password" placeholder="Mot de passe pour confirmer" />
               </>
             )}
