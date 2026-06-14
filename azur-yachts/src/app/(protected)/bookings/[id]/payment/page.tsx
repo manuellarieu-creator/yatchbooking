@@ -139,8 +139,8 @@ function BankTransferSection({
         <div className="text-4xl mb-4">📨</div>
         <h3 className="text-xl font-light text-navy mb-2">Preuve envoyée !</h3>
         <p className="text-sm text-gray-500">
-          Votre justificatif a été transmis à notre équipe.
-          Virement SEPA : 36–48h · Instantané : 30–45 min
+          Votre justificatif a bien été transmis à notre équipe. <strong>Votre réservation sera confirmée uniquement après vérification de la réception effective des fonds.</strong> La confirmation n'est pas immédiate.<br/>
+          📦 Virement SEPA : 36–48h · ⚡ Instantané : 30–45 min
         </p>
       </div>
     )
@@ -322,7 +322,7 @@ export default function PaymentPage() {
                 <div className="bg-white border border-green-200 border-l-4 border-l-green-500 p-4 mb-6">
                   <p className="font-medium text-green-800">✅ Demande de réservation envoyée</p>
                   <p className="text-sm text-green-600 mt-1">
-                    Pour valider votre réservation, effectuez le virement ci-dessous.
+                    Pour valider votre réservation, effectuez le virement ci-dessous. <strong>La confirmation n'est pas immédiate</strong> : notre équipe vérifiera manuellement la réception des fonds.
                   </p>
                 </div>
                 <BankTransferSection booking={booking} settings={settings} />

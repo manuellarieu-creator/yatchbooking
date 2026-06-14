@@ -223,10 +223,16 @@ function PaymentContent() {
               <span className="section-eyebrow">Sélection du mode de paiement</span>
               <h2 className="section-title">Payer par <em>Virement Bancaire</em></h2>
 
-              <p style={{ color: 'var(--text-mid)', lineHeight: 1.6, marginBottom: '2rem' }}>
-                Conformément à vos préférences, le règlement de cette réservation s'effectuera par virement bancaire. 
+              <p style={{ color: 'var(--text-mid)', lineHeight: 1.6, marginBottom: '1rem' }}>
+                Conformément à vos préférences, le règlement de cette réservation s’effectuera par virement bancaire. 
                 Cliquez sur le bouton ci-dessous pour générer votre référence unique et obtenir nos coordonnées bancaires.
               </p>
+
+              <div style={{ background: '#fef8e8', border: '1px solid #f0dca0', borderLeft: '3px solid var(--gold)', padding: '1rem 1.25rem', marginBottom: '2rem', fontSize: '.82rem', color: '#7a5c20', lineHeight: 1.8 }}>
+                ⚠️ <strong>Important :</strong> Le paiement par virement bancaire n’est <strong>pas immédiat</strong>. Après votre virement, notre équipe vérifiera manuellement la réception des fonds avant de confirmer votre réservation.<br/>
+                📦 <strong>Virement SEPA standard</strong> : confirmation sous <strong>36 à 48 heures</strong><br/>
+                ⚡ <strong>Virement instantané</strong> : confirmation sous <strong>30 à 45 minutes</strong>
+              </div>
 
               <button className={`paypal-btn ${loading ? 'loading' : ''}`} style={{ background: 'var(--navy)' }} onClick={generateBankTransfer} disabled={loading}>
                 {loading ? 'Génération...' : `Générer les instructions de virement (€${booking.totalPrice.toLocaleString('fr-FR')})`}
@@ -243,7 +249,7 @@ function PaymentContent() {
               <div className="bank-hero">
                 <span className="bank-hero-icon">✅</span>
                 <div className="bank-hero-title">Demande de paiement générée</div>
-                <p className="bank-hero-sub">Pour finaliser votre réservation, veuillez effectuer un virement bancaire du montant indiqué ci-dessous avec la référence obligatoire.</p>
+                <p className="bank-hero-sub">Pour finaliser votre réservation, veuillez effectuer un virement bancaire du montant indiqué ci-dessous en indiquant impérativement la référence unique. <strong>Votre réservation ne sera confirmée qu’après vérification de la réception des fonds par notre équipe.</strong></p>
               </div>
 
               <div className="bank-details-card">
@@ -334,7 +340,7 @@ function PaymentContent() {
             <div className="success-screen" style={{ display: 'block', marginTop: '1.25rem' }}>
               <div className="success-checkmark">📨</div>
               <div className="success-title">Preuve envoyée !</div>
-              <p className="success-sub">Votre preuve de virement a bien été transmise à notre équipe. Votre réservation sera confirmée après vérification.<br/><br/>Virement SEPA : 36–48h · Virement instantané : 30–45 min</p>
+              <p className="success-sub">Votre preuve de virement a bien été transmise à notre équipe. <strong>Votre réservation sera confirmée uniquement après vérification de la réception effective des fonds.</strong> La confirmation n’est pas immédiate.<br/><br/>📦 Virement SEPA : 36–48h · ⚡ Virement instantané : 30–45 min</p>
               <div className="success-ref">{booking.payment?.bankTransferRef}</div>
               <div className="success-actions">
                 <button className="success-btn success-btn-primary" onClick={() => router.push('/dashboard')}>Voir mes réservations</button>
