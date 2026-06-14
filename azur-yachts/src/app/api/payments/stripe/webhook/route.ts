@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db as prisma } from '@/lib/db'
 import Stripe from 'stripe'
 import { sendBookingConfirmation } from '@/lib/resend'
+import { shouldNotify } from '@/lib/notifications'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-05-27.dahlia',
@@ -42,15 +43,18 @@ export async function POST(req: NextRequest) {
         where: { id: bookingId },
         data: { status: 'PAYMENT_RECEIVED' },
       })
-      await sendBookingConfirmation(
-        booking.client.email,
-        booking.client.firstName,
-        bookingId,
-        booking.listing.title,
-        booking.startDate.toLocaleDateString('fr-FR'),
-        booking.endDate.toLocaleDateString('fr-FR'),
-        booking.totalPrice
-      )
+      // Envoi de l'email de confirmation — conditionné par préférences
+      if (await shouldNotify(booking.clientId, 'BOOKING_CONFIRMED', 'email')) {
+        await sendBookingConfirmation(
+          booking.client.email,
+          booking.client.firstName,
+          bookingId,
+          booking.listing.title,
+          booking.startDate.toLocaleDateString('fr-FR'),
+          booking.endDate.toLocaleDateString('fr-FR'),
+          booking.totalPrice
+        )
+      }
     }
   }
 

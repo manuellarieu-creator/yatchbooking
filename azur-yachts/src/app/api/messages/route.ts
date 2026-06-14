@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db as prisma } from '@/lib/db';
 import { auth } from '@/auth';
 import { sendPushNotification } from '@/lib/webpush';
+import { shouldNotify } from '@/lib/notifications';
 
 export async function GET(req: NextRequest) {
   try {
@@ -121,18 +122,21 @@ export async function POST(req: NextRequest) {
           link: `/dashboard?tab=messages`
         });
 
-        sendPushNotification(
-          p.userId,
-          "Nouveau message",
-          `Vous avez reçu un nouveau message de ${senderName}.`,
-          `/dashboard?tab=messages`
-        );
+        // Push conditionné par préférences
+        if (await shouldNotify(p.userId, 'NEW_MESSAGE', 'push')) {
+          sendPushNotification(
+            p.userId,
+            "Nouveau message",
+            `Vous avez reçu un nouveau message de ${senderName}.`,
+            `/dashboard?tab=messages`
+          );
+        }
       }
     }
 
     // Notify the admins (if they are not participants)
     const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
-    admins.forEach(admin => {
+    for (const admin of admins) {
       // Check if admin is already a participant
       const isParticipant = updatedConv.participants.some(p => p.userId === admin.id);
       if (!isParticipant) {
@@ -144,14 +148,17 @@ export async function POST(req: NextRequest) {
           link: `/admin/messages`
         });
 
-        sendPushNotification(
-          admin.id,
-          "Nouveau message (Admin)",
-          `Un nouveau message a été envoyé par ${senderName}.`,
-          `/admin/messages`
-        );
+        // Push conditionné par préférences
+        if (await shouldNotify(admin.id, 'NEW_MESSAGE', 'push')) {
+          sendPushNotification(
+            admin.id,
+            "Nouveau message (Admin)",
+            `Un nouveau message a été envoyé par ${senderName}.`,
+            `/admin/messages`
+          );
+        }
       }
-    });
+    }
 
     if (notificationsToCreate.length > 0) {
       await prisma.notification.createMany({

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db as prisma } from '@/lib/db'
 import { auth } from '@/auth'
 import { sendPushNotification } from '@/lib/webpush'
+import { shouldNotify } from '@/lib/notifications'
 import { calculateNights } from '@/lib/utils'
 
 export async function GET(req: NextRequest) {
@@ -201,33 +202,40 @@ export async function POST(req: NextRequest) {
       data: notificationsData
     });
 
-    // Notify the client (Web Push)
-    sendPushNotification(
-      (session.user as any).id,
-      "Demande envoyée",
-      `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
-      `/reservations`
-    );
+    // Notify the client (Web Push) — conditionné par préférences
+    const clientId = (session.user as any).id;
+    if (await shouldNotify(clientId, 'BOOKING_NEW', 'push')) {
+      sendPushNotification(
+        clientId,
+        "Demande envoyée",
+        `Votre demande de réservation pour ${listing.title} a bien été envoyée au propriétaire.`,
+        `/reservations`
+      );
+    }
 
-    // Notify the owner (Web Push)
-    sendPushNotification(
-      listing.ownerId,
-      "Nouvelle demande de réservation",
-      `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
-      `/dashboard?tab=bookings`
-    );
+    // Notify the owner (Web Push) — conditionné par préférences
+    if (await shouldNotify(listing.ownerId, 'BOOKING_NEW', 'push')) {
+      sendPushNotification(
+        listing.ownerId,
+        "Nouvelle demande de réservation",
+        `Vous avez reçu une nouvelle demande de location pour ${listing.title}.`,
+        `/dashboard?tab=bookings`
+      );
+    }
 
-    // Notify the admins (Web Push)
-    admins.forEach(admin => {
+    // Notify the admins (Web Push) — conditionné par préférences
+    for (const admin of admins) {
       if (admin.id !== listing.ownerId && admin.id !== (session.user as any).id) {
-        sendPushNotification(
-          admin.id,
-          "Nouvelle demande de réservation (Admin)",
-          `Une nouvelle demande a été faite pour ${listing.title}.`,
-          `/admin/bookings`
-        );
+        if (await shouldNotify(admin.id, 'BOOKING_NEW', 'push')) {
+          sendPushNotification(
+            admin.id,
+            "Nouvelle demande de réservation (Admin)",
+            `Une nouvelle demande a été faite pour ${listing.title}.`,
+            `/admin/bookings`
+          );
+        }
       }
-    });
+    }
 
     return NextResponse.json({ booking }, { status: 201 })
   } catch (error) {

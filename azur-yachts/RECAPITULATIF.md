@@ -72,7 +72,7 @@ Ce document synthétise l'état actuel du projet **Azur Yachts** (YachtBooking),
 ## 🔴 Ce qu'il RESTE À FAIRE (Tâches & Points de Vigilance)
 
 ### Finalisations Techniques & Profil
-- [ ] **Notifications (Préférences)** : Utiliser les préférences de notifications sauvegardées dans le profil pour conditionner l'envoi effectif des emails et SMS (les fondations logiques sont prêtes, reste l'intégration lors de l'envoi).
+- [x] **Notifications (Préférences)** : Les préférences de notifications sauvegardées dans le profil conditionnent désormais l'envoi effectif des emails et push (logique opt-out via `shouldNotify()`).
 - [ ] **Activités du compte (Profil)** : Rendre les informations de l'historique d'activité dynamiques (elles sont actuellement en dur).
 - [ ] **Zone Sensible & Clôture de compte** : Évaluer l'utilité de la "Zone sensible" et renommer la suppression en "Clôture de compte".
 - [ ] **Paiement par Virement** : Clarifier le texte pour le client concernant le virement bancaire (préciser que la confirmation n'est pas immédiate).
