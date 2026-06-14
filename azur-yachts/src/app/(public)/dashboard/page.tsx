@@ -7,6 +7,7 @@ import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
+import { getSocket } from '@/lib/socket';
 import './dashboard.css';
 
 type Section = 'overview' | 'listings' | 'bookings' | 'stats' | 'messages' | 'calendar' | 'reviews';
@@ -114,17 +115,27 @@ function DashboardContent() {
     }
   };
 
-  // Polling for active conversation messages and all conversations
+  // Real-time Socket.io events
   useEffect(() => {
-    const interval = setInterval(() => {
+    const socket = getSocket();
+    if (!socket || !dashboardData?.user?.id) return;
+
+    // Join personal room to receive targeted events
+    socket.emit('join', dashboardData.user.id);
+
+    const handleNewMessage = (msg: any) => {
       fetchConversations();
-      if (activeConvId) {
+      if (activeConvId === msg.conversationId) {
         fetchMessages(activeConvId);
       }
-    }, 5000); // Poll every 5 seconds
-    
-    return () => clearInterval(interval);
-  }, [activeConvId, lastMessageCount, dashboardData?.user?.id]);
+    };
+
+    socket.on('new_message', handleNewMessage);
+
+    return () => {
+      socket.off('new_message', handleNewMessage);
+    };
+  }, [activeConvId, dashboardData?.user?.id]);
 
   useEffect(() => {
     if (activeConvId) {

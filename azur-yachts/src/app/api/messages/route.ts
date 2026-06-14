@@ -111,16 +111,24 @@ export async function POST(req: NextRequest) {
 
     // Notify other participants
     const notificationsToCreate: any[] = [];
+    // @ts-ignore
+    const io = global.io;
 
     for (const p of updatedConv.participants) {
       if (p.userId !== userId) {
-        notificationsToCreate.push({
+        const notifData = {
           userId: p.userId,
           title: "Nouveau message",
           body: `Vous avez reçu un nouveau message de ${senderName}.`,
           type: "NEW_MESSAGE",
           link: `/dashboard?tab=messages`
-        });
+        };
+        notificationsToCreate.push(notifData);
+
+        if (io) {
+          io.to(p.userId).emit('new_message', message);
+          io.to(p.userId).emit('new_notification', notifData);
+        }
 
         // Push conditionné par préférences
         if (await shouldNotify(p.userId, 'NEW_MESSAGE', 'push')) {
@@ -140,13 +148,19 @@ export async function POST(req: NextRequest) {
       // Check if admin is already a participant
       const isParticipant = updatedConv.participants.some(p => p.userId === admin.id);
       if (!isParticipant) {
-        notificationsToCreate.push({
+        const adminNotifData = {
           userId: admin.id,
           title: "Nouveau message (Admin)",
           body: `Un nouveau message a été envoyé par ${senderName}.`,
           type: "NEW_MESSAGE",
           link: `/admin/messages`
-        });
+        };
+        notificationsToCreate.push(adminNotifData);
+
+        if (io) {
+          io.to(admin.id).emit('new_message', message);
+          io.to(admin.id).emit('new_notification', adminNotifData);
+        }
 
         // Push conditionné par préférences
         if (await shouldNotify(admin.id, 'NEW_MESSAGE', 'push')) {

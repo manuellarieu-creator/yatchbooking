@@ -77,7 +77,7 @@ Ce document synthétise l'état actuel du projet **Azur Yachts** (YachtBooking),
 - [x] **Zone Sensible → Clôture de compte** : Section renommée « Clôturer mon compte », libellés et descriptions améliorés, modal de confirmation mis à jour.
 - [x] **Paiement par Virement** : Textes clarifiés sur les 2 pages de paiement — encart « confirmation non immédiate » ajouté dès la sélection, rappels renforcés dans les instructions et l'écran de succès.
 - [x] **Modifications de Réservations** : Le flux est terminé : une demande de modification par le client envoie désormais une notification in-app et push aux Admins.
-- [ ] **Temps Réel** : Valider que le serveur Socket.io est bien déployé et fonctionnel dans l'environnement de production.
+- [x] **Temps Réel** : Implémentation d'un serveur personnalisé (`server.js`) avec Socket.io adapté pour un déploiement VPS. Remplacement du polling par des événements WebSocket dans la messagerie et les notifications in-app.
 
 ### Préparation à la Production (DevOps & Configuration)
 - [ ] **Domaine et Emails** : Valider le domaine de production sur **Resend**.

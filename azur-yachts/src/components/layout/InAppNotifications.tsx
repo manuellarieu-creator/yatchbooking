@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { getSocket } from '@/lib/socket';
 
 export default function InAppNotifications() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,9 +25,24 @@ export default function InAppNotifications() {
 
   useEffect(() => {
     fetchNotifications();
-    // Rafraîchissement périodique (facultatif mais utile) - réduit à 10s
-    const interval = setInterval(fetchNotifications, 10000);
-    return () => clearInterval(interval);
+    
+    // Real-time events
+    const socket = getSocket();
+    if (socket) {
+      const handleNewNotification = (notifData: any) => {
+        setNotifications((prev) => [
+          { ...notifData, id: `temp-${Date.now()}`, createdAt: new Date().toISOString(), isRead: false },
+          ...prev
+        ]);
+        setUnreadCount((prev) => prev + 1);
+      };
+
+      socket.on('new_notification', handleNewNotification);
+
+      return () => {
+        socket.off('new_notification', handleNewNotification);
+      };
+    }
   }, []);
 
   const prevUnreadCount = useRef(unreadCount);
