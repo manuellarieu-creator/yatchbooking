@@ -5,7 +5,6 @@ import { db } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { send2faEmail } from '@/lib/resend';
-import { send2faSms } from '@/lib/twilio';
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
@@ -39,18 +38,14 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
 
         if (passwordsMatch) {
           // Check 2FA
-          if ((user.twoFactorEmailEnabled || user.twoFactorSmsEnabled) && !credentials.otp) {
+          if (user.twoFactorEmailEnabled && !credentials.otp) {
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
             await db.user.update({
               where: { id: user.id },
               data: { twoFactorSecret: otp }
             });
             
-            if (user.twoFactorSmsEnabled && user.phone) {
-               await send2faSms(user.phone, otp);
-            } else if (user.twoFactorEmailEnabled) {
-               await send2faEmail(user.email, user.firstName, otp);
-            }
+            await send2faEmail(user.email, user.firstName, otp);
             
             throw new Error('2FA_REQUIRED');
           }

@@ -15,7 +15,6 @@ export async function GET(req: NextRequest) {
       where: { id: userId },
       select: {
         twoFactorEmailEnabled: true,
-        twoFactorSmsEnabled: true,
       }
     });
 
@@ -40,17 +39,15 @@ export async function PUT(req: NextRequest) {
     const userId = session.user.id as string;
     const body = await req.json();
 
-    const { twoFactorEmailEnabled, twoFactorSmsEnabled } = body;
+    const { twoFactorEmailEnabled } = body;
 
     const updatedUser = await db.user.update({
       where: { id: userId },
       data: {
         twoFactorEmailEnabled: twoFactorEmailEnabled !== undefined ? twoFactorEmailEnabled : undefined,
-        twoFactorSmsEnabled: twoFactorSmsEnabled !== undefined ? twoFactorSmsEnabled : undefined,
       },
       select: {
         twoFactorEmailEnabled: true,
-        twoFactorSmsEnabled: true,
       }
     });
 

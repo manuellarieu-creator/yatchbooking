@@ -28,7 +28,7 @@ const TYPE_TO_PREF_KEY: Record<string, string> = {
 export async function shouldNotify(
   userId: string,
   notificationType: string,
-  channel: 'email' | 'push' | 'sms'
+  channel: 'email' | 'push'
 ): Promise<boolean> {
   const prefKey = TYPE_TO_PREF_KEY[notificationType];
   if (!prefKey) return true; // Type non configurable → toujours notifier

@@ -37,7 +37,6 @@ export default function ProfilePage() {
   
   const [securitySettings, setSecuritySettings] = useState({
     twoFactorEmailEnabled: false,
-    twoFactorSmsEnabled: false,
   });
   const [sessions, setSessions] = useState<any[]>([]);
   const [activities, setActivities] = useState<any[]>([]);
@@ -128,7 +127,6 @@ export default function ProfilePage() {
     const data = {
       firstName: formData.get('firstName'),
       lastName: formData.get('lastName'),
-      phone: formData.get('phone'),
       bio: formData.get('bio'),
       countryResidence: formData.get('country'),
       languages: tags
@@ -214,10 +212,10 @@ export default function ProfilePage() {
     }
   };
 
-  const toggle2FA = async (type: 'email' | 'sms') => {
+  const toggle2FA = async () => {
     const updated = {
       ...securitySettings,
-      [type === 'email' ? 'twoFactorEmailEnabled' : 'twoFactorSmsEnabled']: !securitySettings[type === 'email' ? 'twoFactorEmailEnabled' : 'twoFactorSmsEnabled']
+      twoFactorEmailEnabled: !securitySettings.twoFactorEmailEnabled
     };
     setSecuritySettings(updated);
     try {
@@ -226,7 +224,7 @@ export default function ProfilePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated)
       });
-      triggerToast(`2FA par ${type} mise à jour.`);
+      triggerToast(`2FA par email mise à jour.`);
     } catch (err) {
       triggerToast('Erreur serveur.');
     }
@@ -386,10 +384,7 @@ export default function ProfilePage() {
                     <input className="form-input" type="email" defaultValue={profile?.email || ''} readOnly disabled style={{ opacity: 0.7 }} />
                     <span className="form-hint" style={{ color: 'var(--success)' }}>✓ Email vérifié</span>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Téléphone</label>
-                    <input className="form-input" name="phone" type="tel" defaultValue={profile?.phone || ''} />
-                  </div>
+
                 </div>
                 <div className="form-row">
                   <div className="form-group">
@@ -492,23 +487,14 @@ export default function ProfilePage() {
 
               <div className="form-card">
                 <div className="form-card-title">Authentification à deux facteurs</div>
-                <div className="toggle-row">
-                  <div className="toggle-info">
-                    <div className="toggle-label">Activer la 2FA par SMS</div>
-                    <div className="toggle-desc">Un code de confirmation sera envoyé à votre téléphone.</div>
-                  </div>
-                  <label className="toggle">
-                    <input type="checkbox" checked={securitySettings.twoFactorSmsEnabled} onChange={() => toggle2FA('sms')} />
-                    <span className="toggle-slider"></span>
-                  </label>
-                </div>
+
                 <div className="toggle-row">
                   <div className="toggle-info">
                     <div className="toggle-label">Activer la 2FA par email</div>
                     <div className="toggle-desc">Un lien de connexion sécurisé sera envoyé par email.</div>
                   </div>
                   <label className="toggle">
-                    <input type="checkbox" checked={securitySettings.twoFactorEmailEnabled} onChange={() => toggle2FA('email')} />
+                    <input type="checkbox" checked={securitySettings.twoFactorEmailEnabled} onChange={() => toggle2FA()} />
                     <span className="toggle-slider"></span>
                   </label>
                 </div>
