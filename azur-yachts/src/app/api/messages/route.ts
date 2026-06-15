@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
 
     // Notify other participants
     const notificationsToCreate: any[] = [];
-    // @ts-ignore
+    // @ts-expect-error global.io is set by the custom server
     const io = global.io;
 
     for (const p of updatedConv.participants) {
