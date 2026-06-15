@@ -3,6 +3,7 @@ import { db as prisma } from '@/lib/db';
 import { auth } from '@/auth';
 import { sendPushNotification } from '@/lib/webpush';
 import { shouldNotify } from '@/lib/notifications';
+import { NotificationType } from '@prisma/client';
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     // Notification aux admins pour approbation
     const admins = await prisma.user.findMany({ where: { role: 'ADMIN' } });
-    const notificationsToCreate = [];
+    const notificationsToCreate: { userId: string; title: string; body: string; type: NotificationType; link: string }[] = [];
 
     for (const admin of admins) {
       notificationsToCreate.push({
