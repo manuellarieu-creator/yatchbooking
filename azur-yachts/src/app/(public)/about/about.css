@@ -822,20 +822,35 @@
   .about-page-container .valeurs-grid { grid-template-columns: 1fr 1fr; }
   .about-page-container .chiffres-grid { grid-template-columns: 1fr 1fr; }
   .about-page-container .testi-grid { grid-template-columns: 1fr; }
-  .about-page-container .timeline::before { left: 2rem; }
-  .about-page-container .tl-item { grid-template-columns: 0 auto 1fr; gap: 1rem; }
+  
+  /* Timeline fix */
+  .about-page-container .timeline::before { left: 32px; }
+  .about-page-container .tl-item { grid-template-columns: 64px 1fr; gap: 1.5rem; }
   .about-page-container .tl-empty { display: none; }
+  .about-page-container .tl-item > .tl-year-bubble { grid-column: 1; grid-row: 1; }
+  .about-page-container .tl-item > .tl-content { grid-column: 2; grid-row: 1; }
+  
   .about-page-container .tl-content.right { background: var(--cream); border-color: var(--sand); }
   .about-page-container .tl-content.right .tl-title { color: var(--navy); }
   .about-page-container .tl-content.right .tl-desc { color: var(--text-mid); }
 }
 @media(max-width: 700px) {
   .about-page-container section { padding: 3.5rem 1.5rem; }
-  .about-page-container .stats-bar { grid-template-columns: 1fr 1fr; padding: 2rem 1.5rem; }
+  
+  /* Stats bar fix */
+  .about-page-container .stats-bar { grid-template-columns: 1fr 1fr; padding: 2rem 1.5rem; gap: 2rem 0; }
+  .about-page-container .stat-item { border-right: none; }
+  .about-page-container .stat-item:nth-child(odd) { border-right: 1px solid rgba(184, 152, 90, .15); }
+  
   .about-page-container .team-grid { grid-template-columns: 1fr; }
   .about-page-container .valeurs-grid { grid-template-columns: 1fr; }
   .about-page-container .chiffres-grid { grid-template-columns: 1fr; }
   .about-page-container .hero-content { padding: 0 1.5rem 3rem; }
   .about-page-container .hero { height: auto; min-height: 100vh; align-items: center; }
+  .about-page-container .hero-title { font-size: 2.8rem; }
   .about-page-container .cta-final { padding: 4rem 1.5rem; }
+  
+  /* Mission visual fix */
+  .about-page-container .mission-img-sub { right: 1rem; bottom: -1rem; width: 160px; height: 110px; padding: 1rem; }
+  .about-page-container .mission-img-sub-num { font-size: 2rem; }
 }
