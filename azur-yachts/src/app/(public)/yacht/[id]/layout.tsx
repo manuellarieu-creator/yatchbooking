@@ -1,17 +1,13 @@
 import { Metadata } from 'next'
+import { db as prisma } from '@/lib/db'
 
 export async function generateMetadata(
   { params }: { params: { id: string } }
 ): Promise<Metadata> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
-    ? process.env.NEXT_PUBLIC_APP_URL 
-    : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
-  
-  const res = await fetch(
-    `${baseUrl}/api/listings/${params.id}`,
-    { cache: 'no-store' }
-  )
-  const { listing } = await res.json()
+  const listing = await prisma.listing.findUnique({
+    where: { id: params.id },
+    include: { images: true }
+  })
   
   return {
     title: `${listing?.title || 'Yacht'}`,
