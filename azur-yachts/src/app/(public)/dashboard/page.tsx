@@ -125,7 +125,7 @@ function DashboardContent() {
 
     const handleNewMessage = (msg: any) => {
       fetchConversations();
-      if (activeConvId === msg.conversationId) {
+      if (activeConvId && activeConvId === msg.conversationId) {
         fetchMessages(activeConvId);
       }
     };
