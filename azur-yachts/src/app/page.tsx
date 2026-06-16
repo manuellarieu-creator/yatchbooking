@@ -251,7 +251,7 @@ export default function HomePage() {
               <div className="spinner" style={{margin: '0 auto'}}></div>
             </div>
           ) : stats.destinations.length > 0 ? stats.destinations.map((dest: any, i: number) => (
-            <Link href={`/listings?location=${encodeURIComponent(dest.name)}`} key={dest.id || i} className={`dest-card ${dest.isLarge ? 'large' : ''}`} style={{ textDecoration: 'none' }}>
+            <Link href={`/listings?location=${encodeURIComponent(dest.name)}`} key={dest.id || i} className="dest-card" style={{ textDecoration: 'none' }}>
               <div className="dest-bg" style={{ 
                 background: dest.imageUrl ? `url('${dest.imageUrl}') center/cover` : (dest.gradient || 'linear-gradient(135deg, #1a5a80, #0a2540)') 
               }}></div>
