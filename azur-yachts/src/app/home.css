@@ -190,6 +190,23 @@
   font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
 }
 
+/* Hover effect for Dest Action button */
+.home-container .dest-action {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+.home-container .dest-card:hover .dest-action {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(184, 152, 90, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(184, 152, 90, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(184, 152, 90, 0); }
+}
+
 /* HOW IT WORKS */
 .home-container .how-it-works { background: var(--navy); }
 .home-container .how-it-works .section-title { color: #fff; }

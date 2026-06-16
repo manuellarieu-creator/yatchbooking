@@ -16,6 +16,7 @@ export default function HomePage() {
   const [loadingStats, setLoadingStats] = useState(true);
   const [email, setEmail] = useState('');
   const [newsStatus, setNewsStatus] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
 
   const handleNewsletter = async () => {
     if (!email) return;
@@ -95,7 +96,12 @@ export default function HomePage() {
             <div className="search-grid">
               <div className="search-field">
                 <label>Destination</label>
-                <input type="text" placeholder="Côte d'Azur, Sardaigne…" />
+                <input 
+                  type="text" 
+                  placeholder="Côte d'Azur, Sardaigne…" 
+                  value={searchLocation}
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                />
               </div>
               <div className="search-field">
                 <label>Départ</label>
@@ -111,9 +117,78 @@ export default function HomePage() {
                   <option>Superyacht</option>
                 </select>
               </div>
-              <Link href="/listings" style={{ textDecoration: 'none' }}><button className="search-btn" style={{ width: '100%' }}>Rechercher</button></Link>
+              <Link href={`/listings${searchLocation ? `?location=${encodeURIComponent(searchLocation)}` : ''}`} style={{ textDecoration: 'none' }}>
+                <button className="search-btn" style={{ width: '100%', fontSize: '0.95rem' }}>Voir les yachts disponibles</button>
+              </Link>
             </div>
+            
+            {/* TAGS POPULAIRES ET URGENCE */}
+            <div className="search-footer" style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+              <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                {['Côte d\'Azur', 'Monaco', 'Ibiza', 'Mykonos'].map(tag => (
+                  <button 
+                    key={tag} 
+                    onClick={() => setSearchLocation(tag)}
+                    style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '0.4rem 1rem', borderRadius: '30px', fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s' }}
+                    onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
+                    onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                  >
+                    🔥 {tag}
+                  </button>
+                ))}
+              </div>
+              <p style={{ color: 'var(--gold)', fontSize: '0.85rem', margin: 0, fontWeight: 500, letterSpacing: '0.03em' }}>
+                <span style={{ display: 'inline-block', width: '8px', height: '8px', background: 'var(--gold)', borderRadius: '50%', marginRight: '6px', animation: 'pulse 2s infinite' }}></span>
+                Disponibilité limitée cette semaine en Méditerranée
+              </p>
+            </div>
+
           </div>
+        </div>
+      </section>
+
+      {/* YACHTS (Remonté selon l'audit) */}
+      <section className="yachts-section">
+        <div className="yachts-header reveal">
+          <div>
+            <span className="section-eyebrow">Notre sélection</span>
+            <h2 className="section-title">Yachts <em>d'exception</em></h2>
+          </div>
+          <Link href="/listings" className="see-more">Voir toute la flotte</Link>
+        </div>
+        <div className="yachts-grid reveal">
+          {featuredYachts.length === 0 ? (
+            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-light)'}}>
+              <div className="spinner" style={{margin: '0 auto'}}></div>
+            </div>
+          ) : (
+            featuredYachts.map((yacht: any) => (
+              <Link href={`/yacht/${yacht.id}`} key={yacht.id} className="yacht-card">
+                <div className="yacht-img">
+                  <div className="yacht-img-inner" style={{ 
+                    backgroundImage: yacht.images?.[0]?.url ? `url('${yacht.images[0].url}')` : 'linear-gradient(135deg, #1a3a5a 0%, #0a2040 100%)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}></div>
+                  {yacht.owner?.advertiserTier === 'PREMIUM' && <span className="yacht-badge" style={{background: 'var(--gold)'}}>Populaire</span>}
+                  {yacht.owner?.advertiserTier === 'PLATINIUM' && <span className="yacht-badge" style={{background: 'var(--ocean)'}}>Premium</span>}
+                </div>
+                <div className="yacht-body">
+                  <div className="yacht-type">{yacht.boatType}</div>
+                  <div className="yacht-name">{yacht.title}</div>
+                  <div className="yacht-specs">
+                    <span className="spec"><strong>{yacht.boatLength || '-'}m</strong> longueur</span>
+                    <span className="spec"><strong>{yacht.maxAdults}</strong> adultes</span>
+                    <span className="spec"><strong>{Math.max(1, Math.floor(yacht.maxAdults/2))}</strong> cabines</span>
+                  </div>
+                  <div className="yacht-footer">
+                    <div className="yacht-price">€{yacht.price.toLocaleString()} <span>/ jour</span></div>
+                    <button className="book-btn" onClick={(e) => { e.preventDefault(); window.location.href = `/yacht/${yacht.id}`; }}>Réserver</button>
+                  </div>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </section>
 
@@ -165,6 +240,14 @@ export default function HomePage() {
               <div className="dest-info">
                 <div className="dest-name">{dest.name}</div>
                 <div className="dest-count">{dest.count} yachts disponibles</div>
+                {dest.minPrice && (
+                  <div className="dest-price" style={{ fontSize: '0.9rem', color: 'var(--gold)', marginTop: '0.3rem', fontWeight: 500 }}>
+                    à partir de {dest.minPrice.toLocaleString()} € / jour
+                  </div>
+                )}
+                <div className="dest-action" style={{ marginTop: '1rem' }}>
+                  <button className="dest-btn" style={{ background: 'var(--gold)', color: '#111', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '4px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>Explorer</button>
+                </div>
               </div>
             </Link>
           )) : (
@@ -210,50 +293,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* YACHTS */}
-      <section className="yachts-section">
-        <div className="yachts-header reveal">
-          <div>
-            <span className="section-eyebrow">Notre sélection</span>
-            <h2 className="section-title">Yachts <em>d'exception</em></h2>
-          </div>
-          <Link href="/listings" className="see-more">Voir toute la flotte</Link>
-        </div>
-        <div className="yachts-grid reveal">
-          {featuredYachts.length === 0 ? (
-            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-light)'}}>
-              <div className="spinner" style={{margin: '0 auto'}}></div>
-            </div>
-          ) : (
-            featuredYachts.map((yacht: any) => (
-              <Link href={`/yacht/${yacht.id}`} key={yacht.id} className="yacht-card">
-                <div className="yacht-img">
-                  <div className="yacht-img-inner" style={{ 
-                    backgroundImage: yacht.images?.[0]?.url ? `url('${yacht.images[0].url}')` : 'linear-gradient(135deg, #1a3a5a 0%, #0a2040 100%)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }}></div>
-                  {yacht.owner?.advertiserTier === 'PREMIUM' && <span className="yacht-badge" style={{background: 'var(--gold)'}}>Populaire</span>}
-                  {yacht.owner?.advertiserTier === 'PLATINIUM' && <span className="yacht-badge" style={{background: 'var(--ocean)'}}>Premium</span>}
-                </div>
-                <div className="yacht-body">
-                  <div className="yacht-type">{yacht.boatType}</div>
-                  <div className="yacht-name">{yacht.title}</div>
-                  <div className="yacht-specs">
-                    <span className="spec"><strong>{yacht.boatLength || '-'}m</strong> longueur</span>
-                    <span className="spec"><strong>{yacht.maxAdults}</strong> adultes</span>
-                    <span className="spec"><strong>{Math.max(1, Math.floor(yacht.maxAdults/2))}</strong> cabines</span>
-                  </div>
-                  <div className="yacht-footer">
-                    <div className="yacht-price">€{yacht.price.toLocaleString()} <span>/ jour</span></div>
-                    <button className="book-btn" onClick={(e) => { e.preventDefault(); window.location.href = `/yacht/${yacht.id}`; }}>Réserver</button>
-                  </div>
-                </div>
-              </Link>
-            ))
-          )}
-        </div>
-      </section>
+      {/* YACHTS SECTION MOVED UP */}
 
       {/* CTA BANNER */}
       <div className="cta-banner reveal">

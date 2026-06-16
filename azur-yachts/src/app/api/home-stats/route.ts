@@ -30,20 +30,23 @@ export async function GET() {
     });
 
     const destinations = await Promise.all(activeDestinations.map(async (dest) => {
-      const count = await prisma.listing.count({
+      const aggregate = await prisma.listing.aggregate({
         where: {
           status: 'ACTIVE',
           OR: [
             { country: { contains: dest.name, mode: 'insensitive' } },
             { location: { contains: dest.name, mode: 'insensitive' } }
           ]
-        }
+        },
+        _count: { id: true },
+        _min: { price: true }
       });
       
       return {
         id: dest.id,
         name: dest.name,
-        count: count,
+        count: aggregate._count.id,
+        minPrice: aggregate._min.price || null,
         gradient: dest.gradient || 'linear-gradient(135deg, #1a5a80, #0a2540)',
         imageUrl: dest.imageUrl,
         isLarge: dest.isLarge
