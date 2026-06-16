@@ -152,7 +152,7 @@ export default function ResetPasswordPage() {
           </svg>
           <div className="panel-overlay"></div>
           <div className="panel-content">
-            <Link href="/" className="panel-logo">VOY<span>&nbsp;YACHT</span></Link>
+            <Link href="/" className="panel-logo">VOYYACHT</Link>
             <div className="panel-hero">
               <span className="panel-eyebrow">Accès sécurisé</span>
               <h2 className="panel-title">Récupérez l'accès<br />à votre <em>espace</em></h2>
