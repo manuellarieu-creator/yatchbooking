@@ -434,6 +434,7 @@
   font-size: .9rem;
   color: var(--text-mid);
   line-height: 1.9;
+  white-space: pre-wrap;
 }
 .yacht-container .read-more-btn {
   background: none;
