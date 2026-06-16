@@ -51,6 +51,7 @@ function PublishForm() {
   const [skipperOpt, setSkipperOpt] = useState(false);
   const [features, setFeatures] = useState<string[]>([]);
   const [customFeature, setCustomFeature] = useState('');
+  const [isAtSea, setIsAtSea] = useState(false);
 
   // Step 3
   const [photos, setPhotos] = useState<any[]>([]);
@@ -121,6 +122,7 @@ function PublishForm() {
           setHours(l.maxRentalHours?.toString() || '24');
           setCaptainReq(l.requiresCaptain);
           setSkipperOpt(l.skipperAvailable);
+          setIsAtSea(l.isAtSea || false);
           if (l.features) setFeatures(l.features);
           setDesc(l.description);
           setPriceDay(l.price?.toString() || '');
@@ -141,7 +143,7 @@ function PublishForm() {
     return () => clearTimeout(t);
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
-    title, boatType, year, portCountry, portCity, length, adults, children, hours, captainReq, skipperOpt, features,
+    title, boatType, year, portCountry, portCity, length, cabins, adults, children, hours, captainReq, skipperOpt, features, isAtSea,
     photos, desc, priceDay, cleaningFee, securityDeposit, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail, selectedOwnerId
   ]);
 
@@ -311,7 +313,7 @@ function PublishForm() {
         title, description: desc, price: Number(priceDay) || 0, country: portCountry, location: portCity,
         latitude: null, longitude: null, maxAdults: Number(adults) || 1, maxChildren: Number(children) || 0,
         boatType, boatLength: Number(length) || 0, cabins: Number(cabins) || null, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
-        skipperAvailable: skipperOpt, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
+        skipperAvailable: skipperOpt, isAtSea, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: Number(dp.fee) || 0 })), features,
         cleaningFee: Number(cleaningFee) || 0,
         securityDeposit: Number(securityDeposit) || 0,
@@ -639,6 +641,16 @@ function PublishForm() {
                     </div>
                     <label className="toggle">
                       <input type="checkbox" checked={skipperOpt} onChange={e => setSkipperOpt(e.target.checked)} />
+                      <span className="toggle-slider"></span>
+                    </label>
+                  </div>
+                  <div className="toggle-row">
+                    <div className="toggle-info">
+                      <div className="toggle-label">Bateau en mer / Hors port d'attache</div>
+                      <div className="toggle-desc">Affiche une alerte pour indiquer que le bateau n'est pas au port (des frais de convoyage peuvent s'appliquer)</div>
+                    </div>
+                    <label className="toggle">
+                      <input type="checkbox" checked={isAtSea} onChange={e => setIsAtSea(e.target.checked)} />
                       <span className="toggle-slider"></span>
                     </label>
                   </div>
