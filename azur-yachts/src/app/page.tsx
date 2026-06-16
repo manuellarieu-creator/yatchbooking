@@ -129,9 +129,17 @@ export default function HomePage() {
                   <button 
                     key={tag} 
                     onClick={() => setSearchLocation(tag)}
-                    style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '0.4rem 1rem', borderRadius: '30px', fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s' }}
-                    onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-                    onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                    style={{ background: 'rgba(10, 22, 40, 0.05)', border: '1px solid rgba(10, 22, 40, 0.1)', color: 'var(--navy)', padding: '0.4rem 1rem', borderRadius: '30px', fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s', fontWeight: 500 }}
+                    onMouseOver={e => {
+                      e.currentTarget.style.background = 'var(--gold)';
+                      e.currentTarget.style.color = '#fff';
+                      e.currentTarget.style.borderColor = 'var(--gold)';
+                    }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.background = 'rgba(10, 22, 40, 0.05)';
+                      e.currentTarget.style.color = 'var(--navy)';
+                      e.currentTarget.style.borderColor = 'rgba(10, 22, 40, 0.1)';
+                    }}
                   >
                     🔥 {tag}
                   </button>
