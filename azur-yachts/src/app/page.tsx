@@ -184,8 +184,14 @@ export default function HomePage() {
                     backgroundSize: 'cover',
                     backgroundPosition: 'center'
                   }}></div>
-                  {yacht.owner?.advertiserTier === 'PREMIUM' && <span className="yacht-badge" style={{background: 'var(--gold)'}}>Populaire</span>}
-                  {yacht.owner?.advertiserTier === 'PLATINIUM' && <span className="yacht-badge" style={{background: 'var(--ocean)'}}>Premium</span>}
+                  {yacht.isAtSea ? (
+                    <span className="yacht-badge" style={{background: 'rgba(230, 150, 0, 0.95)', color: '#fff'}}>⚓ En mer</span>
+                  ) : (
+                    <>
+                      {yacht.owner?.advertiserTier === 'PREMIUM' && <span className="yacht-badge" style={{background: 'var(--gold)'}}>Populaire</span>}
+                      {yacht.owner?.advertiserTier === 'PLATINIUM' && <span className="yacht-badge" style={{background: 'var(--ocean)'}}>Premium</span>}
+                    </>
+                  )}
                 </div>
                 <div className="yacht-body">
                   <div className="yacht-type">{yacht.boatType}</div>

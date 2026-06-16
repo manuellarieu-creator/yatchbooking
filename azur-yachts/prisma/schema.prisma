@@ -182,6 +182,7 @@ model Listing {
   location          String
   latitude          Float?
   longitude         Float?
+  isAtSea           Boolean       @default(false)
   status            ListingStatus @default(PENDING)
   rejectionReason   String?
   maxAdults         Int

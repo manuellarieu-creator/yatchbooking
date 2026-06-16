@@ -37,7 +37,8 @@ export default function ListingsPage() {
             badgeColor: 'var(--gold)',
             isVerified: l.owner?.videoVerified || false,
             imgUrl: l.images?.[0]?.url || '',
-            isFav: l.isFav || false
+            isFav: l.isFav || false,
+            isAtSea: l.isAtSea || false
           }));
           setYachts(mapped);
         }
@@ -374,7 +375,11 @@ export default function ListingsPage() {
                         backgroundSize: 'cover',
                         backgroundPosition: 'center'
                       }}></div>
-                      {yacht.badge && <span className="card-badge" style={{ background: yacht.badgeColor }}>{yacht.badge}</span>}
+                      {yacht.isAtSea ? (
+                        <span className="card-badge" style={{ background: 'rgba(230, 150, 0, 0.95)', color: '#fff' }}>⚓ En mer</span>
+                      ) : (
+                        yacht.badge && <span className="card-badge" style={{ background: yacht.badgeColor }}>{yacht.badge}</span>
+                      )}
                       {yacht.isVerified && <span className="card-badge verified" style={{ top: 'auto', bottom: '.9rem', left: '.9rem', right: 'auto', fontSize: '.6rem' }}>✓ Vérifié</span>}
                       <button className={`card-fav ${yacht.isFav ? 'active' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); toggleFav(yacht.id); }}>
                         {yacht.isFav ? '♥' : '♡'}

@@ -272,6 +272,17 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 {yacht.owner?.advertiserTier && <span className="listing-badge badge-platinium">⚓ {yacht.owner.advertiserTier}</span>}
               </div>
             </div>
+            {yacht.isAtSea && (
+              <div style={{ backgroundColor: 'rgba(230, 150, 0, 0.1)', border: '1px solid rgba(230, 150, 0, 0.4)', borderRadius: '8px', padding: '0.8rem 1rem', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.2rem' }}>ℹ️</span>
+                <div>
+                  <strong style={{ color: 'rgba(210, 130, 0, 1)', display: 'block', fontSize: '0.95rem', marginBottom: '0.2rem' }}>Bateau en déplacement</strong>
+                  <p style={{ color: 'var(--text-mid)', fontSize: '0.85rem', margin: 0, lineHeight: 1.4 }}>
+                    Ce yacht est actuellement en mer ou dans un port différent de son port d'attache ({yacht.location}). Des frais ou un délai de convoyage peuvent s'appliquer selon votre port de départ souhaité.
+                  </p>
+                </div>
+              </div>
+            )}
             <div 
               onClick={() => yacht.reviewCount > 0 && setIsListingReviewsModalOpen(true)} 
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem', cursor: yacht.reviewCount > 0 ? 'pointer' : 'default', textDecoration: yacht.reviewCount > 0 ? 'underline' : 'none', color: 'var(--text-mid)', fontSize: '0.95rem' }}
