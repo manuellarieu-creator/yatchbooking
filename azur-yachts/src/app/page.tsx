@@ -126,15 +126,15 @@ export default function HomePage() {
             <div className="search-footer" style={{ marginTop: '1.5rem', textAlign: 'center' }}>
               <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1rem' }}>
                 {[
-                  { id: 'Côte d\'Azur', label: 'Côte d’Azur (top conversion)' },
-                  { id: 'Ibiza', label: 'Ibiza (summer hotspots)' },
-                  { id: 'Mykonos', label: 'Mykonos (luxury party yachts)' },
-                  { id: 'Monaco', label: 'Monaco (ultra luxe)' }
+                  { id: 'Côte d\'Azur', title: 'Côte d’Azur', sub: 'top conversion' },
+                  { id: 'Ibiza', title: 'Ibiza', sub: 'summer hotspots' },
+                  { id: 'Mykonos', title: 'Mykonos', sub: 'luxury party yachts' },
+                  { id: 'Monaco', title: 'Monaco', sub: 'ultra luxe' }
                 ].map(tag => (
                   <button 
                     key={tag.id} 
                     onClick={() => setSearchLocation(tag.id)}
-                    style={{ background: 'rgba(10, 22, 40, 0.05)', border: '1px solid rgba(10, 22, 40, 0.1)', color: 'var(--navy)', padding: '0.4rem 1rem', borderRadius: '30px', fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s', fontWeight: 500 }}
+                    style={{ background: 'rgba(10, 22, 40, 0.05)', border: '1px solid rgba(10, 22, 40, 0.1)', color: 'var(--navy)', padding: '0.4rem 1rem', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' }}
                     onMouseOver={e => {
                       e.currentTarget.style.background = 'var(--gold)';
                       e.currentTarget.style.color = '#fff';
@@ -146,7 +146,8 @@ export default function HomePage() {
                       e.currentTarget.style.borderColor = 'rgba(10, 22, 40, 0.1)';
                     }}
                   >
-                    🔥 {tag.label}
+                    <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>🔥 {tag.title}</div>
+                    <div style={{ fontSize: '0.65rem', opacity: 0.8, marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{tag.sub}</div>
                   </button>
                 ))}
               </div>
