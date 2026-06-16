@@ -220,7 +220,7 @@
 .home-container .step:last-child { border-right: none; }
 .home-container .step-num {
   font-family: 'Cormorant Garamond', serif; font-size: 4.5rem; font-weight: 300;
-  color: rgba(184,152,90,0.15); line-height: 1; margin-bottom: 1.5rem;
+  color: rgba(184,152,90,0.6); line-height: 1; margin-bottom: 1.5rem;
 }
 .home-container .step-title {
   font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; color: #fff;
