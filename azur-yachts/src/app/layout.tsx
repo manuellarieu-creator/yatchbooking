@@ -14,8 +14,8 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_APP_URL || 'https://azuryachts.vercel.app'
   ),
   title: {
-    default: 'Azur Yachts — Location de yachts de prestige',
-    template: '%s — Azur Yachts',
+    default: 'VoyYacht — Location de yachts de prestige',
+    template: '%s — VoyYacht',
   },
   description: 'La plateforme de référence pour la location de yachts de luxe. 340+ yachts vérifiés, 68 destinations, annonceurs certifiés.',
   keywords: ['location yacht', 'yacht luxe', 'charter yacht', 'voilier location', 'catamaran location'],
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'fr_FR',
     url: process.env.NEXT_PUBLIC_APP_URL,
-    siteName: 'Azur Yachts',
+    siteName: 'VoyYacht',
   },
 };
 

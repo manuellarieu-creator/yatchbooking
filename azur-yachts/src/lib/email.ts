@@ -2,7 +2,7 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-const FROM = process.env.EMAIL_FROM || 'Azur Yachts <noreply@azuryachts.vercel.app>'
+const FROM = process.env.EMAIL_FROM || 'VoyYacht <noreply@azuryachts.vercel.app>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://azuryachts.vercel.app'
 
 function base(content: string): string {
@@ -38,8 +38,8 @@ function base(content: string): string {
 <div class="wrap">
   <div class="top"><div class="logo">AZUR<span> YACHTS</span></div></div>
   <div class="card">${content}</div>
-  <div class="foot">© 2025 Azur Yachts · Monaco · 
-    <a href="${APP_URL}">azuryachts.com</a>
+  <div class="foot">© 2025 VoyYacht · Monaco · 
+    <a href="${APP_URL}">voyyacht.com</a>
   </div>
 </div>
 </body>
@@ -51,11 +51,11 @@ export async function emailVerification(to: string, name: string, token: string)
   const url = `${APP_URL}/api/auth/verify?token=${token}`
   return resend.emails.send({
     from: FROM, to,
-    subject: 'Confirmez votre email — Azur Yachts',
+    subject: 'Confirmez votre email — VoyYacht',
     html: base(`
       <h2>Confirmez votre adresse email</h2>
       <p>Bonjour ${name},</p>
-      <p>Merci de vous être inscrit sur Azur Yachts. Cliquez ci-dessous pour activer votre compte.</p>
+      <p>Merci de vous être inscrit sur VoyYacht. Cliquez ci-dessous pour activer votre compte.</p>
       <a href="${url}" class="btn">Confirmer mon email</a>
       <p style="font-size:.75rem;color:#8a8aaa">Lien valable 24h. Si vous n'avez pas créé de compte, ignorez cet email.</p>
     `),
@@ -67,7 +67,7 @@ export async function emailResetPassword(to: string, name: string, token: string
   const url = `${APP_URL}/reset-password?token=${token}`
   return resend.emails.send({
     from: FROM, to,
-    subject: 'Réinitialiser votre mot de passe — Azur Yachts',
+    subject: 'Réinitialiser votre mot de passe — VoyYacht',
     html: base(`
       <h2>Réinitialiser votre mot de passe</h2>
       <p>Bonjour ${name},</p>
@@ -270,7 +270,7 @@ export async function emailNewMessage(
 ) {
   return resend.emails.send({
     from: FROM, to,
-    subject: `Nouveau message de ${senderName} — Azur Yachts`,
+    subject: `Nouveau message de ${senderName} — VoyYacht`,
     html: base(`
       <h2>Vous avez un nouveau message</h2>
       <p>Bonjour ${name},</p>
@@ -289,7 +289,7 @@ export async function emailBankTransferValidated(
 ) {
   return resend.emails.send({
     from: FROM, to,
-    subject: `Confirmation de votre paiement et de votre réservation - Azur Yachts`,
+    subject: `Confirmation de votre paiement et de votre réservation - VoyYacht`,
     html: base(`
       <h2>Virement bancaire reçu</h2>
       <p>Bonjour ${name},</p>
@@ -314,7 +314,7 @@ export async function emailBankTransferRejected(
 ) {
   return resend.emails.send({
     from: FROM, to,
-    subject: `Problème concernant votre paiement par virement - Azur Yachts`,
+    subject: `Problème concernant votre paiement par virement - VoyYacht`,
     html: base(`
       <h2>Paiement par virement non validé</h2>
       <p>Bonjour ${name},</p>

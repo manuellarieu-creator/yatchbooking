@@ -91,7 +91,7 @@ export default function PaymentSettingsPage() {
                 value={bankAccountName} 
                 onChange={(e) => setBankAccountName(e.target.value)}
                 style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
-                placeholder="Ex: AZUR YACHTS SAS"
+                placeholder="Ex: VOYYACHT SAS"
               />
             </div>
 
@@ -135,7 +135,7 @@ export default function PaymentSettingsPage() {
                 value={bankNotificationEmail} 
                 onChange={(e) => setBankNotificationEmail(e.target.value)}
                 style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
-                placeholder="Ex: compta@azuryachts.com"
+                placeholder="Ex: compta@voyyacht.com"
               />
               <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.3rem' }}>Email pour recevoir les preuves de virement.</p>
             </div>

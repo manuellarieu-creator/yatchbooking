@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import { useDebounce } from '@/hooks/useDebounce';
 import './listings.css';
 
 export default function ListingsPage() {
@@ -60,6 +61,7 @@ export default function ListingsPage() {
 
   // ── Filters State ──
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [priceMin, setPriceMin] = useState(500);
   const [priceMax, setPriceMax] = useState(15000);
   const [countries, setCountries] = useState<string[]>([]);
@@ -122,7 +124,7 @@ export default function ListingsPage() {
   // Filter Logic
   const filteredYachts = useMemo(() => {
     return yachts.filter(y => {
-      if (searchQuery && !y.location.toLowerCase().includes(searchQuery.toLowerCase()) && !y.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      if (debouncedSearchQuery && !y.location.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) && !y.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())) return false;
       if (y.price < priceMin || y.price > priceMax) return false;
       if (countries.length > 0 && !countries.includes(y.country)) return false;
       if (types.length > 0 && !types.includes(y.type)) return false;
@@ -138,7 +140,7 @@ export default function ListingsPage() {
       if (sortOrder === 'popular') return b.revs - a.revs;
       return 0; // recent (default)
     });
-  }, [yachts, searchQuery, priceMin, priceMax, countries, types, minCap, captainReq, skipperAvail, minRating, sortOrder]);
+  }, [yachts, debouncedSearchQuery, priceMin, priceMax, countries, types, minCap, captainReq, skipperAvail, minRating, sortOrder]);
 
   const activeFilterTags = [
     ...countries.map(c => ({ label: c, type: 'country', val: c })),

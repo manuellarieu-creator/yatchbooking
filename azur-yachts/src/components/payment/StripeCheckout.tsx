@@ -56,7 +56,7 @@ function CheckoutForm({ amount, onSuccess }: { amount: number, onSuccess: () => 
         Payer €{(amount).toLocaleString()}
         {isLoading && <div className="pay-btn-loader"><div className="spinner"></div></div>}
       </button>
-      <p className="pay-footnote mt-4 text-center">🔒 Vos données bancaires sont chiffrées et traitées par Stripe. Azur Yachts ne stocke jamais vos informations de carte.</p>
+      <p className="pay-footnote mt-4 text-center">🔒 Vos données bancaires sont chiffrées et traitées par Stripe. VoyYacht ne stocke jamais vos informations de carte.</p>
     </form>
   );
 }

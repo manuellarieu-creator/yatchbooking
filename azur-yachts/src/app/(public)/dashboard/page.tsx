@@ -795,7 +795,7 @@ function DashboardContent() {
             {activeModal === 'help' && (
               <div style={{ padding: '2rem', textAlign: 'center', fontFamily: "'Jost', sans-serif" }}>
                 <h3>Centre d'aide</h3>
-                <p>Contactez notre support à <strong>support@azuryachts.com</strong> ou appelez le <strong>+33 1 23 45 67 89</strong>.</p>
+                <p>Contactez notre support à <strong>support@voyyacht.com</strong> ou appelez le <strong>+33 1 23 45 67 89</strong>.</p>
               </div>
             )}
             {activeModal === 'modifyBooking' && selectedBookingForMod && (

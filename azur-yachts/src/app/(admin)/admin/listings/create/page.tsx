@@ -403,7 +403,7 @@ function PublishForm() {
       {!isModal && (
         <nav className="pub-nav">
           <button className="nav-exit" onClick={() => window.history.back()}>← Quitter</button>
-          <a href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></a>
+          <a href="/" className="nav-logo">VOY<span>&nbsp;YACHT</span></a>
           <div className="nav-right">
             <span className="nav-save">{savedStatus}</span>
           </div>

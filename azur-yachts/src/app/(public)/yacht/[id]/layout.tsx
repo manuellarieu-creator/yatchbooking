@@ -12,7 +12,7 @@ export async function generateMetadata(
   return {
     title: `${listing?.title || 'Yacht'}`,
     description: listing?.description?.slice(0, 160) || 
-      'Location de yacht de prestige sur Azur Yachts',
+      'Location de yacht de prestige sur VoyYacht',
     openGraph: {
       title: listing?.title,
       description: listing?.description?.slice(0, 160),

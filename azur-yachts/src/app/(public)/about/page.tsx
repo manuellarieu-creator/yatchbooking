@@ -91,7 +91,7 @@ export default function AboutPage() {
           <span className="hero-eyebrow">Notre histoire</span>
           <h1 className="hero-title">L'excellence<br/>nautique depuis<br/><em>2009</em></h1>
           <div className="hero-divider"></div>
-          <p className="hero-sub">Azur Yachts est né d'une passion commune pour la mer et d'une conviction : <strong>chaque client mérite une expérience nautique d'exception</strong>, sans compromis sur la qualité, la sécurité ou la transparence.</p>
+          <p className="hero-sub">VoyYacht est né d'une passion commune pour la mer et d'une conviction : <strong>chaque client mérite une expérience nautique d'exception</strong>, sans compromis sur la qualité, la sécurité ou la transparence.</p>
           <div className="hero-scroll">
             <div className="hero-scroll-line"></div>
             Découvrir notre histoire
@@ -130,7 +130,7 @@ export default function AboutPage() {
             <div className="mission-img-main">
               <div className="mission-img-main-content">
                 <div className="big-anchor">⚓</div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem', color: 'rgba(255,255,255,.15)', letterSpacing: '.1em' }}>AZUR YACHTS</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem', color: 'rgba(255,255,255,.15)', letterSpacing: '.1em' }}>VOYYACHT</div>
               </div>
             </div>
             <div className="mission-img-sub">
@@ -142,7 +142,7 @@ export default function AboutPage() {
             <span className="sec-eyebrow">Notre mission</span>
             <h2 className="sec-title">Rendre le luxe<br/>nautique <em>accessible</em></h2>
             <p className="mission-intro">"Offrir à chaque client une expérience en mer inoubliable, en toute sérénité."</p>
-            <p className="mission-body">Depuis 2009, Azur Yachts s'est imposé comme la référence de la location de yachts de prestige en Europe et au-delà. Notre plateforme met en relation des propriétaires vérifiés et des clients exigeants, avec un accompagnement humain à chaque étape.</p>
+            <p className="mission-body">Depuis 2009, VoyYacht s'est imposé comme la référence de la location de yachts de prestige en Europe et au-delà. Notre plateforme met en relation des propriétaires vérifiés et des clients exigeants, avec un accompagnement humain à chaque étape.</p>
             <p className="mission-body">Nous croyons que la mer appartient à tous ceux qui rêvent de la parcourir. C'est pourquoi nous avons construit une plateforme simple, transparente et sécurisée, qui place l'humain au cœur de chaque interaction.</p>
             <div className="mission-values">
               <div className="value-item">
@@ -177,13 +177,13 @@ export default function AboutPage() {
           <div className="reveal" style={{ textAlign: 'center', marginBottom: 0 }}>
             <span className="sec-eyebrow">Notre parcours</span>
             <h2 className="sec-title" style={{ marginBottom: '.5rem' }}>Une <em>décennie</em> d'innovation</h2>
-            <p className="sec-desc" style={{ margin: '0 auto', textAlign: 'center' }}>Les grandes étapes qui ont façonné Azur Yachts.</p>
+            <p className="sec-desc" style={{ margin: '0 auto', textAlign: 'center' }}>Les grandes étapes qui ont façonné VoyYacht.</p>
           </div>
           <div className="timeline">
             <div className="tl-item reveal">
               <div className="tl-content">
                 <div className="tl-title">Naissance à Monaco</div>
-                <div className="tl-desc">Azur Yachts est fondée par trois passionnés de nautisme à Monaco. La première plateforme de mise en relation entre propriétaires et clients est lancée avec 12 yachts.</div>
+                <div className="tl-desc">VoyYacht est fondée par trois passionnés de nautisme à Monaco. La première plateforme de mise en relation entre propriétaires et clients est lancée avec 12 yachts.</div>
               </div>
               <div className="tl-year-bubble"><div className="tl-year">2009</div></div>
               <div className="tl-empty"></div>
@@ -209,13 +209,13 @@ export default function AboutPage() {
               <div className="tl-year-bubble"><div className="tl-year">2020</div></div>
               <div className="tl-content right">
                 <div className="tl-title">Résilience et innovation</div>
-                <div className="tl-desc">Malgré la crise sanitaire, Azur Yachts développe de nouveaux services et consolide sa présence dans les Caraïbes. Lancement de la vérification vidéo selfie.</div>
+                <div className="tl-desc">Malgré la crise sanitaire, VoyYacht développe de nouveaux services et consolide sa présence dans les Caraïbes. Lancement de la vérification vidéo selfie.</div>
               </div>
             </div>
             <div className="tl-item reveal">
               <div className="tl-content">
                 <div className="tl-title">340 yachts, 68 destinations</div>
-                <div className="tl-desc">Azur Yachts devient la première plateforme de yacht charter premium en Europe avec 12 000+ clients satisfaits et une note moyenne de 4,8/5.</div>
+                <div className="tl-desc">VoyYacht devient la première plateforme de yacht charter premium en Europe avec 12 000+ clients satisfaits et une note moyenne de 4,8/5.</div>
               </div>
               <div className="tl-year-bubble gold"><div className="tl-year" style={{ color: 'var(--navy)' }}>2025</div></div>
               <div className="tl-empty"></div>
@@ -228,7 +228,7 @@ export default function AboutPage() {
       <section className="equipe">
         <div className="equipe-inner">
           <div className="reveal" style={{ textAlign: 'center' }}>
-            <span className="sec-eyebrow">Les visages d'Azur Yachts</span>
+            <span className="sec-eyebrow">Les visages d'VoyYacht</span>
             <h2 className="sec-title">Notre <em>équipe</em></h2>
             <p className="sec-desc" style={{ margin: '0 auto', textAlign: 'center' }}>Des professionnels passionnés par la mer et engagés pour votre satisfaction.</p>
           </div>
@@ -243,7 +243,7 @@ export default function AboutPage() {
               <div className="team-body">
                 <div className="team-name">Laurent Chevalier</div>
                 <div className="team-role">Fondateur & CEO</div>
-                <div className="team-bio">Skipper professionnel depuis 20 ans, Laurent a fondé Azur Yachts avec la vision de démocratiser le yacht charter de luxe.</div>
+                <div className="team-bio">Skipper professionnel depuis 20 ans, Laurent a fondé VoyYacht avec la vision de démocratiser le yacht charter de luxe.</div>
                 <div className="team-langs"><span className="lang-chip">🇫🇷 FR</span><span className="lang-chip">🇬🇧 EN</span><span className="lang-chip">🇮🇹 IT</span></div>
               </div>
             </div>
@@ -341,7 +341,7 @@ export default function AboutPage() {
         <div className="chiffres-inner">
           <div className="reveal" style={{ textAlign: 'center' }}>
             <span className="sec-eyebrow">En chiffres</span>
-            <h2 className="sec-title">Azur Yachts <em>aujourd'hui</em></h2>
+            <h2 className="sec-title">VoyYacht <em>aujourd'hui</em></h2>
           </div>
           <div className="chiffres-grid">
             <div className="chiffre-card reveal">
@@ -395,7 +395,7 @@ export default function AboutPage() {
             <div className="testi-card reveal">
               <span className="testi-quote">"</span>
               <div className="testi-stars">★★★★★</div>
-              <p className="testi-text">Une semaine en Grèce à bord de l'Azura 68 — un rêve devenu réalité. L'équipage était d'une attention extraordinaire, le yacht immaculé. Je recommande Azur Yachts les yeux fermés.</p>
+              <p className="testi-text">Une semaine en Grèce à bord de l'Azura 68 — un rêve devenu réalité. L'équipage était d'une attention extraordinaire, le yacht immaculé. Je recommande VoyYacht les yeux fermés.</p>
               <div className="testi-author">
                 <div className="testi-av">SL</div>
                 <div><div className="testi-name">Sophie Lemaire</div><div className="testi-loc">Paris, France · Juil. 2024</div></div>
@@ -413,7 +413,7 @@ export default function AboutPage() {
             <div className="testi-card reveal reveal-delay-2">
               <span className="testi-quote">"</span>
               <div className="testi-stars">★★★★★</div>
-              <p className="testi-text">Notre anniversaire de mariage aux Caraïbes. Azur Yachts a tout planifié à la perfection — le catamaran, le chef, les excursions. Une expérience absolument mémorable.</p>
+              <p className="testi-text">Notre anniversaire de mariage aux Caraïbes. VoyYacht a tout planifié à la perfection — le catamaran, le chef, les excursions. Une expérience absolument mémorable.</p>
               <div className="testi-author">
                 <div className="testi-av">AC</div>
                 <div><div className="testi-name">Amelia & Robert Chen</div><div className="testi-loc">Londres, UK · Sept. 2024</div></div>

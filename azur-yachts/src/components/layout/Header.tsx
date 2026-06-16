@@ -13,7 +13,7 @@ export default async function Header() {
       {/* ─── DESKTOP HEADER FOR LOGGED IN USERS ─── */}
       {session?.user && (
         <nav className="nav-top desktop-only" style={{ zIndex: 1050, borderBottom: 'none' }}>
-          <Link href="/" className="nav-logo" style={{ marginRight: '1rem' }}>AZUR<span>&nbsp;YACHTS</span></Link>
+          <Link href="/" className="nav-logo" style={{ marginRight: '1rem' }}>VOY<span>&nbsp;YACHT</span></Link>
           
           <div className="nav-center" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
             <Link href="/" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>ACCUEIL</Link>
@@ -32,7 +32,7 @@ export default async function Header() {
 
       {/* ─── STANDARD HEADER (GUESTS EVERYWHERE + LOGGED IN MOBILE) ─── */}
       <nav className={`nav-top ${session?.user ? 'mobile-only' : ''}`}>
-        <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
+        <Link href="/" className="nav-logo">VOY<span>&nbsp;YACHT</span></Link>
         
         {/* Desktop: liens de navigation classiques */}
         <ul className="nav-links">

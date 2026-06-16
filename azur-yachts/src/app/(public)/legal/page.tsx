@@ -178,7 +178,7 @@ export default function LegalPage() {
           {activeTab === 'cgu' && (
             <div className="tab-content active">
               <div className="info-box gold" style={{ marginBottom: '2rem' }}>
-                📌 En utilisant la plateforme Azur Yachts, vous acceptez les présentes conditions générales d'utilisation dans leur intégralité. Veuillez les lire attentivement avant toute inscription ou réservation.
+                📌 En utilisant la plateforme VoyYacht, vous acceptez les présentes conditions générales d'utilisation dans leur intégralité. Veuillez les lire attentivement avant toute inscription ou réservation.
               </div>
 
               <div className="doc-section" id="cgu-1">
@@ -190,13 +190,13 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>Les présentes Conditions Générales d'Utilisation (ci-après "CGU") régissent l'accès et l'utilisation de la plateforme Azur Yachts, accessible à l'adresse <Link href="/">www.azuryachts.com</Link>, exploitée par la société <strong>Azur Yachts SAM</strong>, société anonyme monégasque au capital de 500 000 €, immatriculée au Répertoire du Commerce et de l'Industrie de Monaco sous le numéro RCI 09-S-12345, dont le siège social est situé 3, Quai des Milliardaires, 98000 Monaco.</p>
+                  <p>Les présentes Conditions Générales d'Utilisation (ci-après "CGU") régissent l'accès et l'utilisation de la plateforme VoyYacht, accessible à l'adresse <Link href="/">www.voyyacht.com</Link>, exploitée par la société <strong>VoyYacht SAM</strong>, société anonyme monégasque au capital de 500 000 €, immatriculée au Répertoire du Commerce et de l'Industrie de Monaco sous le numéro RCI 09-S-12345, dont le siège social est situé 3, Quai des Milliardaires, 98000 Monaco.</p>
                   <h4>Définitions</h4>
                   <ul>
-                    <li><strong>Plateforme :</strong> le site web et les applications mobiles Azur Yachts permettant la mise en relation entre Annonceurs et Clients.</li>
+                    <li><strong>Plateforme :</strong> le site web et les applications mobiles VoyYacht permettant la mise en relation entre Annonceurs et Clients.</li>
                     <li><strong>Annonceur :</strong> tout utilisateur propriétaire d'un yacht qui publie une annonce de location sur la Plateforme après vérification et validation par l'Administrateur.</li>
                     <li><strong>Client :</strong> tout utilisateur qui effectue ou envisage d'effectuer une réservation via la Plateforme.</li>
-                    <li><strong>Administrateur :</strong> l'équipe Azur Yachts SAM qui valide les annonces, les réservations et les paiements.</li>
+                    <li><strong>Administrateur :</strong> l'équipe VoyYacht SAM qui valide les annonces, les réservations et les paiements.</li>
                     <li><strong>Réservation :</strong> la demande de location d'un yacht pour une période définie, soumise au paiement et à la validation de l'Administrateur.</li>
                   </ul>
                 </div>
@@ -223,7 +223,7 @@ export default function LegalPage() {
                   <div className="info-box navy">
                     L'Administrateur se réserve le droit de refuser, suspendre ou supprimer tout compte Annonceur sans justification, notamment en cas de fourniture d'informations erronées, de comportement frauduleux ou de non-respect des présentes CGU.
                   </div>
-                  <p>L'utilisateur s'engage à maintenir la confidentialité de ses identifiants de connexion et à notifier immédiatement Azur Yachts de tout accès non autorisé à son compte.</p>
+                  <p>L'utilisateur s'engage à maintenir la confidentialité de ses identifiants de connexion et à notifier immédiatement VoyYacht de tout accès non autorisé à son compte.</p>
                 </div>
               </div>
 
@@ -246,7 +246,7 @@ export default function LegalPage() {
                     <li>La capacité maximale à bord (adultes et enfants) doit être renseignée avec exactitude.</li>
                   </ul>
                   <h4>Validation et modération</h4>
-                  <p>Toute annonce est soumise à la validation de l'Administrateur avant publication. Azur Yachts se réserve le droit de refuser, modifier ou supprimer toute annonce ne respectant pas les présentes CGU ou les standards de qualité de la Plateforme, sans que cela ne donne lieu à une quelconque indemnité au profit de l'Annonceur.</p>
+                  <p>Toute annonce est soumise à la validation de l'Administrateur avant publication. VoyYacht se réserve le droit de refuser, modifier ou supprimer toute annonce ne respectant pas les présentes CGU ou les standards de qualité de la Plateforme, sans que cela ne donne lieu à une quelconque indemnité au profit de l'Annonceur.</p>
                 </div>
               </div>
 
@@ -284,7 +284,7 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>Azur Yachts propose trois modes de paiement, selon la configuration active de la Plateforme décidée par l'Administrateur :</p>
+                  <p>VoyYacht propose trois modes de paiement, selon la configuration active de la Plateforme décidée par l'Administrateur :</p>
                   <table className="legal-table">
                     <thead><tr><th>Mode</th><th>Délai de confirmation</th><th>Preuve requise</th></tr></thead>
                     <tbody>
@@ -294,7 +294,7 @@ export default function LegalPage() {
                       <tr><td><strong>Virement instantané</strong></td><td>30 à 45 minutes</td><td>Oui (justificatif)</td></tr>
                     </tbody>
                   </table>
-                  <p>Les prix sont affichés en euros (€) toutes taxes comprises. Azur Yachts se réserve le droit de modifier ses tarifs à tout moment, sans que cela n'affecte les réservations déjà confirmées.</p>
+                  <p>Les prix sont affichés en euros (€) toutes taxes comprises. VoyYacht se réserve le droit de modifier ses tarifs à tout moment, sans que cela n'affecte les réservations déjà confirmées.</p>
                   <h4>Frais de nettoyage</h4>
                   <p>Des frais de nettoyage sont systématiquement ajoutés au montant de chaque réservation. Ces frais sont définis par chaque Annonceur et affichés clairement avant toute confirmation de réservation.</p>
                 </div>
@@ -318,9 +318,9 @@ export default function LegalPage() {
                       <tr><td><strong>Stricte</strong></td><td>Non remboursable sauf cas de force majeure documentée</td></tr>
                     </tbody>
                   </table>
-                  <p>Toute demande d'annulation doit être adressée par écrit à l'équipe Azur Yachts via le formulaire de contact ou par email à <Link href="mailto:contact@azuryachts.com">contact@azuryachts.com</Link>. Les remboursements sont traités dans un délai de 5 à 10 jours ouvrés selon le mode de paiement utilisé.</p>
+                  <p>Toute demande d'annulation doit être adressée par écrit à l'équipe VoyYacht via le formulaire de contact ou par email à <Link href="mailto:contact@voyyacht.com">contact@voyyacht.com</Link>. Les remboursements sont traités dans un délai de 5 à 10 jours ouvrés selon le mode de paiement utilisé.</p>
                   <div className="info-box navy">
-                    En cas de force majeure dûment justifiée (catastrophe naturelle, maladie grave, décès d'un proche au premier degré), Azur Yachts se réserve le droit d'appliquer des conditions d'annulation plus favorables, à sa seule discrétion.
+                    En cas de force majeure dûment justifiée (catastrophe naturelle, maladie grave, décès d'un proche au premier degré), VoyYacht se réserve le droit d'appliquer des conditions d'annulation plus favorables, à sa seule discrétion.
                   </div>
                 </div>
               </div>
@@ -334,13 +334,13 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>Azur Yachts agit en qualité d'intermédiaire entre les Annonceurs et les Clients. La responsabilité d'Azur Yachts est strictement limitée à son rôle de plateforme de mise en relation.</p>
+                  <p>VoyYacht agit en qualité d'intermédiaire entre les Annonceurs et les Clients. La responsabilité d'VoyYacht est strictement limitée à son rôle de plateforme de mise en relation.</p>
                   <h4>Responsabilité de l'Annonceur</h4>
                   <p>L'Annonceur est seul responsable de la conformité du yacht avec la réglementation maritime applicable, de son état général, de sa navigabilité et de la fourniture des services décrits dans son annonce. L'Annonceur garantit disposer de toutes les assurances nécessaires couvrant la location à des tiers.</p>
                   <h4>Responsabilité du Client</h4>
                   <p>Le Client est responsable du bon usage du yacht, du respect des règles de navigation, du nombre maximal de personnes à bord et du comportement de ses invités. Tout dommage causé au yacht par le Client ou ses invités engage sa responsabilité.</p>
-                  <h4>Limitation de responsabilité d'Azur Yachts</h4>
-                  <p>Azur Yachts ne pourra être tenu responsable des dommages indirects résultant de l'utilisation de la Plateforme, ni des agissements des Annonceurs ou des Clients. La responsabilité maximale d'Azur Yachts est limitée au montant de la commission perçue sur la réservation concernée.</p>
+                  <h4>Limitation de responsabilité d'VoyYacht</h4>
+                  <p>VoyYacht ne pourra être tenu responsable des dommages indirects résultant de l'utilisation de la Plateforme, ni des agissements des Annonceurs ou des Clients. La responsabilité maximale d'VoyYacht est limitée au montant de la commission perçue sur la réservation concernée.</p>
                 </div>
               </div>
 
@@ -354,7 +354,7 @@ export default function LegalPage() {
                 </div>
                 <div className="prose">
                   <p>Les présentes CGU sont soumises au droit monégasque. En cas de litige relatif à leur interprétation ou à leur exécution, les parties s'engagent à rechercher une solution amiable dans un délai de 30 jours. À défaut, le litige sera soumis à la compétence exclusive des tribunaux de la Principauté de Monaco.</p>
-                  <p>Pour toute réclamation, vous pouvez contacter notre service client à <Link href="mailto:contact@azuryachts.com">contact@azuryachts.com</Link> ou via notre <Link href="/contact">formulaire de contact</Link>. Nous nous engageons à répondre dans un délai de 5 jours ouvrés.</p>
+                  <p>Pour toute réclamation, vous pouvez contacter notre service client à <Link href="mailto:contact@voyyacht.com">contact@voyyacht.com</Link> ou via notre <Link href="/contact">formulaire de contact</Link>. Nous nous engageons à répondre dans un délai de 5 jours ouvrés.</p>
                 </div>
               </div>
             </div>
@@ -374,13 +374,13 @@ export default function LegalPage() {
                 <div className="prose">
                   <table className="legal-table">
                     <tbody>
-                      <tr><td><strong>Raison sociale</strong></td><td>Azur Yachts SAM</td></tr>
+                      <tr><td><strong>Raison sociale</strong></td><td>VoyYacht SAM</td></tr>
                       <tr><td><strong>Forme juridique</strong></td><td>Société Anonyme Monégasque (SAM)</td></tr>
                       <tr><td><strong>Capital social</strong></td><td>500 000 € entièrement libéré</td></tr>
                       <tr><td><strong>Numéro RCI</strong></td><td>09-S-12345</td></tr>
                       <tr><td><strong>Siège social</strong></td><td>3, Quai des Milliardaires, Port Hercule, 98000 Monaco</td></tr>
                       <tr><td><strong>Téléphone</strong></td><td>+377 97 70 00 00</td></tr>
-                      <tr><td><strong>Email</strong></td><td>contact@azuryachts.com</td></tr>
+                      <tr><td><strong>Email</strong></td><td>contact@voyyacht.com</td></tr>
                       <tr><td><strong>Directeur de la publication</strong></td><td>Laurent Chevalier, Président-Directeur Général</td></tr>
                       <tr><td><strong>Numéro de TVA</strong></td><td>Non applicable (Monaco)</td></tr>
                     </tbody>
@@ -419,10 +419,10 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>L'ensemble des éléments constituant le site Azur Yachts (textes, images, graphismes, logo, icônes, sons, logiciels, mise en page, base de données) sont la propriété exclusive d'Azur Yachts SAM ou font l'objet d'une licence d'utilisation accordée à Azur Yachts SAM.</p>
-                  <p>Toute reproduction, représentation, modification, publication, transmission ou dénaturation, totale ou partielle, du site ou de son contenu, par quelque procédé que ce soit et sur quelque support que ce soit, est interdite sans l'autorisation expresse et préalable d'Azur Yachts SAM.</p>
+                  <p>L'ensemble des éléments constituant le site VoyYacht (textes, images, graphismes, logo, icônes, sons, logiciels, mise en page, base de données) sont la propriété exclusive d'VoyYacht SAM ou font l'objet d'une licence d'utilisation accordée à VoyYacht SAM.</p>
+                  <p>Toute reproduction, représentation, modification, publication, transmission ou dénaturation, totale ou partielle, du site ou de son contenu, par quelque procédé que ce soit et sur quelque support que ce soit, est interdite sans l'autorisation expresse et préalable d'VoyYacht SAM.</p>
                   <h4>Contenu des utilisateurs</h4>
-                  <p>En publiant du contenu (photos, textes, avis) sur la Plateforme, les utilisateurs accordent à Azur Yachts une licence non exclusive, mondiale, gratuite et transférable, aux fins de l'exploitation de la Plateforme. Les utilisateurs garantissent disposer de tous les droits nécessaires sur le contenu publié.</p>
+                  <p>En publiant du contenu (photos, textes, avis) sur la Plateforme, les utilisateurs accordent à VoyYacht une licence non exclusive, mondiale, gratuite et transférable, aux fins de l'exploitation de la Plateforme. Les utilisateurs garantissent disposer de tous les droits nécessaires sur le contenu publié.</p>
                 </div>
               </div>
 
@@ -435,8 +435,8 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>La création de liens hypertextes pointant vers le site Azur Yachts est autorisée sans demande d'autorisation préalable, sous réserve que ces liens ne soient pas créés à des fins commerciales ou publicitaires et qu'ils n'induisent pas en erreur sur la nature, la qualité ou l'identité des services proposés par Azur Yachts.</p>
-                  <p>Azur Yachts décline toute responsabilité quant au contenu des sites tiers accessibles via des liens présents sur la Plateforme.</p>
+                  <p>La création de liens hypertextes pointant vers le site VoyYacht est autorisée sans demande d'autorisation préalable, sous réserve que ces liens ne soient pas créés à des fins commerciales ou publicitaires et qu'ils n'induisent pas en erreur sur la nature, la qualité ou l'identité des services proposés par VoyYacht.</p>
+                  <p>VoyYacht décline toute responsabilité quant au contenu des sites tiers accessibles via des liens présents sur la Plateforme.</p>
                 </div>
               </div>
             </div>
@@ -446,7 +446,7 @@ export default function LegalPage() {
           {activeTab === 'confidentialite' && (
             <div className="tab-content active">
               <div className="info-box gold" style={{ marginBottom: '2rem' }}>
-                🔒 Azur Yachts traite vos données personnelles dans le strict respect du Règlement Général sur la Protection des Données (RGPD — Règlement UE 2016/679) et de la législation monégasque applicable.
+                🔒 VoyYacht traite vos données personnelles dans le strict respect du Règlement Général sur la Protection des Données (RGPD — Règlement UE 2016/679) et de la législation monégasque applicable.
               </div>
 
               <div className="doc-section" id="rgpd-1">
@@ -458,7 +458,7 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>Le responsable du traitement des données personnelles collectées sur la Plateforme est la société <strong>Azur Yachts SAM</strong>, représentée par son Président-Directeur Général, Laurent Chevalier. Pour toute question relative à la protection de vos données, vous pouvez contacter notre Délégué à la Protection des Données (DPO) à l'adresse : <Link href="mailto:dpo@azuryachts.com">dpo@azuryachts.com</Link>.</p>
+                  <p>Le responsable du traitement des données personnelles collectées sur la Plateforme est la société <strong>VoyYacht SAM</strong>, représentée par son Président-Directeur Général, Laurent Chevalier. Pour toute question relative à la protection de vos données, vous pouvez contacter notre Délégué à la Protection des Données (DPO) à l'adresse : <Link href="mailto:dpo@voyyacht.com">dpo@voyyacht.com</Link>.</p>
                 </div>
               </div>
 
@@ -523,7 +523,7 @@ export default function LegalPage() {
                     <li><strong>Droit d'opposition :</strong> vous opposer au traitement de vos données pour raisons légitimes ;</li>
                     <li><strong>Droit à la limitation :</strong> demander la suspension du traitement de vos données.</li>
                   </ul>
-                  <p>Pour exercer ces droits, rendez-vous dans votre espace personnel (section "Activité du compte") ou contactez notre DPO à <Link href="mailto:dpo@azuryachts.com">dpo@azuryachts.com</Link>. Nous répondrons dans un délai maximum de 30 jours.</p>
+                  <p>Pour exercer ces droits, rendez-vous dans votre espace personnel (section "Activité du compte") ou contactez notre DPO à <Link href="mailto:dpo@voyyacht.com">dpo@voyyacht.com</Link>. Nous répondrons dans un délai maximum de 30 jours.</p>
                   <div className="info-box navy">
                     Vous disposez également du droit d'introduire une réclamation auprès de l'autorité de contrôle compétente. En France : la CNIL (www.cnil.fr). En Principauté de Monaco : la Commission de Contrôle des Informations Nominatives (CCIN).
                   </div>
@@ -587,7 +587,7 @@ export default function LegalPage() {
                   </ul>
                   <p>La désactivation des cookies essentiels peut empêcher le bon fonctionnement de la Plateforme, notamment la connexion à votre compte et le processus de réservation.</p>
                   <div className="info-box gold">
-                    Azur Yachts n'affiche aucune publicité et ne commercialise pas les données de ses utilisateurs. Les cookies marketing sont actuellement désactivés sur l'ensemble de la Plateforme.
+                    VoyYacht n'affiche aucune publicité et ne commercialise pas les données de ses utilisateurs. Les cookies marketing sont actuellement désactivés sur l'ensemble de la Plateforme.
                   </div>
                 </div>
               </div>

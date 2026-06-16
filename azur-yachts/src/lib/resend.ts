@@ -37,8 +37,8 @@ function baseTemplate(content: string): string {
         </div>
         <div class="body">${content}</div>
         <div class="footer">
-          © 2025 Azur Yachts SAM · Monaco · 
-          <a href="${process.env.NEXT_PUBLIC_APP_URL}" style="color: #b8985a;">azuryachts.com</a>
+          © 2025 VoyYacht SAM · Monaco · 
+          <a href="${process.env.NEXT_PUBLIC_APP_URL}" style="color: #b8985a;">voyyacht.com</a>
         </div>
       </div>
     </body>
@@ -53,11 +53,11 @@ export async function sendEmailVerification(email: string, firstName: string, to
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
-    subject: 'Confirmez votre adresse email — Azur Yachts',
+    subject: 'Confirmez votre adresse email — VoyYacht',
     html: baseTemplate(`
       <h2 class="title">Confirmez votre email</h2>
       <p class="text">Bonjour ${firstName},</p>
-      <p class="text">Merci de vous être inscrit sur Azur Yachts. Cliquez sur le bouton ci-dessous pour confirmer votre adresse email.</p>
+      <p class="text">Merci de vous être inscrit sur VoyYacht. Cliquez sur le bouton ci-dessous pour confirmer votre adresse email.</p>
       <a href="${link}" class="btn">Confirmer mon email</a>
       <p class="text" style="font-size:0.75rem;color:#8a8aaa;">Ce lien est valable 24 heures. Si vous n'avez pas créé de compte, ignorez cet email.</p>
     `),
@@ -69,7 +69,7 @@ export async function sendPasswordReset(email: string, firstName: string, token:
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
-    subject: 'Réinitialiser votre mot de passe — Azur Yachts',
+    subject: 'Réinitialiser votre mot de passe — VoyYacht',
     html: baseTemplate(`
       <h2 class="title">Réinitialiser votre mot de passe</h2>
       <p class="text">Bonjour ${firstName},</p>
@@ -119,7 +119,7 @@ export async function sendBookingRejected(
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
-    subject: `Votre réservation n'a pas pu être acceptée — Azur Yachts`,
+    subject: `Votre réservation n'a pas pu être acceptée — VoyYacht`,
     html: baseTemplate(`
       <h2 class="title">Réservation non acceptée</h2>
       <p class="text">Bonjour ${firstName},</p>
@@ -281,7 +281,7 @@ export async function sendAccountApproved(email: string, firstName: string) {
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
-    subject: 'Votre compte annonceur est vérifié ✓ — Azur Yachts',
+    subject: 'Votre compte annonceur est vérifié ✓ — VoyYacht',
     html: baseTemplate(`
       <h2 class="title">Compte vérifié ! ✓</h2>
       <p class="text">Bonjour ${firstName},</p>
@@ -296,11 +296,11 @@ export async function sendOtpEmail(email: string, firstName: string, otp: string
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
-    subject: 'Votre code de vérification Azur Yachts',
+    subject: 'Votre code de vérification VoyYacht',
     html: baseTemplate(`
       <h2 class="title">Vérification de votre compte</h2>
       <p class="text">Bonjour ${firstName},</p>
-      <p class="text">Merci de vous inscrire sur Azur Yachts en tant qu'Annonceur. Pour continuer, veuillez saisir le code de vérification ci-dessous :</p>
+      <p class="text">Merci de vous inscrire sur VoyYacht en tant qu'Annonceur. Pour continuer, veuillez saisir le code de vérification ci-dessous :</p>
       <div style="background: #fdf8f0; border: 2px dashed #d4b57a; padding: 1.5rem; text-align: center; font-size: 2rem; font-weight: bold; letter-spacing: 0.2em; color: #b8985a; margin: 1.5rem 0;">
         ${otp}
       </div>
@@ -313,7 +313,7 @@ export async function send2faEmail(email: string, firstName: string, otp: string
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
-    subject: 'Code de sécurité (2FA) — Azur Yachts',
+    subject: 'Code de sécurité (2FA) — VoyYacht',
     html: baseTemplate(`
       <h2 class="title">Connexion sécurisée</h2>
       <p class="text">Bonjour ${firstName},</p>

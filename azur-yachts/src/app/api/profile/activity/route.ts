@@ -158,7 +158,7 @@ export async function GET(req: NextRequest) {
     reviews.forEach(r => {
       const target = r.targetType === 'LISTING' && r.listing
         ? r.listing.title
-        : r.targetType === 'SITE' ? 'Azur Yachts' : 'un propriétaire';
+        : r.targetType === 'SITE' ? 'VoyYacht' : 'un propriétaire';
       const statusLabel = r.status === 'APPROVED' ? '' : r.status === 'REJECTED' ? ' (refusé)' : ' (en attente)';
       activityLog.push({
         id: `review-${r.id}`,

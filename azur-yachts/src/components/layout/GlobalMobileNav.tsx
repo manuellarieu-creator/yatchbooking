@@ -58,7 +58,7 @@ export default function GlobalMobileNav() {
       {/* SIDEBAR */}
       <aside className={`sidebar global-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-mobile-header">
-          <span className="nav-logo" style={{ color: 'var(--navy)' }}>AZUR<span>&nbsp;YACHTS</span></span>
+          <span className="nav-logo" style={{ color: 'var(--navy)' }}>VOY<span>&nbsp;YACHT</span></span>
           <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}><X size={24} /></button>
         </div>
         
@@ -200,7 +200,7 @@ export default function GlobalMobileNav() {
               <h4 style={{ fontSize: '1.1rem', color: 'var(--navy)', marginBottom: '1rem' }}>Comment pouvons-nous vous aider ?</h4>
               <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Notre équipe est disponible du lundi au samedi, de 9h à 19h.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <a href="mailto:support@azuryachts.com" className="btn btn-outline" style={{ justifyContent: 'center' }}>✉️ Envoyer un email</a>
+                <a href="mailto:support@voyyacht.com" className="btn btn-outline" style={{ justifyContent: 'center' }}>✉️ Envoyer un email</a>
                 <button className="btn btn-primary" onClick={() => setActiveModal(null)}>💬 Démarrer un chat</button>
               </div>
             </div>

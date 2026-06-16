@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db as prisma } from '@/lib/db';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Cache la réponse pour tous les visiteurs pendant 1 heure
 
 export async function GET() {
   try {

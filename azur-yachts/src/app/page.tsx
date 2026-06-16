@@ -298,7 +298,7 @@ export default function HomePage() {
                         </div>
                         <div>
                           <div className="testi-name">{review.author?.firstName} {review.author?.lastName}</div>
-                          <div className="testi-loc">{review.author?.countryResidence || 'Client Azur Yachts'}</div>
+                          <div className="testi-loc">{review.author?.countryResidence || 'Client VoyYacht'}</div>
                         </div>
                       </div>
                     </div>
@@ -350,7 +350,7 @@ export default function HomePage() {
       <footer>
         <div className="footer-grid">
           <div className="footer-brand">
-            <Link href="/" className="nav-logo">AZUR<span>&nbsp;YACHTS</span></Link>
+            <Link href="/" className="nav-logo">VOY<span>&nbsp;YACHT</span></Link>
             <p className="footer-desc">Spécialiste de la location de yachts de luxe depuis 2009. Nous mettons l'excellence au cœur de chaque expérience nautique.</p>
           </div>
           <div className="footer-col">
@@ -375,13 +375,13 @@ export default function HomePage() {
             <h4>Contact</h4>
             <ul>
               <li><Link href="#">+33 1 42 00 00 00</Link></li>
-              <li><Link href="#">contact@azuryachts.com</Link></li>
+              <li><Link href="#">contact@voyyacht.com</Link></li>
               <li><Link href="#">3, Quai des Milliardaires, Monaco</Link></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <span className="footer-copy">© 2025 Azur Yachts. Tous droits réservés.</span>
+          <span className="footer-copy">© 2025 VoyYacht. Tous droits réservés.</span>
           <span className="footer-copy">
             <Link href="/legal" style={{ color: 'inherit', textDecoration: 'none' }}>Mentions légales</Link> · 
             <Link href="/legal" style={{ color: 'inherit', textDecoration: 'none' }}> Confidentialité</Link> · 

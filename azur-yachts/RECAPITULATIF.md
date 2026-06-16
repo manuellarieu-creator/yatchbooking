@@ -1,8 +1,8 @@
-# 🚤 Azur Yachts - Récapitulatif Global du Projet
+# 🚤 VoyYacht - Récapitulatif Global du Projet
 
 *Date de mise à jour : 13 Juin 2026*
 
-Ce document synthétise l'état actuel du projet **Azur Yachts** (YachtBooking), ce qui a été implémenté et les tâches restantes ou points d'attention avant un lancement en production.
+Ce document synthétise l'état actuel du projet **VoyYacht** (YachtBooking), ce qui a été implémenté et les tâches restantes ou points d'attention avant un lancement en production.
 
 ---
 
@@ -66,6 +66,12 @@ Ce document synthétise l'état actuel du projet **Azur Yachts** (YachtBooking),
 - Ajout de la soumission du formulaire de connexion via la touche "Entrée".
 - Refonte et centralisation de la Sidebar Desktop pour le Dashboard, Favoris et Réservations.
 - Support du SEO de base (balises dynamiques, Sitemap dynamique et Robots.txt).
+
+### 9. Optimisations Performances & Supabase
+- **Keep-Alive :** Route API `/api/cron/keepalive` créée et configurée via cron-job.org pour empêcher la mise en pause hebdomadaire du Free Tier Supabase.
+- **Cache Serveur :** L'API très gourmande de la page d'accueil (`/api/home-stats`) a été mise en cache via `revalidate = 3600` pour diviser drastiquement les requêtes BDD.
+- **Anti-Spam (Debounce) :** Création du hook `useDebounce` implémenté sur les recherches locales.
+- **[REPORTÉ À PLUS TARD] Pagination Serveur :** Proposition d'architecture pour refondre le système de recherche des yachts (page `/listings`). L'idée sera d'envoyer les filtres au backend pour ne récupérer que 12 yachts à la fois (pagination stricte) au lieu de télécharger 50 yachts d'un coup et de les filtrer en Javascript. À planifier pour une prochaine itération.
 
 ---
 

@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 
 const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '';
 const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || '';
-const subject = process.env.NEXT_PUBLIC_APP_URL ? `mailto:contact@${new URL(process.env.NEXT_PUBLIC_APP_URL).hostname}` : 'mailto:contact@azuryachts.com';
+const subject = process.env.NEXT_PUBLIC_APP_URL ? `mailto:contact@${new URL(process.env.NEXT_PUBLIC_APP_URL).hostname}` : 'mailto:contact@voyyacht.com';
 
 if (vapidPublicKey && vapidPrivateKey) {
   webpush.setVapidDetails(

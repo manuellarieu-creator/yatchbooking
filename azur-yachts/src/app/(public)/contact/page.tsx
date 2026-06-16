@@ -95,7 +95,7 @@ export default function ContactPage() {
           <div className="info-icon">📧</div>
           <div>
             <div className="info-label">Email</div>
-            <div className="info-value">contact@azuryachts.com</div>
+            <div className="info-value">contact@voyyacht.com</div>
             <div className="info-sub">Réponse sous 2h ouvrées</div>
           </div>
         </div>
@@ -225,7 +225,7 @@ export default function ContactPage() {
                   {consentOk && <div className="consent-check"></div>}
                 </div>
                 <label style={{ fontSize: '.78rem', color: 'var(--text-mid)', lineHeight: 1.6, cursor: 'pointer' }} onClick={() => setConsentOk(!consentOk)}>
-                  J'accepte que mes données soient utilisées pour traiter ma demande conformément à la <Link href="/legal" style={{ color: 'var(--gold)', textDecoration: 'none' }}>politique de confidentialité</Link> d'Azur Yachts.
+                  J'accepte que mes données soient utilisées pour traiter ma demande conformément à la <Link href="/legal" style={{ color: 'var(--gold)', textDecoration: 'none' }}>politique de confidentialité</Link> d'VoyYacht.
                 </label>
               </div>
 
@@ -236,7 +236,7 @@ export default function ContactPage() {
               <div className="success-icon">✅</div>
               <div className="success-title">Message envoyé !</div>
               <p className="success-text">
-                Merci pour votre message. Un conseiller Azur Yachts vous répondra à <strong>{email}</strong> dans les 2 heures ouvrées.<br/><br/>
+                Merci pour votre message. Un conseiller VoyYacht vous répondra à <strong>{email}</strong> dans les 2 heures ouvrées.<br/><br/>
                 En attendant, n'hésitez pas à <Link href="/yachts" style={{ color: 'var(--gold)' }}>parcourir notre flotte</Link> pour trouver le yacht idéal.
               </p>
               <button onClick={resetForm} className="reset-btn">Envoyer un autre message</button>

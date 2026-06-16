@@ -226,7 +226,7 @@ export default function AuthPage() {
           </svg>
           <div className="panel-left-overlay"></div>
           <div className="panel-left-content">
-            <Link href="/" className="panel-logo">AZUR<span>&nbsp;YACHTS</span></Link>
+            <Link href="/" className="panel-logo">VOY<span>&nbsp;YACHT</span></Link>
             <div className="panel-hero">
               <span className="panel-eyebrow">Bienvenue à bord</span>
               <h2 className="panel-title">Votre aventure<br/>en mer commence<br/><em>ici</em></h2>
@@ -491,14 +491,14 @@ export default function AuthPage() {
                     <div className="check-row">
                       <div className={`check-box-custom ${cguChecked ? 'checked' : ''}`} onClick={() => setCguChecked(!cguChecked)}></div>
                       <label className="check-label" onClick={() => setCguChecked(!cguChecked)}>
-                        J'accepte les <Link href="/legal" target="_blank">Conditions Générales d'Utilisation</Link> et la <Link href="/legal" target="_blank">Politique de Confidentialité</Link> d'Azur Yachts. <span className="req">*</span>
+                        J'accepte les <Link href="/legal" target="_blank">Conditions Générales d'Utilisation</Link> et la <Link href="/legal" target="_blank">Politique de Confidentialité</Link> d'VoyYacht. <span className="req">*</span>
                       </label>
                     </div>
 
                     <div className="check-row">
                       <div className={`check-box-custom ${newsChecked ? 'checked' : ''}`} onClick={() => setNewsChecked(!newsChecked)}></div>
                       <label className="check-label" onClick={() => setNewsChecked(!newsChecked)}>
-                        Je souhaite recevoir les offres exclusives, codes promo et actualités d'Azur Yachts par email. (Optionnel)
+                        Je souhaite recevoir les offres exclusives, codes promo et actualités d'VoyYacht par email. (Optionnel)
                       </label>
                     </div>
 

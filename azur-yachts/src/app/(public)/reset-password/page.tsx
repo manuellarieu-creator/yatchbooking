@@ -152,7 +152,7 @@ export default function ResetPasswordPage() {
           </svg>
           <div className="panel-overlay"></div>
           <div className="panel-content">
-            <Link href="/" className="panel-logo">AZUR<span>&nbsp;YACHTS</span></Link>
+            <Link href="/" className="panel-logo">VOY<span>&nbsp;YACHT</span></Link>
             <div className="panel-hero">
               <span className="panel-eyebrow">Accès sécurisé</span>
               <h2 className="panel-title">Récupérez l'accès<br />à votre <em>espace</em></h2>
@@ -233,8 +233,8 @@ export default function ResetPasswordPage() {
                 <div className="tips-title">Vous ne trouvez pas l'email ?</div>
                 <div className="tip-item"><span>📁</span> Vérifiez votre dossier <strong>Spam / Indésirables</strong></div>
                 <div className="tip-item"><span>⏱</span> L'email peut prendre <strong>1 à 5 minutes</strong> à arriver</div>
-                <div className="tip-item"><span>✉️</span> L'expéditeur est <strong>noreply@azuryachts.com</strong></div>
-                <div className="tip-item"><span>🔍</span> Cherchez "Azur Yachts" dans votre boîte mail</div>
+                <div className="tip-item"><span>✉️</span> L'expéditeur est <strong>noreply@voyyacht.com</strong></div>
+                <div className="tip-item"><span>🔍</span> Cherchez "VoyYacht" dans votre boîte mail</div>
               </div>
 
               <div className="info-box success">
@@ -339,7 +339,7 @@ export default function ResetPasswordPage() {
               <div className="final-success">
                 <span className="final-icon">🔓</span>
                 <div className="final-title">Mot de passe<br />réinitialisé !</div>
-                <p className="final-sub">Votre nouveau mot de passe est actif. Vous pouvez maintenant vous connecter à votre espace Azur Yachts.</p>
+                <p className="final-sub">Votre nouveau mot de passe est actif. Vous pouvez maintenant vous connecter à votre espace VoyYacht.</p>
                 <div className="final-security-note">
                   🛡 Pour votre sécurité, toutes vos autres sessions actives ont été déconnectées. Si vous n'êtes pas à l'origine de cette réinitialisation, <a href="#" style={{ color: 'var(--success)' }}>contactez notre support immédiatement</a>.
                 </div>
