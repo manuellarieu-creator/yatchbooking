@@ -94,7 +94,7 @@ export default function HomePage() {
           </div>
           <div className="search-card">
             <div className="search-grid">
-              <div className="search-field">
+              <div className="search-field" style={{ position: 'relative' }}>
                 <label>Destination</label>
                 <input 
                   type="text" 
@@ -102,6 +102,35 @@ export default function HomePage() {
                   value={searchLocation}
                   onChange={(e) => setSearchLocation(e.target.value)}
                 />
+                
+                {/* TAGS DE DESTINATIONS */}
+                <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: '0.8rem', display: 'flex', gap: '0.6rem', flexWrap: 'wrap', width: '250%' }}>
+                  {[
+                    { id: 'Côte d\'Azur', title: 'Côte d’Azur', sub: 'top conversion' },
+                    { id: 'Ibiza', title: 'Ibiza', sub: 'summer hotspots' },
+                    { id: 'Mykonos', title: 'Mykonos', sub: 'luxury party yachts' },
+                    { id: 'Monaco', title: 'Monaco', sub: 'ultra luxe' }
+                  ].map(tag => (
+                    <button 
+                      key={tag.id} 
+                      onClick={() => setSearchLocation(tag.id)}
+                      style={{ background: 'rgba(10, 22, 40, 0.05)', border: '1px solid rgba(10, 22, 40, 0.1)', color: 'var(--navy)', padding: '0.35rem 0.8rem', borderRadius: '8px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
+                      onMouseOver={e => {
+                        e.currentTarget.style.background = 'var(--gold)';
+                        e.currentTarget.style.color = '#fff';
+                        e.currentTarget.style.borderColor = 'var(--gold)';
+                      }}
+                      onMouseOut={e => {
+                        e.currentTarget.style.background = 'rgba(10, 22, 40, 0.05)';
+                        e.currentTarget.style.color = 'var(--navy)';
+                        e.currentTarget.style.borderColor = 'rgba(10, 22, 40, 0.1)';
+                      }}
+                    >
+                      <div style={{ fontSize: '0.8rem', fontWeight: 600 }}>🔥 {tag.title}</div>
+                      <div style={{ fontSize: '0.6rem', opacity: 0.8, marginTop: '1px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{tag.sub}</div>
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="search-field">
                 <label>Départ</label>
@@ -122,35 +151,8 @@ export default function HomePage() {
               </Link>
             </div>
             
-            {/* TAGS POPULAIRES ET URGENCE */}
-            <div className="search-footer" style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-              <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1rem' }}>
-                {[
-                  { id: 'Côte d\'Azur', title: 'Côte d’Azur', sub: 'top conversion' },
-                  { id: 'Ibiza', title: 'Ibiza', sub: 'summer hotspots' },
-                  { id: 'Mykonos', title: 'Mykonos', sub: 'luxury party yachts' },
-                  { id: 'Monaco', title: 'Monaco', sub: 'ultra luxe' }
-                ].map(tag => (
-                  <button 
-                    key={tag.id} 
-                    onClick={() => setSearchLocation(tag.id)}
-                    style={{ background: 'rgba(10, 22, 40, 0.05)', border: '1px solid rgba(10, 22, 40, 0.1)', color: 'var(--navy)', padding: '0.4rem 1rem', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' }}
-                    onMouseOver={e => {
-                      e.currentTarget.style.background = 'var(--gold)';
-                      e.currentTarget.style.color = '#fff';
-                      e.currentTarget.style.borderColor = 'var(--gold)';
-                    }}
-                    onMouseOut={e => {
-                      e.currentTarget.style.background = 'rgba(10, 22, 40, 0.05)';
-                      e.currentTarget.style.color = 'var(--navy)';
-                      e.currentTarget.style.borderColor = 'rgba(10, 22, 40, 0.1)';
-                    }}
-                  >
-                    <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>🔥 {tag.title}</div>
-                    <div style={{ fontSize: '0.65rem', opacity: 0.8, marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{tag.sub}</div>
-                  </button>
-                ))}
-              </div>
+            {/* URGENCE MESSAGE */}
+            <div className="search-footer" style={{ marginTop: '5rem', textAlign: 'center' }}>
               <p style={{ color: 'var(--gold)', fontSize: '0.85rem', margin: 0, fontWeight: 500, letterSpacing: '0.03em' }}>
                 <span style={{ display: 'inline-block', width: '8px', height: '8px', background: 'var(--gold)', borderRadius: '50%', marginRight: '6px', animation: 'pulse 2s infinite' }}></span>
                 Disponibilité limitée cette semaine en Méditerranée
