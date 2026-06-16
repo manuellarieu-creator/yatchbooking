@@ -130,7 +130,7 @@ export default function AboutPage() {
             <div className="mission-img-main">
               <div className="mission-img-main-content">
                 <div className="big-anchor">⚓</div>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem', color: 'rgba(255,255,255,.15)', letterSpacing: '.1em' }}>VOYYACHT</div>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem', color: 'rgba(255,255,255,.15)', letterSpacing: '.1em' }}>VOY<span>YACHT</span></div>
               </div>
             </div>
             <div className="mission-img-sub">

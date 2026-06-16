@@ -174,7 +174,7 @@ function PaymentContent() {
       {/* NAV */}
       <nav className="pay-nav">
         <button className="nav-back" onClick={() => router.push('/dashboard')}>← Retour au tableau de bord</button>
-        <Link href="/" className="nav-logo">VOYYACHT</Link>
+        <Link href="/" className="nav-logo">VOY<span>YACHT</span></Link>
         <div className="nav-secure">🔒 Paiement sécurisé</div>
       </nav>
 

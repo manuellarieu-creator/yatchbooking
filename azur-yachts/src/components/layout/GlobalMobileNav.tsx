@@ -58,7 +58,7 @@ export default function GlobalMobileNav() {
       {/* SIDEBAR */}
       <aside className={`sidebar global-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-mobile-header">
-          <span className="nav-logo" style={{ color: 'var(--navy)' }}>VOYYACHT</span>
+          <span className="nav-logo" style={{ color: 'var(--navy)' }}>VOY<span>YACHT</span></span>
           <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}><X size={24} /></button>
         </div>
         
