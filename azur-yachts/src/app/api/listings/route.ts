@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
         boatType, boatLength, boatYear, cabins: cabins ? Number(cabins) : null, requiresCaptain,
         skipperAvailable, maxRentalHours, deliveryAvailable,
         deliveryFee, deliveryPricing, features: features || [], cleaningFee, securityDeposit: securityDeposit || 0,
-        status: 'PENDING',
+        status: (session.user as any).role === 'ADMIN' ? 'ACTIVE' : 'PENDING',
         ownerId: finalOwnerId,
         images: {
           create: images?.map((img: any, idx: number) => ({
