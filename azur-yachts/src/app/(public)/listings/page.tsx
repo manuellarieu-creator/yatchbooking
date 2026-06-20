@@ -1,12 +1,16 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { Suspense, useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
 import { formatPrice } from '@/lib/utils';
 import './listings.css';
 
-export default function ListingsPage() {
+function ListingsContent() {
+  const searchParams = useSearchParams();
+  const initialLocation = searchParams.get('location') || '';
+
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,7 +66,7 @@ export default function ListingsPage() {
 
 
   // ── Filters State ──
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialLocation);
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [priceMin, setPriceMin] = useState(500);
   const [priceMax, setPriceMax] = useState(15000);
@@ -439,5 +443,13 @@ export default function ListingsPage() {
         <div className="toast-bar"></div>
       </div>
     </div>
+  );
+}
+
+export default function ListingsPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '4rem', textAlign: 'center' }}>Chargement...</div>}>
+      <ListingsContent />
+    </Suspense>
   );
 }

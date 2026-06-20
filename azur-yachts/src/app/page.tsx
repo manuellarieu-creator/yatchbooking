@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/utils';
 import './home.css';
 
 export default function HomePage() {
+  const router = useRouter();
   const [featuredYachts, setFeaturedYachts] = useState<any[]>([]);
   const [stats, setStats] = useState<any>({
     totalYachts: null,
@@ -135,7 +137,10 @@ export default function HomePage() {
                 ].map(tag => (
                   <button 
                     key={tag.id} 
-                    onClick={() => setSearchLocation(tag.id)}
+                    onClick={() => {
+                      setSearchLocation(tag.id);
+                      router.push(`/listings?location=${encodeURIComponent(tag.id)}`);
+                    }}
                     style={{ background: 'rgba(10, 22, 40, 0.05)', border: '1px solid rgba(10, 22, 40, 0.1)', color: 'var(--navy)', padding: '0.4rem 1rem', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' }}
                     onMouseOver={e => {
                       e.currentTarget.style.background = 'var(--gold)';
