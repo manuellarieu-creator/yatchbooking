@@ -28,6 +28,7 @@ export const metadata: Metadata = {
 };
 
 import BackToTop from "@/components/layout/BackToTop";
+import AutoLogout from "@/components/auth/AutoLogout";
 
 export default async function RootLayout({
   children,
@@ -50,6 +51,7 @@ export default async function RootLayout({
           {session?.user && (
             <Suspense fallback={null}>
               <GlobalMobileNav />
+              <AutoLogout />
             </Suspense>
           )}
           {children}
