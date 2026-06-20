@@ -804,23 +804,25 @@ function PublishForm() {
 
                   {navigationMode === 'INCLUDED' && (
                     <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
-                      <div className="field-row" style={{ alignItems: 'center' }}>
-                        <div className="field" style={{ flex: 1, marginBottom: 0 }}>
-                          <label className="toggle" style={{ gap: '1rem' }}>
-                            <input type="checkbox" checked={captainReq} onChange={e => setCaptainReq(e.target.checked)} />
-                            <span className="toggle-slider"></span>
-                            <span style={{ fontWeight: 500, color: 'var(--navy)' }}>Capitaine inclus</span>
-                          </label>
+                      <div className="toggle-row" style={{ padding: 0, borderBottom: 'none' }}>
+                        <div className="toggle-info">
+                          <div className="toggle-label">Capitaine inclus</div>
+                          <div className="toggle-desc">Cochez si un capitaine est inclus sans frais supplémentaires</div>
                         </div>
+                        <label className="toggle">
+                          <input type="checkbox" checked={captainReq} onChange={e => setCaptainReq(e.target.checked)} />
+                          <span className="toggle-slider"></span>
+                        </label>
                       </div>
-                      <div className="field-row" style={{ alignItems: 'center' }}>
-                        <div className="field" style={{ flex: 1, marginBottom: 0 }}>
-                          <label className="toggle" style={{ gap: '1rem' }}>
-                            <input type="checkbox" checked={skipperOpt} onChange={e => setSkipperOpt(e.target.checked)} />
-                            <span className="toggle-slider"></span>
-                            <span style={{ fontWeight: 500, color: 'var(--navy)' }}>Skipper inclus</span>
-                          </label>
+                      <div className="toggle-row" style={{ padding: 0, borderBottom: 'none' }}>
+                        <div className="toggle-info">
+                          <div className="toggle-label">Skipper inclus</div>
+                          <div className="toggle-desc">Cochez si un skipper est inclus sans frais supplémentaires</div>
                         </div>
+                        <label className="toggle">
+                          <input type="checkbox" checked={skipperOpt} onChange={e => setSkipperOpt(e.target.checked)} />
+                          <span className="toggle-slider"></span>
+                        </label>
                       </div>
                     </div>
                   )}
