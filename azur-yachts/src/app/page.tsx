@@ -87,7 +87,7 @@ export default function HomePage() {
           <path d="M0 40 Q180 10 360 40 Q540 70 720 40 Q900 10 1080 40 Q1260 70 1440 40 L1440 80 L0 80Z" fill="#b8985a"/>
         </svg>
 
-        <div style={{ textAlign: 'center', zIndex: 2, position: 'relative', width: '100%', maxWidth: '1100px', padding: '2rem' }}>
+        <div className="hero-wrapper" style={{ textAlign: 'center', zIndex: 2, position: 'relative', width: '100%', maxWidth: '1100px' }}>
           <div className="hero-content">
             <span className="hero-eyebrow">Yacht Charter de Prestige</span>
             <h1 className="hero-title">Naviguez vers<br/><em>l'Extraordinaire</em></h1>

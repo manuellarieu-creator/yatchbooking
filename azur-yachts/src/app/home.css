@@ -419,7 +419,9 @@
 }
 
 @media (max-width: 600px) {
-  .home-container .hero { padding-top: 100px; padding-bottom: 40px; }
+  .home-container .hero { padding-top: 85px; padding-bottom: 20px; }
+  .home-container .hero-wrapper { padding: 0 1rem; }
+  .home-container .hero-content { padding: 0 0 1rem 0; }
   .home-container section { padding: 4rem 1.5rem; }
   .home-container .nav-top { padding: 1rem 1.5rem; }
   .home-container .hero-title { font-size: 2.5rem; }
