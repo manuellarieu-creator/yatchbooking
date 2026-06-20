@@ -13,14 +13,20 @@ import {
 import './yacht.css';
 
 const EQUIPMENT_CATEGORIES: Record<string, string[]> = {
-  "ÉQUIPEMENTS EXTÉRIEURS": ["Taud de soleil", "Douche de pont", "Douche extérieure", "Table extérieure", "Table de cockpit", "Enceintes extérieures", "Pont en teck", "Échelle de bain", "Filet de sécurité"],
-  "CONFORT": ["Eau chaude", "Dessalinisateur", "Air conditionné", "Climatisation", "WC électrique", "Serviettes de bain", "Prise USB", "Wi-Fi"],
-  "ÉQUIPEMENTS NAVIGATION": ["Annexe", "Guindeau électrique", "Pilote automatique", "GPS", "VHF", "GPS & VHF", "Écran de navigation", "Propulseur d'étrave"],
-  "CUISINE": ["Four/cuisinière", "Machine à café", "Cuisine équipée"],
-  "LOISIRS": ["Caméra vidéo", "Système audio", "Paddle", "Canoë-kayak", "Bain de soleil"],
-  "VOILES & GRÉEMENT": ["Grand-voile lattée", "Génois"],
-  "ÉNERGIE À BORD": ["Générateur", "Panneaux solaires", "Inverseur électrique", "Prise 220V"],
-  "SPORTS NAUTIQUES": ["Ski nautique", "Moteur hors-bord"]
+  "Confort, Énergie & Cuisine": [
+    'Eau chaude', 'Dessalinisateur', 'Air conditionné', 'WC électrique', 'Serviettes de bain', 'Prise USB', 'Wi-Fi',
+    'Four/cuisinière', 'Machine à café', 'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V'
+  ],
+  "Équipements Extérieurs & Navigation": [
+    'Taud de soleil', 'Douche extérieure', 'Table extérieure', 'Enceintes extérieures', 'Pont en teck', 'Échelle de bain',
+    'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'VHF', 'Grand-voile lattée', 'Génois', 'Filet de sécurité'
+  ],
+  "Autres & Loisirs": [
+    'Caméra vidéo', 'Système audio', 'Bain de soleil'
+  ],
+  "Équipements en Option": [
+    'Paddle', 'Canoë-kayak', 'Ski nautique', 'Moteur hors-bord', 'Matériel de plongée', 'Bouée tractée', 'Literie supplémentaire'
+  ]
 };
 
 const getIconForEquipment = (name: string) => {
