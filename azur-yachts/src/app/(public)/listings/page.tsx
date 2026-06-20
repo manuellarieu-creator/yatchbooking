@@ -397,7 +397,7 @@ function ListingsContent() {
                       <div className="card-type">
                         <span>{yacht.type}</span>
                         <span className="sep">|</span>
-                        <span>{yacht.country}</span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>⚓ {yacht.location}</span>
                         <span className="sep">|</span>
                         <span className="card-top-rating">★ {yacht.rating.toFixed(1)}</span>
                       </div>
@@ -412,10 +412,10 @@ function ListingsContent() {
                       
                       <div className="card-info">
                         <div className="card-info-row">
-                          {yacht.captain === 'oui' ? <span className="card-pill pill-captain">⚓ Capitaine Requis</span> : <span className="card-pill pill-nocaptain">Capitaine Optionnel</span>}
+                          {yacht.captain === 'oui' ? <span className="card-pill pill-captain">👨‍✈️ Capitaine Requis</span> : <span className="card-pill pill-nocaptain">👨‍✈️ Capitaine Optionnel</span>}
                         </div>
                         <div className="card-info-row">
-                          {yacht.skipper === 'oui' ? <span className="card-pill pill-skipper">✓ Skipper Dispo</span> : <span className="card-pill pill-noskipper">Skipper Optionnel</span>}
+                          {yacht.skipper === 'oui' ? <span className="card-pill pill-skipper">⛵ Skipper Dispo</span> : <span className="card-pill pill-noskipper">⛵ Skipper Optionnel</span>}
                         </div>
                       </div>
                       
