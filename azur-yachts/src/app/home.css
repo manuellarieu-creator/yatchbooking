@@ -506,8 +506,11 @@
     gap: 2rem;
     padding: 1rem 0;
   }
-  .infinite-scroll-track > div {
+  .infinite-scroll-track > div, .infinite-scroll-group {
     flex-shrink: 0;
+    width: max-content;
+    display: flex;
+    gap: 2rem;
   }
   .infinite-scroll-track:hover {
     animation-play-state: paused;
