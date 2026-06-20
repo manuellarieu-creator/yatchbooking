@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
       include: {
         client: true,
         payment: true,
+        listing: true,
       },
     })
 
