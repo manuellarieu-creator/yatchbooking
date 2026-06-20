@@ -88,7 +88,7 @@ function PublishForm() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const res = await fetch('/api/admin/users');
+        const res = await fetch('/api/admin/users/list');
         const data = await res.json();
         if (data.users) {
           setAdvertisers(data.users);
