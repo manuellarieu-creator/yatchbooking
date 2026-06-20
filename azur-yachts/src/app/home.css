@@ -426,6 +426,9 @@
   .home-container .nav-top { padding: 1rem 1.5rem; }
   .home-container .hero-title { font-size: 2.5rem; }
   .home-container .hero-subtitle { font-size: 0.9rem; }
+  .home-container .section-title { font-size: 1.8rem; line-height: 1.1; }
+  .home-container .see-more { font-size: 0.58rem; text-align: right; }
+  .home-container .yachts-header { gap: 1rem; align-items: flex-end; }
   .home-container .search-card { padding: 1.5rem; border-radius: 8px; }
   .home-container .search-grid { grid-template-columns: 1fr; gap: 1rem; }
   .home-container .stats-bar { grid-template-columns: 1fr 1fr; padding: 2rem 1rem; gap: 1.5rem 0.5rem; }
