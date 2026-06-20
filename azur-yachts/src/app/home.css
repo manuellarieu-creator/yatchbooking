@@ -492,28 +492,36 @@
 }
 
 @media (max-width: 768px) {
+
   .infinite-scroll-wrapper {
-    overflow: hidden;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
     width: 100%;
-    position: relative;
+    scrollbar-width: none;
   }
-  /* Le voile (::before et ::after) a été retiré selon la demande */
+  .infinite-scroll-wrapper::-webkit-scrollbar {
+    display: none;
+  }
 
   .infinite-scroll-track {
     display: flex;
     width: max-content;
-    animation: scrollLeft 30s linear infinite;
-    gap: 2rem;
-    padding: 1rem 0;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
   }
+  /* Hide cloned groups on mobile since we use native snap */
+  .infinite-scroll-track > .infinite-scroll-group:nth-child(n+2) {
+    display: none !important;
+  }
+  
   .infinite-scroll-track > div, .infinite-scroll-group {
     flex-shrink: 0;
     width: max-content;
     display: flex;
-    gap: 2rem;
-  }
-  .infinite-scroll-track:hover {
-    animation-play-state: paused;
+    gap: 1.5rem;
+    padding-right: 0 !important;
   }
 
   /* Override existing grids for infinite scroll */
@@ -521,17 +529,20 @@
     min-width: 200px;
     flex-shrink: 0;
     border-right: none;
+    scroll-snap-align: center;
   }
   .infinite-scroll-track .step {
     min-width: 280px;
     max-width: 280px;
     flex-shrink: 0;
     border-right: none;
+    scroll-snap-align: center;
   }
   .infinite-scroll-track .testi-card {
     min-width: 300px;
     max-width: 300px;
     flex-shrink: 0;
+    scroll-snap-align: center;
   }
 }
 

@@ -16,6 +16,27 @@ export default function HomePage() {
     settings: null,
     reviews: []
   });
+
+  // Auto-scroll for mobile sliders
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (window.innerWidth <= 768) {
+        const sliders = document.querySelectorAll('.infinite-scroll-wrapper');
+        sliders.forEach(slider => {
+          if (slider.matches(':active') || slider.matches(':hover')) return;
+          const maxScroll = slider.scrollWidth - slider.clientWidth;
+          if (maxScroll > 0) {
+            let nextScroll = slider.scrollLeft + slider.clientWidth * 0.8;
+            if (nextScroll >= maxScroll - 10) {
+              nextScroll = 0;
+            }
+            slider.scrollTo({ left: nextScroll, behavior: 'smooth' });
+          }
+        });
+      }
+    }, 4500);
+    return () => clearInterval(interval);
+  }, []);
   const [loadingStats, setLoadingStats] = useState(true);
   const [email, setEmail] = useState('');
   const [newsStatus, setNewsStatus] = useState('');
