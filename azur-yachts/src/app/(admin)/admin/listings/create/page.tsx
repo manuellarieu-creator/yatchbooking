@@ -175,7 +175,12 @@ function PublishForm() {
           setLanguages(Array.isArray(langs) ? langs : ['Français', 'Anglais']);
 
           setTitle(l.title);
-          setBoatType(l.boatType);
+          if (['Voilier', 'Catamaran', 'Motor Yacht', 'Superyacht'].includes(l.boatType)) {
+            setBoatType(l.boatType);
+          } else {
+            setBoatType('Autre');
+            setCustomBoatType(l.boatType);
+          }
           setYear(l.boatYear?.toString() || '');
           setPortCountry(l.country);
           setPortCity(l.location);
@@ -707,12 +712,12 @@ function PublishForm() {
                   <div className="form-card-title">Plan du bateau (Optionnel)</div>
                   <div className="field">
                     <label className="label">Plan du bateau</label>
-                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
                       <input 
                         type="file" 
                         accept="image/*" 
                         style={{ display: 'none' }} 
-                        id="boatPlanInputAdmin"
+                        id="boatPlanInput"
                         onChange={async (e) => {
                           if (e.target.files && e.target.files[0]) {
                             const url = await uploadToCloudinary(e.target.files[0]);
@@ -723,12 +728,17 @@ function PublishForm() {
                       <button 
                         type="button" 
                         className="btn btn-outline" 
-                        onClick={() => document.getElementById('boatPlanInputAdmin')?.click()}
+                        onClick={() => document.getElementById('boatPlanInput')?.click()}
                       >
                         Uploader une image
                       </button>
-                      <input type="text" className="input" style={{ flex: 1 }} value={boatPlanUrl} onChange={e => setBoatPlanUrl(e.target.value)} placeholder="URL de l'image ou upload..." />
+                      <input type="text" className="input" style={{ flex: 1, minWidth: '200px' }} value={boatPlanUrl} onChange={e => setBoatPlanUrl(e.target.value)} placeholder="URL de l'image ou upload..." />
                     </div>
+                    {boatPlanUrl && (
+                      <div style={{ marginTop: '1rem', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.5rem', display: 'inline-block', backgroundColor: '#f8fafc' }}>
+                        <img src={boatPlanUrl} alt="Plan du bateau" style={{ maxHeight: '200px', maxWidth: '100%', objectFit: 'contain', borderRadius: '4px' }} />
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -791,6 +801,29 @@ function PublishForm() {
                       ❌ Équipage & navigation non inclus
                     </button>
                   </div>
+
+                  {navigationMode === 'INCLUDED' && (
+                    <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem' }}>
+                      <div className="field-row" style={{ alignItems: 'center' }}>
+                        <div className="field" style={{ flex: 1, marginBottom: 0 }}>
+                          <label className="toggle" style={{ gap: '1rem' }}>
+                            <input type="checkbox" checked={captainReq} onChange={e => setCaptainReq(e.target.checked)} />
+                            <span className="toggle-slider"></span>
+                            <span style={{ fontWeight: 500, color: 'var(--navy)' }}>Capitaine inclus</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="field-row" style={{ alignItems: 'center' }}>
+                        <div className="field" style={{ flex: 1, marginBottom: 0 }}>
+                          <label className="toggle" style={{ gap: '1rem' }}>
+                            <input type="checkbox" checked={skipperOpt} onChange={e => setSkipperOpt(e.target.checked)} />
+                            <span className="toggle-slider"></span>
+                            <span style={{ fontWeight: 500, color: 'var(--navy)' }}>Skipper inclus</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {navigationMode === 'NOT_INCLUDED' && (
                     <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
