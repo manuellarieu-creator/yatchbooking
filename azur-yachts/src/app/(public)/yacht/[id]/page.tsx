@@ -379,7 +379,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem', cursor: yacht.reviewCount > 0 ? 'pointer' : 'default', textDecoration: yacht.reviewCount > 0 ? 'underline' : 'none', color: 'var(--text-mid)', fontSize: '0.95rem' }}
             >
               <span style={{ color: 'var(--gold)', fontSize: '1.1rem' }}>★</span>
-              <strong style={{ color: 'var(--text)' }}>{yacht.averageRating > 0 ? yacht.averageRating : 'Nouveau'}</strong>
+              <strong style={{ color: 'var(--text)' }}>{yacht.averageRating > 0 ? yacht.averageRating : '0 avis'}</strong>
               {yacht.reviewCount > 0 && <span>({yacht.reviewCount} avis)</span>}
             </div>
             <h1 className="listing-title">{yacht.title}</h1>
@@ -592,7 +592,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                       <>
                         {'★'.repeat(Math.round(Number(avg)))} <span>({revs.length} avis propriétaire)</span>
                       </>
-                    ) : 'Nouveau propriétaire';
+                    ) : '0 avis';
                   })()}
                 </div>
                 <div className="owner-meta">

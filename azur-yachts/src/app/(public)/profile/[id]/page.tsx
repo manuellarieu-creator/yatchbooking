@@ -56,7 +56,7 @@ export default function PublicProfilePage({ params }: { params: { id: string } }
                 onClick={() => user.receivedReviews?.length > 0 && setIsReviewsModalOpen(true)}
                 style={{ cursor: user.receivedReviews?.length > 0 ? 'pointer' : 'default', textDecoration: user.receivedReviews?.length > 0 ? 'underline' : 'none', color: 'var(--gold)' }}
               >
-                {Number(avgRating) > 0 ? `${avgRating} ★ (${user.receivedReviews.length} avis)` : 'Nouveau'}
+                {Number(avgRating) > 0 ? `${avgRating} ★ (${user.receivedReviews.length} avis)` : '0 avis'}
               </strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
