@@ -394,10 +394,18 @@
 .home-container .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .home-container .reveal.visible { opacity: 1; transform: translateY(0); }
 
+@media (max-width: 1024px) {
+  .home-container section { padding: 5rem 3rem; }
+  .home-container .nav-top { padding: 1rem 3rem; }
+  .home-container .search-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .home-container .search-btn { grid-column: 1 / -1; width: 100%; margin-top: 0.5rem; }
+  .home-container .search-card { padding: 2rem; }
+  .home-container .yachts-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+}
+
 @media (max-width: 900px) {
   .home-container .nav-links { display: none; }
-  .home-container .hero-title { font-size: 3rem; }
-  .home-container .search-grid { grid-template-columns: 1fr; }
+  .home-container .hero-title { font-size: 3.5rem; }
   .home-container .stats-bar { grid-template-columns: 1fr 1fr; gap: 1rem; padding: 2rem; }
   .home-container .stat { border-right: none; }
   .home-container .dest-grid { grid-template-columns: 1fr 1fr; }
@@ -412,8 +420,10 @@
 @media (max-width: 600px) {
   .home-container section { padding: 4rem 1.5rem; }
   .home-container .nav-top { padding: 1rem 1.5rem; }
-  .home-container .hero-title { font-size: 2.2rem; }
-  .home-container .search-card { padding: 1.5rem; }
+  .home-container .hero-title { font-size: 2.5rem; }
+  .home-container .hero-subtitle { font-size: 0.9rem; }
+  .home-container .search-card { padding: 1.5rem; border-radius: 8px; }
+  .home-container .search-grid { grid-template-columns: 1fr; gap: 1rem; }
   .home-container .stats-bar { grid-template-columns: 1fr 1fr; padding: 2rem 1rem; gap: 1.5rem 0.5rem; }
   .home-container .stat-num { font-size: 2.2rem; }
   .home-container .dest-grid { grid-template-columns: 1fr; }
@@ -421,10 +431,12 @@
   .home-container .cta-title { font-size: 2rem; }
   .home-container .cta-btn, .home-container .cta-btn-outline { display: block; width: 100%; margin: 0 0 1rem 0; }
   .home-container .newsletter { padding: 3rem 1.5rem; }
-  .home-container .newsletter-form { flex-direction: column; gap: 1rem; }
+  .home-container .newsletter-text h3 { font-size: 1.6rem; }
+  .home-container .newsletter-form { flex-direction: column; gap: 1rem; width: 100%; }
   .home-container .newsletter-submit { width: 100%; }
   .home-container footer { padding: 3rem 1.5rem; }
-  .home-container .yacht-img { height: 200px; }
+  .home-container .yacht-img { height: 220px; }
+  .home-container .search-footer { flex-direction: column; }
 }
 
 /* -- INFINITE SCROLL (MOBILE ONLY) -- */
