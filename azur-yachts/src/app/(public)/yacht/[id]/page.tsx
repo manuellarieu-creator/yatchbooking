@@ -328,6 +328,8 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           {/* Header */}
           <div className="listing-header fade-in">
             <div className="listing-meta-top" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <span className="listing-location" style={{ fontWeight: 500 }}>🚤 {yacht.boatType}</span>
+              <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--border)' }}></div>
               <span className="listing-location">📍 {yacht.location} — {yacht.country}</span>
               <div style={{ width: '1px', height: '20px', background: 'var(--border)' }}></div>
               <Link href={`/profile/${yacht.ownerId}`} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', cursor: 'pointer' }}>
@@ -523,20 +525,26 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
           <hr className="section-sep" />
 
-          {/* Boat Plan */}
-          {(yacht.boatPlanUrl || yacht.berths || yacht.bathrooms) && (
+          {/* Boat Plans */}
+          {(yacht.boatPlanUrls?.length > 0 || yacht.berths || yacht.bathrooms) && (
             <div className="fade-in">
-              <div className="sec-title">Plan du bateau</div>
-              <div className="boat-plan-container" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                {yacht.boatPlanUrl ? (
-                  <div className="boat-plan-image-wrapper" style={{ flex: '1 1 400px', border: '1px solid #e0e0e0', borderRadius: '12px', padding: '1rem', background: '#fff' }}>
-                    <img src={yacht.boatPlanUrl} alt="Plan du bateau" style={{ width: '100%', height: 'auto', display: 'block' }} />
+              <div className="sec-title">Plans du bateau</div>
+              <div className="boat-plan-container" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                
+                {yacht.boatPlanUrls && yacht.boatPlanUrls.length > 0 ? (
+                  <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {yacht.boatPlanUrls.map((url: string, idx: number) => (
+                      <div key={idx} className="boat-plan-image-wrapper" style={{ border: '1px solid #e0e0e0', borderRadius: '12px', padding: '1rem', background: '#fff' }}>
+                        <img src={url} alt={`Plan du bateau ${idx + 1}`} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '8px' }} />
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <div className="boat-plan-image-wrapper" style={{ flex: '1 1 400px', border: '1px solid #e0e0e0', borderRadius: '12px', padding: '3rem 1rem', background: '#f9f9f9', textAlign: 'center', color: '#888' }}>
                     Plan non disponible
                   </div>
                 )}
+
                 <div className="boat-plan-info" style={{ flex: '1 1 200px', display: 'flex', flexDirection: 'column', gap: '1.5rem', fontSize: '1.1rem', color: '#333' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <span style={{ fontSize: '1.5rem', opacity: 0.7 }}>👥</span>

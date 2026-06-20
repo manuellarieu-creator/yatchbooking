@@ -116,7 +116,7 @@ function PublishForm() {
   const [cabins, setCabins] = useState('');
   const [berths, setBerths] = useState('');
   const [bathrooms, setBathrooms] = useState('');
-  const [boatPlanUrl, setBoatPlanUrl] = useState('');
+  const [boatPlanUrls, setBoatPlanUrls] = useState<string[]>([]);
   const [adults, setAdults] = useState(8);
   const [children, setChildren] = useState(2);
   const [hours, setHours] = useState('');
@@ -184,7 +184,7 @@ function PublishForm() {
           setCabins(l.cabins?.toString() || '');
           setBerths(l.berths?.toString() || '');
           setBathrooms(l.bathrooms?.toString() || '');
-          setBoatPlanUrl(l.boatPlanUrl || '');
+          setBoatPlanUrls(l.boatPlanUrls || []);
           setAdults(l.maxAdults);
           setChildren(l.maxChildren);
           setHours(l.maxRentalHours?.toString() || '24');
@@ -222,7 +222,7 @@ function PublishForm() {
     return () => clearTimeout(t);
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
-    title, boatType, year, portCountry, portCity, length, cabins, berths, bathrooms, boatPlanUrl, adults, children, hours, captainReq, skipperOpt, features, isAtSea,
+    title, boatType, year, portCountry, portCity, length, cabins, berths, bathrooms, boatPlanUrls, adults, children, hours, captainReq, skipperOpt, features, isAtSea,
     photos, desc, priceDay, cleaningFee, securityDeposit, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail
   ]);
 
@@ -421,7 +421,7 @@ function PublishForm() {
         cabins: Number(cabins) || 0,
         berths: Number(berths) || 0,
         bathrooms: Number(bathrooms) || 0,
-        boatPlanUrl: boatPlanUrl,
+        boatPlanUrls: boatPlanUrls,
         requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, isAtSea, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing, features,
@@ -717,19 +717,24 @@ function PublishForm() {
                 </div>
 
                 <div className="form-card">
-                  <div className="form-card-title">Plan du bateau (Optionnel)</div>
+                  <div className="form-card-title">Plans du bateau (Optionnel)</div>
                   <div className="field">
-                    <label className="label">Plan du bateau</label>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+                    <label className="label">Vous pouvez ajouter plusieurs plans (ex: plusieurs étages)</label>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', marginBottom: '1rem' }}>
                       <input 
                         type="file" 
                         accept="image/*" 
+                        multiple
                         style={{ display: 'none' }} 
                         id="boatPlanInput"
                         onChange={async (e) => {
-                          if (e.target.files && e.target.files[0]) {
-                            const url = await uploadToCloudinary(e.target.files[0]);
-                            setBoatPlanUrl(url);
+                          if (e.target.files) {
+                            const newUrls = [];
+                            for (let i = 0; i < e.target.files.length; i++) {
+                              const url = await uploadToCloudinary(e.target.files[i]);
+                              newUrls.push(url);
+                            }
+                            setBoatPlanUrls([...boatPlanUrls, ...newUrls]);
                           }
                         }} 
                       />
@@ -738,13 +743,23 @@ function PublishForm() {
                         className="btn btn-outline" 
                         onClick={() => document.getElementById('boatPlanInput')?.click()}
                       >
-                        Uploader une image
+                        Uploader un ou plusieurs plans
                       </button>
-                      <input type="text" className="input" style={{ flex: 1, minWidth: '200px' }} value={boatPlanUrl} onChange={e => setBoatPlanUrl(e.target.value)} placeholder="URL de l'image ou upload..." />
                     </div>
-                    {boatPlanUrl && (
-                      <div style={{ marginTop: '1rem', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.5rem', display: 'inline-block', backgroundColor: '#f8fafc' }}>
-                        <img src={boatPlanUrl} alt="Plan du bateau" style={{ maxHeight: '200px', maxWidth: '100%', objectFit: 'contain', borderRadius: '4px' }} />
+                    {boatPlanUrls.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                        {boatPlanUrls.map((url, idx) => (
+                          <div key={idx} style={{ position: 'relative', border: '1px solid #e2e8f0', borderRadius: '8px', padding: '0.5rem', backgroundColor: '#f8fafc' }}>
+                            <img src={url} alt={`Plan ${idx + 1}`} style={{ height: '120px', objectFit: 'contain', borderRadius: '4px' }} />
+                            <button 
+                              type="button" 
+                              style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--danger)', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}
+                              onClick={() => setBoatPlanUrls(boatPlanUrls.filter((_, i) => i !== idx))}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>

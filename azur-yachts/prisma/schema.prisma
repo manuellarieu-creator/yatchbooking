@@ -193,7 +193,7 @@ model Listing {
   cabins            Int?
   berths            Int?
   bathrooms         Int?
-  boatPlanUrl       String?
+  boatPlanUrls      String[]      @default([])
   requiresCaptain   Boolean       @default(false)
   skipperAvailable  Boolean       @default(false)
   maxRentalHours    Int?

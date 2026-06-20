@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
     const {
       title, description, price, country, location,
       latitude, longitude, maxAdults, maxChildren,
-      boatType, boatLength, boatYear, cabins, berths, bathrooms, boatPlanUrl, requiresCaptain,
+      boatType, boatLength, boatYear, cabins, berths, bathrooms, boatPlanUrls, requiresCaptain,
       skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
       deliveryFee, deliveryPricing, features, cleaningFee, securityDeposit, images, services, availabilities, ownerId,
       navigationMode, fuelQuantity, fuelPricePerDay
@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
         cabins: cabins ? Number(cabins) : null, 
         berths: berths ? Number(berths) : null,
         bathrooms: bathrooms ? Number(bathrooms) : null,
-        boatPlanUrl,
+        boatPlanUrls: boatPlanUrls || [],
         requiresCaptain,
         skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
         deliveryFee, deliveryPricing, features: features || [], cleaningFee, securityDeposit: securityDeposit || 0,
