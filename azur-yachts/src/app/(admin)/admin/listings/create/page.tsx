@@ -474,9 +474,9 @@ function PublishForm() {
                         }
                       }}>
                         <option value="">(Moi-même)</option>
-                        {advertisers.map(adv => (
+                        {advertisers.filter(adv => adv.isManagedByAdmin).map(adv => (
                           <option key={adv.id} value={adv.id}>
-                            {adv.firstName} {adv.lastName} {adv.isManagedByAdmin ? '(Géré)' : ''}
+                            {adv.firstName} {adv.lastName}
                           </option>
                         ))}
                       </select>
