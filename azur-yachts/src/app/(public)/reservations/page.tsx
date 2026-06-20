@@ -165,32 +165,82 @@ function ReservationsContent() {
     }
   }, [chatModalOpen, activeConvId]);
 
-  const handleDownloadBookingFile = (resa: any, title: string) => {
+  const handleDownloadBookingFile = async (resa: any, title: string) => {
     if (!resa) return;
-    const content = `VOYYACHT - ${title.toUpperCase()}\n\n` +
-      `Référence: ${resa.id}\n\n` +
-      `DÉTAILS DU YACHT\n` +
-      `Nom: ${resa.name}\n` +
-      `Type: ${resa.type}\n` +
-      `Lieu: ${resa.location}\n\n` +
-      `DÉTAILS DU VOYAGE\n` +
-      `Arrivée: ${resa.arrival}\n` +
-      `Départ: ${resa.departure}\n` +
-      `Invités: ${resa.guests}\n` +
-      `Durée: ${resa.nights} nuits\n\n` +
-      `PRIX ET PAIEMENT\n` +
-      `Montant Total: €${resa.price.toLocaleString()}\n` +
-      `Statut: ${resa.status}\n` +
-      `Méthode: ${resa.priceNote}\n`;
-  
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `VoyYacht_${title.replace(/\s+/g, '_')}_${resa.id}.txt`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    triggerToast(`${title} téléchargé.`, '📄');
+    triggerToast('Génération du PDF en cours...', '📄');
+    
+    if (!(window as any).html2pdf) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    }
+
+    const htmlContent = `
+      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #1e293b;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #e2a200; padding-bottom: 20px; margin-bottom: 30px;">
+          <div>
+            <div style="font-size: 32px; font-weight: 600; color: #0a2040; letter-spacing: 2px;">VOY<span style="color: #e2a200;">YACHT</span></div>
+            <div style="font-size: 14px; color: #64748b; margin-top: 5px;">Location de yachts de prestige</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 24px; font-weight: 600; color: #0a2040;">${title.toUpperCase()}</div>
+            <div style="font-size: 14px; color: #64748b; margin-top: 5px;">Réf: ${resa.id}</div>
+            <div style="font-size: 14px; color: #64748b;">Date: ${new Date().toLocaleDateString('fr-FR')}</div>
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+          <h3 style="font-size: 20px; color: #0a2040; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">Détails du Yacht</h3>
+          <table style="width: 100%; font-size: 15px; border-collapse: collapse;">
+            <tr><td style="padding: 8px 0; color: #64748b; width: 150px;">Nom</td><td style="padding: 8px 0; font-weight: 500;">${resa.name}</td></tr>
+            <tr><td style="padding: 8px 0; color: #64748b;">Type</td><td style="padding: 8px 0; font-weight: 500;">${resa.type}</td></tr>
+            <tr><td style="padding: 8px 0; color: #64748b;">Port d'attache</td><td style="padding: 8px 0; font-weight: 500;">${resa.location.replace('📍 ', '')}</td></tr>
+          </table>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+          <h3 style="font-size: 20px; color: #0a2040; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">Détails du Séjour</h3>
+          <table style="width: 100%; font-size: 15px; border-collapse: collapse;">
+            <tr><td style="padding: 8px 0; color: #64748b; width: 150px;">Arrivée prévue</td><td style="padding: 8px 0; font-weight: 500;">${resa.arrival}</td></tr>
+            <tr><td style="padding: 8px 0; color: #64748b;">Départ prévu</td><td style="padding: 8px 0; font-weight: 500;">${resa.departure}</td></tr>
+            <tr><td style="padding: 8px 0; color: #64748b;">Durée</td><td style="padding: 8px 0; font-weight: 500;">${resa.nights} nuits</td></tr>
+            <tr><td style="padding: 8px 0; color: #64748b;">Passagers</td><td style="padding: 8px 0; font-weight: 500;">${resa.guests}</td></tr>
+          </table>
+        </div>
+
+        <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 40px;">
+          <h3 style="font-size: 20px; color: #0a2040; margin-top: 0; margin-bottom: 15px;">Facturation & Paiement</h3>
+          <table style="width: 100%; font-size: 15px; border-collapse: collapse;">
+            <tr><td style="padding: 8px 0; color: #64748b;">Méthode de paiement</td><td style="padding: 8px 0; text-align: right; font-weight: 500;">${resa.priceNote}</td></tr>
+            <tr><td style="padding: 8px 0; color: #64748b;">Statut de réservation</td><td style="padding: 8px 0; text-align: right; font-weight: 500; text-transform: capitalize;">${resa.status}</td></tr>
+            <tr><td style="padding: 15px 0 5px; font-size: 18px; font-weight: 600; color: #0a2040; border-top: 1px solid #e2e8f0; margin-top: 10px;">Montant Total (TTC)</td><td style="padding: 15px 0 5px; font-size: 20px; font-weight: 600; color: #e2a200; text-align: right; border-top: 1px solid #e2e8f0;">€${resa.price.toLocaleString()}</td></tr>
+          </table>
+        </div>
+
+        <div style="text-align: center; font-size: 12px; color: #94a3b8; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+          Ce document est un récapitulatif officiel généré par VoyYacht.<br/>
+          Pour toute question, contactez notre support à support@voyyacht.com.
+        </div>
+      </div>
+    `;
+
+    const opt = {
+      margin:       10,
+      filename:     `VoyYacht_${title.replace(/\s+/g, '_')}_${resa.id}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = htmlContent;
+    (window as any).html2pdf().set(opt).from(wrapper).save().then(() => {
+      triggerToast('PDF téléchargé avec succès !', '✅');
+    });
   };
 
   const filteredReservations = useMemo(() => {
