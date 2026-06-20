@@ -36,6 +36,7 @@ function PublishForm() {
   // Step 2
   const [title, setTitle] = useState('');
   const [boatType, setBoatType] = useState('');
+  const [customBoatType, setCustomBoatType] = useState('');
   const [year, setYear] = useState('');
   const [portCountry, setPortCountry] = useState('France');
   const [portCity, setPortCity] = useState('');
@@ -293,7 +294,7 @@ function PublishForm() {
       const payload = {
         title, description: desc, price: Number(priceDay) || 0, country: portCountry, location: portCity,
         maxAdults: Number(adults) || 1, maxChildren: Number(children) || 0,
-        boatType, boatLength: Number(length) || 0, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
+        boatType: boatType === 'Autre' ? customBoatType : boatType, boatLength: Number(length) || 0, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, isAtSea, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing, features,
         cleaningFee: Number(cleaningFee) || 0,
@@ -499,8 +500,11 @@ function PublishForm() {
                         <option>Catamaran</option>
                         <option>Motor Yacht</option>
                         <option>Superyacht</option>
-                        <option>Autre</option>
+                        <option value="Autre">Autre</option>
                       </select>
+                      {boatType === 'Autre' && (
+                        <input className="input" type="text" style={{ marginTop: '0.5rem' }} value={customBoatType} onChange={e => setCustomBoatType(e.target.value)} placeholder="Précisez le type de bateau" />
+                      )}
                     </div>
                     <div className="field">
                       <label className="label">Année de mise en service <span className="req">*</span></label>
