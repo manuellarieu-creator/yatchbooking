@@ -71,7 +71,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="home-container">
+    <main className="home-container">
 
       {/* HERO */}
       <section className="hero">
@@ -451,6 +451,6 @@ export default function HomePage() {
           </span>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }

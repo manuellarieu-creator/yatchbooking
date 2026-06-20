@@ -57,7 +57,13 @@
 }
 .home-container .hero-bg {
   position: absolute; inset: 0;
-  background: linear-gradient(135deg, #061221 0%, #0a2540 40%, #0f3a60 70%, #1a5a80 100%);
+  background: url('/images/hero_yacht.png') center/cover no-repeat;
+}
+.home-container .hero-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.4) 50%, rgba(10,22,40,0.85) 100%),
+              linear-gradient(to bottom, rgba(10,22,40,0.6) 0%, rgba(10,22,40,0.1) 40%, #0a1628 100%);
 }
 .home-container .hero-deco {
   position: absolute; inset: 0; opacity: 0.06;
@@ -93,11 +99,15 @@
 
 /* SEARCH BAR */
 .home-container .search-card {
-  background: rgba(255,255,255,0.97); border-radius: 0;
-  padding: 2rem 2.5rem; max-width: 780px; width: 100%;
-  margin: 0 auto; position: relative; z-index: 2;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+  background: rgba(255, 255, 255, 0.85); 
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-top: 3px solid var(--gold);
+  border-radius: 12px;
+  padding: 2rem 2.5rem; max-width: 820px; width: 100%;
+  margin: 0 auto; position: relative; z-index: 2;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
   animation: fadeUp 1.2s 0.3s ease both;
 }
 .home-container .search-grid {
@@ -109,19 +119,24 @@
   letter-spacing: 0.15em; color: var(--text-light); margin-bottom: 0.5rem;
 }
 .home-container .search-field input, .home-container .search-field select {
-  width: 100%; border: none; border-bottom: 1.5px solid var(--sand);
+  width: 100%; border: none; border-bottom: 1px solid rgba(10,22,40,0.15);
   background: transparent; padding: 0.6rem 0;
-  font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--text-dark);
-  outline: none; transition: border-color 0.3s;
+  font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--navy);
+  outline: none; transition: border-color 0.3s, background 0.3s;
+}
+.home-container .search-field select {
+  cursor: pointer; appearance: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230a1628' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right center;
 }
 .home-container .search-field input:focus, .home-container .search-field select:focus { border-bottom-color: var(--gold); }
 .home-container .search-btn {
-  background: var(--navy); color: #fff;
-  border: none; padding: 0.8rem 2rem; cursor: pointer;
+  background: var(--navy); color: #fff; border-radius: 8px;
+  border: none; padding: 0.9rem 2rem; cursor: pointer;
   font-family: 'Jost', sans-serif; font-size: 0.75rem; letter-spacing: 0.15em;
-  text-transform: uppercase; transition: background 0.3s; white-space: nowrap;
+  text-transform: uppercase; transition: all 0.3s ease; white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(10,22,40,0.3);
 }
-.home-container .search-btn:hover { background: var(--gold); }
+.home-container .search-btn:hover { background: var(--gold); box-shadow: 0 8px 25px rgba(184,152,90,0.4); transform: translateY(-2px); }
 
 /* SECTION COMMONS */
 .home-container section { padding: 6rem 4rem; }
@@ -173,6 +188,10 @@
 .home-container .dest-overlay {
   position: absolute; inset: 0;
   background: linear-gradient(to top, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.1) 60%);
+  transition: background 0.5s ease;
+}
+.home-container .dest-card:hover .dest-overlay {
+  background: linear-gradient(to top, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.3) 60%);
 }
 .home-container .dest-info {
   position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem; text-align: left;
@@ -244,9 +263,9 @@
 }
 .home-container .yacht-img-inner {
   position: absolute; inset: 0; background-size: cover; background-position: center;
-  transition: transform 0.5s ease;
+  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.home-container .yacht-card:hover .yacht-img-inner { transform: scale(1.05); }
+.home-container .yacht-card:hover .yacht-img-inner { transform: scale(1.08); }
 .home-container .yacht-badge {
   position: absolute; top: 1rem; right: 1rem; z-index: 2;
   background: var(--gold); color: #fff; padding: 0.25rem 0.7rem;
@@ -263,11 +282,11 @@
 .home-container .yacht-price span { font-size: 0.7rem; font-family: 'Jost', sans-serif; color: var(--text-light); }
 .home-container .book-btn {
   background: transparent; border: 1px solid var(--navy); color: var(--navy);
-  padding: 0.5rem 1.2rem; font-family: 'Jost', sans-serif;
+  padding: 0.5rem 1.2rem; font-family: 'Jost', sans-serif; border-radius: 6px;
   font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
-  cursor: pointer; transition: all 0.3s;
+  cursor: pointer; transition: all 0.3s ease;
 }
-.home-container .yacht-card:hover .book-btn { background: var(--navy); color: #fff; }
+.home-container .yacht-card:hover .book-btn { background: var(--navy); color: #fff; box-shadow: 0 4px 12px rgba(10,22,40,0.2); }
 
 /* CTA BANNER */
 .home-container .cta-banner {
