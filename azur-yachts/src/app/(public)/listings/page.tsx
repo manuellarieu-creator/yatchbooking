@@ -41,7 +41,7 @@ function ListingsContent() {
             badge: l.owner?.advertiserTier === 'PREMIUM' ? 'Populaire' : l.owner?.advertiserTier === 'PLATINIUM' ? 'Premium' : '',
             badgeColor: 'var(--gold)',
             isVerified: l.owner?.videoVerified || false,
-            ownerImage: l.owner?.image || '',
+            ownerImage: l.owner?.avatar || '',
             imgUrl: l.images?.[0]?.url || '',
             isFav: l.isFav || false,
             isAtSea: l.isAtSea || false
