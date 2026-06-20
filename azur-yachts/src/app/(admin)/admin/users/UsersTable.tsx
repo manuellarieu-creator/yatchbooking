@@ -16,7 +16,25 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
 
   // Managed Profile Modal State
   const [showManagedModal, setShowManagedModal] = useState(false);
-  const [managedData, setManagedData] = useState({ firstName: '', lastName: '', email: '', phone: '', languages: '', countryResidence: '', advertiserTier: 'STANDARD' });
+  const [managedData, setManagedData] = useState({ firstName: '', lastName: '', email: '', phone: '', languages: '', countryResidence: '', advertiserTier: 'STANDARD', avatar: '' });
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+  const uploadToCloudinary = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'azur_yachts');
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dt7v4cuxm'}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      return data.secure_url;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
 
   const filteredUsers = tab === 'pending' 
     ? users.filter(u => u.status === 'PENDING')
@@ -79,8 +97,16 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
       return;
     }
     setLoadingId('creating_managed');
+    
+    let avatarUrl = managedData.avatar;
+    if (avatarFile) {
+      const uploadedUrl = await uploadToCloudinary(avatarFile);
+      if (uploadedUrl) avatarUrl = uploadedUrl;
+    }
+
     const payload = {
       ...managedData,
+      avatar: avatarUrl,
       languages: managedData.languages.split(',').map(l => l.trim()).filter(l => l),
     };
 
@@ -94,7 +120,8 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
       if (res.ok && data.user) {
         setUsers([data.user, ...users]);
         setShowManagedModal(false);
-        setManagedData({ firstName: '', lastName: '', email: '', phone: '', languages: '', countryResidence: '', advertiserTier: 'STANDARD' });
+        setManagedData({ firstName: '', lastName: '', email: '', phone: '', languages: '', countryResidence: '', advertiserTier: 'STANDARD', avatar: '' });
+        setAvatarFile(null);
       } else {
         alert(data.error || "Erreur lors de la création");
       }
@@ -248,6 +275,42 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
                   </div>
                 </div>
               )}
+
+              {selectedUser.isManagedByAdmin && (
+                <div style={{ background: '#fdf8f0', padding: '1rem', borderRadius: '8px', gridColumn: '1 / -1', border: '1px solid #f3e8d2' }}>
+                  <strong style={{ display: 'block', fontSize: '0.75rem', color: '#927334', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Avatar du profil géré</strong>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#ccc', flexShrink: 0, overflow: 'hidden' }}>
+                      {selectedUser.avatar ? <img src={selectedUser.avatar} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: '#fff' }}>{selectedUser.firstName[0]}</div>}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={async (e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            setLoadingId(selectedUser.id);
+                            const url = await uploadToCloudinary(e.target.files[0]);
+                            if (url) {
+                              const res = await fetch(`/api/admin/users/${selectedUser.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ avatar: url }) });
+                              if (res.ok) {
+                                const updated = { ...selectedUser, avatar: url };
+                                setSelectedUser(updated);
+                                setUsers(users.map(u => u.id === selectedUser.id ? updated : u));
+                              } else {
+                                alert("Erreur lors de la mise à jour de l'avatar");
+                              }
+                            }
+                            setLoadingId(null);
+                          }
+                        }} 
+                        style={{ fontSize: '0.8rem' }}
+                      />
+                      <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.2rem' }}>Téléchargez une nouvelle image pour la mettre à jour instantanément.</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {selectedUser.role === 'ADVERTISER' && !selectedUser.isManagedByAdmin && (
@@ -382,6 +445,18 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
                   <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#334155' }}>Nom *</label>
                   <input required type="text" value={managedData.lastName} onChange={e => setManagedData({...managedData, lastName: e.target.value})} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
                 </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: '#334155' }}>Photo de profil (Avatar)</label>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={e => setAvatarFile(e.target.files ? e.target.files[0] : null)} 
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1', background: '#f8fafc' }} 
+                />
+                <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.25rem' }}>OU entrez l'URL d'une image existante :</div>
+                <input type="url" value={managedData.avatar} onChange={e => setManagedData({...managedData, avatar: e.target.value})} placeholder="https://..." style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1', marginTop: '0.25rem' }} />
               </div>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>

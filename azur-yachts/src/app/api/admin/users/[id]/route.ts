@@ -10,7 +10,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const { status } = await req.json();
+    const { status, avatar } = await req.json();
 
     const user = await prisma.user.findUnique({
       where: { id: params.id }
@@ -20,9 +20,13 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Utilisateur introuvable' }, { status: 404 });
     }
 
+    const dataToUpdate: any = {};
+    if (status !== undefined) dataToUpdate.status = status;
+    if (avatar !== undefined) dataToUpdate.avatar = avatar;
+
     const updatedUser = await prisma.user.update({
       where: { id: params.id },
-      data: { status }
+      data: dataToUpdate
     });
 
     // Envoi de l'email si approbation
