@@ -6,7 +6,16 @@ import { useSearchParams } from 'next/navigation';
 import '@/app/(public)/publish/publish.css';
 
 const TOTAL_STEPS = 7;
-const PREDEFINED_FEATURES = ['Pilote automatique', 'Douche de pont', 'Moteur hors-bord', 'Eau chaude', 'GPS & VHF', 'Table de cockpit', 'Système audio', 'Écran de navigation', 'Guindeau électrique', 'Climatisation', 'Propulseur d\'étrave', 'Cuisine équipée', 'Bain de soleil', 'Taud de soleil'];
+const PREDEFINED_FEATURES = [
+  'Taud de soleil', 'Douche extérieure', 'Table extérieure', 'Enceintes extérieures', 'Pont en teck', 'Échelle de bain',
+  'Eau chaude', 'Dessalinisateur', 'Air conditionné', 'WC électrique', 'Serviettes de bain', 'Prise USB',
+  'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'VHF',
+  'Four/cuisinière', 'Machine à café',
+  'Caméra vidéo', 'Système audio',
+  'Grand-voile lattée', 'Génois',
+  'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V',
+  'Ski nautique', 'Filet de sécurité', 'Wi-Fi', 'Paddle', 'Canoë-kayak'
+];
 
 type Service = {
   id: string;

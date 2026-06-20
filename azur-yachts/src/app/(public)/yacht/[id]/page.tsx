@@ -3,7 +3,53 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/utils';
+import { 
+  Umbrella, ShowerHead, Grid2X2, Speaker, Waves, 
+  Thermometer, Droplets, Snowflake, Bath, Plug, 
+  Navigation, Anchor, Cpu, Compass, Radio, 
+  Flame, Coffee, Video, Music, Sun, Sailboat, 
+  Zap, SunMedium, Shield, Wifi, Check 
+} from 'lucide-react';
 import './yacht.css';
+
+const EQUIPMENT_CATEGORIES: Record<string, string[]> = {
+  "ÉQUIPEMENTS EXTÉRIEURS": ["Taud de soleil", "Douche de pont", "Douche extérieure", "Table extérieure", "Table de cockpit", "Enceintes extérieures", "Pont en teck", "Échelle de bain", "Filet de sécurité"],
+  "CONFORT": ["Eau chaude", "Dessalinisateur", "Air conditionné", "Climatisation", "WC électrique", "Serviettes de bain", "Prise USB", "Wi-Fi"],
+  "ÉQUIPEMENTS NAVIGATION": ["Annexe", "Guindeau électrique", "Pilote automatique", "GPS", "VHF", "GPS & VHF", "Écran de navigation", "Propulseur d'étrave"],
+  "CUISINE": ["Four/cuisinière", "Machine à café", "Cuisine équipée"],
+  "LOISIRS": ["Caméra vidéo", "Système audio", "Paddle", "Canoë-kayak", "Bain de soleil"],
+  "VOILES & GRÉEMENT": ["Grand-voile lattée", "Génois"],
+  "ÉNERGIE À BORD": ["Générateur", "Panneaux solaires", "Inverseur électrique", "Prise 220V"],
+  "SPORTS NAUTIQUES": ["Ski nautique", "Moteur hors-bord"]
+};
+
+const getIconForEquipment = (name: string) => {
+  const n = name.toLowerCase();
+  if (n.includes('taud')) return <Umbrella className="w-4 h-4" />;
+  if (n.includes('douche')) return <ShowerHead className="w-4 h-4" />;
+  if (n.includes('table')) return <Grid2X2 className="w-4 h-4" />;
+  if (n.includes('enceinte') || n.includes('audio')) return <Speaker className="w-4 h-4" />;
+  if (n.includes('teck') || n.includes('échelle') || n.includes('paddle') || n.includes('ski nautique') || n.includes('canoë')) return <Waves className="w-4 h-4" />;
+  if (n.includes('eau chaude')) return <Thermometer className="w-4 h-4" />;
+  if (n.includes('dessalinisateur') || n.includes('wc')) return <Droplets className="w-4 h-4" />;
+  if (n.includes('air cond') || n.includes('climatisation')) return <Snowflake className="w-4 h-4" />;
+  if (n.includes('serviette')) return <Bath className="w-4 h-4" />;
+  if (n.includes('prise') || n.includes('inverseur')) return <Plug className="w-4 h-4" />;
+  if (n.includes('annexe') || n.includes('navigation')) return <Navigation className="w-4 h-4" />;
+  if (n.includes('guindeau')) return <Anchor className="w-4 h-4" />;
+  if (n.includes('pilote')) return <Cpu className="w-4 h-4" />;
+  if (n.includes('gps')) return <Compass className="w-4 h-4" />;
+  if (n.includes('vhf')) return <Radio className="w-4 h-4" />;
+  if (n.includes('four') || n.includes('cuisine')) return <Flame className="w-4 h-4" />;
+  if (n.includes('café')) return <Coffee className="w-4 h-4" />;
+  if (n.includes('caméra') || n.includes('video')) return <Video className="w-4 h-4" />;
+  if (n.includes('bain de soleil') || n.includes('solaire')) return <Sun className="w-4 h-4" />;
+  if (n.includes('voile') || n.includes('génois')) return <Sailboat className="w-4 h-4" />;
+  if (n.includes('générateur')) return <Zap className="w-4 h-4" />;
+  if (n.includes('filet')) return <Shield className="w-4 h-4" />;
+  if (n.includes('wi-fi') || n.includes('wifi')) return <Wifi className="w-4 h-4" />;
+  return <Check className="w-4 h-4" />;
+};
 
 export default function YachtPage({ params }: { params: { id: string } }) {
   const [toastMsg, setToastMsg] = useState('');
@@ -336,16 +382,96 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
           {/* Equipment */}
           <div className="fade-in">
-            <div className="sec-title">Équipements à bord</div>
-            {yacht.features && yacht.features.length > 0 ? (
-              <div className="equip-grid">
-                {yacht.features.map((f: string) => (
-                  <div key={f} className="equip-item"><span className="equip-icon">✔️</span> {f}</div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ color: 'var(--text-light)', fontStyle: 'italic', fontSize: '0.9rem' }}>Aucun équipement renseigné pour le moment.</p>
-            )}
+            <div className="sec-title">Équipements</div>
+            <p style={{ color: 'var(--text-mid)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Découvrez tous les équipements présents à bord de ce bateau.</p>
+            
+            {(() => {
+              const groupedFeatures: Record<string, string[]> = {};
+              let hasFeatures = false;
+              if (yacht.features && yacht.features.length > 0) {
+                hasFeatures = true;
+                yacht.features.forEach((f: string) => {
+                  let catFound = "AUTRES";
+                  for (const [cat, items] of Object.entries(EQUIPMENT_CATEGORIES)) {
+                    if (items.includes(f)) {
+                      catFound = cat;
+                      break;
+                    }
+                  }
+                  if (!groupedFeatures[catFound]) groupedFeatures[catFound] = [];
+                  groupedFeatures[catFound].push(f);
+                });
+              }
+
+              const groupedServices: Record<string, any[]> = {};
+              let hasServices = false;
+              if (yacht.services && yacht.services.length > 0) {
+                const optionalServices = yacht.services.filter((s: any) => !s.isRequired);
+                if (optionalServices.length > 0) {
+                  hasServices = true;
+                  optionalServices.forEach((s: any) => {
+                    let catFound = "AUTRES";
+                    for (const [cat, items] of Object.entries(EQUIPMENT_CATEGORIES)) {
+                      if (items.some(item => item.toLowerCase() === s.name.toLowerCase())) {
+                        catFound = cat;
+                        break;
+                      }
+                    }
+                    if (!groupedServices[catFound]) groupedServices[catFound] = [];
+                    groupedServices[catFound].push(s);
+                  });
+                }
+              }
+
+              if (!hasFeatures && !hasServices) {
+                return <p style={{ color: 'var(--text-light)', fontStyle: 'italic', fontSize: '0.9rem' }}>Aucun équipement renseigné pour le moment.</p>;
+              }
+
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                  {hasFeatures && (
+                    <div>
+                      <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>À bord</h3>
+                      {Object.entries(groupedFeatures).map(([cat, items]) => (
+                        <div key={cat} style={{ marginBottom: '1.5rem' }}>
+                          <h4 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-light)', letterSpacing: '0.05em', marginBottom: '0.8rem' }}>{cat}</h4>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
+                            {items.map(item => (
+                              <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>
+                                <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(item)}</span>
+                                {item}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {hasServices && (
+                    <div>
+                      <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>En option</h3>
+                      {Object.entries(groupedServices).map(([cat, items]) => (
+                        <div key={cat} style={{ marginBottom: '1.5rem' }}>
+                          <h4 style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-light)', letterSpacing: '0.05em', marginBottom: '0.8rem' }}>{cat}</h4>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
+                            {items.map(s => (
+                              <div key={s.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>
+                                <span style={{ color: 'var(--text-light)', display: 'flex', marginTop: '0.2rem' }}>{getIconForEquipment(s.name)}</span>
+                                <div>
+                                  <div>{s.name}</div>
+                                  <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{s.price} € / {s.unit === 'PER_DAY' ? 'jour' : s.unit === 'PER_BOOKING' ? 'réservation' : 'personne'}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
 
           <hr className="section-sep" />
