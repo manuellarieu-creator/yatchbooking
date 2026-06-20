@@ -112,10 +112,11 @@ export default function HomePage() {
                 <label>Type de yacht</label>
                 <select>
                   <option>Tous types</option>
-                  <option>Voilier</option>
-                  <option>Catamaran</option>
-                  <option>Motor Yacht</option>
-                  <option>Superyacht</option>
+                  <option value="Voilier">⛵ Voilier</option>
+                  <option value="Catamaran">🚤 Catamaran</option>
+                  <option value="Motor Yacht">🛥️ Motor Yacht</option>
+                  <option value="Superyacht">🚢 Superyacht</option>
+                  <option value="Cabine Cruiser">🛥️ Cabine Cruiser</option>
                 </select>
               </div>
               <Link href={`/listings${searchLocation ? `?location=${encodeURIComponent(searchLocation)}` : ''}`} style={{ textDecoration: 'none' }}>

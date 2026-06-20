@@ -669,11 +669,12 @@ function PublishForm() {
                       <label className="label">Type de bateau <span className="req">*</span></label>
                       <select className="select" value={boatType} onChange={e => setBoatType(e.target.value)}>
                         <option value="">Sélectionner…</option>
-                        <option>Voilier</option>
-                        <option>Catamaran</option>
-                        <option>Motor Yacht</option>
-                        <option>Superyacht</option>
-                        <option value="Autre">Autre</option>
+                        <option value="Voilier">⛵ Voilier</option>
+                        <option value="Catamaran">🚤 Catamaran</option>
+                        <option value="Motor Yacht">🛥️ Motor Yacht</option>
+                        <option value="Superyacht">🚢 Superyacht</option>
+                        <option value="Cabine Cruiser">🛥️ Cabine Cruiser</option>
+                        <option value="Autre">⚓ Autre</option>
                       </select>
                       {boatType === 'Autre' && (
                         <input className="input" type="text" style={{ marginTop: '0.5rem' }} value={customBoatType} onChange={e => setCustomBoatType(e.target.value)} placeholder="Précisez le type de bateau" />

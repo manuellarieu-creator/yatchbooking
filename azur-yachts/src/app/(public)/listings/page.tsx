@@ -260,10 +260,12 @@ export default function ListingsPage() {
           <div className="filter-group">
             <div className="filter-group-title">Type de bateau</div>
             <div className="check-list">
-              {['Voilier', 'Catamaran', 'Motor Yacht', 'Superyacht'].map(t => (
+              {['Voilier', 'Catamaran', 'Motor Yacht', 'Superyacht', 'Cabine Cruiser'].map(t => (
                 <label key={t} className="check-item">
                   <input type="checkbox" checked={types.includes(t)} onChange={() => toggleArrayFilter(types, t, setTypes)} />
-                  <span className="check-box"></span><span className="check-label">{t}</span>
+                  <span className="check-box"></span><span className="check-label">
+                    {t === 'Voilier' ? '⛵' : t === 'Catamaran' ? '🚤' : t === 'Motor Yacht' ? '🛥️' : t === 'Superyacht' ? '🚢' : t === 'Cabine Cruiser' ? '🛥️' : ''} {t}
+                  </span>
                 </label>
               ))}
             </div>
