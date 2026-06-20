@@ -43,6 +43,25 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       data: { viewCount: { increment: 1 } },
     })
 
+    // Compute owner stats
+    let ownerAverageRating = 0;
+    let ownerReviewCount = 0;
+    if (listing.ownerId) {
+      const agg = await prisma.review.aggregate({
+        where: { targetId: listing.ownerId, targetType: 'OWNER', status: 'APPROVED' },
+        _avg: { rating: true },
+        _count: true
+      });
+      ownerAverageRating = agg._avg.rating ? Number(agg._avg.rating.toFixed(1)) : 0;
+      ownerReviewCount = agg._count || 0;
+    }
+    
+    // Attach to owner object
+    if (listing.owner) {
+      (listing.owner as any).averageRating = ownerAverageRating;
+      (listing.owner as any).reviewCount = ownerReviewCount;
+    }
+
     // Fetch similar listings
     const similar = await prisma.listing.findMany({
       where: {

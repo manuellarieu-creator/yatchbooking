@@ -330,7 +330,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             <div className="listing-meta-top" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <span className="listing-location">📍 {yacht.location} — {yacht.country}</span>
               <div style={{ width: '1px', height: '20px', background: 'var(--border)' }}></div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Link href={`/profile/${yacht.ownerId}`} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', cursor: 'pointer' }}>
                 <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: 'var(--border)', overflow: 'hidden', flexShrink: 0 }}>
                   {yacht.owner?.avatar ? (
                     <img src={yacht.owner.avatar} alt="Owner" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -340,15 +340,22 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                     </div>
                   )}
                 </div>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 500 }}>
-                  {yacht.owner?.role === 'ADVERTISER' ? 'Loueur Pro' : 'Particulier'}
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 600 }}>
+                  {yacht.owner?.firstName} {yacht.owner?.lastName}
+                </span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 500, backgroundColor: 'rgba(21, 62, 92, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>
+                  {yacht.owner?.role === 'ADVERTISER' ? 'Pro' : 'Particulier'}
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.85rem', color: 'var(--text-mid)' }}>
+                  <span style={{ color: 'var(--gold)' }}>★</span>
+                  {yacht.owner?.averageRating || 0} ({yacht.owner?.reviewCount || 0})
                 </span>
                 {yacht.owner?.languages && yacht.owner.languages.length > 0 && (
-                  <span style={{ fontSize: '0.85rem', color: 'var(--text-light)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-light)', display: 'flex', alignItems: 'center', gap: '0.3rem', marginLeft: '0.5rem' }}>
                     <span style={{ fontSize: '1rem' }}>🗣️</span> {yacht.owner.languages.map((l: string) => l.substring(0, 2).toUpperCase()).join(', ')}
                   </span>
                 )}
-              </div>
+              </Link>
               <div className="listing-badges" style={{ marginLeft: 'auto' }}>
                 {yacht.owner?.videoVerified && <span className="listing-badge badge-verified">✓ Vérifié</span>}
                 {yacht.owner?.advertiserTier && <span className="listing-badge badge-platinium">⚓ {yacht.owner.advertiserTier}</span>}
