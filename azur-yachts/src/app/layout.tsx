@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   },
 };
 
+import BackToTop from "@/components/layout/BackToTop";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -51,6 +53,7 @@ export default async function RootLayout({
             </Suspense>
           )}
           {children}
+          <BackToTop />
         </MaintenanceGuard>
       </body>
     </html>
