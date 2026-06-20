@@ -191,6 +191,9 @@ model Listing {
   boatLength        Float?
   boatYear          Int
   cabins            Int?
+  berths            Int?
+  bathrooms         Int?
+  boatPlanUrl       String?
   requiresCaptain   Boolean       @default(false)
   skipperAvailable  Boolean       @default(false)
   maxRentalHours    Int?
@@ -198,8 +201,11 @@ model Listing {
   deliveryFee       Float?
   deliveryPricing   Json?
   features          String[]      @default([])
+  fuelIncluded      Boolean       @default(false)
   cleaningFee       Float
   securityDeposit   Float         @default(0)
+  captainPrice      Float?
+  skipperPrice      Float?
   averageRating     Float         @default(0)
   reviewCount       Int           @default(0)
   viewCount         Int           @default(0)

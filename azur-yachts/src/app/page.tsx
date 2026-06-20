@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { formatPrice } from '@/lib/utils';
 import './home.css';
 
 export default function HomePage() {
@@ -202,7 +203,7 @@ export default function HomePage() {
                     <span className="spec"><strong>{Math.max(1, Math.floor(yacht.maxAdults/2))}</strong> cabines</span>
                   </div>
                   <div className="yacht-footer">
-                    <div className="yacht-price">€{yacht.price.toLocaleString()} <span>/ jour</span></div>
+                    <div className="yacht-price">{formatPrice(yacht.price)} <span>/ jour</span></div>
                     <button className="book-btn" onClick={(e) => { e.preventDefault(); window.location.href = `/yacht/${yacht.id}`; }}>Réserver</button>
                   </div>
                 </div>
@@ -262,7 +263,7 @@ export default function HomePage() {
                 <div className="dest-count">{dest.count} yachts disponibles</div>
                 {dest.minPrice && (
                   <div className="dest-price" style={{ fontSize: '0.9rem', color: 'var(--gold)', marginTop: '0.3rem', fontWeight: 500 }}>
-                    à partir de {dest.minPrice.toLocaleString()} € / jour
+                    à partir de {formatPrice(dest.minPrice)} / jour
                   </div>
                 )}
                 <div className="dest-action" style={{ marginTop: '1rem' }}>

@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useDebounce } from '@/hooks/useDebounce';
+import { formatPrice } from '@/lib/utils';
 import './listings.css';
 
 export default function ListingsPage() {
@@ -404,7 +405,7 @@ export default function ListingsPage() {
                       </div>
                       <div className="card-footer">
                         <div className="card-price">
-                          <div className="card-price-value">€{yacht.price.toLocaleString()}</div>
+                          <div className="card-price-value">{formatPrice(yacht.price)}</div>
                           <div className="card-price-unit">par jour</div>
                         </div>
                         <div className="card-rating">

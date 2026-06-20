@@ -120,14 +120,20 @@ export async function POST(req: NextRequest) {
     let servicesTotal = 0
     const servicesToConnect: any[] = []
     
-    if (Array.isArray(selectedServicesIds) && selectedServicesIds.length > 0) {
-      const selectedDbServices = listing.services.filter(s => selectedServicesIds.includes(s.id))
+    // Services obligatoires auto-ajoutés s'ils ne sont pas dans la liste
+    const mandatoryServices = listing.services.filter(s => s.isRequired);
+    const selectedServicesSet = new Set(Array.isArray(selectedServicesIds) ? selectedServicesIds : []);
+    mandatoryServices.forEach(s => selectedServicesSet.add(s.id));
+    
+    if (selectedServicesSet.size > 0) {
+      const selectedDbServices = listing.services.filter(s => selectedServicesSet.has(s.id))
       
       for (const svc of selectedDbServices) {
-        // En MVP on suppose une quantité de 1 par service, ou calcul selon svc.unit (PER_BOOKING, PER_DAY)
-        const svcPrice = svc.unit === 'PER_DAY' ? svc.price * totalNights : svc.price
-        servicesTotal += svcPrice
+        let svcPrice = svc.price;
+        if (svc.unit === 'PER_DAY') svcPrice *= totalNights;
+        else if (svc.unit === 'PER_PERSON') svcPrice *= Math.max(1, adults + children);
         
+        servicesTotal += svcPrice
         servicesToConnect.push({
           name: svc.name,
           price: svcPrice,
@@ -135,8 +141,20 @@ export async function POST(req: NextRequest) {
         })
       }
     }
+    
+    const { withCaptain, withSkipper } = body;
+    if (withCaptain && listing.captainPrice) servicesTotal += listing.captainPrice * totalNights;
+    if (withSkipper && listing.skipperPrice) servicesTotal += listing.skipperPrice * totalNights;
 
-    const totalPrice = basePrice + cleaningFee + deliveryFee + servicesTotal
+    const subTotal = basePrice + cleaningFee + deliveryFee + servicesTotal;
+    
+    let discountPercent = 0;
+    if (totalNights >= 14) discountPercent = 0.10;
+    else if (totalNights >= 7) discountPercent = 0.07;
+    // La gestion du code promo pourrait être rajoutée ici
+
+    const discount = Math.floor(subTotal * discountPercent);
+    const totalPrice = subTotal - discount;
 
     // Créer la réservation
     const booking = await prisma.booking.create({

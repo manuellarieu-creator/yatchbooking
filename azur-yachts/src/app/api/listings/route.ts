@@ -117,8 +117,8 @@ export async function POST(req: NextRequest) {
     const {
       title, description, price, country, location,
       latitude, longitude, maxAdults, maxChildren,
-      boatType, boatLength, boatYear, cabins, requiresCaptain,
-      skipperAvailable, maxRentalHours, deliveryAvailable,
+      boatType, boatLength, boatYear, cabins, berths, bathrooms, boatPlanUrl, requiresCaptain,
+      skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
       deliveryFee, deliveryPricing, features, cleaningFee, securityDeposit, images, services, availabilities, ownerId
     } = body
 
@@ -128,8 +128,13 @@ export async function POST(req: NextRequest) {
       data: {
         title, description, price, country, location,
         latitude, longitude, maxAdults, maxChildren,
-        boatType, boatLength, boatYear, cabins: cabins ? Number(cabins) : null, requiresCaptain,
-        skipperAvailable, maxRentalHours, deliveryAvailable,
+        boatType, boatLength, boatYear, 
+        cabins: cabins ? Number(cabins) : null, 
+        berths: berths ? Number(berths) : null,
+        bathrooms: bathrooms ? Number(bathrooms) : null,
+        boatPlanUrl,
+        requiresCaptain,
+        skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
         deliveryFee, deliveryPricing, features: features || [], cleaningFee, securityDeposit: securityDeposit || 0,
         status: (session.user as any).role === 'ADMIN' ? 'ACTIVE' : 'PENDING',
         ownerId: finalOwnerId,

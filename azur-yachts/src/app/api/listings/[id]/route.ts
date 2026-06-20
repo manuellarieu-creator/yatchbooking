@@ -80,6 +80,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       data.ownerId = ownerId;
     }
 
+    if ('cabins' in data) data.cabins = data.cabins ? Number(data.cabins) : null;
+    if ('berths' in data) data.berths = data.berths ? Number(data.berths) : null;
+    if ('bathrooms' in data) data.bathrooms = data.bathrooms ? Number(data.bathrooms) : null;
+
     if (images) {
       data.images = {
         deleteMany: {},

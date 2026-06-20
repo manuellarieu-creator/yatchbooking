@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { formatPrice } from '@/lib/utils';
 import './yacht.css';
 
 export default function YachtPage({ params }: { params: { id: string } }) {
@@ -60,6 +61,9 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
   const [discountCode, setDiscountCode] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
+  
+  const [withCaptain, setWithCaptain] = useState(false);
+  const [withSkipper, setWithSkipper] = useState(false);
   
 
   // ── Review Modal State ──
@@ -129,8 +133,18 @@ export default function YachtPage({ params }: { params: { id: string } }) {
       }
     });
 
+    if (withCaptain && yacht.captainPrice) servTotal += yacht.captainPrice * nights;
+    if (withSkipper && yacht.skipperPrice) servTotal += yacht.skipperPrice * nights;
+
     const subTotal = base + yacht.cleaningFee + servTotal;
-    const discount = discountApplied ? Math.floor(subTotal * 0.1) : 0;
+    
+    // Automatic discounts
+    let discountPercent = 0;
+    if (nights >= 14) discountPercent = 0.10; // 10% pour 2 semaines
+    else if (nights >= 7) discountPercent = 0.07; // 7% pour 1 semaine
+    else if (discountApplied) discountPercent = 0.10; // Promo code (keep existing logic)
+
+    const discount = Math.floor(subTotal * discountPercent);
     const total = subTotal - discount;
 
     return { nights, base, servTotal, discount, total };
@@ -202,7 +216,9 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           children,
           pets: pets === 'oui',
           specialRequests: '',
-          selectedServicesIds: selectedServiceIds
+          selectedServicesIds: selectedServiceIds,
+          withCaptain,
+          withSkipper
         })
       });
 
@@ -297,8 +313,9 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               {yacht.cabins ? <span className="quick-stat">🛏 <strong>{yacht.cabins}</strong> cabines</span> : null}
               <span className="quick-stat">📏 <strong>{yacht.boatLength} m</strong></span>
               <span className="quick-stat">⏱ <strong>{yacht.maxRentalHours || 24}h</strong> loc. max</span>
-              {yacht.requiresCaptain ? <span className="quick-stat">⚓ Captain Required</span> : null}
-              {yacht.skipperAvailable ? <span className="quick-stat" style={{ color: 'var(--success)' }}>✓ Skipper disponible</span> : null}
+              {yacht.requiresCaptain && <span className="quick-stat">⚓ Captain Required {yacht.captainPrice ? `(+${formatPrice(yacht.captainPrice)}/j)` : ''}</span>}
+              {yacht.skipperAvailable && <span className="quick-stat" style={{ color: 'var(--success)' }}>✓ Skipper dispo {yacht.skipperPrice ? `(+${formatPrice(yacht.skipperPrice)}/j)` : ''}</span>}
+              <span className="quick-stat">⛽ <strong>{yacht.fuelIncluded ? 'Carburant inclus' : 'Carburant non inclus'}</strong></span>
             </div>
           </div>
 
@@ -344,13 +361,50 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 <tr><td>Capacité adultes</td><td>{yacht.maxAdults || '-'}</td></tr>
                 <tr><td>Capacité enfants</td><td>{yacht.maxChildren || '0'}</td></tr>
                 <tr><td>Location max</td><td>{yacht.maxRentalHours ? `${yacht.maxRentalHours} heures` : 'Sans limite'}</td></tr>
-                <tr><td>Frais de nettoyage</td><td>{yacht.cleaningFee ? `€${yacht.cleaningFee}` : 'Inclus'}</td></tr>
-                <tr><td>Livraison disponible</td><td>{yacht.deliveryAvailable ? `Oui (€${yacht.deliveryFee})` : 'Non'}</td></tr>
+                <tr><td>Carburant</td><td>{yacht.fuelIncluded ? 'Inclus' : 'Non inclus'}</td></tr>
+                <tr><td>Frais de nettoyage</td><td>{yacht.cleaningFee ? formatPrice(yacht.cleaningFee) : 'Inclus'}</td></tr>
+                <tr><td>Livraison disponible</td><td>{yacht.deliveryAvailable ? `Oui (${formatPrice(yacht.deliveryFee || 0)})` : 'Non'}</td></tr>
               </tbody>
             </table>
           </div>
 
           <hr className="section-sep" />
+
+          {/* Boat Plan */}
+          {(yacht.boatPlanUrl || yacht.berths || yacht.bathrooms) && (
+            <div className="fade-in">
+              <div className="sec-title">Plan du bateau</div>
+              <div className="boat-plan-container" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                {yacht.boatPlanUrl ? (
+                  <div className="boat-plan-image-wrapper" style={{ flex: '1 1 400px', border: '1px solid #e0e0e0', borderRadius: '12px', padding: '1rem', background: '#fff' }}>
+                    <img src={yacht.boatPlanUrl} alt="Plan du bateau" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                  </div>
+                ) : (
+                  <div className="boat-plan-image-wrapper" style={{ flex: '1 1 400px', border: '1px solid #e0e0e0', borderRadius: '12px', padding: '3rem 1rem', background: '#f9f9f9', textAlign: 'center', color: '#888' }}>
+                    Plan non disponible
+                  </div>
+                )}
+                <div className="boat-plan-info" style={{ flex: '1 1 200px', display: 'flex', flexDirection: 'column', gap: '1.5rem', fontSize: '1.1rem', color: '#333' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span style={{ fontSize: '1.5rem', opacity: 0.7 }}>👥</span>
+                    <span>{yacht.maxAdults + yacht.maxChildren} personnes</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span style={{ fontSize: '1.5rem', opacity: 0.7 }}>🚪</span>
+                    <span>{yacht.cabins || '-'} cabines</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span style={{ fontSize: '1.5rem', opacity: 0.7 }}>🛏</span>
+                    <span>{yacht.berths || '-'} couchages</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span style={{ fontSize: '1.5rem', opacity: 0.7 }}>🚿</span>
+                    <span>{yacht.bathrooms || '-'} salles de bain</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Owner */}
           <div className="fade-in">
@@ -477,7 +531,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
         <div className="booking-widget fade-in">
           <div className="widget-header">
             <div className="widget-price-row">
-              <div className="widget-price">€{yacht.price.toLocaleString()} <small>/ jour</small></div>
+              <div className="widget-price">{formatPrice(yacht.price)} <small>/ jour</small></div>
               <div className="widget-rating">
                 <span className="widget-star">★</span>
                 <span className="widget-rating-val">{yacht.averageRating || 0}</span>
@@ -535,13 +589,33 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
             <div className="services-section">
               <div className="services-title">Services</div>
+              {yacht.requiresCaptain && (
+                <div className="service-item" onClick={() => setWithCaptain(!withCaptain)}>
+                  <div className={`service-check ${withCaptain ? 'checked' : ''}`}></div>
+                  <div className="service-info">
+                    <div className="service-name">Capitaine à bord</div>
+                    <div className="service-unit">par jour</div>
+                  </div>
+                  <div className="service-price">{yacht.captainPrice ? formatPrice(yacht.captainPrice) : 'Gratuit'}</div>
+                </div>
+              )}
+              {yacht.skipperAvailable && (
+                <div className="service-item" onClick={() => setWithSkipper(!withSkipper)}>
+                  <div className={`service-check ${withSkipper ? 'checked' : ''}`}></div>
+                  <div className="service-info">
+                    <div className="service-name">Skipper</div>
+                    <div className="service-unit">par jour</div>
+                  </div>
+                  <div className="service-price">{yacht.skipperPrice ? formatPrice(yacht.skipperPrice) : 'Gratuit'}</div>
+                </div>
+              )}
               <div className="service-item">
                 <div className="service-check required"></div>
                 <div className="service-info">
                   <div className="service-name required-label">Nettoyage</div>
                   <div className="service-unit">par réservation</div>
                 </div>
-                <div className="service-price">€{yacht.cleaningFee.toLocaleString()}</div>
+                <div className="service-price">{formatPrice(yacht.cleaningFee)}</div>
               </div>
               {yacht.securityDeposit > 0 && (
                 <div className="service-item" style={{ opacity: 0.9 }}>
@@ -550,19 +624,19 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                     <div className="service-name required-label">Caution (empreinte)</div>
                     <div className="service-unit">non débitée</div>
                   </div>
-                  <div className="service-price">€{yacht.securityDeposit.toLocaleString()}</div>
+                  <div className="service-price">{formatPrice(yacht.securityDeposit)}</div>
                 </div>
               )}
               {yacht.services?.map((s: any) => (
-                <div key={s.id} className="service-item" onClick={() => toggleService(s.id)}>
-                  <div className={`service-check ${selectedServiceIds.includes(s.id) ? 'checked' : ''}`}></div>
+                <div key={s.id} className="service-item" onClick={() => { if (!s.isRequired) toggleService(s.id); }}>
+                  <div className={`service-check ${s.isRequired || selectedServiceIds.includes(s.id) ? 'checked' : ''} ${s.isRequired ? 'required' : ''}`}></div>
                   <div className="service-info">
-                    <div className="service-name">{s.name}</div>
+                    <div className={`service-name ${s.isRequired ? 'required-label' : ''}`}>{s.name}</div>
                     <div className="service-unit">
                       {s.unit === 'PER_BOOKING' ? 'par réservation' : s.unit === 'PER_DAY' ? 'par jour' : 'par personne'}
                     </div>
                   </div>
-                  <div className="service-price">€{s.price.toLocaleString()}</div>
+                  <div className="service-price">{formatPrice(s.price)}</div>
                 </div>
               ))}
             </div>
@@ -575,14 +649,14 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
             {totals && (
               <div className="recap" style={{ display: 'block' }}>
-                <div className="recap-row"><span className="label">€{yacht.price.toLocaleString()} × {totals.nights} nuits</span><span className="value">€{totals.base.toLocaleString()}</span></div>
-                <div className="recap-row"><span className="label">Nettoyage (obligatoire)</span><span className="value">€{yacht.cleaningFee.toLocaleString()}</span></div>
-                {yacht.securityDeposit > 0 && <div className="recap-row" style={{ color: 'var(--text-light)' }}><span className="label">Caution (empreinte)</span><span className="value">€{yacht.securityDeposit.toLocaleString()}</span></div>}
-                {totals.servTotal > 0 && <div className="recap-row"><span className="label">Services additionnels</span><span className="value">€{totals.servTotal.toLocaleString()}</span></div>}
-                {discountApplied && <div className="recap-row discount"><span className="label">Réduction (10%)</span><span className="value">−€{totals.discount.toLocaleString()}</span></div>}
+                <div className="recap-row"><span className="label">{formatPrice(yacht.price)} × {totals.nights} nuits</span><span className="value">{formatPrice(totals.base)}</span></div>
+                <div className="recap-row"><span className="label">Nettoyage (obligatoire)</span><span className="value">{formatPrice(yacht.cleaningFee)}</span></div>
+                {yacht.securityDeposit > 0 && <div className="recap-row" style={{ color: 'var(--text-light)' }}><span className="label">Caution (empreinte)</span><span className="value">{formatPrice(yacht.securityDeposit)}</span></div>}
+                {totals.servTotal > 0 && <div className="recap-row"><span className="label">Services additionnels</span><span className="value">{formatPrice(totals.servTotal)}</span></div>}
+                {totals.discount > 0 && <div className="recap-row discount"><span className="label">Réduction</span><span className="value">−{formatPrice(totals.discount)}</span></div>}
                 <div className="recap-row total">
                   <span className="label">Total</span>
-                  <span className="value">€{totals.total.toLocaleString()}</span>
+                  <span className="value">{formatPrice(totals.total)}</span>
                 </div>
               </div>
             )}
@@ -620,7 +694,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                     <div className="sim-name">{sim.title}</div>
                     <div className="sim-loc">{sim.location}, {sim.country}</div>
                     <div className="sim-footer">
-                      <div className="sim-price">€{sim.price} <small>/ j</small></div>
+                      <div className="sim-price">{formatPrice(sim.price)} <small>/ j</small></div>
                       <div className="sim-rating"><span className="star">★</span> {sim.averageRating || 5.0}</div>
                     </div>
                   </div>

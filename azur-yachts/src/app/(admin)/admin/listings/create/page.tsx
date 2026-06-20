@@ -14,6 +14,7 @@ type Service = {
   price: number;
   unit: string;
   desc?: string;
+  isRequired?: boolean;
 };
 
 function PublishForm() {
@@ -44,6 +45,9 @@ function PublishForm() {
   const [portCity, setPortCity] = useState('');
   const [length, setLength] = useState('');
   const [cabins, setCabins] = useState('');
+  const [berths, setBerths] = useState('');
+  const [bathrooms, setBathrooms] = useState('');
+  const [boatPlanUrl, setBoatPlanUrl] = useState('');
   const [adults, setAdults] = useState(8);
   const [children, setChildren] = useState(2);
   const [hours, setHours] = useState('');
@@ -64,6 +68,9 @@ function PublishForm() {
   const [priceDay, setPriceDay] = useState('');
   const [cleaningFee, setCleaningFee] = useState('');
   const [securityDeposit, setSecurityDeposit] = useState('');
+  const [fuelIncluded, setFuelIncluded] = useState(false);
+  const [captainPrice, setCaptainPrice] = useState('');
+  const [skipperPrice, setSkipperPrice] = useState('');
 
   // Step 5
   const [services, setServices] = useState<Service[]>([]);
@@ -71,6 +78,7 @@ function PublishForm() {
   const [svcPrice, setSvcPrice] = useState('');
   const [svcUnit, setSvcUnit] = useState('PER_BOOKING');
   const [svcDesc, setSvcDesc] = useState('');
+  const [svcIsRequired, setSvcIsRequired] = useState(false);
   const [deliveryToggle, setDeliveryToggle] = useState(false);
   const [deliveryPricing, setDeliveryPricing] = useState<{distance: string, fee: string}[]>([]);
 
@@ -118,11 +126,17 @@ function PublishForm() {
           setPortCity(l.location);
           setLength(l.boatLength?.toString() || '');
           setCabins(l.cabins?.toString() || '');
+          setBerths(l.berths?.toString() || '');
+          setBathrooms(l.bathrooms?.toString() || '');
+          setBoatPlanUrl(l.boatPlanUrl || '');
           setAdults(l.maxAdults);
           setChildren(l.maxChildren);
           setHours(l.maxRentalHours?.toString() || '24');
           setCaptainReq(l.requiresCaptain);
           setSkipperOpt(l.skipperAvailable);
+          setFuelIncluded(l.fuelIncluded || false);
+          setCaptainPrice(l.captainPrice?.toString() || '');
+          setSkipperPrice(l.skipperPrice?.toString() || '');
           setIsAtSea(l.isAtSea || false);
           if (l.features) setFeatures(l.features);
           setDesc(l.description);
@@ -144,7 +158,7 @@ function PublishForm() {
     return () => clearTimeout(t);
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
-    title, boatType, year, portCountry, portCity, length, cabins, adults, children, hours, captainReq, skipperOpt, features, isAtSea,
+    title, boatType, year, portCountry, portCity, length, cabins, berths, bathrooms, boatPlanUrl, adults, children, hours, captainReq, skipperOpt, features, isAtSea,
     photos, desc, priceDay, cleaningFee, securityDeposit, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail, selectedOwnerId
   ]);
 
@@ -215,11 +229,13 @@ function PublishForm() {
       name: svcName,
       price: parseFloat(svcPrice),
       unit: svcUnit,
-      desc: svcDesc
+      desc: svcDesc,
+      isRequired: svcIsRequired
     }]);
     setSvcName('');
     setSvcPrice('');
     setSvcDesc('');
+    setSvcIsRequired(false);
   };
   const removeService = (id: string) => {
     setServices(services.filter(s => s.id !== id));
@@ -316,6 +332,7 @@ function PublishForm() {
         boatType: boatType === 'Autre' ? customBoatType : boatType, boatLength: Number(length) || 0, cabins: Number(cabins) || null, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, isAtSea, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: Number(dp.fee) || 0 })), features,
+        fuelIncluded, captainPrice: captainReq ? (Number(captainPrice) || 0) : null, skipperPrice: skipperOpt ? (Number(skipperPrice) || 0) : null,
         cleaningFee: Number(cleaningFee) || 0,
         securityDeposit: Number(securityDeposit) || 0,
         images: processedImages, services, availabilities: [], ownerId: isAdmin ? selectedOwnerId : undefined
@@ -588,9 +605,48 @@ function PublishForm() {
                     <label className="label">Longueur (en mètres)</label>
                     <input className="input" type="number" min="1" max="200" value={length} onChange={e => setLength(e.target.value)} placeholder="Ex : 20.5" />
                   </div>
+                  <div className="field-row">
+                    <div className="field">
+                      <label className="label">Cabines</label>
+                      <input type="number" className="input" min="0" max="50" value={cabins} onChange={e => setCabins(e.target.value)} placeholder="0" />
+                    </div>
+                    <div className="field">
+                      <label className="label">Couchages</label>
+                      <input type="number" className="input" min="0" max="50" value={berths} onChange={e => setBerths(e.target.value)} placeholder="0" />
+                    </div>
+                    <div className="field">
+                      <label className="label">Salles de bain</label>
+                      <input type="number" className="input" min="0" max="50" value={bathrooms} onChange={e => setBathrooms(e.target.value)} placeholder="0" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-card">
+                  <div className="form-card-title">Plan du bateau (Optionnel)</div>
                   <div className="field">
-                    <label className="label">Nombre de cabines</label>
-                    <input className="input" type="number" min="0" max="50" value={cabins} onChange={e => setCabins(e.target.value)} placeholder="Ex : 3" />
+                    <label className="label">Plan du bateau</label>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        style={{ display: 'none' }} 
+                        id="boatPlanInputAdmin"
+                        onChange={async (e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            const url = await uploadToCloudinary(e.target.files[0]);
+                            setBoatPlanUrl(url);
+                          }
+                        }} 
+                      />
+                      <button 
+                        type="button" 
+                        className="btn btn-outline" 
+                        onClick={() => document.getElementById('boatPlanInputAdmin')?.click()}
+                      >
+                        Uploader une image
+                      </button>
+                      <input type="text" className="input" style={{ flex: 1 }} value={boatPlanUrl} onChange={e => setBoatPlanUrl(e.target.value)} placeholder="URL de l'image ou upload..." />
+                    </div>
                   </div>
                 </div>
 
@@ -630,24 +686,46 @@ function PublishForm() {
                   <div className="form-card-title">Équipage & navigation</div>
                   <div className="toggle-row">
                     <div className="toggle-info">
-                      <div className="toggle-label">Capitaine requis</div>
-                      <div className="toggle-desc">Le client devra obligatoirement disposer d'un capitaine à bord</div>
+                      <div className="toggle-label">Carburant inclus</div>
+                      <div className="toggle-desc">Cochez si le carburant est inclus dans le prix de la location</div>
+                    </div>
+                    <label className="toggle">
+                      <input type="checkbox" checked={fuelIncluded} onChange={e => setFuelIncluded(e.target.checked)} />
+                      <span className="toggle-slider"></span>
+                    </label>
+                  </div>
+                  <div className="toggle-row" style={{ marginTop: '1rem' }}>
+                    <div className="toggle-info">
+                      <div className="toggle-label">Capitaine (Optionnel)</div>
+                      <div className="toggle-desc">Vous proposez un capitaine en option pour les clients</div>
                     </div>
                     <label className="toggle">
                       <input type="checkbox" checked={captainReq} onChange={e => setCaptainReq(e.target.checked)} />
                       <span className="toggle-slider"></span>
                     </label>
                   </div>
-                  <div className="toggle-row">
+                  {captainReq && (
+                    <div className="field" style={{ marginTop: '0.5rem', marginBottom: '1rem', marginLeft: '1rem' }}>
+                      <label className="label">Coût par jour (€) pour le capitaine</label>
+                      <input className="input" type="number" min="0" value={captainPrice} onChange={e => setCaptainPrice(e.target.value)} placeholder="Ex: 200" />
+                    </div>
+                  )}
+                  <div className="toggle-row" style={{ marginTop: '1rem' }}>
                     <div className="toggle-info">
-                      <div className="toggle-label">Skipper disponible</div>
-                      <div className="toggle-desc">Vous proposez un skipper en option pour les clients qui le souhaitent</div>
+                      <div className="toggle-label">Skipper (Optionnel)</div>
+                      <div className="toggle-desc">Vous proposez un skipper en option pour les clients</div>
                     </div>
                     <label className="toggle">
                       <input type="checkbox" checked={skipperOpt} onChange={e => setSkipperOpt(e.target.checked)} />
                       <span className="toggle-slider"></span>
                     </label>
                   </div>
+                  {skipperOpt && (
+                    <div className="field" style={{ marginTop: '0.5rem', marginBottom: '1rem', marginLeft: '1rem' }}>
+                      <label className="label">Coût par jour (€) pour le skipper</label>
+                      <input className="input" type="number" min="0" value={skipperPrice} onChange={e => setSkipperPrice(e.target.value)} placeholder="Ex: 150" />
+                    </div>
+                  )}
                   <div className="toggle-row">
                     <div className="toggle-info">
                       <div className="toggle-label">Bateau en mer / Hors port d'attache</div>
@@ -825,6 +903,7 @@ function PublishForm() {
                           <div className="service-name">{s.name}</div>
                           <div className="service-unit">
                             {s.unit === 'PER_BOOKING' ? 'Par réservation' : s.unit === 'PER_DAY' ? 'Par jour' : 'Par personne'}
+                            {s.isRequired ? ' · Obligatoire' : ''}
                           </div>
                         </div>
                         <div className="service-price">€{s.price}</div>
@@ -856,6 +935,15 @@ function PublishForm() {
                     <div className="field" style={{ marginTop: '1rem' }}>
                       <label className="label">Description (optionnel)</label>
                       <input className="input" type="text" value={svcDesc} onChange={e => setSvcDesc(e.target.value)} placeholder="Ex : Chef professionnel disponible pour le déjeuner et le dîner" />
+                    </div>
+                    <div className="toggle-row" style={{ marginTop: '1rem', background: 'transparent', padding: 0 }}>
+                      <div className="toggle-info">
+                        <div className="toggle-label" style={{ fontSize: '0.95rem' }}>Rendre ce service obligatoire</div>
+                      </div>
+                      <label className="toggle">
+                        <input type="checkbox" checked={svcIsRequired} onChange={e => setSvcIsRequired(e.target.checked)} />
+                        <span className="toggle-slider"></span>
+                      </label>
                     </div>
                     <button className="btn btn-primary" style={{ marginTop: '1rem' }} onClick={addService}>+ Ajouter ce service</button>
                   </div>
