@@ -236,9 +236,10 @@
 .listings-container .card-fav.active { background: rgba(184,152,90,0.9); }
 
 .listings-container .card-body { padding: 1.25rem 1.4rem; }
-.listings-container .card-type { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 0.3rem; }
-.listings-container .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 400; color: var(--navy); margin-bottom: 0.5rem; }
-.listings-container .card-location { font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.3rem; }
+.listings-container .card-type { display: flex; align-items: center; gap: 0.4rem; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--gold); margin-bottom: 0.4rem; flex-wrap: wrap; }
+.listings-container .card-type .sep { color: var(--sand); }
+.listings-container .card-type .card-top-rating { color: var(--text-mid); display: flex; align-items: center; font-weight: 500; }
+.listings-container .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 400; color: var(--navy); margin-bottom: 0.8rem; }
 
 /* Specs inline */
 .listings-container .card-specs { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--sand); }
@@ -260,7 +261,9 @@
 .listings-container .card-price { }
 .listings-container .card-price-value { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--navy); line-height: 1; }
 .listings-container .card-price-unit { font-size: 0.65rem; color: var(--text-light); margin-top: 0.1rem; }
-.listings-container .card-rating { display: flex; align-items: center; gap: 0.3rem; }
+.listings-container .card-rating { display: flex; align-items: center; gap: 0.35rem; }
+.listings-container .owner-avatar { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; margin-right: 0.2rem; }
+.listings-container .owner-avatar-placeholder { width: 24px; height: 24px; border-radius: 50%; background: var(--sand); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; margin-right: 0.2rem; }
 .listings-container .card-star { color: #e2a200; font-size: 0.85rem; }
 .listings-container .card-rating-val { font-size: 0.82rem; font-weight: 500; color: var(--text-dark); }
 .listings-container .card-rating-count { font-size: 0.72rem; color: var(--text-light); }

@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
         take: limit,
         include: {
           images: { orderBy: { order: 'asc' }, take: 1 },
-          owner: { select: { id: true, firstName: true, lastName: true, videoVerified: true, advertiserTier: true } },
+          owner: { select: { id: true, firstName: true, lastName: true, videoVerified: true, advertiserTier: true, image: true } },
           _count: { select: { reviews: true, bookings: true } },
         },
       }),

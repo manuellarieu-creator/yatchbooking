@@ -41,6 +41,7 @@ function ListingsContent() {
             badge: l.owner?.advertiserTier === 'PREMIUM' ? 'Populaire' : l.owner?.advertiserTier === 'PLATINIUM' ? 'Premium' : '',
             badgeColor: 'var(--gold)',
             isVerified: l.owner?.videoVerified || false,
+            ownerImage: l.owner?.image || '',
             imgUrl: l.images?.[0]?.url || '',
             isFav: l.isFav || false,
             isAtSea: l.isAtSea || false
@@ -393,28 +394,42 @@ function ListingsContent() {
                       </button>
                     </div>
                     <div className="card-body">
-                      <div className="card-type">{yacht.type} {yacht.tier !== 'Standard' && `· ${yacht.tier}`}</div>
+                      <div className="card-type">
+                        <span>{yacht.type}</span>
+                        <span className="sep">|</span>
+                        <span>{yacht.country}</span>
+                        <span className="sep">|</span>
+                        <span className="card-top-rating">★ {yacht.rating.toFixed(1)}</span>
+                      </div>
                       <div className="card-name">{yacht.name}</div>
-                      <div className="card-location">{yacht.location}</div>
+                      
                       <div className="card-specs">
                         <span className="card-spec">⏱ <strong>{yacht.time}</strong> loc. max</span>
                         <span className="card-spec">👥 <strong>{yacht.cap}</strong> adultes</span>
                         <span className="card-spec">🛏 <strong>{yacht.cab}</strong> cabines</span>
                         <span className="card-spec">📏 <strong>{yacht.len}</strong></span>
                       </div>
+                      
                       <div className="card-info">
                         <div className="card-info-row">
-                          {yacht.captain === 'oui' ? <span className="card-pill pill-captain">⚓ Captain Required</span> : <span className="card-pill pill-nocaptain">No Captain</span>}
-                          {yacht.skipper === 'oui' ? <span className="card-pill pill-skipper">✓ Skipper dispo</span> : <span className="card-pill pill-noskipper">No Skipper</span>}
+                          {yacht.captain === 'oui' ? <span className="card-pill pill-captain">⚓ Capitaine Requis</span> : <span className="card-pill pill-nocaptain">Capitaine Optionnel</span>}
                         </div>
-                        <div className="card-info-row">🌍 Port d'attache : <strong>{yacht.country}</strong></div>
+                        <div className="card-info-row">
+                          {yacht.skipper === 'oui' ? <span className="card-pill pill-skipper">✓ Skipper Dispo</span> : <span className="card-pill pill-noskipper">Skipper Optionnel</span>}
+                        </div>
                       </div>
+                      
                       <div className="card-footer">
                         <div className="card-price">
                           <div className="card-price-value">{formatPrice(yacht.price)}</div>
                           <div className="card-price-unit">par jour</div>
                         </div>
                         <div className="card-rating">
+                          {yacht.ownerImage ? (
+                            <img src={yacht.ownerImage} alt="Owner" className="owner-avatar" />
+                          ) : (
+                            <div className="owner-avatar-placeholder">👤</div>
+                          )}
                           <span className="card-star">★</span>
                           <span className="card-rating-val">{yacht.rating.toFixed(1)}</span>
                           <span className="card-rating-count">({yacht.revs} avis)</span>
