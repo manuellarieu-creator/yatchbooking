@@ -48,7 +48,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     let ownerReviewCount = 0;
     if (listing.ownerId) {
       const agg = await prisma.review.aggregate({
-        where: { targetId: listing.ownerId, targetType: 'OWNER', status: 'APPROVED' },
+        where: { targetUserId: listing.ownerId, targetType: 'OWNER', status: 'APPROVED' },
         _avg: { rating: true },
         _count: true
       });
