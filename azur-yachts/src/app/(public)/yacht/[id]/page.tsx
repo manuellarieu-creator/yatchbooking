@@ -90,6 +90,9 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   // ── Description State ──
   const [descExpanded, setDescExpanded] = useState(false);
 
+  // ── Boat Plan Slider State ──
+  const [boatPlanIndex, setBoatPlanIndex] = useState(0);
+
   // ── Fav ──
   const [isFav, setIsFav] = useState(false);
 
@@ -403,12 +406,32 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               <div className="boat-plan-container" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
                 
                 {yacht.boatPlanUrls && yacht.boatPlanUrls.length > 0 ? (
-                  <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    {yacht.boatPlanUrls.map((url: string, idx: number) => (
-                      <div key={idx} className="boat-plan-image-wrapper" style={{ border: '1px solid #e0e0e0', borderRadius: '12px', padding: '1rem', background: '#fff' }}>
-                        <img src={url} alt={`Plan du bateau ${idx + 1}`} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '8px' }} />
-                      </div>
-                    ))}
+                  <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative' }}>
+                    <div className="boat-plan-image-wrapper" style={{ border: '1px solid #e0e0e0', borderRadius: '12px', padding: '1rem', background: '#fff', position: 'relative' }}>
+                      <img src={yacht.boatPlanUrls[boatPlanIndex]} alt={`Plan du bateau ${boatPlanIndex + 1}`} style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '8px', minHeight: '200px', objectFit: 'contain' }} />
+                      
+                      {yacht.boatPlanUrls.length > 1 && (
+                        <>
+                          <button 
+                            onClick={() => setBoatPlanIndex((prev) => (prev > 0 ? prev - 1 : yacht.boatPlanUrls.length - 1))}
+                            style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}
+                          >
+                            ❮
+                          </button>
+                          <button 
+                            onClick={() => setBoatPlanIndex((prev) => (prev < yacht.boatPlanUrls.length - 1 ? prev + 1 : 0))}
+                            style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}
+                          >
+                            ❯
+                          </button>
+                          <div style={{ position: 'absolute', bottom: '15px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '6px' }}>
+                            {yacht.boatPlanUrls.map((_: any, idx: number) => (
+                              <div key={idx} onClick={() => setBoatPlanIndex(idx)} style={{ width: '8px', height: '8px', borderRadius: '50%', background: boatPlanIndex === idx ? 'var(--gold)' : 'rgba(0,0,0,0.3)', cursor: 'pointer', transition: 'background 0.2s' }}></div>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div className="boat-plan-image-wrapper" style={{ flex: '1 1 400px', border: '1px solid #e0e0e0', borderRadius: '12px', padding: '3rem 1rem', background: '#f9f9f9', textAlign: 'center', color: '#888' }}>
