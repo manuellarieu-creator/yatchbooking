@@ -14,6 +14,7 @@ export default function AuthPage() {
   const [step, setStep] = useState<number>(1);
   const [loginStep, setLoginStep] = useState<number>(1);
   const [otpInput, setOtpInput] = useState<string>('');
+  const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   
   const [pwdVisible, setPwdVisible] = useState(false);
@@ -160,6 +161,9 @@ export default function AuthPage() {
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'inscription");
       
       if (data.user?.role === 'ADVERTISER') {
+        if (data.code) {
+          setGeneratedCode(data.code);
+        }
         triggerToast('Un code de vérification vous a été envoyé.');
         setStep(4);
       } else {
@@ -524,6 +528,13 @@ export default function AuthPage() {
                       <h1 className="form-title">Vérifiez votre <em>email</em></h1>
                       <p className="form-subtitle">Un code à 6 chiffres a été envoyé à {formData.regEmail}.</p>
                     </div>
+
+                    {generatedCode && (
+                      <div className="bg-[#b8985a]/20 border border-[#b8985a]/40 p-4 rounded-xl text-center mb-6 shadow-lg">
+                        <div className="text-xs uppercase font-bold mb-1 opacity-80" style={{ color: '#b8985a' }}>Code auto-généré (Test)</div>
+                        <strong className="text-3xl tracking-[0.2em] font-mono" style={{ color: '#b8985a' }}>{generatedCode}</strong>
+                      </div>
+                    )}
 
                     <div className="field">
                       <label className="field-label" style={{textAlign: 'center', display: 'block'}}>Code de vérification</label>

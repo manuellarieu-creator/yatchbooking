@@ -68,7 +68,11 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { message: 'Utilisateur créé avec succès', user: { id: newUser.id, email: newUser.email, role: newUser.role } },
+      { 
+        message: 'Utilisateur créé avec succès', 
+        user: { id: newUser.id, email: newUser.email, role: newUser.role },
+        code: isAdvertiser ? token : undefined
+      },
       { status: 201 }
     );
   } catch (error) {
