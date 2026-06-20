@@ -3,6 +3,7 @@ import { db as prisma } from '@/lib/db';
 import { auth } from '@/auth';
 import { sendPushNotification } from '@/lib/webpush';
 import { shouldNotify } from '@/lib/notifications';
+import { emailNewMessage } from '@/lib/email';
 
 export async function GET(req: NextRequest) {
   try {
@@ -139,6 +140,19 @@ export async function POST(req: NextRequest) {
             `/dashboard?tab=messages`
           );
         }
+        
+        // Email conditionné par préférences
+        if (await shouldNotify(p.userId, 'NEW_MESSAGE', 'email')) {
+          const userObj = await prisma.user.findUnique({ where: { id: p.userId }, select: { email: true, firstName: true } });
+          if (userObj?.email) {
+            await emailNewMessage(
+              userObj.email,
+              userObj.firstName || 'Client',
+              senderName,
+              content.length > 50 ? content.substring(0, 50) + '...' : content
+            );
+          }
+        }
       }
     }
 
@@ -169,6 +183,16 @@ export async function POST(req: NextRequest) {
             "Nouveau message (Admin)",
             `Un nouveau message a été envoyé par ${senderName}.`,
             `/admin/messages`
+          );
+        }
+        
+        // Email conditionné par préférences
+        if (await shouldNotify(admin.id, 'NEW_MESSAGE', 'email')) {
+          await emailNewMessage(
+            admin.email,
+            admin.firstName || 'Admin',
+            senderName,
+            content.length > 50 ? content.substring(0, 50) + '...' : content
           );
         }
       }

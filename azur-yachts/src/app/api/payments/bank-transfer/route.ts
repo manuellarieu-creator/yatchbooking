@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db as prisma } from '@/lib/db'
 import { auth } from '@/auth'
-import { sendBankTransferReminder1 } from '@/lib/resend'
+import { sendBankTransferReminder1, sendNewBookingAdmin } from '@/lib/resend'
 import crypto from 'crypto'
 
 export async function POST(req: NextRequest) {
@@ -72,13 +72,24 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    // Send email with instructions
     await sendBankTransferReminder1(
       booking.client.email,
       booking.client.firstName,
       payment.bankTransferRef!,
       payment.amount,
       booking.id
+    )
+
+    // Envoi de la notification Admin
+    await sendNewBookingAdmin(
+      process.env.ADMIN_EMAIL || 'admin@azuryachts.vercel.app',
+      `${booking.client.firstName} ${booking.client.lastName}`,
+      booking.listing.title,
+      booking.startDate.toLocaleDateString('fr-FR'),
+      booking.endDate.toLocaleDateString('fr-FR'),
+      booking.totalPrice,
+      payment.bankTransferRef || booking.id,
+      'Virement Bancaire (En attente)'
     )
 
     return NextResponse.json({

@@ -329,3 +329,49 @@ export async function emailBankTransferRejected(
     `),
   })
 }
+
+export async function emailNewBookingAdmin(
+  adminEmail: string,
+  clientName: string,
+  boatName: string,
+  start: string,
+  end: string,
+  total: number,
+  ref: string,
+  paymentMethod: string
+) {
+  return resend.emails.send({
+    from: FROM, to: adminEmail,
+    subject: `🚨 Nouvelle réservation — ${boatName} (${ref})`,
+    html: base(`
+      <h2>Nouvelle réservation reçue</h2>
+      <p>Une nouvelle réservation vient d'être effectuée par <strong>${clientName}</strong>.</p>
+      <div class="box">
+        <strong>Référence :</strong> ${ref}<br>
+        <strong>Yacht :</strong> ${boatName}<br>
+        <strong>Dates :</strong> ${start} → ${end}<br>
+        <strong>Total :</strong> €${total.toLocaleString('fr-FR')}<br>
+        <strong>Méthode de paiement :</strong> ${paymentMethod}
+      </div>
+      <a href="${APP_URL}/admin/bookings" class="btn" style="background:#0a1628">Gérer les réservations</a>
+    `),
+  })
+}
+
+export async function emailNewListingAdmin(
+  adminEmail: string,
+  advertiserName: string,
+  boatName: string,
+  listingId: string
+) {
+  return resend.emails.send({
+    from: FROM, to: adminEmail,
+    subject: `🔔 Nouvelle annonce à valider — ${boatName}`,
+    html: base(`
+      <h2>Nouvelle annonce en attente</h2>
+      <p>L'annonceur <strong>${advertiserName}</strong> vient de soumettre une nouvelle annonce pour le yacht <strong>${boatName}</strong>.</p>
+      <p>Cette annonce est en attente de votre validation avant d'être visible par les clients.</p>
+      <a href="${APP_URL}/admin/listings" class="btn" style="background:#0a1628">Voir les annonces à valider</a>
+    `),
+  })
+}

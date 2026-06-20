@@ -325,3 +325,51 @@ export async function send2faEmail(email: string, firstName: string, otp: string
     `),
   })
 }
+
+export async function sendNewBookingAdmin(
+  adminEmail: string,
+  clientName: string,
+  boatName: string,
+  startDate: string,
+  endDate: string,
+  total: number,
+  ref: string,
+  paymentMethod: string
+) {
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: adminEmail,
+    subject: `🚨 Nouvelle réservation — ${boatName} (${ref})`,
+    html: baseTemplate(`
+      <h2 class="title">Nouvelle réservation reçue</h2>
+      <p class="text">Une nouvelle réservation vient d'être effectuée par <strong>${clientName}</strong>.</p>
+      <div class="info-box">
+        <strong>Référence :</strong> <span class="ref">${ref}</span><br>
+        <strong>Yacht :</strong> ${boatName}<br>
+        <strong>Dates :</strong> ${startDate} → ${endDate}<br>
+        <strong>Total :</strong> €${total.toLocaleString('fr-FR')}<br>
+        <strong>Méthode de paiement :</strong> ${paymentMethod}
+      </div>
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/bookings" class="btn" style="background:#0a1628;">Gérer les réservations</a>
+    `),
+  })
+}
+
+export async function sendNewListingAdmin(
+  adminEmail: string,
+  advertiserName: string,
+  boatName: string,
+  listingId: string
+) {
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: adminEmail,
+    subject: `🔔 Nouvelle annonce à valider — ${boatName}`,
+    html: baseTemplate(`
+      <h2 class="title">Nouvelle annonce en attente</h2>
+      <p class="text">L'annonceur <strong>${advertiserName}</strong> vient de soumettre une nouvelle annonce pour le yacht <strong>${boatName}</strong>.</p>
+      <p class="text">Cette annonce est en attente de votre validation avant d'être visible par les clients.</p>
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/listings" class="btn" style="background:#0a1628;">Voir les annonces à valider</a>
+    `),
+  })
+}

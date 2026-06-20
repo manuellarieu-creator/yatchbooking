@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db as prisma } from '@/lib/db'
 import { auth } from '@/auth'
+import { sendNewListingAdmin } from '@/lib/resend'
 import { ListingStatus } from '@prisma/client'
 
 export async function GET(req: NextRequest) {
@@ -168,6 +169,20 @@ export async function POST(req: NextRequest) {
       },
       include: { images: true, services: true },
     })
+
+    // Notify admin if the listing is pending
+    if (listing.status === 'PENDING') {
+      const advertiserName = (session.user as any).firstName 
+        ? `${(session.user as any).firstName} ${(session.user as any).lastName || ''}`
+        : (session.user as any).email;
+        
+      await sendNewListingAdmin(
+        process.env.ADMIN_EMAIL || 'admin@azuryachts.vercel.app',
+        advertiserName,
+        listing.title,
+        listing.id
+      )
+    }
 
     return NextResponse.json({ listing }, { status: 201 })
   } catch (error) {

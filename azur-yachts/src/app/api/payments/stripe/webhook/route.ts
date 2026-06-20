@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db as prisma } from '@/lib/db'
 import Stripe from 'stripe'
-import { sendBookingConfirmation } from '@/lib/resend'
+import { sendBookingConfirmation, sendNewBookingAdmin } from '@/lib/resend'
 import { shouldNotify } from '@/lib/notifications'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -55,6 +55,18 @@ export async function POST(req: NextRequest) {
           booking.totalPrice
         )
       }
+      
+      // Envoi de la notification Admin
+      await sendNewBookingAdmin(
+        process.env.ADMIN_EMAIL || 'admin@azuryachts.vercel.app',
+        `${booking.client.firstName} ${booking.client.lastName}`,
+        booking.listing.title,
+        booking.startDate.toLocaleDateString('fr-FR'),
+        booking.endDate.toLocaleDateString('fr-FR'),
+        booking.totalPrice,
+        bookingId,
+        'Carte Bancaire (Stripe)'
+      )
     }
   }
 
