@@ -4,11 +4,11 @@ import { useState, useRef, useEffect, ChangeEvent, DragEvent, KeyboardEvent } fr
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { 
-  Umbrella, ShowerHead, Grid2X2, Speaker, Waves, 
-  Thermometer, Droplets, Snowflake, Bath, Plug, 
-  Navigation, Anchor, Cpu, Compass, Radio, 
-  Flame, Coffee, Video, Sun, Sailboat, 
-  Zap, Shield, Wifi, Check 
+  Tent, ShowerHead, Grid2X2, Speaker, Grip, List, 
+  Thermometer, Droplets, AirVent, Layers, Usb, 
+  LifeBuoy, Anchor, Compass, Navigation, Radio, 
+  Flame, Coffee, Video, Sailboat, Battery, Sun, 
+  Zap, Plug, Activity, Shield, Wifi, Waves, Check 
 } from 'lucide-react';
 import './publish.css';
 
@@ -34,29 +34,48 @@ const EQUIPEMENTS_OPTIONNELS = [
 
 const getIconForEquipment = (name: string) => {
   const n = name.toLowerCase();
-  if (n.includes('taud')) return <Umbrella className="w-4 h-4" />;
+  
+  // ÉQUIPEMENTS EXTÉRIEURS
+  if (n.includes('taud')) return <Tent className="w-4 h-4" />;
   if (n.includes('douche')) return <ShowerHead className="w-4 h-4" />;
   if (n.includes('table')) return <Grid2X2 className="w-4 h-4" />;
-  if (n.includes('enceinte') || n.includes('audio')) return <Speaker className="w-4 h-4" />;
-  if (n.includes('teck') || n.includes('échelle') || n.includes('paddle') || n.includes('ski nautique') || n.includes('canoë')) return <Waves className="w-4 h-4" />;
+  if (n.includes('enceinte')) return <Speaker className="w-4 h-4" />;
+  if (n.includes('teck')) return <Grip className="w-4 h-4" />;
+  if (n.includes('échelle')) return <List className="w-4 h-4" />;
+  if (n.includes('filet')) return <Shield className="w-4 h-4" />;
+  
+  // CONFORT
   if (n.includes('eau chaude')) return <Thermometer className="w-4 h-4" />;
   if (n.includes('dessalinisateur') || n.includes('wc')) return <Droplets className="w-4 h-4" />;
-  if (n.includes('air cond') || n.includes('climatisation')) return <Snowflake className="w-4 h-4" />;
-  if (n.includes('serviette') || n.includes('literie')) return <Bath className="w-4 h-4" />;
-  if (n.includes('prise') || n.includes('inverseur')) return <Plug className="w-4 h-4" />;
-  if (n.includes('annexe') || n.includes('navigation')) return <Navigation className="w-4 h-4" />;
+  if (n.includes('air cond') || n.includes('climatisation')) return <AirVent className="w-4 h-4" />;
+  if (n.includes('serviette') || n.includes('literie')) return <Layers className="w-4 h-4" />;
+  if (n.includes('usb')) return <Usb className="w-4 h-4" />;
+  if (n.includes('wi-fi') || n.includes('wifi')) return <Wifi className="w-4 h-4" />;
+
+  // NAVIGATION
+  if (n.includes('annexe')) return <LifeBuoy className="w-4 h-4" />;
   if (n.includes('guindeau')) return <Anchor className="w-4 h-4" />;
-  if (n.includes('pilote')) return <Cpu className="w-4 h-4" />;
-  if (n.includes('gps')) return <Compass className="w-4 h-4" />;
+  if (n.includes('pilote')) return <Compass className="w-4 h-4" />;
+  if (n.includes('gps')) return <Navigation className="w-4 h-4" />;
   if (n.includes('vhf')) return <Radio className="w-4 h-4" />;
+  
+  // CUISINE
   if (n.includes('four') || n.includes('cuisine')) return <Flame className="w-4 h-4" />;
   if (n.includes('café')) return <Coffee className="w-4 h-4" />;
+  
+  // LOISIRS & SPORTS
   if (n.includes('caméra') || n.includes('video')) return <Video className="w-4 h-4" />;
-  if (n.includes('bain de soleil') || n.includes('solaire')) return <Sun className="w-4 h-4" />;
+  if (n.includes('ski nautique')) return <Activity className="w-4 h-4" />;
+  if (n.includes('paddle') || n.includes('canoë') || n.includes('plongée') || n.includes('bouée')) return <Waves className="w-4 h-4" />;
+  
+  // VOILES
   if (n.includes('voile') || n.includes('génois')) return <Sailboat className="w-4 h-4" />;
-  if (n.includes('générateur') || n.includes('moteur')) return <Zap className="w-4 h-4" />;
-  if (n.includes('filet') || n.includes('bouée')) return <Shield className="w-4 h-4" />;
-  if (n.includes('wi-fi') || n.includes('wifi')) return <Wifi className="w-4 h-4" />;
+  
+  // ENERGIE
+  if (n.includes('générateur')) return <Battery className="w-4 h-4" />;
+  if (n.includes('solaire')) return <Sun className="w-4 h-4" />;
+  if (n.includes('inverseur') || n.includes('220v') || n.includes('prise')) return <Plug className="w-4 h-4" />;
+  
   return <Check className="w-4 h-4" />;
 };
 
