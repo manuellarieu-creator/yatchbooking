@@ -237,8 +237,14 @@ function ReservationsContent() {
     };
 
     const wrapper = document.createElement('div');
+    wrapper.style.position = 'absolute';
+    wrapper.style.left = '-9999px';
+    wrapper.style.top = '0';
     wrapper.innerHTML = htmlContent;
+    document.body.appendChild(wrapper);
+
     (window as any).html2pdf().set(opt).from(wrapper).save().then(() => {
+      document.body.removeChild(wrapper);
       triggerToast('PDF téléchargé avec succès !', '✅');
     });
   };
