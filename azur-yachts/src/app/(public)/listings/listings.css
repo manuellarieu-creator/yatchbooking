@@ -238,7 +238,7 @@
 .listings-container .card-body { padding: 1.25rem 1.4rem; }
 .listings-container .card-type { display: flex; align-items: center; gap: 0.4rem; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--gold); margin-bottom: 0.4rem; flex-wrap: wrap; }
 .listings-container .card-type .sep { color: var(--sand); }
-.listings-container .card-type .card-top-rating { color: var(--text-mid); display: flex; align-items: center; font-weight: 500; }
+.listings-container .card-type .card-top-rating { color: #e2a200; display: flex; align-items: center; font-weight: 500; }
 .listings-container .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 400; color: var(--navy); margin-bottom: 0.8rem; }
 
 /* Specs inline */
