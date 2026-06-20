@@ -27,8 +27,10 @@ export default function HomePage() {
           const maxScroll = slider.scrollWidth - slider.clientWidth;
           if (maxScroll > 0) {
             let nextScroll = slider.scrollLeft + slider.clientWidth * 0.8;
-            if (nextScroll >= maxScroll - 10) {
-              nextScroll = 0;
+            if (slider.scrollLeft >= maxScroll - 10) {
+              nextScroll = 0; // go back to start
+            } else if (nextScroll > maxScroll) {
+              nextScroll = maxScroll; // go to the very end
             }
             slider.scrollTo({ left: nextScroll, behavior: 'smooth' });
           }
