@@ -875,8 +875,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               {similarYachts.length > 0 ? similarYachts.map((sim: any) => (
                 <div key={sim.id} className="similar-card" onClick={() => window.location.href = `/yacht/${sim.id}`}>
                   <div className="sim-img" style={{ 
-                    backgroundImage: sim.images?.[0]?.url ? `url(${sim.images[0].url})` : 'none',
-                    background: sim.images?.[0]?.url ? 'none' : `linear-gradient(135deg, var(--navy-mid), var(--navy))`,
+                    backgroundImage: sim.images?.[0]?.url ? `url(${sim.images[0].url})` : `linear-gradient(135deg, var(--navy-mid), var(--navy))`,
                     backgroundSize: 'cover', backgroundPosition: 'center'
                   }}></div>
                   <div className="sim-body">
