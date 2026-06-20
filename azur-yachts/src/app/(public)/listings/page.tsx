@@ -44,7 +44,8 @@ function ListingsContent() {
             ownerImage: l.owner?.avatar || '',
             imgUrl: l.images?.[0]?.url || '',
             isFav: l.isFav || false,
-            isAtSea: l.isAtSea || false
+            isAtSea: l.isAtSea || false,
+            fuelIncluded: l.fuelIncluded || false
           }));
           setYachts(mapped);
         }
@@ -413,6 +414,7 @@ function ListingsContent() {
                       <div className="card-info">
                         <div className="card-info-row">
                           {yacht.captain === 'oui' ? <span className="card-pill pill-captain">👨‍✈️ Capitaine Requis</span> : <span className="card-pill pill-nocaptain">👨‍✈️ Capitaine Optionnel</span>}
+                          {yacht.fuelIncluded ? <span className="card-pill pill-fuel-yes">⛽ Carburant Inclus</span> : <span className="card-pill pill-fuel-no">⛽ Carburant Non Inclus</span>}
                         </div>
                         <div className="card-info-row">
                           {yacht.skipper === 'oui' ? <span className="card-pill pill-skipper">⛵ Skipper Dispo</span> : <span className="card-pill pill-noskipper">⛵ Skipper Optionnel</span>}

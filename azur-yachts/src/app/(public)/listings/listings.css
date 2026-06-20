@@ -255,6 +255,8 @@
 .listings-container .pill-nocaptain { background: rgba(184,152,90,0.12); color: var(--gold); }
 .listings-container .pill-skipper { background: rgba(27,107,58,0.1); color: #1a6b3a; }
 .listings-container .pill-noskipper { background: rgba(138,26,26,0.08); color: #8a1a1a; }
+.listings-container .pill-fuel-yes { background: rgba(27,107,58,0.1); color: #1a6b3a; }
+.listings-container .pill-fuel-no { background: rgba(138,26,26,0.08); color: #8a1a1a; }
 
 /* Footer */
 .listings-container .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--sand); }
