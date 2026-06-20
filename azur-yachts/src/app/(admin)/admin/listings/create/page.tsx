@@ -338,7 +338,7 @@ function PublishForm() {
       const payload = {
         title, description: desc, price: Number(priceDay) || 0, country: portCountry, location: portCity,
         latitude: null, longitude: null, maxAdults: Number(adults) || 1, maxChildren: Number(children) || 0,
-        boatType: boatType === 'Autre' ? customBoatType : boatType, boatLength: Number(length) || 0, cabins: Number(cabins) || null, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
+        boatType: boatType === 'Autre' ? customBoatType : boatType, boatLength: Number(length) || 0, cabins: Number(cabins) || null, berths: Number(berths) || null, bathrooms: Number(bathrooms) || null, boatPlanUrl, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, isAtSea, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: Number(dp.fee) || 0 })), features,
         fuelIncluded, captainPrice: captainReq ? (Number(captainPrice) || 0) : null, skipperPrice: skipperOpt ? (Number(skipperPrice) || 0) : null,

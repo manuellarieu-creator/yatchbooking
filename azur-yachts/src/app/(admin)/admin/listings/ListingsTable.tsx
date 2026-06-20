@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Listing, ListingStatus, User } from '@prisma/client';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 type ListingWithOwner = Listing & { 
   owner: { firstName: string, lastName: string, email: string, phone?: string | null },
@@ -16,6 +17,17 @@ export default function ListingsTable({ listings: initialListings }: { listings:
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [selectedListing, setSelectedListing] = useState<ListingWithOwner | null>(null);
   const [editingListingId, setEditingListingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'CLOSE_MODAL') {
+        setEditingListingId(null);
+        window.location.reload();
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   const filteredListings = tab === 'pending' 
     ? listings.filter(l => l.status === 'PENDING')
