@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { formatPrice } from '@/lib/utils';
@@ -223,7 +223,7 @@ export default function HomePage() {
       <div className="infinite-scroll-wrapper stats-bar-wrapper" style={{ background: 'var(--navy-mid)', padding: '2rem 0' }}>
         <div className="infinite-scroll-track">
           {[1, 2].map((group) => (
-            <div key={group} style={{ display: 'flex', gap: '2rem' }}>
+            <Fragment key={group}>
               <div className="stat">
                 <div className="stat-num">{stats.totalYachts !== null ? stats.totalYachts : '-'}</div>
                 <div className="stat-label">Yachts disponibles</div>
@@ -240,7 +240,7 @@ export default function HomePage() {
                 <div className="stat-num">{stats.settings?.yearsOfExcellence || '-'}</div>
                 <div className="stat-label">Années d'excellence</div>
               </div>
-            </div>
+            </Fragment>
           ))}
         </div>
       </div>
@@ -293,7 +293,7 @@ export default function HomePage() {
         <div className="infinite-scroll-wrapper steps-wrapper" style={{ marginTop: '3rem' }}>
           <div className="infinite-scroll-track" style={{ animationDuration: '40s' }}>
             {[1, 2].map((group) => (
-              <div key={group} style={{ display: 'flex', gap: '2rem' }}>
+              <Fragment key={group}>
                 <div className="step">
                   <div className="step-num">01</div>
                   <div className="step-title">Choisissez votre yacht</div>
@@ -314,7 +314,7 @@ export default function HomePage() {
                   <div className="step-title">Larguez les amarres</div>
                   <p className="step-desc">Notre équipe vous accueille à bord. Votre équipage dédié prend soin de tout.</p>
                 </div>
-              </div>
+              </Fragment>
             ))}
           </div>
         </div>
@@ -349,7 +349,7 @@ export default function HomePage() {
               </div>
             ) : stats?.reviews?.length > 0 ? (
               [1, 2].map((group) => (
-                <div key={group} style={{ display: 'flex', gap: '2rem' }}>
+                <Fragment key={group}>
                   {stats.reviews.map((review: any, i: number) => (
                     <div className="testi-card" key={`group${group}-review${review.id || i}`}>
                       <span className="testi-quote">"</span>
@@ -370,7 +370,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   ))}
-                </div>
+                </Fragment>
               ))
             ) : (
               <div style={{width: '100%', textAlign: 'center', padding: '3rem', color: '#666'}}>
