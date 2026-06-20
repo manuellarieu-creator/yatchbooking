@@ -119,7 +119,8 @@ export async function POST(req: NextRequest) {
       latitude, longitude, maxAdults, maxChildren,
       boatType, boatLength, boatYear, cabins, berths, bathrooms, boatPlanUrl, requiresCaptain,
       skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
-      deliveryFee, deliveryPricing, features, cleaningFee, securityDeposit, images, services, availabilities, ownerId
+      deliveryFee, deliveryPricing, features, cleaningFee, securityDeposit, images, services, availabilities, ownerId,
+      navigationMode, fuelQuantity, fuelPricePerDay
     } = body
 
     const finalOwnerId = ((session.user as any).role === 'ADMIN' && ownerId) ? ownerId : (session.user as any).id;
@@ -129,6 +130,9 @@ export async function POST(req: NextRequest) {
         title, description, price, country, location,
         latitude, longitude, maxAdults, maxChildren,
         boatType, boatLength, boatYear, 
+        navigationMode,
+        fuelQuantity,
+        fuelPricePerDay: fuelPricePerDay ? Number(fuelPricePerDay) : null,
         cabins: cabins ? Number(cabins) : null, 
         berths: berths ? Number(berths) : null,
         bathrooms: bathrooms ? Number(bathrooms) : null,

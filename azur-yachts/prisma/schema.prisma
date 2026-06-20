@@ -201,7 +201,10 @@ model Listing {
   deliveryFee       Float?
   deliveryPricing   Json?
   features          String[]      @default([])
+  navigationMode    String        @default("INCLUDED")
   fuelIncluded      Boolean       @default(false)
+  fuelQuantity      String?
+  fuelPricePerDay   Float?
   cleaningFee       Float
   securityDeposit   Float         @default(0)
   captainPrice      Float?

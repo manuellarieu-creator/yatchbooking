@@ -120,7 +120,10 @@ function PublishForm() {
   const [priceDay, setPriceDay] = useState('');
   const [cleaningFee, setCleaningFee] = useState('');
   const [securityDeposit, setSecurityDeposit] = useState('');
+  const [navigationMode, setNavigationMode] = useState('INCLUDED');
   const [fuelIncluded, setFuelIncluded] = useState(false);
+  const [fuelQuantity, setFuelQuantity] = useState('');
+  const [fuelPricePerDay, setFuelPricePerDay] = useState('');
   const [captainPrice, setCaptainPrice] = useState('');
   const [skipperPrice, setSkipperPrice] = useState('');
 
@@ -184,6 +187,9 @@ function PublishForm() {
           setAdults(l.maxAdults);
           setChildren(l.maxChildren);
           setHours(l.maxRentalHours?.toString() || '24');
+          setNavigationMode(l.navigationMode || 'INCLUDED');
+          setFuelQuantity(l.fuelQuantity || '');
+          setFuelPricePerDay(l.fuelPricePerDay?.toString() || '');
           setCaptainReq(l.requiresCaptain);
           setSkipperOpt(l.skipperAvailable);
           setFuelIncluded(l.fuelIncluded || false);
@@ -406,7 +412,8 @@ function PublishForm() {
         latitude: null, longitude: null, maxAdults: Number(adults) || 1, maxChildren: Number(children) || 0,
         boatType: boatType === 'Autre' ? customBoatType : boatType, boatLength: Number(length) || 0, cabins: Number(cabins) || null, berths: Number(berths) || null, bathrooms: Number(bathrooms) || null, boatPlanUrl, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, isAtSea, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
-        deliveryPricing: deliveryPricing.map(dp => ({ distance: dp.distance, fee: Number(dp.fee) || 0 })), features,
+        deliveryPricing, features,
+        navigationMode, fuelQuantity, fuelPricePerDay: fuelPricePerDay ? Number(fuelPricePerDay) : null,
         fuelIncluded, captainPrice: captainReq ? (Number(captainPrice) || 0) : null, skipperPrice: skipperOpt ? (Number(skipperPrice) || 0) : null,
         cleaningFee: Number(cleaningFee) || 0,
         securityDeposit: Number(securityDeposit) || 0,
@@ -759,48 +766,77 @@ function PublishForm() {
 
                 <div className="form-card">
                   <div className="form-card-title">Équipage & navigation</div>
-                  <div className="toggle-row">
-                    <div className="toggle-info">
-                      <div className="toggle-label">Carburant inclus</div>
-                      <div className="toggle-desc">Cochez si le carburant est inclus dans le prix de la location</div>
-                    </div>
-                    <label className="toggle">
-                      <input type="checkbox" checked={fuelIncluded} onChange={e => setFuelIncluded(e.target.checked)} />
-                      <span className="toggle-slider"></span>
-                    </label>
+                  
+                  <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <button 
+                      className={`btn ${navigationMode === 'INCLUDED' ? 'btn-primary' : 'btn-outline'}`}
+                      onClick={() => {
+                        setNavigationMode('INCLUDED');
+                        setFuelIncluded(true);
+                        setCaptainReq(false);
+                        setSkipperOpt(false);
+                      }}
+                      style={{ flex: 1, padding: '1rem', borderRadius: '8px' }}
+                    >
+                      ✅ Équipage & navigation inclus
+                    </button>
+                    <button 
+                      className={`btn ${navigationMode === 'NOT_INCLUDED' ? 'btn-primary' : 'btn-outline'}`}
+                      onClick={() => {
+                        setNavigationMode('NOT_INCLUDED');
+                        setFuelIncluded(false);
+                      }}
+                      style={{ flex: 1, padding: '1rem', borderRadius: '8px' }}
+                    >
+                      ❌ Équipage & navigation non inclus
+                    </button>
                   </div>
-                  <div className="toggle-row" style={{ marginTop: '1rem' }}>
-                    <div className="toggle-info">
-                      <div className="toggle-label">Capitaine (Optionnel)</div>
-                      <div className="toggle-desc">Vous proposez un capitaine en option pour les clients</div>
-                    </div>
-                    <label className="toggle">
-                      <input type="checkbox" checked={captainReq} onChange={e => setCaptainReq(e.target.checked)} />
-                      <span className="toggle-slider"></span>
-                    </label>
-                  </div>
-                  {captainReq && (
-                    <div className="field" style={{ marginTop: '0.5rem', marginBottom: '1rem', marginLeft: '1rem' }}>
-                      <label className="label">Coût par jour (€) pour le capitaine</label>
-                      <input className="input" type="number" min="0" value={captainPrice} onChange={e => setCaptainPrice(e.target.value)} placeholder="Ex: 200" />
+
+                  {navigationMode === 'NOT_INCLUDED' && (
+                    <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      
+                      <div className="field-row" style={{ alignItems: 'flex-start' }}>
+                        <div className="field" style={{ flex: 2, marginBottom: 0 }}>
+                          <label className="label">Carburant non inclus</label>
+                          <div className="toggle-desc">Précisez la quantité et le coût pour informer le client.</div>
+                        </div>
+                        <div className="field" style={{ flex: 1, marginBottom: 0 }}>
+                          <input type="text" className="input" placeholder="Quantité (ex: 50L/h)" value={fuelQuantity} onChange={e => setFuelQuantity(e.target.value)} />
+                        </div>
+                        <div className="field" style={{ flex: 1, marginBottom: 0 }}>
+                          <input type="number" className="input" placeholder="Coût/jour (€)" min="0" value={fuelPricePerDay} onChange={e => setFuelPricePerDay(e.target.value)} />
+                        </div>
+                      </div>
+
+                      <div className="field-row" style={{ alignItems: 'center' }}>
+                        <div className="field" style={{ flex: 2, marginBottom: 0 }}>
+                          <label className="toggle" style={{ gap: '1rem' }}>
+                            <input type="checkbox" checked={captainReq} onChange={e => setCaptainReq(e.target.checked)} />
+                            <span className="toggle-slider"></span>
+                            <span style={{ fontWeight: 500, color: 'var(--navy)' }}>Capitaine non inclus</span>
+                          </label>
+                        </div>
+                        <div className="field" style={{ flex: 2, marginBottom: 0 }}>
+                          <input type="number" className="input" placeholder="Coût/jour (€)" min="0" value={captainPrice} onChange={e => setCaptainPrice(e.target.value)} disabled={!captainReq} style={{ opacity: captainReq ? 1 : 0.5 }} />
+                        </div>
+                      </div>
+
+                      <div className="field-row" style={{ alignItems: 'center' }}>
+                        <div className="field" style={{ flex: 2, marginBottom: 0 }}>
+                          <label className="toggle" style={{ gap: '1rem' }}>
+                            <input type="checkbox" checked={skipperOpt} onChange={e => setSkipperOpt(e.target.checked)} />
+                            <span className="toggle-slider"></span>
+                            <span style={{ fontWeight: 500, color: 'var(--navy)' }}>Skipper non inclus</span>
+                          </label>
+                        </div>
+                        <div className="field" style={{ flex: 2, marginBottom: 0 }}>
+                          <input type="number" className="input" placeholder="Coût/jour (€)" min="0" value={skipperPrice} onChange={e => setSkipperPrice(e.target.value)} disabled={!skipperOpt} style={{ opacity: skipperOpt ? 1 : 0.5 }} />
+                        </div>
+                      </div>
+                      
                     </div>
                   )}
-                  <div className="toggle-row" style={{ marginTop: '1rem' }}>
-                    <div className="toggle-info">
-                      <div className="toggle-label">Skipper (Optionnel)</div>
-                      <div className="toggle-desc">Vous proposez un skipper en option pour les clients</div>
-                    </div>
-                    <label className="toggle">
-                      <input type="checkbox" checked={skipperOpt} onChange={e => setSkipperOpt(e.target.checked)} />
-                      <span className="toggle-slider"></span>
-                    </label>
-                  </div>
-                  {skipperOpt && (
-                    <div className="field" style={{ marginTop: '0.5rem', marginBottom: '1rem', marginLeft: '1rem' }}>
-                      <label className="label">Coût par jour (€) pour le skipper</label>
-                      <input className="input" type="number" min="0" value={skipperPrice} onChange={e => setSkipperPrice(e.target.value)} placeholder="Ex: 150" />
-                    </div>
-                  )}
+
                   <div className="toggle-row">
                     <div className="toggle-info">
                       <div className="toggle-label">Bateau en mer / Hors port d'attache</div>
