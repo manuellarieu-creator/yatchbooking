@@ -214,9 +214,17 @@
   transform: translateY(10px);
   transition: all 0.3s ease;
 }
-.home-container .dest-card:hover .dest-action {
-  opacity: 1;
-  transform: translateY(0);
+@media (hover: hover) {
+  .home-container .dest-card:hover .dest-action {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (hover: none) {
+  .home-container .dest-action {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse {

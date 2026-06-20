@@ -266,7 +266,7 @@ export default function HomePage() {
               {dest.isLarge && <span className="dest-tag">Populaire</span>}
               <div className="dest-info">
                 <div className="dest-name">{dest.name}</div>
-                <div className="dest-count">{dest.count} yachts disponibles</div>
+                <div className="dest-count">{dest.count} yacht{dest.count > 1 ? 's' : ''} disponible{dest.count > 1 ? 's' : ''}</div>
                 {dest.minPrice && (
                   <div className="dest-price" style={{ fontSize: '0.9rem', color: 'var(--gold)', marginTop: '0.3rem', fontWeight: 500 }}>
                     à partir de {formatPrice(dest.minPrice)} / jour
