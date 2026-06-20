@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
           select: {
             id: true, firstName: true, lastName: true,
             avatar: true, videoVerified: true, advertiserTier: true,
-            languages: true, createdAt: true,
+            languages: true, createdAt: true, role: true,
             receivedReviews: {
               where: { targetType: 'OWNER' },
               include: { author: { select: { id: true, firstName: true, lastName: true, avatar: true } } },

@@ -327,10 +327,30 @@ export default function YachtPage({ params }: { params: { id: string } }) {
         <div className="left-col">
           {/* Header */}
           <div className="listing-header fade-in">
-            <div className="listing-meta-top">
+            <div className="listing-meta-top" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
               <span className="listing-location">📍 {yacht.location} — {yacht.country}</span>
-              <div className="listing-badges">
-                {yacht.owner?.videoVerified && <span className="listing-badge badge-verified">✓ Annonceur vérifié</span>}
+              <div style={{ width: '1px', height: '20px', background: 'var(--border)' }}></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: 'var(--border)', overflow: 'hidden', flexShrink: 0 }}>
+                  {yacht.owner?.avatar ? (
+                    <img src={yacht.owner.avatar} alt="Owner" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--gold)', color: 'white', fontSize: '0.8rem', fontWeight: 600 }}>
+                      {yacht.owner?.firstName?.charAt(0) || '?'}
+                    </div>
+                  )}
+                </div>
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 500 }}>
+                  {yacht.owner?.role === 'ADVERTISER' ? 'Loueur Pro' : 'Particulier'}
+                </span>
+                {yacht.owner?.languages && yacht.owner.languages.length > 0 && (
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-light)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <span style={{ fontSize: '1rem' }}>🗣️</span> {yacht.owner.languages.map((l: string) => l.substring(0, 2).toUpperCase()).join(', ')}
+                  </span>
+                )}
+              </div>
+              <div className="listing-badges" style={{ marginLeft: 'auto' }}>
+                {yacht.owner?.videoVerified && <span className="listing-badge badge-verified">✓ Vérifié</span>}
                 {yacht.owner?.advertiserTier && <span className="listing-badge badge-platinium">⚓ {yacht.owner.advertiserTier}</span>}
               </div>
             </div>
