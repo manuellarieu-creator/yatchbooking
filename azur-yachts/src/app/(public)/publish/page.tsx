@@ -3,19 +3,62 @@
 import { useState, useRef, useEffect, ChangeEvent, DragEvent, KeyboardEvent } from 'react';
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { 
+  Umbrella, ShowerHead, Grid2X2, Speaker, Waves, 
+  Thermometer, Droplets, Snowflake, Bath, Plug, 
+  Navigation, Anchor, Cpu, Compass, Radio, 
+  Flame, Coffee, Video, Sun, Sailboat, 
+  Zap, Shield, Wifi, Check 
+} from 'lucide-react';
 import './publish.css';
 
 const TOTAL_STEPS = 7;
-const PREDEFINED_FEATURES = [
-  'Taud de soleil', 'Douche extérieure', 'Table extérieure', 'Enceintes extérieures', 'Pont en teck', 'Échelle de bain',
-  'Eau chaude', 'Dessalinisateur', 'Air conditionné', 'WC électrique', 'Serviettes de bain', 'Prise USB',
-  'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'VHF',
-  'Four/cuisinière', 'Machine à café',
-  'Caméra vidéo', 'Système audio',
-  'Grand-voile lattée', 'Génois',
-  'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V',
-  'Ski nautique', 'Filet de sécurité', 'Wi-Fi', 'Paddle', 'Canoë-kayak'
+
+const EQUIPEMENTS_A_BORD = [
+  'Eau chaude', 'Dessalinisateur', 'Air conditionné', 'WC électrique', 'Serviettes de bain', 'Prise USB', 'Wi-Fi',
+  'Four/cuisinière', 'Machine à café', 'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V'
 ];
+
+const EQUIPEMENTS_EXTERIEURS = [
+  'Taud de soleil', 'Douche extérieure', 'Table extérieure', 'Enceintes extérieures', 'Pont en teck', 'Échelle de bain',
+  'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'VHF', 'Grand-voile lattée', 'Génois', 'Filet de sécurité'
+];
+
+const AUTRES_LOISIRS = [
+  'Caméra vidéo', 'Système audio', 'Bain de soleil'
+];
+
+const EQUIPEMENTS_OPTIONNELS = [
+  'Paddle', 'Canoë-kayak', 'Ski nautique', 'Moteur hors-bord', 'Matériel de plongée', 'Bouée tractée', 'Literie supplémentaire'
+];
+
+const getIconForEquipment = (name: string) => {
+  const n = name.toLowerCase();
+  if (n.includes('taud')) return <Umbrella className="w-4 h-4" />;
+  if (n.includes('douche')) return <ShowerHead className="w-4 h-4" />;
+  if (n.includes('table')) return <Grid2X2 className="w-4 h-4" />;
+  if (n.includes('enceinte') || n.includes('audio')) return <Speaker className="w-4 h-4" />;
+  if (n.includes('teck') || n.includes('échelle') || n.includes('paddle') || n.includes('ski nautique') || n.includes('canoë')) return <Waves className="w-4 h-4" />;
+  if (n.includes('eau chaude')) return <Thermometer className="w-4 h-4" />;
+  if (n.includes('dessalinisateur') || n.includes('wc')) return <Droplets className="w-4 h-4" />;
+  if (n.includes('air cond') || n.includes('climatisation')) return <Snowflake className="w-4 h-4" />;
+  if (n.includes('serviette') || n.includes('literie')) return <Bath className="w-4 h-4" />;
+  if (n.includes('prise') || n.includes('inverseur')) return <Plug className="w-4 h-4" />;
+  if (n.includes('annexe') || n.includes('navigation')) return <Navigation className="w-4 h-4" />;
+  if (n.includes('guindeau')) return <Anchor className="w-4 h-4" />;
+  if (n.includes('pilote')) return <Cpu className="w-4 h-4" />;
+  if (n.includes('gps')) return <Compass className="w-4 h-4" />;
+  if (n.includes('vhf')) return <Radio className="w-4 h-4" />;
+  if (n.includes('four') || n.includes('cuisine')) return <Flame className="w-4 h-4" />;
+  if (n.includes('café')) return <Coffee className="w-4 h-4" />;
+  if (n.includes('caméra') || n.includes('video')) return <Video className="w-4 h-4" />;
+  if (n.includes('bain de soleil') || n.includes('solaire')) return <Sun className="w-4 h-4" />;
+  if (n.includes('voile') || n.includes('génois')) return <Sailboat className="w-4 h-4" />;
+  if (n.includes('générateur') || n.includes('moteur')) return <Zap className="w-4 h-4" />;
+  if (n.includes('filet') || n.includes('bouée')) return <Shield className="w-4 h-4" />;
+  if (n.includes('wi-fi') || n.includes('wifi')) return <Wifi className="w-4 h-4" />;
+  return <Check className="w-4 h-4" />;
+};
 
 type Service = {
   id: string;
@@ -158,6 +201,29 @@ function PublishForm() {
     setShowToast(false);
     setTimeout(() => setShowToast(true), 50);
     setTimeout(() => setShowToast(false), 3000);
+  };
+
+  // Add or remove optional equipment logic
+  const toggleOptionalEquipment = (opt: string) => {
+    const existing = services.find(s => s.name === opt && s.unit === 'PER_BOOKING');
+    if (existing) {
+      setServices(services.filter(s => s.id !== existing.id));
+    } else {
+      setServices([...services, { id: 'svc_' + Date.now() + Math.random(), name: opt, price: 0, unit: 'PER_BOOKING', isRequired: false }]);
+    }
+  };
+
+  const updateOptionalEquipmentPrice = (opt: string, price: number) => {
+    setServices(services.map(s => (s.name === opt && s.unit === 'PER_BOOKING') ? { ...s, price } : s));
+  };
+
+  const getOptionalEquipmentPrice = (opt: string) => {
+    const existing = services.find(s => s.name === opt && s.unit === 'PER_BOOKING');
+    return existing ? existing.price : 0;
+  };
+
+  const isOptionalEquipmentSelected = (opt: string) => {
+    return services.some(s => s.name === opt && s.unit === 'PER_BOOKING');
   };
 
   const handleNext = () => {
@@ -706,14 +772,93 @@ function PublishForm() {
 
                 <div className="form-card">
                   <div className="form-card-title">Équipements à bord</div>
-                  <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                    {Array.from(new Set([...PREDEFINED_FEATURES, ...features])).map(f => (
-                      <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
-                        <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
-                        {f}
-                      </label>
-                    ))}
+                  <div className="features-section" style={{ marginBottom: '1.5rem' }}>
+                    <h3 style={{ fontSize: '0.9rem', color: 'var(--navy)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Confort, Énergie & Cuisine</h3>
+                    <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
+                      {EQUIPEMENTS_A_BORD.map(f => (
+                        <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                          <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
+                          <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(f)}</span>
+                          {f}
+                        </label>
+                      ))}
+                    </div>
                   </div>
+
+                  <div className="features-section" style={{ marginBottom: '1.5rem' }}>
+                    <h3 style={{ fontSize: '0.9rem', color: 'var(--navy)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Équipements Extérieurs & Navigation</h3>
+                    <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
+                      {EQUIPEMENTS_EXTERIEURS.map(f => (
+                        <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                          <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
+                          <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(f)}</span>
+                          {f}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="features-section" style={{ marginBottom: '1.5rem' }}>
+                    <h3 style={{ fontSize: '0.9rem', color: 'var(--navy)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Autres & Loisirs (Inclus)</h3>
+                    <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
+                      {AUTRES_LOISIRS.map(f => (
+                        <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                          <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
+                          <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(f)}</span>
+                          {f}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="features-section" style={{ marginBottom: '1.5rem', background: 'rgba(184,152,90,0.05)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(184,152,90,0.2)' }}>
+                    <h3 style={{ fontSize: '0.9rem', color: 'var(--gold)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Équipements en Option (Payants)</h3>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginBottom: '1rem' }}>Cochez les équipements que vous proposez en option et indiquez leur prix. Ce prix sera ajouté au prix de la location (Par réservation).</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                      {EQUIPEMENTS_OPTIONNELS.map(opt => {
+                        const isSelected = isOptionalEquipmentSelected(opt);
+                        return (
+                          <div key={opt} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)', width: '200px' }}>
+                              <input type="checkbox" checked={isSelected} onChange={() => toggleOptionalEquipment(opt)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--gold)' }} />
+                              <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(opt)}</span>
+                              {opt}
+                            </label>
+                            {isSelected && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <input 
+                                  type="number" 
+                                  className="input" 
+                                  min="0" 
+                                  style={{ padding: '0.2rem 0.5rem', width: '80px' }} 
+                                  placeholder="Prix" 
+                                  value={getOptionalEquipmentPrice(opt) || ''} 
+                                  onChange={e => updateOptionalEquipmentPrice(opt, Number(e.target.value) || 0)} 
+                                />
+                                <span style={{ fontSize: '0.85rem', color: 'var(--text-mid)' }}>€ / réservation</span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Render custom features that were added but don't match standard lists */}
+                  {features.filter(f => !EQUIPEMENTS_A_BORD.includes(f) && !EQUIPEMENTS_EXTERIEURS.includes(f) && !AUTRES_LOISIRS.includes(f)).length > 0 && (
+                    <div className="features-section" style={{ marginBottom: '1.5rem' }}>
+                      <h3 style={{ fontSize: '0.9rem', color: 'var(--navy)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Équipements Personnalisés</h3>
+                      <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
+                        {features.filter(f => !EQUIPEMENTS_A_BORD.includes(f) && !EQUIPEMENTS_EXTERIEURS.includes(f) && !AUTRES_LOISIRS.includes(f)).map(f => (
+                          <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                            <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
+                            <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(f)}</span>
+                            {f}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div className="field">
                     <label className="label">Ajouter un équipement personnalisé</label>
                     <input 
