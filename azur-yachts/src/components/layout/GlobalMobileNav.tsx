@@ -201,7 +201,7 @@ export default function GlobalMobileNav() {
               <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Notre équipe est disponible du lundi au samedi, de 9h à 19h.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <a href="mailto:support@voyyacht.com" className="btn btn-outline" style={{ justifyContent: 'center' }}>✉️ Envoyer un email</a>
-                <button className="btn btn-primary" onClick={() => setActiveModal(null)}>💬 Démarrer un chat</button>
+                <Link href="/dashboard?tab=messages" className="btn btn-primary" style={{ justifyContent: 'center', textDecoration: 'none' }} onClick={() => setActiveModal(null)}>💬 Démarrer un chat</Link>
               </div>
             </div>
           </div>
