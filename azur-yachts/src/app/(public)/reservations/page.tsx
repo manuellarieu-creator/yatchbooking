@@ -165,6 +165,34 @@ function ReservationsContent() {
     }
   }, [chatModalOpen, activeConvId]);
 
+  const handleDownloadBookingFile = (resa: any, title: string) => {
+    if (!resa) return;
+    const content = `VOYYACHT - ${title.toUpperCase()}\n\n` +
+      `Référence: ${resa.id}\n\n` +
+      `DÉTAILS DU YACHT\n` +
+      `Nom: ${resa.name}\n` +
+      `Type: ${resa.type}\n` +
+      `Lieu: ${resa.location}\n\n` +
+      `DÉTAILS DU VOYAGE\n` +
+      `Arrivée: ${resa.arrival}\n` +
+      `Départ: ${resa.departure}\n` +
+      `Invités: ${resa.guests}\n` +
+      `Durée: ${resa.nights} nuits\n\n` +
+      `PRIX ET PAIEMENT\n` +
+      `Montant Total: €${resa.price.toLocaleString()}\n` +
+      `Statut: ${resa.status}\n` +
+      `Méthode: ${resa.priceNote}\n`;
+  
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `VoyYacht_${title.replace(/\s+/g, '_')}_${resa.id}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    triggerToast(`${title} téléchargé.`, '📄');
+  };
+
   const filteredReservations = useMemo(() => {
     return reservationsData.filter(r => {
       if (activeTab !== 'all' && r.status !== activeTab) return false;
@@ -391,7 +419,7 @@ function ReservationsContent() {
                   {resa.status === 'confirmed' && (
                     <>
                       <button className="btn btn-primary" onClick={() => openDetail(resa.id)}>Voir les détails</button>
-                      <button className="btn btn-outline" onClick={() => triggerToast('Téléchargement du bon...', '📄')}>📄 Bon de réservation</button>
+                      <button className="btn btn-outline" onClick={() => handleDownloadBookingFile(resa, 'Bon de réservation')}>📄 Bon de réservation</button>
                       <button className="btn btn-outline" onClick={() => startChat(resa)}>💬 Contacter</button>
                       <button className="btn btn-danger" onClick={() => triggerToast("Demande d'annulation envoyée à l'équipe.", '⚠️')}>Demander annulation</button>
                     </>
@@ -464,7 +492,7 @@ function ReservationsContent() {
           </div>
           <div className="modal-footer">
             <button className="modal-btn secondary" onClick={() => setModalOpen('')}>Fermer</button>
-            <button className="modal-btn primary" onClick={() => { setModalOpen(''); triggerToast('Récapitulatif téléchargé.', '📄'); }}>📄 Télécharger le récapitulatif</button>
+            <button className="modal-btn primary" onClick={() => { setModalOpen(''); handleDownloadBookingFile(selectedResa, 'Récapitulatif'); }}>📄 Télécharger le récapitulatif</button>
           </div>
         </div>
       </div>
