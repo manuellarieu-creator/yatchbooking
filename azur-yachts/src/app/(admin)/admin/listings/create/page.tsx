@@ -844,11 +844,13 @@ function PublishForm() {
                       </div>
 
                       <div className="field-row" style={{ alignItems: 'center' }}>
-                        <div className="field" style={{ flex: 2, marginBottom: 0 }}>
-                          <label className="toggle" style={{ gap: '1rem' }}>
+                        <div className="field" style={{ flex: 2, marginBottom: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div className="toggle-info">
+                            <div className="toggle-label" style={{ fontWeight: 500, color: 'var(--navy)' }}>Capitaine non inclus</div>
+                          </div>
+                          <label className="toggle">
                             <input type="checkbox" checked={captainReq} onChange={e => setCaptainReq(e.target.checked)} />
                             <span className="toggle-slider"></span>
-                            <span style={{ fontWeight: 500, color: 'var(--navy)' }}>Capitaine non inclus</span>
                           </label>
                         </div>
                         <div className="field" style={{ flex: 2, marginBottom: 0 }}>
@@ -857,11 +859,13 @@ function PublishForm() {
                       </div>
 
                       <div className="field-row" style={{ alignItems: 'center' }}>
-                        <div className="field" style={{ flex: 2, marginBottom: 0 }}>
-                          <label className="toggle" style={{ gap: '1rem' }}>
+                        <div className="field" style={{ flex: 2, marginBottom: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div className="toggle-info">
+                            <div className="toggle-label" style={{ fontWeight: 500, color: 'var(--navy)' }}>Skipper non inclus</div>
+                          </div>
+                          <label className="toggle">
                             <input type="checkbox" checked={skipperOpt} onChange={e => setSkipperOpt(e.target.checked)} />
                             <span className="toggle-slider"></span>
-                            <span style={{ fontWeight: 500, color: 'var(--navy)' }}>Skipper non inclus</span>
                           </label>
                         </div>
                         <div className="field" style={{ flex: 2, marginBottom: 0 }}>
