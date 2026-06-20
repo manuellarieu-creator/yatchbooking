@@ -4,8 +4,8 @@
   right: 2rem;
   width: 45px;
   height: 45px;
-  background-color: var(--navy);
-  color: #fff;
+  background-color: #0a1628; /* Bleu marine */
+  color: #e2a200; /* Doré / Étoile */
   border: none;
   border-radius: 50%;
   display: flex;
@@ -18,7 +18,7 @@
 }
 
 .back-to-top:hover {
-  background-color: var(--gold);
+  background-color: #0f213b;
   transform: translateY(-3px);
 }
 
