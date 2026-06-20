@@ -22,6 +22,10 @@ function DashboardContent() {
     if (tab) {
       setActiveSection(tab);
     }
+    const convId = searchParams.get('convId');
+    if (convId) {
+      setActiveConvId(convId);
+    }
   }, [searchParams]);
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
@@ -179,6 +183,20 @@ function DashboardContent() {
     } catch (err) {
       console.error(err);
       triggerToast('Erreur lors de l\'envoi du message');
+    }
+  };
+
+  const handleStartSupportChat = async () => {
+    try {
+      const res = await fetch('/api/conversations/support', { method: 'POST' });
+      const data = await res.json();
+      if (data.conversation) {
+        setActiveModal(null);
+        setActiveSection('messages');
+        setActiveConvId(data.conversation.id);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -794,8 +812,12 @@ function DashboardContent() {
             {activeModal === 'verify' && <iframe src="/verify?modal=true" />}
             {activeModal === 'help' && (
               <div style={{ padding: '2rem', textAlign: 'center', fontFamily: "'Jost', sans-serif" }}>
-                <h3>Centre d'aide</h3>
-                <p>Contactez notre support à <strong>support@voyyacht.com</strong> ou appelez le <strong>+33 1 23 45 67 89</strong>.</p>
+                <h4 style={{ fontSize: '1.1rem', color: 'var(--navy)', marginBottom: '1rem' }}>Comment pouvons-nous vous aider ?</h4>
+                <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Notre équipe est disponible du lundi au samedi, de 9h à 19h.</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '300px', margin: '0 auto' }}>
+                  <a href="mailto:support@voyyacht.com" className="btn btn-outline" style={{ justifyContent: 'center' }}>✉️ Envoyer un email</a>
+                  <button className="btn btn-primary" onClick={handleStartSupportChat}>💬 Démarrer un chat</button>
+                </div>
               </div>
             )}
             {activeModal === 'modifyBooking' && selectedBookingForMod && (

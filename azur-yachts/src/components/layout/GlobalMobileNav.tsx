@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { Menu, Home, Settings, X } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import InAppNotifications from '@/components/layout/InAppNotifications';
@@ -10,6 +10,7 @@ import InAppNotifications from '@/components/layout/InAppNotifications';
 export default function GlobalMobileNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [navData, setNavData] = useState<any>(null);
   
@@ -24,6 +25,19 @@ export default function GlobalMobileNav() {
       })
       .catch(console.error);
   }, []);
+
+  const handleStartSupportChat = async () => {
+    try {
+      const res = await fetch('/api/conversations/support', { method: 'POST' });
+      const data = await res.json();
+      if (data.conversation) {
+        setActiveModal(null);
+        router.push(`/dashboard?tab=messages&convId=${data.conversation.id}`);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Hide on landing page or in modals
   if (pathname === '/' || searchParams.get('modal') === 'true') {
@@ -201,7 +215,7 @@ export default function GlobalMobileNav() {
               <p style={{ color: 'var(--text-light)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Notre équipe est disponible du lundi au samedi, de 9h à 19h.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <a href="mailto:support@voyyacht.com" className="btn btn-outline" style={{ justifyContent: 'center' }}>✉️ Envoyer un email</a>
-                <Link href="/dashboard?tab=messages" className="btn btn-primary" style={{ justifyContent: 'center', textDecoration: 'none' }} onClick={() => setActiveModal(null)}>💬 Démarrer un chat</Link>
+                <button className="btn btn-primary" onClick={handleStartSupportChat}>💬 Démarrer un chat</button>
               </div>
             </div>
           </div>
