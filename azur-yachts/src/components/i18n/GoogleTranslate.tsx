@@ -30,9 +30,19 @@ export default function GoogleTranslate() {
       <div id="google_translate_element" style={{ display: 'none' }}></div>
       <style dangerouslySetInnerHTML={{ __html: `
         /* Hide Google Translate top banner */
+        iframe.goog-te-banner-frame { display: none !important; }
         .goog-te-banner-frame { display: none !important; }
-        .goog-te-banner-frame.skiptranslate { display: none !important; }
-        body { top: 0px !important; }
+        .VIpgJd-Zvi9od-ORHb-OEVmcd { display: none !important; }
+        .VIpgJd-Zvi9od-aZ2wEe-wOHMyf { display: none !important; }
+        
+        body { 
+          top: 0px !important; 
+          position: static !important; 
+        }
+        html {
+          height: 100%;
+          margin-top: 0 !important;
+        }
         
         /* Hide tooltip when hovering translated text */
         .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
