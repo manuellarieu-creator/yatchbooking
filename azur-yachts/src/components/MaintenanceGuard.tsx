@@ -15,7 +15,7 @@ export default function MaintenanceGuard({
   const pathname = usePathname() || '';
 
   // Always allow access to login page so admins can authenticate
-  if (isMaintenance && !isAdmin && !pathname.startsWith('/login')) {
+  if (isMaintenance && !isAdmin && !pathname.startsWith('/auth') && !pathname.startsWith('/api/auth')) {
     return (
       <div style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
