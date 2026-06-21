@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 
 const LANGUAGES = [
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'en', label: 'English', flag: '🇬🇧' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-  { code: 'da', label: 'Dansk', flag: '🇩🇰' },
-  { code: 'it', label: 'Italiano', flag: '🇮🇹' },
+  { code: 'fr', label: 'Français', flagUrl: 'https://flagcdn.com/w20/fr.png' },
+  { code: 'en', label: 'English', flagUrl: 'https://flagcdn.com/w20/gb.png' },
+  { code: 'es', label: 'Español', flagUrl: 'https://flagcdn.com/w20/es.png' },
+  { code: 'de', label: 'Deutsch', flagUrl: 'https://flagcdn.com/w20/de.png' },
+  { code: 'da', label: 'Dansk', flagUrl: 'https://flagcdn.com/w20/dk.png' },
+  { code: 'it', label: 'Italiano', flagUrl: 'https://flagcdn.com/w20/it.png' },
 ];
 
 export default function LanguageSelector() {
@@ -52,6 +52,7 @@ export default function LanguageSelector() {
         className="flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:text-white transition-colors"
         style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
       >
+        <img src={activeLang.flagUrl} alt={activeLang.code} style={{ width: '20px', borderRadius: '2px', objectFit: 'cover' }} />
         <span className="uppercase tracking-wider text-sm font-medium">{activeLang.code}</span>
         <span className="text-[10px] opacity-70">▼</span>
       </button>
@@ -68,6 +69,7 @@ export default function LanguageSelector() {
               className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
               style={{ display: 'flex', width: '100%', alignItems: 'center', gap: '10px', padding: '10px 16px', background: currentLang === lang.code ? '#f8fafc' : 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', color: '#1e293b' }}
             >
+              <img src={lang.flagUrl} alt={lang.code} style={{ width: '20px', borderRadius: '2px', objectFit: 'cover' }} />
               <span className="uppercase text-xs font-semibold text-gray-400 w-6">{lang.code}</span>
               <span style={{ fontWeight: currentLang === lang.code ? 600 : 400 }}>{lang.label}</span>
             </button>
