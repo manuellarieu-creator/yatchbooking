@@ -237,6 +237,26 @@
     grid-template-columns: 1fr;
     gap: 15px;
   }
+
+  /* Formulaire de devis mobile : réduction des polices */
+  .quote-header h2 {
+    font-size: 1.8rem;
+  }
+  .quote-header p {
+    font-size: 0.9rem;
+  }
+  .form-group label {
+    font-size: 0.75rem;
+  }
+  .form-group input,
+  .form-group textarea {
+    font-size: 0.9rem;
+    padding: 10px 14px;
+  }
+  .quote-btn {
+    font-size: 0.9rem;
+    padding: 12px;
+  }
 }
 
 .floating-chat-btn {
