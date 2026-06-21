@@ -12,7 +12,7 @@ export default function GoogleTranslate() {
       script.async = true;
       document.body.appendChild(script);
 
-      window.googleTranslateElementInit = () => {
+      (window as any).googleTranslateElementInit = () => {
         new (window as any).google.translate.TranslateElement(
           {
             pageLanguage: 'fr',
