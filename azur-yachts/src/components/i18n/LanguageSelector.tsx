@@ -52,9 +52,8 @@ export default function LanguageSelector() {
         className="flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:text-white transition-colors"
         style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
       >
-        <span className="text-lg">{activeLang.flag}</span>
-        <span className="hidden md:inline uppercase tracking-wider text-xs">{activeLang.code}</span>
-        <span className="text-[10px] ml-1 opacity-50">▼</span>
+        <span className="uppercase tracking-wider text-sm font-medium">{activeLang.code}</span>
+        <span className="text-[10px] opacity-70">▼</span>
       </button>
 
       {isOpen && (
@@ -69,7 +68,7 @@ export default function LanguageSelector() {
               className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
               style={{ display: 'flex', width: '100%', alignItems: 'center', gap: '10px', padding: '10px 16px', background: currentLang === lang.code ? '#f8fafc' : 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', color: '#1e293b' }}
             >
-              <span className="text-lg">{lang.flag}</span>
+              <span className="uppercase text-xs font-semibold text-gray-400 w-6">{lang.code}</span>
               <span style={{ fontWeight: currentLang === lang.code ? 600 : 400 }}>{lang.label}</span>
             </button>
           ))}
