@@ -326,17 +326,17 @@ function ReservationsContent() {
 
         {/* KPI CARDS */}
         <div className="kpi-row">
-          <div className="kpi-card reveal">
+          <div className="kpi-card reveal clickable" onClick={() => { setActiveTab('all'); document.querySelector('.reservations-list')?.scrollIntoView({ behavior: 'smooth' }); }}>
             <div className="kpi-label">Total réservations</div>
             <div className="kpi-value">{totalReservations}</div>
             <div className="kpi-sub">depuis votre inscription</div>
           </div>
-          <div className="kpi-card reveal">
+          <div className="kpi-card reveal clickable" onClick={() => { setActiveTab('confirmed'); document.querySelector('.reservations-list')?.scrollIntoView({ behavior: 'smooth' }); }}>
             <div className="kpi-label">À venir</div>
             <div className="kpi-value">{upcomingReservations}</div>
             <div className="kpi-sub">réservations confirmées</div>
           </div>
-          <div className="kpi-card reveal">
+          <div className="kpi-card reveal clickable" onClick={() => { setActiveTab('pending'); document.querySelector('.reservations-list')?.scrollIntoView({ behavior: 'smooth' }); }}>
             <div className="kpi-label">En attente</div>
             <div className="kpi-value">{pendingReservations}</div>
             <div className="kpi-sub">en cours de traitement</div>
