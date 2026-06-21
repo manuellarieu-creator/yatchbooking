@@ -517,28 +517,36 @@ function DashboardContent() {
                     <th>Réf.</th><th>Bateau</th><th>Client</th><th>Dates</th><th>Nuits</th><th>Montant</th><th>Paiement</th><th>Statut</th><th>Actions</th>
                   </tr></thead>
                   <tbody>
-                    {filteredBookings.map((b: any) => (
-                      <tr key={b.id}>
-                        <td data-label="Réf."><strong>{b.id}</strong></td>
-                        <td data-label="Bateau">{b.boat}</td>
-                        <td data-label="Client">{b.client}</td>
-                        <td data-label="Dates">{b.dates}</td>
-                        <td data-label="Nuits">{b.nights}</td>
-                        <td data-label="Montant"><strong>{b.total}</strong></td>
-                        <td data-label="Paiement">{b.payment}</td>
-                        <td data-label="Statut"><span className={`badge ${b.badgeClass}`}>{b.badge}</span></td>
-                        <td data-label="Actions">
-                          <div className="row-actions">
-                            <button className="act-btn" onClick={() => triggerToast('Détails…')}>Détails</button>
-                            {b.status !== 'cancelled' && <button className="act-btn" onClick={() => triggerToast('Facture…')}>Facture</button>}
-                            {(b.status === 'confirmed' || b.status === 'pending') && (
-                              <button className="act-btn" style={{ color: 'var(--gold)' }} onClick={() => { setSelectedBookingForMod(b); setActiveModal('modifyBooking'); }}>Modifier</button>
-                            )}
-                            {b.status === 'pending' && <button className="act-btn danger" onClick={() => triggerToast('Annulation…')}>Annuler</button>}
-                          </div>
+                    {filteredBookings.length === 0 ? (
+                      <tr>
+                        <td colSpan={9} style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-light)' }}>
+                          Aucune réservation trouvée.
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      filteredBookings.map((b: any) => (
+                        <tr key={b.id}>
+                          <td data-label="Réf."><strong>{b.id}</strong></td>
+                          <td data-label="Bateau">{b.boat}</td>
+                          <td data-label="Client">{b.client}</td>
+                          <td data-label="Dates">{b.dates}</td>
+                          <td data-label="Nuits">{b.nights}</td>
+                          <td data-label="Montant"><strong>{b.total}</strong></td>
+                          <td data-label="Paiement">{b.payment}</td>
+                          <td data-label="Statut"><span className={`badge ${b.badgeClass}`}>{b.badge}</span></td>
+                          <td data-label="Actions">
+                            <div className="row-actions">
+                              <button className="act-btn" onClick={() => triggerToast('Détails…')}>Détails</button>
+                              {b.status !== 'cancelled' && <button className="act-btn" onClick={() => triggerToast('Facture…')}>Facture</button>}
+                              {(b.status === 'confirmed' || b.status === 'pending') && (
+                                <button className="act-btn" style={{ color: 'var(--gold)' }} onClick={() => { setSelectedBookingForMod(b); setActiveModal('modifyBooking'); }}>Modifier</button>
+                              )}
+                              {b.status === 'pending' && <button className="act-btn danger" onClick={() => triggerToast('Annulation…')}>Annuler</button>}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
