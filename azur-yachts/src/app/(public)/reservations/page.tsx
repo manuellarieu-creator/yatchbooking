@@ -43,7 +43,9 @@ function ReservationsContent() {
             
             let uiStatus = 'pending';
             if (['PAYMENT_PENDING', 'PAYMENT_RECEIVED'].includes(b.status)) uiStatus = 'payment';
-            else if (b.status === 'CONFIRMED') uiStatus = 'confirmed';
+            else if (b.status === 'CONFIRMED') {
+              uiStatus = endDate.getTime() < Date.now() ? 'completed' : 'confirmed';
+            }
             else if (b.status === 'COMPLETED') uiStatus = 'completed';
             else if (['CANCELLED', 'REJECTED'].includes(b.status)) uiStatus = 'cancelled';
 
