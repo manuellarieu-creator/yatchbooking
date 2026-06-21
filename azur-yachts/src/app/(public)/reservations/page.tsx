@@ -236,7 +236,13 @@ function ReservationsContent() {
             <h3 style="margin-top: 0;">Facturation & Paiement</h3>
             <table>
               <tr><td class="label">Méthode de paiement</td><td class="val" style="text-align: right;">${resa.priceNote}</td></tr>
-              <tr><td class="label">Statut de réservation</td><td class="val" style="text-align: right; text-transform: capitalize;">${resa.status}</td></tr>
+              <tr><td class="label">Statut de réservation</td><td class="val" style="text-align: right; text-transform: capitalize;">${
+                resa.status === 'confirmed' ? 'Confirmée' :
+                resa.status === 'payment' ? 'En attente de paiement' :
+                resa.status === 'pending' ? 'En attente de confirmation' :
+                resa.status === 'completed' ? 'Terminée' :
+                resa.status === 'cancelled' ? 'Annulée' : resa.status
+              }</td></tr>
               <tr>
                 <td style="padding: 15px 0 5px; font-size: 18px; font-weight: 600; color: #0a2040; border-top: 1px solid #e2e8f0; margin-top: 10px;">Montant Total (TTC)</td>
                 <td style="padding: 15px 0 5px; font-size: 20px; font-weight: 600; color: #e2a200; text-align: right; border-top: 1px solid #e2e8f0;">€${resa.price.toLocaleString()}</td>
