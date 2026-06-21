@@ -30,6 +30,7 @@ export const metadata: Metadata = {
 import BackToTop from "@/components/layout/BackToTop";
 import AutoLogout from "@/components/auth/AutoLogout";
 import FloatingQuoteButton from "@/components/layout/FloatingQuoteButton";
+import FloatingChatButton from "@/components/layout/FloatingChatButton";
 
 export default async function RootLayout({
   children,
@@ -57,6 +58,7 @@ export default async function RootLayout({
           )}
           {children}
           <BackToTop />
+          <FloatingChatButton />
           <FloatingQuoteButton />
         </MaintenanceGuard>
       </body>

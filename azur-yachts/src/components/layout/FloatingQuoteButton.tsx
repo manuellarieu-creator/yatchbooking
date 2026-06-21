@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageSquareText, X, Send } from 'lucide-react';
+import { FileEdit, X, Send } from 'lucide-react';
 import './floating-quote.css';
 
 export default function FloatingQuoteButton() {
@@ -36,7 +36,7 @@ export default function FloatingQuoteButton() {
   return (
     <>
       <button onClick={() => setIsOpen(true)} className="floating-quote-btn">
-        <MessageSquareText size={20} />
+        <FileEdit size={20} />
         <span>Demander un devis</span>
       </button>
 
