@@ -29,6 +29,7 @@ export const metadata: Metadata = {
 
 import BackToTop from "@/components/layout/BackToTop";
 import AutoLogout from "@/components/auth/AutoLogout";
+import GoogleTranslate from "@/components/i18n/GoogleTranslate";
 
 export default async function RootLayout({
   children,
@@ -56,6 +57,7 @@ export default async function RootLayout({
           )}
           {children}
           <BackToTop />
+          <GoogleTranslate />
         </MaintenanceGuard>
       </body>
     </html>

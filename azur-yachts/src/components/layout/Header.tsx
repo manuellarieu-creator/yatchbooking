@@ -4,6 +4,7 @@ import './header.css';
 import UserMenu from './UserMenu';
 import MobileMenu from './MobileMenu';
 import InAppNotifications from '@/components/layout/InAppNotifications';
+import LanguageSelector from '@/components/i18n/LanguageSelector';
 
 export default async function Header() {
   const session = await auth();
@@ -24,6 +25,7 @@ export default async function Header() {
           </div>
 
           <div className="nav-right" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <LanguageSelector />
             <InAppNotifications />
             <UserMenu user={session.user} />
           </div>
@@ -44,6 +46,7 @@ export default async function Header() {
         </ul>
         
         <div className="nav-right">
+          <LanguageSelector />
           {/* Desktop uniquement: boutons Connexion / Mettre en location */}
           {!session?.user && (
             <>
