@@ -14,7 +14,7 @@ export default function AutoLogout() {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       // Inactivity timeout reached, logout
-      signOut({ callbackUrl: '/login?expired=true' });
+      signOut({ callbackUrl: '/?expired=true' });
     }, TIMEOUT_MS);
   };
 
