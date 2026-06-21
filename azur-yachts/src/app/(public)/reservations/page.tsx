@@ -165,90 +165,94 @@ function ReservationsContent() {
     }
   }, [chatModalOpen, activeConvId]);
 
-  const handleDownloadBookingFile = async (resa: any, title: string) => {
+  const handleDownloadBookingFile = (resa: any, title: string) => {
     if (!resa) return;
-    triggerToast('Génération du PDF en cours...', '📄');
-    
-    if (!(window as any).html2pdf) {
-      await new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-        script.onload = resolve;
-        script.onerror = reject;
-        document.body.appendChild(script);
-      });
+    const printWindow = window.open('', '_blank', 'width=800,height=900');
+    if (!printWindow) {
+      triggerToast('Veuillez autoriser les pop-ups pour télécharger le document.', '⚠️');
+      return;
     }
-
-    const htmlContent = `
-      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #1e293b;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #e2a200; padding-bottom: 20px; margin-bottom: 30px;">
-          <div>
-            <div style="font-size: 32px; font-weight: 600; color: #0a2040; letter-spacing: 2px;">VOY<span style="color: #e2a200;">YACHT</span></div>
-            <div style="font-size: 14px; color: #64748b; margin-top: 5px;">Location de yachts de prestige</div>
+    
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${title} - ${resa.id}</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #1e293b; line-height: 1.5; }
+            .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #e2a200; padding-bottom: 20px; margin-bottom: 30px; }
+            .logo { font-size: 32px; font-weight: 600; color: #0a2040; letter-spacing: 2px; }
+            .logo span { color: #e2a200; }
+            .section { margin-bottom: 30px; }
+            .section h3 { font-size: 20px; color: #0a2040; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px; }
+            table { width: 100%; font-size: 15px; border-collapse: collapse; }
+            td { padding: 8px 0; }
+            .label { color: #64748b; width: 150px; }
+            .val { font-weight: 500; }
+            .box { background-color: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 40px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .footer { text-align: center; font-size: 12px; color: #94a3b8; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+            @media print {
+              body { padding: 0; }
+              .box { background-color: #f8fafc !important; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <div class="logo">VOY<span>YACHT</span></div>
+              <div style="font-size: 14px; color: #64748b; margin-top: 5px;">Location de yachts de prestige</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 24px; font-weight: 600; color: #0a2040;">${title.toUpperCase()}</div>
+              <div style="font-size: 14px; color: #64748b; margin-top: 5px;">Réf: ${resa.id}</div>
+              <div style="font-size: 14px; color: #64748b;">Date: ${new Date().toLocaleDateString('fr-FR')}</div>
+            </div>
           </div>
-          <div style="text-align: right;">
-            <div style="font-size: 24px; font-weight: 600; color: #0a2040;">${title.toUpperCase()}</div>
-            <div style="font-size: 14px; color: #64748b; margin-top: 5px;">Réf: ${resa.id}</div>
-            <div style="font-size: 14px; color: #64748b;">Date: ${new Date().toLocaleDateString('fr-FR')}</div>
+
+          <div class="section">
+            <h3>Détails du Yacht</h3>
+            <table>
+              <tr><td class="label">Nom</td><td class="val">${resa.name}</td></tr>
+              <tr><td class="label">Type</td><td class="val">${resa.type}</td></tr>
+              <tr><td class="label">Port d'attache</td><td class="val">${resa.location.replace('📍 ', '')}</td></tr>
+            </table>
           </div>
-        </div>
-        
-        <div style="margin-bottom: 30px;">
-          <h3 style="font-size: 20px; color: #0a2040; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">Détails du Yacht</h3>
-          <table style="width: 100%; font-size: 15px; border-collapse: collapse;">
-            <tr><td style="padding: 8px 0; color: #64748b; width: 150px;">Nom</td><td style="padding: 8px 0; font-weight: 500;">${resa.name}</td></tr>
-            <tr><td style="padding: 8px 0; color: #64748b;">Type</td><td style="padding: 8px 0; font-weight: 500;">${resa.type}</td></tr>
-            <tr><td style="padding: 8px 0; color: #64748b;">Port d'attache</td><td style="padding: 8px 0; font-weight: 500;">${resa.location.replace('📍 ', '')}</td></tr>
-          </table>
-        </div>
 
-        <div style="margin-bottom: 30px;">
-          <h3 style="font-size: 20px; color: #0a2040; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 15px;">Détails du Séjour</h3>
-          <table style="width: 100%; font-size: 15px; border-collapse: collapse;">
-            <tr><td style="padding: 8px 0; color: #64748b; width: 150px;">Arrivée prévue</td><td style="padding: 8px 0; font-weight: 500;">${resa.arrival}</td></tr>
-            <tr><td style="padding: 8px 0; color: #64748b;">Départ prévu</td><td style="padding: 8px 0; font-weight: 500;">${resa.departure}</td></tr>
-            <tr><td style="padding: 8px 0; color: #64748b;">Durée</td><td style="padding: 8px 0; font-weight: 500;">${resa.nights} nuits</td></tr>
-            <tr><td style="padding: 8px 0; color: #64748b;">Passagers</td><td style="padding: 8px 0; font-weight: 500;">${resa.guests}</td></tr>
-          </table>
-        </div>
+          <div class="section">
+            <h3>Détails du Séjour</h3>
+            <table>
+              <tr><td class="label">Arrivée prévue</td><td class="val">${resa.arrival}</td></tr>
+              <tr><td class="label">Départ prévu</td><td class="val">${resa.departure}</td></tr>
+              <tr><td class="label">Durée</td><td class="val">${resa.nights} nuits</td></tr>
+              <tr><td class="label">Passagers</td><td class="val">${resa.guests}</td></tr>
+            </table>
+          </div>
 
-        <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 40px;">
-          <h3 style="font-size: 20px; color: #0a2040; margin-top: 0; margin-bottom: 15px;">Facturation & Paiement</h3>
-          <table style="width: 100%; font-size: 15px; border-collapse: collapse;">
-            <tr><td style="padding: 8px 0; color: #64748b;">Méthode de paiement</td><td style="padding: 8px 0; text-align: right; font-weight: 500;">${resa.priceNote}</td></tr>
-            <tr><td style="padding: 8px 0; color: #64748b;">Statut de réservation</td><td style="padding: 8px 0; text-align: right; font-weight: 500; text-transform: capitalize;">${resa.status}</td></tr>
-            <tr><td style="padding: 15px 0 5px; font-size: 18px; font-weight: 600; color: #0a2040; border-top: 1px solid #e2e8f0; margin-top: 10px;">Montant Total (TTC)</td><td style="padding: 15px 0 5px; font-size: 20px; font-weight: 600; color: #e2a200; text-align: right; border-top: 1px solid #e2e8f0;">€${resa.price.toLocaleString()}</td></tr>
-          </table>
-        </div>
+          <div class="box">
+            <h3 style="margin-top: 0;">Facturation & Paiement</h3>
+            <table>
+              <tr><td class="label">Méthode de paiement</td><td class="val" style="text-align: right;">${resa.priceNote}</td></tr>
+              <tr><td class="label">Statut de réservation</td><td class="val" style="text-align: right; text-transform: capitalize;">${resa.status}</td></tr>
+              <tr>
+                <td style="padding: 15px 0 5px; font-size: 18px; font-weight: 600; color: #0a2040; border-top: 1px solid #e2e8f0; margin-top: 10px;">Montant Total (TTC)</td>
+                <td style="padding: 15px 0 5px; font-size: 20px; font-weight: 600; color: #e2a200; text-align: right; border-top: 1px solid #e2e8f0;">€${resa.price.toLocaleString()}</td>
+              </tr>
+            </table>
+          </div>
 
-        <div style="text-align: center; font-size: 12px; color: #94a3b8; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-          Ce document est un récapitulatif officiel généré par VoyYacht.<br/>
-          Pour toute question, contactez notre support à support@voyyacht.com.
-        </div>
-      </div>
-    `;
-
-    const opt = {
-      margin:       10,
-      filename:     `VoyYacht_${title.replace(/\s+/g, '_')}_${resa.id}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    const wrapper = document.createElement('div');
-    wrapper.style.position = 'absolute';
-    wrapper.style.top = '-10000px';
-    wrapper.style.left = '-10000px';
-    wrapper.style.width = '800px';
-    wrapper.style.pointerEvents = 'none';
-    wrapper.innerHTML = htmlContent;
-    document.body.appendChild(wrapper);
-
-    (window as any).html2pdf().set(opt).from(wrapper).save().then(() => {
-      document.body.removeChild(wrapper);
-      triggerToast('PDF téléchargé avec succès !', '✅');
-    });
+          <div class="footer">
+            Ce document est un récapitulatif officiel généré par VoyYacht.<br/>
+            Pour toute question, contactez notre support à support@voyyacht.com.
+          </div>
+          <script>
+            window.onload = () => {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const filteredReservations = useMemo(() => {
