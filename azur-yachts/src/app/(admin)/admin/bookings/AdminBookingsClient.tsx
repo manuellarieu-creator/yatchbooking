@@ -77,12 +77,12 @@ export default function AdminBookingsClient({ initialBookings }: { initialBookin
             <tbody>
               {bookings.map(b => (
                 <tr key={b.id} onClick={() => handleRowClick(b)} style={{ cursor: 'pointer' }}>
-                  <td><strong>{b.id.slice(-6).toUpperCase()}</strong></td>
-                  <td>{b.client.firstName} {b.client.lastName}</td>
-                  <td>{b.listing.title}</td>
-                  <td>{format(new Date(b.startDate), 'dd MMM yyyy', { locale: fr })} - {format(new Date(b.endDate), 'dd MMM yyyy', { locale: fr })}</td>
-                  <td>€{b.totalPrice.toLocaleString('fr-FR')}</td>
-                  <td>
+                  <td data-label="Réf."><strong>{b.id.slice(-6).toUpperCase()}</strong></td>
+                  <td data-label="Client">{b.client.firstName} {b.client.lastName}</td>
+                  <td data-label="Annonce">{b.listing.title}</td>
+                  <td data-label="Dates">{format(new Date(b.startDate), 'dd MMM yyyy', { locale: fr })} - {format(new Date(b.endDate), 'dd MMM yyyy', { locale: fr })}</td>
+                  <td data-label="Montant">€{b.totalPrice.toLocaleString('fr-FR')}</td>
+                  <td data-label="Statut">
                     <span className={`status-badge status-${b.status.toLowerCase()}`}>
                       {b.status}
                     </span>

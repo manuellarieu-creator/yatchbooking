@@ -304,15 +304,60 @@
     padding-bottom: 0.5rem;
   }
   
-  /* Tables on mobile */
+  /* Tables on mobile - Responsive Card Layout */
   .admin-table-card {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  
+  .admin-table thead {
+    display: none; /* Hide table headers */
+  }
+  
+  .admin-table, .admin-table tbody, .admin-table tr, .admin-table td {
+    display: block;
     width: 100%;
   }
   
-  .admin-table {
-    min-width: 800px; /* Ensure table doesn't get squished */
+  .admin-table tr {
+    margin-bottom: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .admin-table td {
+    text-align: right;
+    padding: 0.75rem 1rem 0.75rem 40%;
+    position: relative;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.85rem;
+  }
+  
+  .admin-table td:last-child {
+    border-bottom: none;
+  }
+  
+  .admin-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 35%;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .admin-table td:empty {
+    display: none;
   }
 }
 
