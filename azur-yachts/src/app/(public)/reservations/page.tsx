@@ -238,8 +238,10 @@ function ReservationsContent() {
 
     const wrapper = document.createElement('div');
     wrapper.style.position = 'absolute';
-    wrapper.style.left = '-9999px';
-    wrapper.style.top = '0';
+    wrapper.style.top = '-10000px';
+    wrapper.style.left = '-10000px';
+    wrapper.style.width = '800px';
+    wrapper.style.pointerEvents = 'none';
     wrapper.innerHTML = htmlContent;
     document.body.appendChild(wrapper);
 
