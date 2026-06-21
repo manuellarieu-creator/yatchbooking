@@ -1281,6 +1281,62 @@
   .dashboard-container .calendar-grid-wrap { grid-template-columns: 1fr; }
   .dashboard-container .messages-layout { grid-template-columns: 1fr; }
   .dashboard-container .stats-row { grid-template-columns: 1fr; }
+
+  /* Responsive Tables */
+  .dashboard-container table {
+    min-width: unset;
+  }
+  
+  .dashboard-container thead {
+    display: none;
+  }
+  
+  .dashboard-container table, 
+  .dashboard-container tbody, 
+  .dashboard-container tr, 
+  .dashboard-container td {
+    display: block;
+    width: 100%;
+  }
+  
+  .dashboard-container tr {
+    margin-bottom: 1rem;
+    background: var(--white);
+    border: 1px solid var(--sand);
+    border-radius: 8px;
+    padding: 0.5rem 0;
+  }
+  
+  .dashboard-container td {
+    text-align: right;
+    padding: 0.75rem 1rem 0.75rem 40%;
+    position: relative;
+    border-bottom: 1px solid var(--sand-light);
+  }
+  
+  .dashboard-container td:last-child {
+    border-bottom: none;
+  }
+  
+  .dashboard-container td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 35%;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.65rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .dashboard-container .row-actions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
 }
 @media(max-width: 600px) {
   .dashboard-container .main { padding: 1.5rem 1rem 4rem; }

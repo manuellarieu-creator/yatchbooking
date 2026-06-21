@@ -519,12 +519,15 @@ function DashboardContent() {
                   <tbody>
                     {filteredBookings.map((b: any) => (
                       <tr key={b.id}>
-                        <td><strong>{b.id}</strong></td>
-                        <td>{b.boat}</td>
-                        <td>{b.client}</td><td>{b.dates}</td><td>{b.nights}</td><td><strong>{b.total}</strong></td>
-                        <td>{b.payment}</td>
-                        <td><span className={`badge ${b.badgeClass}`}>{b.badge}</span></td>
-                        <td>
+                        <td data-label="Réf."><strong>{b.id}</strong></td>
+                        <td data-label="Bateau">{b.boat}</td>
+                        <td data-label="Client">{b.client}</td>
+                        <td data-label="Dates">{b.dates}</td>
+                        <td data-label="Nuits">{b.nights}</td>
+                        <td data-label="Montant"><strong>{b.total}</strong></td>
+                        <td data-label="Paiement">{b.payment}</td>
+                        <td data-label="Statut"><span className={`badge ${b.badgeClass}`}>{b.badge}</span></td>
+                        <td data-label="Actions">
                           <div className="row-actions">
                             <button className="act-btn" onClick={() => triggerToast('Détails…')}>Détails</button>
                             {b.status !== 'cancelled' && <button className="act-btn" onClick={() => triggerToast('Facture…')}>Facture</button>}
