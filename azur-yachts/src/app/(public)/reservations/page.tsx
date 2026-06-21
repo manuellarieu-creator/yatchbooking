@@ -58,6 +58,7 @@ function ReservationsContent() {
               name: b.listing?.title || 'Bateau',
               location: `📍 ${b.listing?.location || 'Non spécifié'}`,
               img: b.listing?.images?.[0]?.url ? `url(${b.listing.images[0].url})` : 'linear-gradient(135deg,#1a3a5a,#0a2040)',
+              rawImgUrl: b.listing?.images?.[0]?.url || '',
               arrival: startDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }),
               departure: endDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }),
               guests: guestsStr,
@@ -211,11 +212,14 @@ function ReservationsContent() {
 
           <div class="section">
             <h3>Détails du Yacht</h3>
-            <table>
-              <tr><td class="label">Nom</td><td class="val">${resa.name}</td></tr>
-              <tr><td class="label">Type</td><td class="val">${resa.type}</td></tr>
-              <tr><td class="label">Port d'attache</td><td class="val">${resa.location.replace('📍 ', '')}</td></tr>
-            </table>
+            <div style="display: flex; gap: 20px; align-items: flex-start;">
+              <table style="flex: 1;">
+                <tr><td class="label">Nom</td><td class="val">${resa.name}</td></tr>
+                <tr><td class="label">Type</td><td class="val">${resa.type}</td></tr>
+                <tr><td class="label">Port d'attache</td><td class="val">${resa.location.replace('📍 ', '')}</td></tr>
+              </table>
+              ${resa.rawImgUrl ? `<div style="width: 200px; height: 130px; border-radius: 8px; overflow: hidden; background: #e2e8f0; flex-shrink: 0;"><img src="${resa.rawImgUrl}" style="width: 100%; height: 100%; object-fit: cover;" /></div>` : ''}
+            </div>
           </div>
 
           <div class="section">
