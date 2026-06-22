@@ -15,6 +15,13 @@ export async function GET() {
     });
     const totalDestinationsCount = uniqueCountries.length;
 
+    // Average rating
+    const avgRatingAgg = await prisma.review.aggregate({
+      where: { status: 'APPROVED', targetType: 'SITE' },
+      _avg: { rating: true }
+    });
+    const averageRating = avgRatingAgg._avg.rating ? avgRatingAgg._avg.rating.toFixed(1) : '4.8';
+
     // Platform settings
     let platformSettings = await prisma.platformSettings.findUnique({ where: { id: 'default' } });
     if (!platformSettings) {
@@ -71,6 +78,7 @@ export async function GET() {
     return NextResponse.json({ 
       totalYachts, 
       totalDestinationsCount,
+      averageRating,
       settings: platformSettings,
       destinations,
       reviews: topReviews

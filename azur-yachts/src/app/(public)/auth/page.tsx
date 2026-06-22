@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent, useEffect } from 'react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import './auth.css';
@@ -45,6 +45,27 @@ export default function AuthPage() {
   const [toastMsg, setToastMsg] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [forgotSuccess, setForgotSuccess] = useState(false);
+  
+  const [siteStats, setSiteStats] = useState({
+    yachts: '340+',
+    destinations: '68',
+    rating: '4.8'
+  });
+
+  useEffect(() => {
+    fetch('/api/home-stats')
+      .then(res => res.json())
+      .then(data => {
+        if (data.totalYachts !== undefined) {
+          setSiteStats({
+            yachts: data.totalYachts > 0 ? `${data.totalYachts}+` : '0',
+            destinations: data.totalDestinationsCount !== undefined ? `${data.totalDestinationsCount}` : '0',
+            rating: data.averageRating || '4.8'
+          });
+        }
+      })
+      .catch(err => console.error(err));
+  }, []);
 
   const triggerToast = (msg: string) => {
     setToastMsg(msg);
@@ -235,9 +256,9 @@ export default function AuthPage() {
               <h2 className="panel-title">Votre aventure<br/>en mer commence<br/><em>ici</em></h2>
               <p className="panel-desc">Accédez à la plus grande flotte de yachts de prestige vérifiés. Réservez en toute sérénité, profitez en toute liberté.</p>
               <div className="panel-stats">
-                <div className="panel-stat"><div className="panel-stat-num">340+</div><div className="panel-stat-lbl">Yachts disponibles</div></div>
-                <div className="panel-stat"><div className="panel-stat-num">68</div><div className="panel-stat-lbl">Destinations</div></div>
-                <div className="panel-stat"><div className="panel-stat-num">4.8★</div><div className="panel-stat-lbl">Note moyenne</div></div>
+                <div className="panel-stat"><div className="panel-stat-num">{siteStats.yachts}</div><div className="panel-stat-lbl">Yachts disponibles</div></div>
+                <div className="panel-stat"><div className="panel-stat-num">{siteStats.destinations}</div><div className="panel-stat-lbl">Destinations</div></div>
+                <div className="panel-stat"><div className="panel-stat-num">{siteStats.rating}★</div><div className="panel-stat-lbl">Note moyenne</div></div>
               </div>
             </div>
             <div className="panel-testimonial">
