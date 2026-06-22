@@ -31,7 +31,9 @@ function VentesContent() {
             location: l.location,
             cap: l.maxAdults + l.maxChildren,
             cab: Math.max(1, Math.floor(l.maxAdults / 2)),
-            len: l.boatLength ? `${l.boatLength}m` : '-',
+            len: l.boatLength,
+            year: l.boatYear,
+            saleOfferType: l.saleOfferType,
             time: l.maxRentalHours ? `${l.maxRentalHours}h` : '24h',
             captain: l.requiresCaptain ? 'oui' : 'non',
             skipper: l.skipperAvailable ? 'oui' : 'non',
@@ -49,6 +51,18 @@ function VentesContent() {
             fuelIncluded: l.fuelIncluded || false
           }));
           setYachts(mapped);
+          
+          if (mapped.length > 0) {
+            const prices = mapped.map((y: any) => y.salePrice).filter((p: any) => p > 0);
+            if (prices.length > 0) {
+              const minP = Math.min(...prices);
+              const maxP = Math.max(...prices);
+              setActualPriceMin(minP);
+              setActualPriceMax(maxP);
+              setPriceMin(minP);
+              setPriceMax(maxP);
+            }
+          }
         }
       } catch (err) {
         console.error("Erreur chargement annonces", err);
@@ -69,14 +83,15 @@ function VentesContent() {
   // ── Filters State ──
   const [searchQuery, setSearchQuery] = useState(initialLocation);
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const [priceMin, setPriceMin] = useState(50000); // Changed default values for sales
+  const [actualPriceMin, setActualPriceMin] = useState(50000);
+  const [actualPriceMax, setActualPriceMax] = useState(5000000);
+  const [priceMin, setPriceMin] = useState(50000);
   const [priceMax, setPriceMax] = useState(5000000);
   const [countries, setCountries] = useState<string[]>([]);
   const [types, setTypes] = useState<string[]>([]);
-  const [minCap, setMinCap] = useState(0);
-  const [captainReq, setCaptainReq] = useState('indiff'); // 'oui', 'non', 'indiff'
-  const [skipperAvail, setSkipperAvail] = useState('indiff'); // 'oui', 'non', 'indiff'
-  const [minRating, setMinRating] = useState(0);
+  const [offerTypes, setOfferTypes] = useState<string[]>([]);
+  const [minLength, setMinLength] = useState(0);
+  const [minYear, setMinYear] = useState(0);
 
   const [sortOrder, setSortOrder] = useState('recent');
   const [viewMode, setViewMode] = useState('grid');
@@ -109,36 +124,33 @@ function VentesContent() {
 
   const clearFilters = () => {
     setSearchQuery('');
-    setPriceMin(50000);
-    setPriceMax(5000000);
+    setPriceMin(actualPriceMin);
+    setPriceMax(actualPriceMax);
     setCountries([]);
     setTypes([]);
-    setMinCap(0);
-    setCaptainReq('indiff');
-    setSkipperAvail('indiff');
-    setMinRating(0);
+    setOfferTypes([]);
+    setMinLength(0);
+    setMinYear(0);
   };
 
   const removeFilterTag = (type: string, val?: string) => {
     if (type === 'country' && val) setCountries(countries.filter(c => c !== val));
     if (type === 'type' && val) setTypes(types.filter(t => t !== val));
-    if (type === 'cap') setMinCap(0);
-    if (type === 'captain') setCaptainReq('indiff');
-    if (type === 'skipper') setSkipperAvail('indiff');
-    if (type === 'rating') setMinRating(0);
+    if (type === 'offerType' && val) setOfferTypes(offerTypes.filter(t => t !== val));
+    if (type === 'len') setMinLength(0);
+    if (type === 'year') setMinYear(0);
   };
 
   // Filter Logic
   const filteredYachts = useMemo(() => {
     return yachts.filter(y => {
       if (debouncedSearchQuery && !y.location.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) && !y.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())) return false;
-      if (y.salePrice && (y.salePrice < priceMin || y.salePrice > priceMax)) return false; // Filter by sale price
+      if (y.salePrice && (y.salePrice < priceMin || y.salePrice > priceMax)) return false; 
       if (countries.length > 0 && !countries.includes(y.country)) return false;
       if (types.length > 0 && !types.includes(y.type)) return false;
-      if (y.cap < minCap) return false;
-      if (captainReq !== 'indiff' && y.captain !== captainReq) return false;
-      if (skipperAvail !== 'indiff' && y.skipper !== skipperAvail) return false;
-      if (y.rating < minRating) return false;
+      if (offerTypes.length > 0 && !offerTypes.includes(y.saleOfferType)) return false;
+      if (minLength > 0 && (!y.len || y.len < minLength)) return false;
+      if (minYear > 0 && (!y.year || y.year < minYear)) return false;
       return true;
     }).sort((a, b) => {
       if (sortOrder === 'price-asc') return (a.salePrice || 0) - (b.salePrice || 0);
@@ -147,15 +159,14 @@ function VentesContent() {
       if (sortOrder === 'popular') return b.revs - a.revs;
       return 0; // recent (default)
     });
-  }, [yachts, debouncedSearchQuery, priceMin, priceMax, countries, types, minCap, captainReq, skipperAvail, minRating, sortOrder]);
+  }, [yachts, debouncedSearchQuery, priceMin, priceMax, countries, types, offerTypes, minLength, minYear, sortOrder]);
 
   const activeFilterTags = [
     ...countries.map(c => ({ label: c, type: 'country', val: c })),
     ...types.map(t => ({ label: t, type: 'type', val: t })),
-    ...(minCap > 0 ? [{ label: `≥ ${minCap} pers.`, type: 'cap' }] : []),
-    ...(captainReq !== 'indiff' ? [{ label: `Capitaine : ${captainReq}`, type: 'captain' }] : []),
-    ...(skipperAvail !== 'indiff' ? [{ label: `Skipper : ${skipperAvail}`, type: 'skipper' }] : []),
-    ...(minRating > 0 ? [{ label: `≥ ${minRating}★`, type: 'rating' }] : []),
+    ...offerTypes.map(t => ({ label: t, type: 'offerType', val: t })),
+    ...(minLength > 0 ? [{ label: `≥ ${minLength}m`, type: 'len' }] : []),
+    ...(minYear > 0 ? [{ label: `≥ ${minYear}`, type: 'year' }] : []),
   ];
 
   return (
@@ -225,9 +236,9 @@ function VentesContent() {
               </div>
               <div className="dual-range">
                 <div className="range-track"></div>
-                <div className="range-fill" style={{ left: `${(priceMin/5000000)*100}%`, right: `${100 - (priceMax/5000000)*100}%` }}></div>
-                <input type="range" min="50000" max="5000000" value={priceMin} step="10000" onChange={e => { const val = parseInt(e.target.value); if(val < priceMax) setPriceMin(val); }} />
-                <input type="range" min="50000" max="5000000" value={priceMax} step="10000" onChange={e => { const val = parseInt(e.target.value); if(val > priceMin) setPriceMax(val); }} />
+                <div className="range-fill" style={{ left: `${((priceMin - actualPriceMin)/(actualPriceMax - actualPriceMin || 1))*100}%`, right: `${100 - ((priceMax - actualPriceMin)/(actualPriceMax - actualPriceMin || 1))*100}%` }}></div>
+                <input type="range" min={actualPriceMin} max={actualPriceMax} value={priceMin} step="1000" onChange={e => { const val = parseInt(e.target.value); if(val < priceMax) setPriceMin(val); }} />
+                <input type="range" min={actualPriceMin} max={actualPriceMax} value={priceMax} step="1000" onChange={e => { const val = parseInt(e.target.value); if(val > priceMin) setPriceMax(val); }} />
               </div>
             </div>
           </div>
@@ -245,9 +256,22 @@ function VentesContent() {
             </div>
           </div>
 
-          {/* Type */}
+          {/* Type d'offre */}
           <div className="filter-group">
-            <div className="filter-group-title">Type de bateau</div>
+            <div className="filter-group-title">Type d'offre</div>
+            <div className="check-list">
+              {['Bateau d\'occasion', 'Modèle de démonstration', 'Bateau neuf en stock', 'Bateau neuf sur commande'].map(t => (
+                <label key={t} className="check-item">
+                  <input type="checkbox" checked={offerTypes.includes(t)} onChange={() => toggleArrayFilter(offerTypes, t, setOfferTypes)} />
+                  <span className="check-box"></span><span className="check-label">{t}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Type / Catégorie */}
+          <div className="filter-group">
+            <div className="filter-group-title">Catégorie</div>
             <div className="check-list">
               {['Voilier', 'Catamaran', 'Motor Yacht', 'Superyacht', 'Cabine Cruiser'].map(t => (
                 <label key={t} className="check-item">
@@ -260,39 +284,29 @@ function VentesContent() {
             </div>
           </div>
 
-          {/* Capacité */}
+          {/* Dimensions */}
           <div className="filter-group">
-            <div className="filter-group-title">Capacité adultes (min.)</div>
+            <div className="filter-group-title">Dimensions (Longueur min.)</div>
             <div className="check-list">
-              {[2, 4, 6, 10].map(c => (
-                <label key={c} className="check-item">
-                  <input type="radio" name="cap" checked={minCap === c} onChange={() => setMinCap(c)} />
-                  <span className="check-box" style={{ borderRadius: '50%' }}></span><span className="check-label">{c}+ personnes</span>
+              {[10, 15, 20, 30].map(l => (
+                <label key={l} className="check-item">
+                  <input type="radio" name="len" checked={minLength === l} onChange={() => setMinLength(l)} />
+                  <span className="check-box" style={{ borderRadius: '50%' }}></span><span className="check-label">≥ {l} mètres</span>
                 </label>
               ))}
             </div>
           </div>
 
-          {/* Note */}
+          {/* Année */}
           <div className="filter-group" style={{ borderBottom: 'none' }}>
-            <div className="filter-group-title">Note minimale</div>
-            <div className="stars-filter">
-              <label className="star-row">
-                <input type="radio" name="rating" checked={minRating === 0} onChange={() => setMinRating(0)} />
-                <span className="star-radio"></span><span className="star-label">Toutes les notes</span>
-              </label>
-              <label className="star-row">
-                <input type="radio" name="rating" checked={minRating === 3} onChange={() => setMinRating(3)} />
-                <span className="star-radio"></span><span className="star-label"><span className="stars">★★★</span> 3+ étoiles</span>
-              </label>
-              <label className="star-row">
-                <input type="radio" name="rating" checked={minRating === 4} onChange={() => setMinRating(4)} />
-                <span className="star-radio"></span><span className="star-label"><span className="stars">★★★★</span> 4+ étoiles</span>
-              </label>
-              <label className="star-row">
-                <input type="radio" name="rating" checked={minRating === 4.5} onChange={() => setMinRating(4.5)} />
-                <span className="star-radio"></span><span className="star-label"><span className="stars">★★★★½</span> 4,5+</span>
-              </label>
+            <div className="filter-group-title">Année (min.)</div>
+            <div className="check-list">
+              {[2010, 2015, 2020, 2024].map(y => (
+                <label key={y} className="check-item">
+                  <input type="radio" name="year" checked={minYear === y} onChange={() => setMinYear(y)} />
+                  <span className="check-box" style={{ borderRadius: '50%' }}></span><span className="check-label">≥ {y}</span>
+                </label>
+              ))}
             </div>
           </div>
         </aside>
@@ -366,7 +380,8 @@ function VentesContent() {
                       <div className="card-specs">
                         <span className="card-spec">👥 <strong>{yacht.cap}</strong> personnes</span>
                         <span className="card-spec">🛏 <strong>{yacht.cab}</strong> cabines</span>
-                        <span className="card-spec">📏 <strong>{yacht.len}</strong></span>
+                        <span className="card-spec">📏 <strong>{yacht.len ? `${yacht.len}m` : '-'}</strong></span>
+                        <span className="card-spec">📅 <strong>{yacht.year || '-'}</strong></span>
                       </div>
                       
                       <div className="card-info" style={{marginTop: '0.5rem', marginBottom: '0.5rem'}}>

@@ -179,6 +179,7 @@ model Listing {
   description       String         @db.Text
   price             Float
   salePrice         Float?
+  saleOfferType     String?
   country           String
   location          String
   latitude          Float?

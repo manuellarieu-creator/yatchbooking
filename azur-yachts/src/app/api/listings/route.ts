@@ -48,6 +48,9 @@ export async function GET(req: NextRequest) {
     if (skipper === 'non') where.skipperAvailable = false
     if (rating > 0) where.averageRating = { gte: rating }
 
+    const saleOfferType = searchParams.get('saleOfferType')
+    if (saleOfferType) where.saleOfferType = saleOfferType
+
     // Date availability filter
     if (dateStart && dateEnd) {
       const start = new Date(dateStart)
@@ -99,6 +102,9 @@ export async function GET(req: NextRequest) {
 
     const mappedListings = listings.map((l) => ({
       ...l,
+      boatYear: l.boatYear,
+      boatLength: l.boatLength,
+      saleOfferType: l.saleOfferType,
       isFav: userFavorites.includes(l.id)
     }))
 
@@ -121,7 +127,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const {
-      title, description, price, salePrice, country, location,
+      title, description, price, salePrice, saleOfferType, country, location,
       latitude, longitude, maxAdults, maxChildren,
       boatType, boatLength, boatYear, cabins, berths, bathrooms, boatPlanUrls, requiresCaptain,
       skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
@@ -133,7 +139,7 @@ export async function POST(req: NextRequest) {
 
     const listing = await prisma.listing.create({
       data: {
-        title, description, price, salePrice: salePrice ? Number(salePrice) : null, country, location,
+        title, description, price, salePrice: salePrice ? Number(salePrice) : null, saleOfferType: saleOfferType || null, country, location,
         latitude, longitude, maxAdults, maxChildren,
         boatType, boatLength, boatYear, 
         navigationMode,
