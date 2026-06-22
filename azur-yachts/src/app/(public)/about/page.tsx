@@ -310,7 +310,12 @@ export default async function AboutPage() {
       {/* CHIFFRES CLES */}
       <section className="chiffres">
         <div className="chiffres-inner">
-          <div className="reveal" style={{ textAlign: 'center' }            <div className="chiffre-card reveal">
+          <div className="reveal" style={{ textAlign: 'center' }}>
+            <span className="sec-eyebrow">En chiffres</span>
+            <h2 className="sec-title">VoyYacht <em>aujourd'hui</em></h2>
+          </div>
+          <div className="chiffres-grid">
+            <div className="chiffre-card reveal">
               <span className="chiffre-icon">⚓</span>
               <div className="chiffre-num">{content.yachtsCount}</div>
               <div className="chiffre-label">Yachts référencés</div>
