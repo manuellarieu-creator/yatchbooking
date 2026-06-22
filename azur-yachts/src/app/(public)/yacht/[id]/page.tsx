@@ -135,21 +135,6 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   const [reviewType, setReviewType] = useState<'SITE' | 'OWNER' | 'LISTING'>('LISTING');
   const [isListingReviewsModalOpen, setIsListingReviewsModalOpen] = useState(false);
 
-  // ── Chat State ──
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatMsgs, setChatMsgs] = useState([
-    { type: 'incoming', text: `Bonjour ! N'hésitez pas si vous avez des questions sur le ${yacht?.title || 'bateau'}.`, time: "10:15" }
-  ]);
-  const [chatInput, setChatInput] = useState('');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Scroll to bottom of chat
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [chatMsgs]);
-
   // Handle Keyboard for Lightbox
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -161,18 +146,6 @@ export default function YachtPage({ params }: { params: { id: string } }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isLightboxOpen]);
-
-  const sendChatMsg = () => {
-    if (!chatInput.trim()) return;
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    setChatMsgs(prev => [...prev, { type: 'outgoing', text: chatInput, time }]);
-    setChatInput('');
-    
-    // Auto-reply
-    setTimeout(() => {
-      setChatMsgs(prev => [...prev, { type: 'incoming', text: "Je vous remercie pour votre message, je vous réponds dans un instant !", time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
-    }, 1500);
-  };
 
   const calcTotal = () => {
     if (!startDate || !endDate) return null;
@@ -644,7 +617,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                   </div>
                 )}
               </div>
-              <button className="msg-btn" onClick={() => setIsChatOpen(true)}>💬 Message</button>
+              <button className="msg-btn" onClick={() => window.location.href = `/dashboard?tab=messages&new_chat_with=${yacht.ownerId}`}>💬 Message</button>
             </div>
             
             {/* Owner Reviews */}
@@ -944,39 +917,6 @@ export default function YachtPage({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      {/* ── CHAT BUBBLE ── */}
-      <div className="chat-bubble">
-        <button className="chat-toggle" onClick={() => setIsChatOpen(!isChatOpen)}>💬
-          {!isChatOpen && <span className="chat-badge-dot">1</span>}
-        </button>
-        <div className={`chat-window ${isChatOpen ? 'open' : ''}`}>
-          <div className="chat-head">
-            <div className="chat-head-avatar">FJ</div>
-            <div className="chat-head-info">
-              <div className="chat-head-name">Fabio Jaction</div>
-              <div className="chat-head-status">En ligne</div>
-            </div>
-            <button className="chat-head-close" onClick={() => setIsChatOpen(false)}>×</button>
-          </div>
-          <div className="chat-messages">
-            {chatMsgs.map((m, i) => (
-              <div key={i} className={`chat-msg ${m.type}`}>
-                {m.text}
-                <span className="chat-msg-time">{m.time}</span>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-          <div className="chat-input-row">
-            <input 
-              type="text" 
-              className="chat-input" 
-              placeholder="Votre message..." 
-              value={chatInput} 
-              onChange={e => setChatInput(e.target.value)} 
-              onKeyDown={e => e.key === 'Enter' && sendChatMsg()} 
-            />
-            <button className="chat-send" onClick={sendChatMsg}>Envoyer</button>
           </div>
         </div>
       </div>

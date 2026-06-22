@@ -204,6 +204,34 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // 5 minutes timeout check for admin reply
+    if (userRole !== 'ADMIN') {
+      const hasAdmin = updatedConv.participants.some(p => admins.find(a => a.id === p.userId));
+      if (hasAdmin || admins.length > 0) {
+        setTimeout(async () => {
+          try {
+            const replies = await prisma.message.findFirst({
+              where: {
+                conversationId,
+                isAdminReply: true,
+                createdAt: { gt: message.createdAt }
+              }
+            });
+            if (!replies) {
+              await emailNewMessage(
+                'info@voyyacht.com',
+                'Équipe VoyYacht',
+                senderName,
+                `Alerte : Le client attend une réponse depuis plus de 5 minutes dans le chat. Son message : "${content.length > 100 ? content.substring(0, 100) + '...' : content}"`
+              );
+            }
+          } catch (err) {
+            console.error('5-min timeout check failed', err);
+          }
+        }, 5 * 60 * 1000); // 5 minutes
+      }
+    }
+
     return NextResponse.json({ message }, { status: 201 });
   } catch (error) {
     console.error('POST /api/messages error:', error);
