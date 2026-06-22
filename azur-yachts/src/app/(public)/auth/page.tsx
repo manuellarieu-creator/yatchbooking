@@ -230,7 +230,6 @@ export default function AuthPage() {
           </svg>
           <div className="panel-left-overlay"></div>
           <div className="panel-left-content">
-            <Link href="/" className="panel-logo">VOY<span>YACHT</span></Link>
             <div className="panel-hero">
               <span className="panel-eyebrow">Bienvenue à bord</span>
               <h2 className="panel-title">Votre aventure<br/>en mer commence<br/><em>ici</em></h2>
