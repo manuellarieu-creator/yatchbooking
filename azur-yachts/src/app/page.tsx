@@ -441,7 +441,7 @@ export default function HomePage() {
         <div className="footer-grid">
           <div className="footer-brand">
             <Link href="/" className="nav-logo">VOY<span>YACHT</span></Link>
-            <p className="footer-desc">Spécialiste de la location de yachts de luxe depuis 2009. Nous mettons l'excellence au cœur de chaque expérience nautique.</p>
+            <p className="footer-desc">Spécialiste de la location de yachts de luxe depuis 2022. Nous mettons l'excellence au cœur de chaque expérience nautique.</p>
           </div>
           <div className="footer-col">
             <h4>Navigation</h4>

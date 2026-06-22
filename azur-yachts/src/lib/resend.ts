@@ -37,8 +37,7 @@ function baseTemplate(content: string): string {
         </div>
         <div class="body">${content}</div>
         <div class="footer">
-          © 2025 VoyYacht SAM · Monaco · 
-          <a href="${process.env.NEXT_PUBLIC_APP_URL}" style="color: #b8985a;">voyyacht.com</a>
+          © 2025 KEDYEM SAS · La Ciotat · <a href="https://voyyacht.com" style="color:#b8985a;text-decoration:none;">voyyacht.com</a>
         </div>
       </div>
     </body>

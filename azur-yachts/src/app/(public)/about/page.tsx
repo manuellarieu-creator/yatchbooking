@@ -1,75 +1,17 @@
-'use client';
-
-import { useEffect, useRef } from 'react';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import './about.css';
+import AboutClientLogic from './AboutClientLogic';
+
+export const metadata: Metadata = {
+  title: 'À propos — VoyYacht',
+  description: 'Découvrez l\'histoire de VoyYacht, notre mission, nos valeurs et l\'équipe qui rend le luxe nautique accessible depuis 2022.'
+};
 
 export default function AboutPage() {
-  const observerRef = useRef<IntersectionObserver | null>(null);
-  const statsObserverRef = useRef<IntersectionObserver | null>(null);
-
-  useEffect(() => {
-    // Scroll Reveal Observer
-    observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          if (observerRef.current) observerRef.current.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach(el => observerRef.current?.observe(el));
-
-    // Counter Animation
-    const animateCounter = (el: Element, target: number, suffix = '', duration = 1800) => {
-      let start = 0;
-      const step = target / (duration / 16);
-      const timer = setInterval(() => {
-        start += step;
-        if (start >= target) {
-          start = target;
-          clearInterval(timer);
-        }
-        el.textContent = Math.floor(start).toLocaleString('fr-FR') + suffix;
-      }, 16);
-    };
-
-    statsObserverRef.current = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const nums = entry.target.querySelectorAll('.stat-num');
-          const configs = [
-            { val: 340, suffix: '+' },
-            { val: 15, suffix: '' },
-            { val: 12000, suffix: '+' },
-            { val: 98, suffix: '%' }
-          ];
-          
-          nums.forEach((num, i) => {
-            const numEl = num as HTMLElement;
-            // Only animate if not already animated to avoid re-triggering
-            if (!numEl.dataset.animated) {
-              animateCounter(numEl, configs[i].val, configs[i].suffix);
-              numEl.dataset.animated = 'true';
-            }
-          });
-          if (statsObserverRef.current) statsObserverRef.current.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    const statsBar = document.querySelector('.stats-bar');
-    if (statsBar) statsObserverRef.current.observe(statsBar);
-
-    return () => {
-      observerRef.current?.disconnect();
-      statsObserverRef.current?.disconnect();
-    };
-  }, []);
-
   return (
     <div className="about-page-container">
+      <AboutClientLogic />
       {/* HERO */}
       <section className="hero">
         <div className="hero-bg"></div>
@@ -85,7 +27,7 @@ export default function AboutPage() {
         <div className="hero-overlay"></div>
         <div className="hero-content">
           <span className="hero-eyebrow">Notre histoire</span>
-          <h1 className="hero-title">L'excellence<br/>nautique depuis<br/><em>2009</em></h1>
+          <h1 className="hero-title">L'excellence<br/>nautique depuis<br/><em>2022</em></h1>
           <div className="hero-divider"></div>
           <p className="hero-sub">VoyYacht est né d'une passion commune pour la mer et d'une conviction : <strong>chaque client mérite une expérience nautique d'exception</strong>, sans compromis sur la qualité, la sécurité ou la transparence.</p>
           <div className="hero-scroll">
@@ -103,9 +45,9 @@ export default function AboutPage() {
           <div className="stat-sub">dans 68 destinations</div>
         </div>
         <div className="stat-item reveal reveal-delay-1">
-          <div className="stat-num">15</div>
+          <div className="stat-num">3</div>
           <div className="stat-label">Années d'expertise</div>
-          <div className="stat-sub">fondée en 2009 à Monaco</div>
+          <div className="stat-sub">fondée en 2022 à La Ciotat</div>
         </div>
         <div className="stat-item reveal reveal-delay-2">
           <div className="stat-num">12000+</div>
@@ -130,7 +72,7 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="mission-img-sub">
-              <div className="mission-img-sub-num">15</div>
+              <div className="mission-img-sub-num">3</div>
               <div className="mission-img-sub-txt">Années<br/>d'excellence<br/>nautique</div>
             </div>
           </div>
@@ -138,7 +80,7 @@ export default function AboutPage() {
             <span className="sec-eyebrow">Notre mission</span>
             <h2 className="sec-title">Rendre le luxe<br/>nautique <em>accessible</em></h2>
             <p className="mission-intro">"Offrir à chaque client une expérience en mer inoubliable, en toute sérénité."</p>
-            <p className="mission-body">Depuis 2009, VoyYacht s'est imposé comme la référence de la location de yachts de prestige en Europe et au-delà. Notre plateforme met en relation des propriétaires vérifiés et des clients exigeants, avec un accompagnement humain à chaque étape.</p>
+            <p className="mission-body">Depuis 2022, VoyYacht s'est imposé comme la référence de la location de yachts de prestige en Europe et au-delà. Notre plateforme met en relation des propriétaires vérifiés et des clients exigeants, avec un accompagnement humain à chaque étape.</p>
             <p className="mission-body">Nous croyons que la mer appartient à tous ceux qui rêvent de la parcourir. C'est pourquoi nous avons construit une plateforme simple, transparente et sécurisée, qui place l'humain au cœur de chaque interaction.</p>
             <div className="mission-values">
               <div className="value-item">
@@ -178,18 +120,18 @@ export default function AboutPage() {
           <div className="timeline">
             <div className="tl-item reveal">
               <div className="tl-content">
-                <div className="tl-title">Naissance à Monaco</div>
-                <div className="tl-desc">VoyYacht est fondée par trois passionnés de nautisme à Monaco. La première plateforme de mise en relation entre propriétaires et clients est lancée avec 12 yachts.</div>
+                <div className="tl-title">Naissance à La Ciotat</div>
+                <div className="tl-desc">VoyYacht est fondée par des passionnés de nautisme à La Ciotat. La première plateforme de mise en relation entre propriétaires et clients est lancée avec 12 yachts.</div>
               </div>
-              <div className="tl-year-bubble"><div className="tl-year">2009</div></div>
+              <div className="tl-year-bubble"><div className="tl-year">2022</div></div>
               <div className="tl-empty"></div>
             </div>
             <div className="tl-item reveal">
               <div className="tl-empty"></div>
-              <div className="tl-year-bubble"><div className="tl-year">2013</div></div>
+              <div className="tl-year-bubble"><div className="tl-year">2023</div></div>
               <div className="tl-content right">
                 <div className="tl-title">Expansion méditerranéenne</div>
-                <div className="tl-desc">La flotte dépasse les 80 yachts. Ouverture de bureaux à Nice, Barcelone et Athènes. Lancement du système de vérification des annonceurs.</div>
+                <div className="tl-desc">La flotte dépasse les 80 yachts. Ouverture de bureaux et développement. Lancement du système de vérification des annonceurs.</div>
               </div>
             </div>
             <div className="tl-item reveal">
@@ -197,24 +139,16 @@ export default function AboutPage() {
                 <div className="tl-title">Plateforme digitale nouvelle génération</div>
                 <div className="tl-desc">Refonte complète de la plateforme avec réservation en ligne, chat intégré et calendrier de disponibilités en temps réel. 2 500 clients actifs.</div>
               </div>
-              <div className="tl-year-bubble"><div className="tl-year">2017</div></div>
+              <div className="tl-year-bubble"><div className="tl-year">2024</div></div>
               <div className="tl-empty"></div>
             </div>
             <div className="tl-item reveal">
               <div className="tl-empty"></div>
-              <div className="tl-year-bubble"><div className="tl-year">2020</div></div>
+              <div className="tl-year-bubble gold"><div className="tl-year" style={{ color: 'var(--navy)' }}>2025</div></div>
               <div className="tl-content right">
-                <div className="tl-title">Résilience et innovation</div>
-                <div className="tl-desc">Malgré la crise sanitaire, VoyYacht développe de nouveaux services et consolide sa présence dans les Caraïbes. Lancement de la vérification vidéo selfie.</div>
-              </div>
-            </div>
-            <div className="tl-item reveal">
-              <div className="tl-content">
                 <div className="tl-title">340 yachts, 68 destinations</div>
                 <div className="tl-desc">VoyYacht devient la première plateforme de yacht charter premium en Europe avec 12 000+ clients satisfaits et une note moyenne de 4,8/5.</div>
               </div>
-              <div className="tl-year-bubble gold"><div className="tl-year" style={{ color: 'var(--navy)' }}>2025</div></div>
-              <div className="tl-empty"></div>
             </div>
           </div>
         </div>
@@ -232,13 +166,13 @@ export default function AboutPage() {
             <div className="team-card reveal">
               <div className="team-photo" style={{ background: 'linear-gradient(145deg, #1a3a5a, #0a2040)' }}>
                 <div className="team-photo-grad">
-                  <div className="team-initials" style={{ color: 'rgba(184, 152, 90, .6)' }}>LC</div>
+                  <div className="team-initials" style={{ color: 'rgba(184, 152, 90, .6)' }}>LB</div>
                 </div>
                 <div className="team-photo-overlay"></div>
               </div>
               <div className="team-body">
-                <div className="team-name">Laurent Chevalier</div>
-                <div className="team-role">Fondateur & CEO</div>
+                <div className="team-name">Laurent Rodolphe BREYTON</div>
+                <div className="team-role">Fondateur & Président</div>
                 <div className="team-bio">Skipper professionnel depuis 20 ans, Laurent a fondé VoyYacht avec la vision de démocratiser le yacht charter de luxe.</div>
                 <div className="team-langs"><span className="lang-chip">🇫🇷 FR</span><span className="lang-chip">🇬🇧 EN</span><span className="lang-chip">🇮🇹 IT</span></div>
               </div>

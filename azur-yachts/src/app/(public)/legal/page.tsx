@@ -125,7 +125,7 @@ export default function LegalPage() {
           <div className="hero-meta">
             <div className="hero-meta-item">📅 <strong>Dernière mise à jour :</strong> 1er janvier 2025</div>
             <div className="hero-meta-item">🌐 <strong>Droit applicable :</strong> Droit monégasque</div>
-            <div className="hero-meta-item">📍 <strong>Siège social :</strong> Monaco</div>
+            <div className="hero-meta-item">📍 <strong>Siège social :</strong> La Ciotat</div>
           </div>
         </div>
       </div>
@@ -190,13 +190,13 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>Les présentes Conditions Générales d'Utilisation (ci-après "CGU") régissent l'accès et l'utilisation de la plateforme VoyYacht, accessible à l'adresse <Link href="/">www.voyyacht.com</Link>, exploitée par la société <strong>VoyYacht SAM</strong>, société anonyme monégasque au capital de 500 000 €, immatriculée au Répertoire du Commerce et de l'Industrie de Monaco sous le numéro RCI 09-S-12345, dont le siège social est situé 3, Quai des Milliardaires, 98000 Monaco.</p>
+                  <p>Les présentes Conditions Générales d'Utilisation (ci-après "CGU") régissent l'accès et l'utilisation de la plateforme VoyYacht, accessible à l'adresse <Link href="/">www.voyyacht.com</Link>, exploitée par la société <strong>KEDYEM SAS</strong>, société par actions simplifiée, immatriculée au Registre du Commerce et des Sociétés sous le numéro SIREN 913 031 241 (SIRET 913 031 241 00015), dont le siège social est situé 381 CHEMIN DES CARRIERES, LA CIOTAT, 13600.</p>
                   <h4>Définitions</h4>
                   <ul>
                     <li><strong>Plateforme :</strong> le site web et les applications mobiles VoyYacht permettant la mise en relation entre Annonceurs et Clients.</li>
                     <li><strong>Annonceur :</strong> tout utilisateur propriétaire d'un yacht qui publie une annonce de location sur la Plateforme après vérification et validation par l'Administrateur.</li>
                     <li><strong>Client :</strong> tout utilisateur qui effectue ou envisage d'effectuer une réservation via la Plateforme.</li>
-                    <li><strong>Administrateur :</strong> l'équipe VoyYacht SAM qui valide les annonces, les réservations et les paiements.</li>
+                    <li><strong>Administrateur :</strong> l'équipe KEDYEM SAS qui valide les annonces, les réservations et les paiements.</li>
                     <li><strong>Réservation :</strong> la demande de location d'un yacht pour une période définie, soumise au paiement et à la validation de l'Administrateur.</li>
                   </ul>
                 </div>
@@ -374,15 +374,15 @@ export default function LegalPage() {
                 <div className="prose">
                   <table className="legal-table">
                     <tbody>
-                      <tr><td><strong>Raison sociale</strong></td><td>VoyYacht SAM</td></tr>
-                      <tr><td><strong>Forme juridique</strong></td><td>Société Anonyme Monégasque (SAM)</td></tr>
-                      <tr><td><strong>Capital social</strong></td><td>500 000 € entièrement libéré</td></tr>
-                      <tr><td><strong>Numéro RCI</strong></td><td>09-S-12345</td></tr>
-                      <tr><td><strong>Siège social</strong></td><td>3, Quai des Milliardaires, Port Hercule, 98000 Monaco</td></tr>
-                      <tr><td><strong>Téléphone</strong></td><td>+377 97 70 00 00</td></tr>
+                      <tr><td><strong>Raison sociale</strong></td><td>KEDYEM SAS</td></tr>
+                      <tr><td><strong>Forme juridique</strong></td><td>Société par Actions Simplifiée (SAS)</td></tr>
+                      <tr><td><strong>Numéro SIREN / SIRET</strong></td><td>913 031 241 / 913 031 241 00015</td></tr>
+                      <tr><td><strong>Date d'immatriculation</strong></td><td>08/03/2022</td></tr>
+                      <tr><td><strong>Siège social</strong></td><td>381 CHEMIN DES CARRIERES, LA CIOTAT, 13600</td></tr>
+                      <tr><td><strong>Téléphone</strong></td><td>+33 1 42 00 00 00</td></tr>
                       <tr><td><strong>Email</strong></td><td>contact@voyyacht.com</td></tr>
-                      <tr><td><strong>Directeur de la publication</strong></td><td>Laurent Chevalier, Président-Directeur Général</td></tr>
-                      <tr><td><strong>Numéro de TVA</strong></td><td>Non applicable (Monaco)</td></tr>
+                      <tr><td><strong>Directeur de la publication</strong></td><td>Laurent Rodolphe BREYTON, Président</td></tr>
+                      <tr><td><strong>Numéro de TVA intracommunautaire</strong></td><td>FR72913031241</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -419,8 +419,8 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>L'ensemble des éléments constituant le site VoyYacht (textes, images, graphismes, logo, icônes, sons, logiciels, mise en page, base de données) sont la propriété exclusive d'VoyYacht SAM ou font l'objet d'une licence d'utilisation accordée à VoyYacht SAM.</p>
-                  <p>Toute reproduction, représentation, modification, publication, transmission ou dénaturation, totale ou partielle, du site ou de son contenu, par quelque procédé que ce soit et sur quelque support que ce soit, est interdite sans l'autorisation expresse et préalable d'VoyYacht SAM.</p>
+                  <p>L'ensemble des éléments constituant le site VoyYacht (textes, images, graphismes, logo, icônes, sons, logiciels, mise en page, base de données) sont la propriété exclusive de KEDYEM SAS ou font l'objet d'une licence d'utilisation accordée à KEDYEM SAS.</p>
+                  <p>Toute reproduction, représentation, modification, publication, transmission ou dénaturation, totale ou partielle, du site ou de son contenu, par quelque procédé que ce soit et sur quelque support que ce soit, est interdite sans l'autorisation expresse et préalable de KEDYEM SAS.</p>
                   <h4>Contenu des utilisateurs</h4>
                   <p>En publiant du contenu (photos, textes, avis) sur la Plateforme, les utilisateurs accordent à VoyYacht une licence non exclusive, mondiale, gratuite et transférable, aux fins de l'exploitation de la Plateforme. Les utilisateurs garantissent disposer de tous les droits nécessaires sur le contenu publié.</p>
                 </div>
@@ -458,7 +458,7 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>Le responsable du traitement des données personnelles collectées sur la Plateforme est la société <strong>VoyYacht SAM</strong>, représentée par son Président-Directeur Général, Laurent Chevalier. Pour toute question relative à la protection de vos données, vous pouvez contacter notre Délégué à la Protection des Données (DPO) à l'adresse : <Link href="mailto:dpo@voyyacht.com">dpo@voyyacht.com</Link>.</p>
+                  <p>Le responsable du traitement des données personnelles collectées sur la Plateforme est la société <strong>KEDYEM SAS</strong>, représentée par son Président, Laurent Rodolphe BREYTON. Pour toute question relative à la protection de vos données, vous pouvez contacter notre Délégué à la Protection des Données (DPO) à l'adresse : <Link href="mailto:dpo@voyyacht.com">dpo@voyyacht.com</Link>.</p>
                 </div>
               </div>
 
@@ -525,7 +525,7 @@ export default function LegalPage() {
                   </ul>
                   <p>Pour exercer ces droits, rendez-vous dans votre espace personnel (section "Activité du compte") ou contactez notre DPO à <Link href="mailto:dpo@voyyacht.com">dpo@voyyacht.com</Link>. Nous répondrons dans un délai maximum de 30 jours.</p>
                   <div className="info-box navy">
-                    Vous disposez également du droit d'introduire une réclamation auprès de l'autorité de contrôle compétente. En France : la CNIL (www.cnil.fr). En Principauté de Monaco : la Commission de Contrôle des Informations Nominatives (CCIN).
+                    Vous disposez également du droit d'introduire une réclamation auprès de l'autorité de contrôle compétente. En France : la CNIL (www.cnil.fr).
                   </div>
                 </div>
               </div>
