@@ -916,11 +916,6 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           ))}
         </div>
       </div>
-
-          </div>
-        </div>
-      </div>
-
       {/* ── REVIEW MODAL ── */}
       <div className={`modal-overlay ${isReviewOpen ? 'open' : ''}`}>
         <div className="modal">
