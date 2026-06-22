@@ -102,6 +102,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     if ('cabins' in data) data.cabins = data.cabins ? Number(data.cabins) : null;
     if ('berths' in data) data.berths = data.berths ? Number(data.berths) : null;
     if ('bathrooms' in data) data.bathrooms = data.bathrooms ? Number(data.bathrooms) : null;
+    if ('salePrice' in data) data.salePrice = data.salePrice ? Number(data.salePrice) : null;
     
     if ('navigationMode' in data) data.navigationMode = String(data.navigationMode);
     if ('fuelQuantity' in data) data.fuelQuantity = data.fuelQuantity ? String(data.fuelQuantity) : null;

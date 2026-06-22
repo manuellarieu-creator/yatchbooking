@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
     const dateEnd = searchParams.get('dateEnd')
     const type = searchParams.get('type') || ''
     const country = searchParams.get('country') || ''
+    const forSale = searchParams.get('forSale') === 'true'
     const priceMin = Number(searchParams.get('priceMin')) || 0
     const priceMax = Number(searchParams.get('priceMax')) || 999999
     const adults = Number(searchParams.get('adults')) || 0
@@ -26,6 +27,10 @@ export async function GET(req: NextRequest) {
     const where: any = {
       status: ListingStatus.ACTIVE,
       price: { gte: priceMin, lte: priceMax },
+    }
+
+    if (forSale) {
+      where.salePrice = { not: null }
     }
 
     if (location) {
@@ -116,7 +121,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const {
-      title, description, price, country, location,
+      title, description, price, salePrice, country, location,
       latitude, longitude, maxAdults, maxChildren,
       boatType, boatLength, boatYear, cabins, berths, bathrooms, boatPlanUrls, requiresCaptain,
       skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
@@ -128,7 +133,7 @@ export async function POST(req: NextRequest) {
 
     const listing = await prisma.listing.create({
       data: {
-        title, description, price, country, location,
+        title, description, price, salePrice: salePrice ? Number(salePrice) : null, country, location,
         latitude, longitude, maxAdults, maxChildren,
         boatType, boatLength, boatYear, 
         navigationMode,

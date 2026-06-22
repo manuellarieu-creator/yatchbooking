@@ -22,6 +22,7 @@ export default function MobileMenu() {
             <ul className="mobile-nav-links">
               <li><Link href="/" onClick={toggleMenu}>Accueil</Link></li>
               <li><Link href="/listings" onClick={toggleMenu}>Les Offres</Link></li>
+              <li><Link href="/ventes" onClick={toggleMenu}>Ventes</Link></li>
               <li><Link href="/#destinations" onClick={toggleMenu}>Destinations</Link></li>
               <li><Link href="/about" onClick={toggleMenu}>À propos</Link></li>
               <li><Link href="/contact" onClick={toggleMenu}>Contact</Link></li>

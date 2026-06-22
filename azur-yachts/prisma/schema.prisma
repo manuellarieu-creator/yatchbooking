@@ -83,59 +83,59 @@ enum NotificationType {
 }
 
 model User {
-  id                String          @id @default(cuid())
-  email             String          @unique
-  password          String?
-  firstName         String
-  lastName          String
-  role              Role            @default(CLIENT)
-  status            UserStatus      @default(PENDING)
-  isEmailVerified   Boolean         @default(false)
-  isManagedByAdmin  Boolean         @default(false)
-  emailVerifyToken  String?
-  videoVerified     Boolean         @default(false)
-  videoUrl          String?
-  idCardUrl         String?
-  idCardBackUrl     String?
-  advertiserTier    AdvertiserTier?
-  countryResidence  String?
-  languages         String[]
-  avatar            String?
-  phone             String?
-  bio               String?
-  resetToken        String?
-  resetTokenExpiry  DateTime?
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  accounts          Account[]
-  sessions          Session[]
-  listings          Listing[]
-  bookings          Booking[]
-  reviews           Review[]        @relation("ReviewAuthor")
-  receivedReviews   Review[]        @relation("ReviewTarget")
-  sentMessages      Message[]
-  conversations     ConversationParticipant[]
-  notifications     Notification[]
-  twoFactorEmailEnabled Boolean @default(false)
-  twoFactorSecret       String?
-  favorites         Favorite[]
-  pushSubscriptions PushSubscription[]
+  id                      String                    @id @default(cuid())
+  email                   String                    @unique
+  password                String?
+  firstName               String
+  lastName                String
+  role                    Role                      @default(CLIENT)
+  status                  UserStatus                @default(PENDING)
+  isEmailVerified         Boolean                   @default(false)
+  isManagedByAdmin        Boolean                   @default(false)
+  emailVerifyToken        String?
+  videoVerified           Boolean                   @default(false)
+  videoUrl                String?
+  idCardUrl               String?
+  idCardBackUrl           String?
+  advertiserTier          AdvertiserTier?
+  countryResidence        String?
+  languages               String[]
+  avatar                  String?
+  phone                   String?
+  bio                     String?
+  resetToken              String?
+  resetTokenExpiry        DateTime?
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  accounts                Account[]
+  sessions                Session[]
+  listings                Listing[]
+  bookings                Booking[]
+  reviews                 Review[]                  @relation("ReviewAuthor")
+  receivedReviews         Review[]                  @relation("ReviewTarget")
+  sentMessages            Message[]
+  conversations           ConversationParticipant[]
+  notifications           Notification[]
+  twoFactorEmailEnabled   Boolean                   @default(false)
+  twoFactorSecret         String?
+  favorites               Favorite[]
+  pushSubscriptions       PushSubscription[]
   notificationPreferences Json?
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -170,20 +170,21 @@ model PushSubscription {
   auth      String
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Listing {
-  id                String        @id @default(cuid())
+  id                String         @id @default(cuid())
   title             String
-  description       String        @db.Text
+  description       String         @db.Text
   price             Float
+  salePrice         Float?
   country           String
   location          String
   latitude          Float?
   longitude         Float?
-  isAtSea           Boolean       @default(false)
-  status            ListingStatus @default(PENDING)
+  isAtSea           Boolean        @default(false)
+  status            ListingStatus  @default(PENDING)
   rejectionReason   String?
   maxAdults         Int
   maxChildren       Int
@@ -193,28 +194,28 @@ model Listing {
   cabins            Int?
   berths            Int?
   bathrooms         Int?
-  boatPlanUrls      String[]      @default([])
-  requiresCaptain   Boolean       @default(false)
-  skipperAvailable  Boolean       @default(false)
+  boatPlanUrls      String[]       @default([])
+  requiresCaptain   Boolean        @default(false)
+  skipperAvailable  Boolean        @default(false)
   maxRentalHours    Int?
-  deliveryAvailable Boolean       @default(false)
+  deliveryAvailable Boolean        @default(false)
   deliveryFee       Float?
   deliveryPricing   Json?
-  features          String[]      @default([])
-  navigationMode    String        @default("INCLUDED")
-  fuelIncluded      Boolean       @default(false)
+  features          String[]       @default([])
+  navigationMode    String         @default("INCLUDED")
+  fuelIncluded      Boolean        @default(false)
   fuelQuantity      String?
   fuelPricePerDay   Float?
   cleaningFee       Float
-  securityDeposit   Float         @default(0)
+  securityDeposit   Float          @default(0)
   captainPrice      Float?
   skipperPrice      Float?
-  averageRating     Float         @default(0)
-  reviewCount       Int           @default(0)
-  viewCount         Int           @default(0)
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  owner             User          @relation(fields: [ownerId], references: [id])
+  averageRating     Float          @default(0)
+  reviewCount       Int            @default(0)
+  viewCount         Int            @default(0)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  owner             User           @relation(fields: [ownerId], references: [id])
   ownerId           String
   images            ListingImage[]
   availabilities    Availability[]
@@ -254,38 +255,38 @@ model Service {
 }
 
 model Booking {
-  id               String        @id @default(cuid())
-  startDate        DateTime
-  endDate          DateTime
-  totalNights      Int
-  basePrice        Float
-  cleaningFee      Float
-  deliveryFee      Float         @default(0)
-  servicesTotal    Float         @default(0)
-  discountAmount   Float         @default(0)
-  discountCode     String?
-  securityDeposit  Float         @default(0)
-  totalPrice       Float
-  adults           Int
-  children         Int
-  pets             Boolean       @default(false)
-  deliveryRequested Boolean      @default(false)
-  deliveryPort     String?
-  status           BookingStatus @default(PENDING)
-  adminNote        String?
+  id                 String           @id @default(cuid())
+  startDate          DateTime
+  endDate            DateTime
+  totalNights        Int
+  basePrice          Float
+  cleaningFee        Float
+  deliveryFee        Float            @default(0)
+  servicesTotal      Float            @default(0)
+  discountAmount     Float            @default(0)
+  discountCode       String?
+  securityDeposit    Float            @default(0)
+  totalPrice         Float
+  adults             Int
+  children           Int
+  pets               Boolean          @default(false)
+  deliveryRequested  Boolean          @default(false)
+  deliveryPort       String?
+  status             BookingStatus    @default(PENDING)
+  adminNote          String?
   modificationStatus String?
   requestedStartDate DateTime?
   requestedEndDate   DateTime?
-  requestedNote      String?       @db.Text
-  modificationFee    Float         @default(0)
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-  listing          Listing       @relation(fields: [listingId], references: [id])
-  listingId        String
-  client           User          @relation(fields: [clientId], references: [id])
-  clientId         String
-  selectedServices BookingService[]
-  payment          Payment?
+  requestedNote      String?          @db.Text
+  modificationFee    Float            @default(0)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  listing            Listing          @relation(fields: [listingId], references: [id])
+  listingId          String
+  client             User             @relation(fields: [clientId], references: [id])
+  clientId           String
+  selectedServices   BookingService[]
+  payment            Payment?
 }
 
 model BookingService {
@@ -298,26 +299,26 @@ model BookingService {
 }
 
 model Payment {
-  id                   String        @id @default(cuid())
-  amount               Float
-  currency             String        @default("EUR")
-  method               PaymentMethod
-  status               PaymentStatus @default(PENDING)
+  id                    String        @id @default(cuid())
+  amount                Float
+  currency              String        @default("EUR")
+  method                PaymentMethod
+  status                PaymentStatus @default(PENDING)
   stripePaymentIntentId String?
-  stripeClientSecret   String?
-  paypalOrderId        String?
-  paypalCaptureId      String?
-  bankTransferRef      String?
-  bankProofUrl         String?
-  bankProofPublicId    String?
-  bankProofSubmittedAt DateTime?
-  paymentDeadline      DateTime?
-  reminder1SentAt      DateTime?
-  reminder2SentAt      DateTime?
-  booking              Booking       @relation(fields: [bookingId], references: [id])
-  bookingId            String        @unique
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  stripeClientSecret    String?
+  paypalOrderId         String?
+  paypalCaptureId       String?
+  bankTransferRef       String?
+  bankProofUrl          String?
+  bankProofPublicId     String?
+  bankProofSubmittedAt  DateTime?
+  paymentDeadline       DateTime?
+  reminder1SentAt       DateTime?
+  reminder2SentAt       DateTime?
+  booking               Booking       @relation(fields: [bookingId], references: [id])
+  bookingId             String        @unique
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
 }
 
 model PaymentSettings {
@@ -372,6 +373,7 @@ model ConversationParticipant {
   user           User         @relation(fields: [userId], references: [id])
   userId         String
   lastReadAt     DateTime?
+
   @@unique([conversationId, userId])
 }
 
@@ -407,17 +409,18 @@ model Favorite {
   listing   Listing  @relation(fields: [listingId], references: [id])
   listingId String
   createdAt DateTime @default(now())
+
   @@unique([userId, listingId])
 }
 
 model Page {
-  id        String   @id @default(cuid())
-  slug      String   @unique
-  title     String
-  content   String   @db.Text
-  isPublished Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  content     String   @db.Text
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Destination {
@@ -465,9 +468,9 @@ model Blacklist {
 }
 
 model PlatformSettings {
-  id               String   @id @default("default")
-  satisfiedClients String   @default("12K+")
-  yearsOfExcellence String  @default("15")
-  maintenanceMode  Boolean  @default(false)
-  updatedAt        DateTime @updatedAt
+  id                String   @id @default("default")
+  satisfiedClients  String   @default("12K+")
+  yearsOfExcellence String   @default("15")
+  maintenanceMode   Boolean  @default(false)
+  updatedAt         DateTime @updatedAt
 }

@@ -29,6 +29,12 @@ Ce document résume l'état d'avancement de la plateforme.
   - Alertes annonçeurs (Annonce approuvée/refusée).
   - **Alertes Admin** (Nouvelle réservation, nouvelle annonce à modérer, nouveaux messages, réception de preuve de virement).
 
+### 5. Dernières Améliorations (Juin 2026)
+- **Support Client :** Ajout d'une bulle flottante permettant d'ouvrir directement un chat avec le support.
+- **UI/UX :** Refonte visuelle des bulles flottantes (fond bleu marine, icône "stylo/feuille" pour les devis) et optimisation des formulaires sur mobile (tailles de police réduites).
+- **Maintenance & Sécurité :** L'administrateur peut désormais se connecter même si le site est en mode maintenance.
+- **Auto-Logout :** Redirection correcte vers l'accueil lors d'une déconnexion pour inactivité.
+
 ---
 
 ## ⏳ CE QU'IL RESTE À FAIRE (Prochaines étapes)

@@ -134,6 +134,7 @@ function PublishForm() {
 
   // Step 4
   const [priceDay, setPriceDay] = useState('');
+  const [salePrice, setSalePrice] = useState('');
   const [cleaningFee, setCleaningFee] = useState('');
   const [securityDeposit, setSecurityDeposit] = useState('');
   const [navigationMode, setNavigationMode] = useState('INCLUDED');
@@ -200,6 +201,7 @@ function PublishForm() {
           if (l.features) setFeatures(l.features);
           setDesc(l.description);
           setPriceDay(l.price?.toString() || '');
+          setSalePrice(l.salePrice?.toString() || '');
           setCleaningFee(l.cleaningFee?.toString() || '');
           setSecurityDeposit(l.securityDeposit?.toString() || '');
           if (l.services) setServices(l.services);
@@ -413,7 +415,7 @@ function PublishForm() {
         return { url: secure_url, publicId: `new_${idx}_${Date.now()}` };
       }));
       const payload = {
-        title, description: desc, price: Number(priceDay) || 0, country: portCountry, location: portCity,
+        title, description: desc, price: Number(priceDay) || 0, salePrice: salePrice ? Number(salePrice) : null, country: portCountry, location: portCity,
         maxAdults: Number(adults) || 1, maxChildren: Number(children) || 0,
         boatType: boatType === 'Autre' ? customBoatType : boatType, 
         boatLength: Number(length) || 0, 
@@ -1086,6 +1088,11 @@ function PublishForm() {
                       <label className="label">Caution (€) <span className="req">*</span></label>
                       <input className="input" type="number" min="0" value={securityDeposit} onChange={e => setSecurityDeposit(e.target.value)} placeholder="Ex : 1500" />
                       <span className="hint">Sera demandée avant l'embarquement (empreinte bancaire)</span>
+                    </div>
+                    <div className="field">
+                      <label className="label">Prix de vente (€) <span className="hint" style={{display: 'inline'}}>(Optionnel)</span></label>
+                      <input className="input" type="number" min="0" value={salePrice} onChange={e => setSalePrice(e.target.value)} placeholder="Ex : 1500000" />
+                      <span className="hint">Si renseigné, le bateau apparaîtra aussi dans la rubrique "À vendre"</span>
                     </div>
                   </div>
                   <div className="info-box navy" style={{ marginTop: '.5rem' }}>

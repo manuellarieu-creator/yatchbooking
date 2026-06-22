@@ -38,7 +38,8 @@ export default async function Header() {
         <ul className="nav-links">
           <li><Link href="/">Accueil</Link></li>
           <li><Link href="/listings">Les Offres</Link></li>
-          <li><Link href="/#destinations">Destinations</Link></li>
+          <li><Link href="/ventes">Ventes</Link></li>
+          <li><Link href="/destinations">Destinations</Link></li>
           <li><Link href="/about">À propos</Link></li>
           <li><Link href="/contact">Contact</Link></li>
         </ul>
