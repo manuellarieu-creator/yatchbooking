@@ -39,7 +39,7 @@ export default function AboutClientLogic() {
           const nums = entry.target.querySelectorAll('.stat-num');
           const configs = [
             { val: 340, suffix: '+' },
-            { val: 15, suffix: '' },
+            { val: 3, suffix: '' },
             { val: 12000, suffix: '+' },
             { val: 98, suffix: '%' }
           ];
