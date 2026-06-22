@@ -350,10 +350,6 @@ export default async function AboutPage() {
               <div className="chiffre-num">{content.supportAvailability}</div>
               <div className="chiffre-label">Disponibilité support</div>
               <div className="chiffre-desc">Notre équipe vous répond en moins de 2h, tous les jours de l'année</div>
-            </div>e-num">7j/7</div>
-              <div className="chiffre-label">Disponibilité support</div>
-              <div className="chiffre-desc">Notre équipe vous répond en moins de 2h, tous les jours de l'année</div>
-            </div>
           </div>
         </div>
       </section>
