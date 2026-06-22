@@ -530,7 +530,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                     </div>
                   )}
 
-                  {hasServices && (
+                  {hasServices && !isSaleMode && (
                     <div>
                       <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', borderBottom: '1px solid #eaeaea', paddingBottom: '0.5rem' }}>En option</h3>
                       {Object.entries(groupedServices).map(([cat, items]) => (
