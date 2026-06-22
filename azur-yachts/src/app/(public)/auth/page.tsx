@@ -331,11 +331,6 @@ export default function AuthPage() {
                   </>
                 )}
 
-                <div className="or-divider">ou</div>
-                <div className="social-auth">
-                  <button className="social-btn" onClick={() => triggerToast('Connexion Google en cours…')}><span className="social-icon">🌐</span>Continuer avec Google</button>
-                  <button className="social-btn" onClick={() => triggerToast('Connexion Facebook en cours…')}><span className="social-icon">📘</span>Continuer avec Facebook</button>
-                </div>
 
                 <div className="switch-link">Pas encore de compte ? <a onClick={() => switchMode('register')}>S'inscrire gratuitement</a></div>
               </div>
