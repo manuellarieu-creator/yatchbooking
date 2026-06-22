@@ -84,10 +84,6 @@ export default function AboutPage() {
         </svg>
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <div className="breadcrumb">
-            <Link href="/">Accueil</Link><span className="sep">/</span>
-            <span className="current">À propos</span>
-          </div>
           <span className="hero-eyebrow">Notre histoire</span>
           <h1 className="hero-title">L'excellence<br/>nautique depuis<br/><em>2009</em></h1>
           <div className="hero-divider"></div>
