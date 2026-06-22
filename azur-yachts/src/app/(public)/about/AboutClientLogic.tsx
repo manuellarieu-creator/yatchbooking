@@ -2,7 +2,13 @@
 
 import { useEffect, useRef } from 'react';
 
-export default function AboutClientLogic() {
+interface Props {
+  yearsOfExcellence: number;
+  satisfiedClients: number;
+  satisfactionRate: number;
+}
+
+export default function AboutClientLogic({ yearsOfExcellence = 4, satisfiedClients = 12000, satisfactionRate = 98 }: Props) {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const statsObserverRef = useRef<IntersectionObserver | null>(null);
 
@@ -39,9 +45,9 @@ export default function AboutClientLogic() {
           const nums = entry.target.querySelectorAll('.stat-num');
           const configs = [
             { val: 340, suffix: '+' },
-            { val: 3, suffix: '' },
-            { val: 12000, suffix: '+' },
-            { val: 98, suffix: '%' }
+            { val: yearsOfExcellence, suffix: '' },
+            { val: satisfiedClients, suffix: '+' },
+            { val: satisfactionRate, suffix: '%' }
           ];
           
           nums.forEach((num, i) => {

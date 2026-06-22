@@ -32,6 +32,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <Link href="/admin/reviews" className="admin-nav-link">⭐ Avis & Modération</Link>
           <Link href="/admin/blacklist" className="admin-nav-link">⛔ Blacklist</Link>
           <Link href="/admin/newsletter" className="admin-nav-link">📧 Newsletter</Link>
+          <Link href="/admin/pages/about" className="admin-nav-link">📄 Page À propos</Link>
           <Link href="/admin/settings/general" className="admin-nav-link">⚙️ Paramètres</Link>
           <Link href="/admin/settings/payments" className="admin-nav-link">🏦 Paramètres Banque</Link>
         </nav>

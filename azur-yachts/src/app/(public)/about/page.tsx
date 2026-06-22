@@ -2,16 +2,41 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import './about.css';
 import AboutClientLogic from './AboutClientLogic';
+import { db } from '@/lib/db';
 
 export const metadata: Metadata = {
   title: 'À propos — VoyYacht',
-  description: 'Découvrez l\'histoire de VoyYacht, notre mission, nos valeurs et l\'équipe qui rend le luxe nautique accessible depuis 2022.'
+  description: 'Découvrez l\'histoire de VoyYacht, notre mission, nos valeurs et l\'équipe qui rend le luxe nautique accessible.'
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const pageRecord = await db.page.findUnique({ where: { slug: 'about' } });
+  let content = {
+    yearsOfExcellence: 4,
+    foundationYear: 2022,
+    foundationLocation: "La Ciotat",
+    satisfiedClients: "12000+",
+    satisfactionRate: "98%"
+  };
+
+  if (pageRecord && pageRecord.content) {
+    try {
+      content = { ...content, ...JSON.parse(pageRecord.content) };
+    } catch (e) {
+      console.error("Failed to parse about page content");
+    }
+  }
+
+  const numericClients = parseInt(content.satisfiedClients.replace(/\D/g, '')) || 12000;
+  const numericSatRate = parseInt(content.satisfactionRate.replace(/\D/g, '')) || 98;
+
   return (
     <div className="about-page-container">
-      <AboutClientLogic />
+      <AboutClientLogic 
+        yearsOfExcellence={content.yearsOfExcellence}
+        satisfiedClients={numericClients}
+        satisfactionRate={numericSatRate}
+      />
       {/* HERO */}
       <section className="hero">
         <div className="hero-bg"></div>
@@ -27,7 +52,7 @@ export default function AboutPage() {
         <div className="hero-overlay"></div>
         <div className="hero-content">
           <span className="hero-eyebrow">Notre histoire</span>
-          <h1 className="hero-title">L'excellence<br/>nautique depuis<br/><em>2022</em></h1>
+          <h1 className="hero-title">L'excellence<br/>nautique depuis<br/><em>{content.foundationYear}</em></h1>
           <div className="hero-divider"></div>
           <p className="hero-sub">VoyYacht est né d'une passion commune pour la mer et d'une conviction : <strong>chaque client mérite une expérience nautique d'exception</strong>, sans compromis sur la qualité, la sécurité ou la transparence.</p>
           <div className="hero-scroll">
@@ -45,17 +70,17 @@ export default function AboutPage() {
           <div className="stat-sub">dans 68 destinations</div>
         </div>
         <div className="stat-item reveal reveal-delay-1">
-          <div className="stat-num">3</div>
+          <div className="stat-num">{content.yearsOfExcellence}</div>
           <div className="stat-label">Années d'expertise</div>
-          <div className="stat-sub">fondée en 2022 à La Ciotat</div>
+          <div className="stat-sub">fondée en {content.foundationYear} à {content.foundationLocation}</div>
         </div>
         <div className="stat-item reveal reveal-delay-2">
-          <div className="stat-num">12000+</div>
+          <div className="stat-num">{content.satisfiedClients}</div>
           <div className="stat-label">Clients satisfaits</div>
           <div className="stat-sub">4,8/5 de note moyenne</div>
         </div>
         <div className="stat-item reveal reveal-delay-3">
-          <div className="stat-num">98%</div>
+          <div className="stat-num">{content.satisfactionRate}</div>
           <div className="stat-label">Taux de satisfaction</div>
           <div className="stat-sub">basé sur 9 400 avis</div>
         </div>
@@ -72,7 +97,7 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="mission-img-sub">
-              <div className="mission-img-sub-num">3</div>
+              <div className="mission-img-sub-num">{content.yearsOfExcellence}</div>
               <div className="mission-img-sub-txt">Années<br/>d'excellence<br/>nautique</div>
             </div>
           </div>
@@ -80,7 +105,7 @@ export default function AboutPage() {
             <span className="sec-eyebrow">Notre mission</span>
             <h2 className="sec-title">Rendre le luxe<br/>nautique <em>accessible</em></h2>
             <p className="mission-intro">"Offrir à chaque client une expérience en mer inoubliable, en toute sérénité."</p>
-            <p className="mission-body">Depuis 2022, VoyYacht s'est imposé comme la référence de la location de yachts de prestige en Europe et au-delà. Notre plateforme met en relation des propriétaires vérifiés et des clients exigeants, avec un accompagnement humain à chaque étape.</p>
+            <p className="mission-body">Depuis {content.foundationYear}, VoyYacht s'est imposé comme la référence de la location de yachts de prestige en Europe et au-delà. Notre plateforme met en relation des propriétaires vérifiés et des clients exigeants, avec un accompagnement humain à chaque étape.</p>
             <p className="mission-body">Nous croyons que la mer appartient à tous ceux qui rêvent de la parcourir. C'est pourquoi nous avons construit une plateforme simple, transparente et sécurisée, qui place l'humain au cœur de chaque interaction.</p>
             <div className="mission-values">
               <div className="value-item">
@@ -120,10 +145,10 @@ export default function AboutPage() {
           <div className="timeline">
             <div className="tl-item reveal">
               <div className="tl-content">
-                <div className="tl-title">Naissance à La Ciotat</div>
-                <div className="tl-desc">VoyYacht est fondée par des passionnés de nautisme à La Ciotat. La première plateforme de mise en relation entre propriétaires et clients est lancée avec 12 yachts.</div>
+                <div className="tl-title">Naissance à {content.foundationLocation}</div>
+                <div className="tl-desc">VoyYacht est fondée par des passionnés de nautisme à {content.foundationLocation}. La première plateforme de mise en relation entre propriétaires et clients est lancée avec 12 yachts.</div>
               </div>
-              <div className="tl-year-bubble"><div className="tl-year">2022</div></div>
+              <div className="tl-year-bubble"><div className="tl-year">{content.foundationYear}</div></div>
               <div className="tl-empty"></div>
             </div>
             <div className="tl-item reveal">
