@@ -65,6 +65,13 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   const [isLoading, setIsLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
 
+  const [isSaleMode, setIsSaleMode] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsSaleMode(window.location.search.includes('mode=vente'));
+    }
+  }, []);
+
   useEffect(() => {
     async function fetchYacht() {
       try {
@@ -393,13 +400,13 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             </div>
             <h1 className="listing-title">{yacht.title}</h1>
             <div className="listing-quick-stats">
-              <span className="quick-stat">👥 <strong>{yacht.maxAdults}</strong> adultes max</span>
+              <span className="quick-stat">👥 <strong>{yacht.maxAdults}</strong> {isSaleMode ? 'personnes max' : 'adultes max'}</span>
               {yacht.cabins ? <span className="quick-stat">🛏 <strong>{yacht.cabins}</strong> cabines</span> : null}
               <span className="quick-stat">📏 <strong>{yacht.boatLength} m</strong></span>
-              <span className="quick-stat">⏱ <strong>{yacht.maxRentalHours || 24}h</strong> loc. max</span>
-              {yacht.requiresCaptain && <span className="quick-stat">⚓ Captain Required {yacht.captainPrice ? `(+${formatPrice(yacht.captainPrice)}/j)` : ''}</span>}
-              {yacht.skipperAvailable && <span className="quick-stat" style={{ color: 'var(--success)' }}>✓ Skipper dispo {yacht.skipperPrice ? `(+${formatPrice(yacht.skipperPrice)}/j)` : ''}</span>}
-              <span className="quick-stat">⛽ <strong>{yacht.fuelIncluded ? 'Carburant inclus' : 'Carburant non inclus'}</strong></span>
+              {!isSaleMode && <span className="quick-stat">⏱ <strong>{yacht.maxRentalHours || 24}h</strong> loc. max</span>}
+              {!isSaleMode && yacht.requiresCaptain && <span className="quick-stat">⚓ Captain Required {yacht.captainPrice ? `(+${formatPrice(yacht.captainPrice)}/j)` : ''}</span>}
+              {!isSaleMode && yacht.skipperAvailable && <span className="quick-stat" style={{ color: 'var(--success)' }}>✓ Skipper dispo {yacht.skipperPrice ? `(+${formatPrice(yacht.skipperPrice)}/j)` : ''}</span>}
+              {!isSaleMode && <span className="quick-stat">⛽ <strong>{yacht.fuelIncluded ? 'Carburant inclus' : 'Carburant non inclus'}</strong></span>}
             </div>
           </div>
 
@@ -588,9 +595,9 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 <tr><td>Longueur</td><td>{yacht.boatLength ? `${yacht.boatLength} m` : '-'}</td></tr>
                 <tr><td>Capacité adultes</td><td>{yacht.maxAdults || '-'}</td></tr>
                 <tr><td>Capacité enfants</td><td>{yacht.maxChildren || '0'}</td></tr>
-                <tr><td>Location max</td><td>{yacht.maxRentalHours ? `${yacht.maxRentalHours} heures` : 'Sans limite'}</td></tr>
-                <tr><td>Carburant</td><td>{yacht.fuelIncluded ? 'Inclus' : 'Non inclus'}</td></tr>
-                <tr><td>Frais de nettoyage</td><td>{yacht.cleaningFee ? formatPrice(yacht.cleaningFee) : 'Inclus'}</td></tr>
+                {!isSaleMode && <tr><td>Location max</td><td>{yacht.maxRentalHours ? `${yacht.maxRentalHours} heures` : 'Sans limite'}</td></tr>}
+                {!isSaleMode && <tr><td>Carburant</td><td>{yacht.fuelIncluded ? 'Inclus' : 'Non inclus'}</td></tr>}
+                {!isSaleMode && <tr><td>Frais de nettoyage</td><td>{yacht.cleaningFee ? formatPrice(yacht.cleaningFee) : 'Inclus'}</td></tr>}
                 <tr><td>Livraison disponible</td><td>{yacht.deliveryAvailable ? `Oui (${formatPrice(yacht.deliveryFee || 0)})` : 'Non'}</td></tr>
               </tbody>
             </table>
@@ -680,11 +687,12 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             <p style={{ fontSize: '.75rem', color: 'var(--text-light)', marginTop: '.6rem' }}>📍 {yacht.location}, {yacht.country}</p>
           </div>
 
-          <hr className="section-sep" />
+          {!isSaleMode && <hr className="section-sep" />}
 
           {/* Calendar */}
-          <div className="fade-in">
-            <div className="sec-title">Disponibilités</div>
+          {!isSaleMode && (
+            <div className="fade-in">
+              <div className="sec-title">Disponibilités</div>
             <div className="cal-header">
               <button className="cal-nav" onClick={() => setCalMonth(new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1))}>‹</button>
               <span className="cal-month-title">{monthNames[calMonth.getMonth()]} {calMonth.getFullYear()}</span>
@@ -707,6 +715,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               <div className="cal-leg-item"><div className="cal-leg-dot past"></div>Passé</div>
             </div>
           </div>
+          )}
 
           <hr className="section-sep" />
 
@@ -721,7 +730,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
         <div className="booking-widget fade-in">
           <div className="widget-header">
             <div className="widget-price-row">
-              <div className="widget-price">{formatPrice(yacht.price)} <small>/ jour</small></div>
+              <div className="widget-price">{formatPrice(isSaleMode && yacht.salePrice ? yacht.salePrice : yacht.price)} {isSaleMode ? '' : <small>/ jour</small>}</div>
               <div className="widget-rating">
                 <span className="widget-star">★</span>
                 <span className="widget-rating-val">{yacht.averageRating || 0}</span>
@@ -731,7 +740,21 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           </div>
 
           <div className="widget-body">
-            <div className="date-grid">
+            {isSaleMode ? (
+              <div style={{ padding: '1rem 0' }}>
+                <p style={{ color: 'var(--text-mid)', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+                  Ce bateau vous intéresse ? Contactez le propriétaire dès maintenant pour organiser une visite ou obtenir plus d'informations.
+                </p>
+                <Link href={`/dashboard?tab=messages&new_chat_with=${yacht.ownerId}`} passHref>
+                  <button className="reserve-btn">
+                    Contacter le propriétaire
+                  </button>
+                </Link>
+                <div className="widget-footer-note" style={{ marginTop: '1rem' }}>Réponse rapide garantie.</div>
+              </div>
+            ) : (
+              <>
+                <div className="date-grid">
               <div className="date-field">
                 <label>Arrivée</label>
                 <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
@@ -860,6 +883,8 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               </button>
             </Link>
             <div className="widget-footer-note">Vous ne serez débité qu'après confirmation de votre réservation par notre équipe.</div>
+            </>
+            )}
           </div>
         </div>
       </div>

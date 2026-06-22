@@ -350,7 +350,7 @@ function VentesContent() {
             <>
               <div className={`listings-grid ${viewMode === 'list' ? 'list-mode' : ''}`}>
                 {filteredYachts.map((yacht, i) => (
-                  <Link href={`/yacht/${yacht.id}`} key={yacht.id} className="yacht-card" style={{ animationDelay: `${i * 0.06}s` }}>
+                  <Link href={`/yacht/${yacht.id}?mode=vente`} key={yacht.id} className="yacht-card" style={{ animationDelay: `${i * 0.06}s` }}>
                     <div className="card-img">
                       <div className="card-img-inner" style={{ 
                         backgroundImage: yacht.imgUrl ? `url('${yacht.imgUrl}')` : `url('https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')`,
@@ -384,10 +384,8 @@ function VentesContent() {
                         <span className="card-spec">📅 <strong>{yacht.year || '-'}</strong></span>
                       </div>
                       
-                      <div className="card-info" style={{marginTop: '0.5rem', marginBottom: '0.5rem'}}>
-                         <span style={{fontSize: '0.85rem', color: 'var(--text-light)'}}>Également disponible en location : <strong>{formatPrice(yacht.price)}/j</strong></span>
-                      </div>
                       
+
                       <div className="card-footer" style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem' }}>
                         <div className="card-price">
                           <div className="card-price-value" style={{ color: 'var(--gold)' }}>{formatPrice(yacht.salePrice)}</div>
