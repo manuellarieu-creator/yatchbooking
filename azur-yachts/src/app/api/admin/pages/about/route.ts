@@ -16,8 +16,13 @@ export async function GET() {
       yearsOfExcellence: 4,
       foundationYear: 2022,
       foundationLocation: "La Ciotat",
-      satisfiedClients: "12000+",
-      satisfactionRate: "98%"
+      satisfiedClients: "12K+",
+      satisfactionRate: "98%",
+      yachtsCount: "340+",
+      destinationsCount: "68",
+      verifiedAdvertisers: "100%",
+      averageRating: "4.8",
+      supportAvailability: "7j/7"
     };
 
     if (page && page.content) {
@@ -48,8 +53,13 @@ export async function PUT(req: NextRequest) {
       yearsOfExcellence: Number(data.yearsOfExcellence) || 4,
       foundationYear: Number(data.foundationYear) || 2022,
       foundationLocation: String(data.foundationLocation || "La Ciotat"),
-      satisfiedClients: String(data.satisfiedClients || "12000+"),
-      satisfactionRate: String(data.satisfactionRate || "98%")
+      satisfiedClients: String(data.satisfiedClients || "12K+"),
+      satisfactionRate: String(data.satisfactionRate || "98%"),
+      yachtsCount: String(data.yachtsCount || "340+"),
+      destinationsCount: String(data.destinationsCount || "68"),
+      verifiedAdvertisers: String(data.verifiedAdvertisers || "100%"),
+      averageRating: String(data.averageRating || "4.8"),
+      supportAvailability: String(data.supportAvailability || "7j/7")
     };
 
     const contentStr = JSON.stringify(contentObj);

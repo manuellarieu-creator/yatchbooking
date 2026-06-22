@@ -15,8 +15,13 @@ export default async function AboutPage() {
     yearsOfExcellence: 4,
     foundationYear: 2022,
     foundationLocation: "La Ciotat",
-    satisfiedClients: "12000+",
-    satisfactionRate: "98%"
+    satisfiedClients: "12K+",
+    satisfactionRate: "98%",
+    yachtsCount: "340+",
+    destinationsCount: "68",
+    verifiedAdvertisers: "100%",
+    averageRating: "4.8",
+    supportAvailability: "7j/7"
   };
 
   if (pageRecord && pageRecord.content) {
@@ -29,6 +34,17 @@ export default async function AboutPage() {
 
   const numericClients = parseInt(content.satisfiedClients.replace(/\D/g, '')) || 12000;
   const numericSatRate = parseInt(content.satisfactionRate.replace(/\D/g, '')) || 98;
+
+  const topReviews = await db.review.findMany({
+    where: { status: 'APPROVED', targetType: 'SITE', rating: { gte: 4 } },
+    orderBy: { createdAt: 'desc' },
+    take: 3,
+    include: {
+      author: {
+        select: { firstName: true, lastName: true, avatar: true, countryResidence: true }
+      }
+    }
+  });
 
   return (
     <div className="about-page-container">
@@ -294,44 +310,42 @@ export default async function AboutPage() {
       {/* CHIFFRES CLES */}
       <section className="chiffres">
         <div className="chiffres-inner">
-          <div className="reveal" style={{ textAlign: 'center' }}>
-            <span className="sec-eyebrow">En chiffres</span>
-            <h2 className="sec-title">VoyYacht <em>aujourd'hui</em></h2>
-          </div>
-          <div className="chiffres-grid">
-            <div className="chiffre-card reveal">
+          <div className="reveal" style={{ textAlign: 'center' }            <div className="chiffre-card reveal">
               <span className="chiffre-icon">⚓</span>
-              <div className="chiffre-num">340+</div>
+              <div className="chiffre-num">{content.yachtsCount}</div>
               <div className="chiffre-label">Yachts référencés</div>
-              <div className="chiffre-desc">Voiliers, catamarans, motor yachts et superyachts dans 68 destinations</div>
+              <div className="chiffre-desc">Voiliers, catamarans, motor yachts et superyachts dans {content.destinationsCount} destinations</div>
             </div>
             <div className="chiffre-card reveal reveal-delay-1">
               <span className="chiffre-icon">🌍</span>
-              <div className="chiffre-num">68</div>
+              <div className="chiffre-num">{content.destinationsCount}</div>
               <div className="chiffre-label">Destinations mondiales</div>
               <div className="chiffre-desc">De la Méditerranée aux Caraïbes, en passant par l'Asie du Sud-Est</div>
             </div>
             <div className="chiffre-card reveal reveal-delay-2">
               <span className="chiffre-icon">👥</span>
-              <div className="chiffre-num">12K+</div>
+              <div className="chiffre-num">{content.satisfiedClients}</div>
               <div className="chiffre-label">Clients satisfaits</div>
-              <div className="chiffre-desc">Clients venus de 42 pays différents, avec une note moyenne de 4,8/5</div>
+              <div className="chiffre-desc">Clients venus de 42 pays différents, avec une note moyenne de {content.averageRating}/5</div>
             </div>
             <div className="chiffre-card reveal">
               <span className="chiffre-icon">✅</span>
-              <div className="chiffre-num">100%</div>
+              <div className="chiffre-num">{content.verifiedAdvertisers}</div>
               <div className="chiffre-label">Annonceurs vérifiés</div>
               <div className="chiffre-desc">Vérification d'identité vidéo et validation manuelle de chaque annonce</div>
             </div>
             <div className="chiffre-card reveal reveal-delay-1">
               <span className="chiffre-icon">⭐</span>
-              <div className="chiffre-num">4.8</div>
+              <div className="chiffre-num">{content.averageRating}</div>
               <div className="chiffre-label">Note moyenne</div>
               <div className="chiffre-desc">Basée sur plus de 9 400 avis certifiés de clients ayant effectivement navigué</div>
             </div>
             <div className="chiffre-card reveal reveal-delay-2">
-              <span className="chiffre-icon">🕐</span>
-              <div className="chiffre-num">7j/7</div>
+              <span className="chiffre-icon">🕒</span>
+              <div className="chiffre-num">{content.supportAvailability}</div>
+              <div className="chiffre-label">Disponibilité support</div>
+              <div className="chiffre-desc">Notre équipe vous répond en moins de 2h, tous les jours de l'année</div>
+            </div>e-num">7j/7</div>
               <div className="chiffre-label">Disponibilité support</div>
               <div className="chiffre-desc">Notre équipe vous répond en moins de 2h, tous les jours de l'année</div>
             </div>
@@ -347,33 +361,34 @@ export default async function AboutPage() {
             <h2 className="sec-title">Ce que disent<br/>nos <em>clients</em></h2>
           </div>
           <div className="testi-grid">
-            <div className="testi-card reveal">
-              <span className="testi-quote">"</span>
-              <div className="testi-stars">★★★★★</div>
-              <p className="testi-text">Une semaine en Grèce à bord de l'Azura 68 — un rêve devenu réalité. L'équipage était d'une attention extraordinaire, le yacht immaculé. Je recommande VoyYacht les yeux fermés.</p>
-              <div className="testi-author">
-                <div className="testi-av">SL</div>
-                <div><div className="testi-name">Sophie Lemaire</div><div className="testi-loc">Paris, France · Juil. 2024</div></div>
+            {topReviews.length > 0 ? (
+              topReviews.map((review, idx) => (
+                <div key={review.id} className={`testi-card reveal ${idx > 0 ? `reveal-delay-${idx}` : ''}`}>
+                  <span className="testi-quote">"</span>
+                  <div className="testi-stars">
+                    {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                  </div>
+                  <p className="testi-text">{review.comment}</p>
+                  <div className="testi-author">
+                    <div className="testi-av">
+                      {review.author?.avatar ? (
+                        <img src={review.author.avatar} alt="Avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+                      ) : (
+                        (review.author?.firstName?.[0] || '') + (review.author?.lastName?.[0] || '')
+                      )}
+                    </div>
+                    <div>
+                      <div className="testi-name">{review.author?.firstName} {review.author?.lastName}</div>
+                      <div className="testi-loc">{review.author?.countryResidence || 'Client VoyYacht'}</div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: '#666'}}>
+                Aucun avis client approuvé pour le moment.
               </div>
-            </div>
-            <div className="testi-card reveal reveal-delay-1">
-              <span className="testi-quote">"</span>
-              <div className="testi-stars">★★★★★</div>
-              <p className="testi-text">Service irréprochable de A à Z. La réservation était simple, le yacht exactement comme sur les photos. La Côte d'Azur vue depuis la mer est tout simplement magique.</p>
-              <div className="testi-author">
-                <div className="testi-av">MR</div>
-                <div><div className="testi-name">Marco Ricci</div><div className="testi-loc">Milan, Italie · Août 2024</div></div>
-              </div>
-            </div>
-            <div className="testi-card reveal reveal-delay-2">
-              <span className="testi-quote">"</span>
-              <div className="testi-stars">★★★★★</div>
-              <p className="testi-text">Notre anniversaire de mariage aux Caraïbes. VoyYacht a tout planifié à la perfection — le catamaran, le chef, les excursions. Une expérience absolument mémorable.</p>
-              <div className="testi-author">
-                <div className="testi-av">AC</div>
-                <div><div className="testi-name">Amelia & Robert Chen</div><div className="testi-loc">Londres, UK · Sept. 2024</div></div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>

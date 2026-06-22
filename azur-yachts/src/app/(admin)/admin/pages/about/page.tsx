@@ -6,8 +6,13 @@ export default function AdminAboutPage() {
   const [yearsOfExcellence, setYearsOfExcellence] = useState<number>(4);
   const [foundationYear, setFoundationYear] = useState<number>(2022);
   const [foundationLocation, setFoundationLocation] = useState('La Ciotat');
-  const [satisfiedClients, setSatisfiedClients] = useState('12000+');
+  const [satisfiedClients, setSatisfiedClients] = useState('12K+');
   const [satisfactionRate, setSatisfactionRate] = useState('98%');
+  const [yachtsCount, setYachtsCount] = useState('340+');
+  const [destinationsCount, setDestinationsCount] = useState('68');
+  const [verifiedAdvertisers, setVerifiedAdvertisers] = useState('100%');
+  const [averageRating, setAverageRating] = useState('4.8');
+  const [supportAvailability, setSupportAvailability] = useState('7j/7');
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -20,8 +25,13 @@ export default function AdminAboutPage() {
           setYearsOfExcellence(data.yearsOfExcellence || 4);
           setFoundationYear(data.foundationYear || 2022);
           setFoundationLocation(data.foundationLocation || 'La Ciotat');
-          setSatisfiedClients(data.satisfiedClients || '12000+');
+          setSatisfiedClients(data.satisfiedClients || '12K+');
           setSatisfactionRate(data.satisfactionRate || '98%');
+          setYachtsCount(data.yachtsCount || '340+');
+          setDestinationsCount(data.destinationsCount || '68');
+          setVerifiedAdvertisers(data.verifiedAdvertisers || '100%');
+          setAverageRating(data.averageRating || '4.8');
+          setSupportAvailability(data.supportAvailability || '7j/7');
         }
         setLoading(false);
       })
@@ -39,7 +49,12 @@ export default function AdminAboutPage() {
           foundationYear,
           foundationLocation,
           satisfiedClients,
-          satisfactionRate
+          satisfactionRate,
+          yachtsCount,
+          destinationsCount,
+          verifiedAdvertisers,
+          averageRating,
+          supportAvailability
         })
       });
       if (res.ok) {
@@ -119,6 +134,61 @@ export default function AdminAboutPage() {
             style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
           />
           <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.3rem' }}>Ex: 98%</p>
+        </div>
+
+        <hr style={{ borderTop: '1px solid #eaeaea', margin: '2rem 0' }} />
+        <h3 style={{ marginBottom: '1.5rem', color: 'var(--navy)' }}>Section : VoyYacht Aujourd'hui</h3>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <div>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Yachts référencés</label>
+            <input 
+              type="text" 
+              value={yachtsCount} 
+              onChange={(e) => setYachtsCount(e.target.value)}
+              style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Destinations mondiales</label>
+            <input 
+              type="text" 
+              value={destinationsCount} 
+              onChange={(e) => setDestinationsCount(e.target.value)}
+              style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <div>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Annonceurs vérifiés</label>
+            <input 
+              type="text" 
+              value={verifiedAdvertisers} 
+              onChange={(e) => setVerifiedAdvertisers(e.target.value)}
+              style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
+            />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Note moyenne</label>
+            <input 
+              type="text" 
+              value={averageRating} 
+              onChange={(e) => setAverageRating(e.target.value)}
+              style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginBottom: '2.5rem' }}>
+          <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Disponibilité support</label>
+          <input 
+            type="text" 
+            value={supportAvailability} 
+            onChange={(e) => setSupportAvailability(e.target.value)}
+            style={{ width: '100%', padding: '0.8rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '1rem' }}
+          />
         </div>
 
         <button 
