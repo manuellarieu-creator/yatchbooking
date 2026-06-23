@@ -173,7 +173,7 @@ function PaymentContent() {
     <div className="payment-page-container">
       {/* NAV */}
       <nav className="pay-nav">
-        <button className="nav-back" onClick={() => router.push(`/yacht/${booking.listingId}`)}>← Étape précédente</button>
+        <button className="nav-back" onClick={() => router.push(`/yacht/${booking.listingId}${booking.totalNights === 0 ? '?mode=vente' : ''}`)}>← Étape précédente</button>
         <Link href="/" className="nav-logo">VOY<span>YACHT</span></Link>
         <div className="nav-secure">🔒 Paiement sécurisé</div>
       </nav>
