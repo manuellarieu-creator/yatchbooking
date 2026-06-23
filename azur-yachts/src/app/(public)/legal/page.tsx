@@ -318,7 +318,7 @@ export default function LegalPage() {
                       <tr><td><strong>Stricte</strong></td><td>Non remboursable à partir de 48h avant le départ</td></tr>
                     </tbody>
                   </table>
-                  <p>Toute demande d'annulation doit être adressée par écrit à l'équipe VoyYacht via le formulaire de contact ou par email à <Link href="mailto:contact@voyyacht.com">contact@voyyacht.com</Link>. Les remboursements sont traités dans un délai de 5 à 10 jours ouvrés selon le mode de paiement utilisé.</p>
+                  <p>Toute demande d'annulation doit être adressée par écrit à l'équipe VoyYacht via le formulaire de contact ou par email à <Link href="mailto:contact@voyyacht.com">contact@voyyacht.com</Link> ou en cliquant sur le bouton d'annulation depuis l'espace client. Les remboursements sont traités dans un délai de 3 à 10 jours ouvrés selon le mode de paiement utilisé.</p>
                   <div className="info-box navy">
                     En cas de force majeure dûment justifiée (catastrophe naturelle, maladie grave, décès d'un proche au premier degré), VoyYacht se réserve le droit d'appliquer des conditions d'annulation plus favorables, à sa seule discrétion.
                   </div>
