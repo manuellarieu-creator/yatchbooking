@@ -381,7 +381,6 @@ function VentesContent() {
                         <span className="card-spec">👥 <strong>{yacht.cap}</strong> personnes</span>
                         <span className="card-spec">🛏 <strong>{yacht.cab}</strong> cabines</span>
                         <span className="card-spec">📏 <strong>{yacht.len ? `${yacht.len}m` : '-'}</strong></span>
-                        <span className="card-spec">⭐ <strong>{yacht.rating.toFixed(1)}</strong></span>
                       </div>
                       
                       
