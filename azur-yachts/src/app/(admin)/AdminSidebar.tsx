@@ -23,7 +23,7 @@ export default function AdminSidebar() {
 
       <aside className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
         <div className="admin-brand">
-          <Link href="/" onClick={() => setIsOpen(false)}>AZUR<span>YACHTS</span></Link>
+          <Link href="/" onClick={() => setIsOpen(false)}>VOY<span>YACHT</span></Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
             <div className="admin-badge">Admin</div>
             <InAppNotifications />
