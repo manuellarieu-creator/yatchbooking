@@ -373,7 +373,7 @@ function VentesContent() {
                         <span className="sep">|</span>
                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>⚓ {yacht.location}</span>
                         <span className="sep">|</span>
-                        <span className="card-top-rating">★ {yacht.rating.toFixed(1)}</span>
+                        <span>{yacht.year || '-'}</span>
                       </div>
                       <div className="card-name">{yacht.name}</div>
                       
@@ -381,7 +381,7 @@ function VentesContent() {
                         <span className="card-spec">👥 <strong>{yacht.cap}</strong> personnes</span>
                         <span className="card-spec">🛏 <strong>{yacht.cab}</strong> cabines</span>
                         <span className="card-spec">📏 <strong>{yacht.len ? `${yacht.len}m` : '-'}</strong></span>
-                        <span className="card-spec">📅 <strong>{yacht.year || '-'}</strong></span>
+                        <span className="card-spec">⭐ <strong>{yacht.rating.toFixed(1)}</strong></span>
                       </div>
                       
                       
@@ -389,7 +389,7 @@ function VentesContent() {
                       <div className="card-footer" style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem' }}>
                         <div className="card-price">
                           <div className="card-price-value" style={{ color: 'var(--gold)' }}>{formatPrice(yacht.salePrice)}</div>
-                          <div className="card-price-unit">Prix de vente</div>
+                          <div className="card-price-unit">TVA Incluse</div>
                         </div>
                         <div className="card-rating">
                           {yacht.ownerImage ? (
