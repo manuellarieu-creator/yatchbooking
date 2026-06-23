@@ -30,6 +30,10 @@ Ce document résume l'état d'avancement de la plateforme.
   - **Alertes Admin** (Nouvelle réservation, nouvelle annonce à modérer, nouveaux messages, réception de preuve de virement).
 
 ### 5. Dernières Améliorations (Juin 2026)
+- **Ventes & Locations :** Distinction claire des parcours pour les Locations (réservation) et les Ventes (achat ou réservation d'essai). Le terme "Les Offres" a été remplacé par "Locations".
+- **Paiement Dynamique :** Le tunnel de paiement s'adapte automatiquement selon qu'il s'agit d'un achat de bateau, d'un essai, ou d'une location (étapes, textes d'avertissement et garanties dynamiques).
+- **Messagerie Intégrée :** Le bouton "Contacter le propriétaire" crée désormais instantanément une conversation liée au bateau concerné et redirige l'utilisateur vers sa messagerie dans le dashboard.
+- **Expérience Utilisateur (Parcours Vente) :** Boutons "Voir Options" sur les cartes de vente pour rediriger vers l'annonce détaillée. Le bouton de retour du paiement ("Étape précédente") conserve le contexte (mode vente) pour revenir exactement à l'annonce correspondante.
 - **Support Client :** Ajout d'une bulle flottante permettant d'ouvrir directement un chat avec le support.
 - **UI/UX :** Refonte visuelle des bulles flottantes (fond bleu marine, icône "stylo/feuille" pour les devis) et optimisation des formulaires sur mobile (tailles de police réduites).
 - **Maintenance & Sécurité :** L'administrateur peut désormais se connecter même si le site est en mode maintenance.
