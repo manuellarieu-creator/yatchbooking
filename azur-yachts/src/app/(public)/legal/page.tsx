@@ -313,9 +313,9 @@ export default function LegalPage() {
                   <table className="legal-table">
                     <thead><tr><th>Politique</th><th>Conditions</th></tr></thead>
                     <tbody>
-                      <tr><td><strong>Flexible</strong></td><td>Remboursement intégral si annulation plus de 48h avant la date de départ</td></tr>
+                      <tr><td><strong>Flexible</strong></td><td>Remboursement intégral si annulation plus de 14 jours avant la date de départ</td></tr>
                       <tr><td><strong>Modérée</strong></td><td>Remboursement de 50% si annulation plus de 7 jours avant la date de départ</td></tr>
-                      <tr><td><strong>Stricte</strong></td><td>Non remboursable sauf cas de force majeure documentée</td></tr>
+                      <tr><td><strong>Stricte</strong></td><td>Non remboursable à partir de 48h avant le départ</td></tr>
                     </tbody>
                   </table>
                   <p>Toute demande d'annulation doit être adressée par écrit à l'équipe VoyYacht via le formulaire de contact ou par email à <Link href="mailto:contact@voyyacht.com">contact@voyyacht.com</Link>. Les remboursements sont traités dans un délai de 5 à 10 jours ouvrés selon le mode de paiement utilisé.</p>
