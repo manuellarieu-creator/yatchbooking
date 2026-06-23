@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import './GlobalChatBubble.css';
 
 export default function GlobalChatBubble() {
@@ -15,6 +15,7 @@ export default function GlobalChatBubble() {
   const [convId, setConvId] = useState<string | null>(null);
   const [hasAdminReply, setHasAdminReply] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Load existing support conversation
@@ -47,6 +48,10 @@ export default function GlobalChatBubble() {
       })
       .catch(console.error);
   }, []);
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   useEffect(() => {
     if (messagesEndRef.current && isChatOpen) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { FileEdit, X, Send } from 'lucide-react';
 import './floating-quote.css';
 
@@ -8,6 +9,12 @@ export default function FloatingQuoteButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const pathname = usePathname();
+
+  // Do not show on admin pages
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
