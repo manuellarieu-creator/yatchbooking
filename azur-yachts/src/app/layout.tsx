@@ -11,7 +11,7 @@ import "@/components/layout/GlobalMobileNav.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || 'https://azuryachts.vercel.app'
+    process.env.NEXT_PUBLIC_APP_URL || 'https://voyyacht.vercel.app'
   ),
   title: {
     default: 'VoyYacht — Location de yachts de prestige',

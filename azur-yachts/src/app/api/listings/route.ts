@@ -188,7 +188,7 @@ export async function POST(req: NextRequest) {
         : (session.user as any).email;
         
       await sendNewListingAdmin(
-        process.env.ADMIN_EMAIL || 'admin@azuryachts.vercel.app',
+        process.env.ADMIN_EMAIL || 'admin@voyyacht.vercel.app',
         advertiserName,
         listing.title,
         listing.id

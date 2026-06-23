@@ -2,8 +2,8 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-const FROM = process.env.EMAIL_FROM || 'VoyYacht <noreply@azuryachts.vercel.app>'
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://azuryachts.vercel.app'
+const FROM = process.env.EMAIL_FROM || 'VoyYacht <noreply@voyyacht.vercel.app>'
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://voyyacht.vercel.app'
 
 function base(content: string): string {
   return `<!DOCTYPE html>

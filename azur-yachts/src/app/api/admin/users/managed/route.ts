@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Si pas d'email fourni, générer un email factice pour que Prisma ne plante pas sur @unique
-    const safeEmail = email || `managed-${Date.now()}@azuryachts-managed.com`
+    const safeEmail = email || `managed-${Date.now()}@voyyacht-managed.com`
 
     // Vérifier si l'email existe déjà (si fourni)
     if (email) {

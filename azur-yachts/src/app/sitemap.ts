@@ -3,7 +3,7 @@ import { db as prisma } from '@/lib/db'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 
-    'https://azuryachts.vercel.app'
+    'https://voyyacht.vercel.app'
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [

@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
     // Send email to admin
     await sendPaymentProofReceived(
-      process.env.ADMIN_EMAIL || 'admin@azuryachts.vercel.app',
+      process.env.ADMIN_EMAIL || 'admin@voyyacht.vercel.app',
       payment.booking.client.firstName + ' ' + payment.booking.client.lastName,
       payment.bankTransferRef || payment.bookingId,
       payment.amount,

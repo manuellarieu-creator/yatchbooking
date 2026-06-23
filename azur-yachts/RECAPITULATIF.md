@@ -1,4 +1,4 @@
-# ⚓ Récapitulatif du Projet VoyYacht (Azur Yachts)
+# ⚓ Récapitulatif du Projet VoyYacht (VoyYacht)
 
 Ce document résume l'état d'avancement de la plateforme.
 

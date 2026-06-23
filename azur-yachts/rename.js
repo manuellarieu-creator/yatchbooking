@@ -11,7 +11,7 @@ function walk(dir) {
         if (stat && stat.isDirectory() && !file.includes('node_modules') && !file.includes('.next') && !file.includes('.git')) {
             results = results.concat(walk(file));
         } else {
-            if (file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.md')) {
+            if (file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.md') || file.endsWith('.json')) {
                 results.push(file);
             }
         }
@@ -22,6 +22,7 @@ function walk(dir) {
 const files = walk(path.join(__dirname, 'src'));
 files.push(path.join(__dirname, 'RECAPITULATIF.md'));
 files.push(path.join(__dirname, 'OPTIMISATION_SUPABASE.md'));
+files.push(...walk(path.join(__dirname, 'prisma')));
 
 let changedCount = 0;
 
@@ -40,6 +41,8 @@ files.forEach(file => {
     
     // Lowercase / URLs / Emails
     content = content.replace(/azuryachts\.com/g, 'voyyacht.com');
+    content = content.replace(/azuryachts\.vercel\.app/g, 'voyyacht.vercel.app');
+    content = content.replace(/azuryachts-managed\.com/g, 'voyyacht-managed.com');
 
     if (content !== original) {
         fs.writeFileSync(file, content, 'utf8');

@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
 
     // Envoi de la notification Admin
     await sendNewBookingAdmin(
-      process.env.ADMIN_EMAIL || 'admin@azuryachts.vercel.app',
+      process.env.ADMIN_EMAIL || 'admin@voyyacht.vercel.app',
       `${booking.client.firstName} ${booking.client.lastName}`,
       booking.listing.title,
       booking.startDate.toLocaleDateString('fr-FR'),

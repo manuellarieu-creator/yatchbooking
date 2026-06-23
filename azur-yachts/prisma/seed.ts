@@ -38,7 +38,7 @@ async function main() {
 
   const admin = await prisma.user.create({
     data: {
-      email: 'admin@azuryachts.com',
+      email: 'admin@voyyacht.com',
       password: adminPassword,
       firstName: 'Laurent',
       lastName: 'Chevalier',
@@ -491,11 +491,11 @@ async function main() {
       stripeEnabled: true,
       paypalEnabled: true,
       bankEnabled: true,
-      bankAccountName: 'Azur Yachts SAM',
+      bankAccountName: 'VoyYacht SAM',
       bankIban: 'MC93 1234 5678 9012 3456 7890 123',
       bankBic: 'CMCIMC2A',
       bankName: 'Crédit Mutuel Monaco',
-      bankNotificationEmail: 'admin@azuryachts.com',
+      bankNotificationEmail: 'admin@voyyacht.com',
     }
   })
 
@@ -525,14 +525,14 @@ async function main() {
     data: [
       {
         slug: 'about',
-        title: 'À propos d\'Azur Yachts',
-        content: '<h2>Notre mission</h2><p>Azur Yachts est née en 2009 d\'une passion commune pour la mer et d\'une conviction : chaque client mérite une expérience nautique d\'exception, sans compromis sur la qualité, la sécurité ou la transparence.</p><h2>Nos valeurs</h2><p>Confiance, excellence, transparence, accessibilité, durabilité et humanité guident chacune de nos décisions.</p>',
+        title: 'À propos d\'VoyYacht',
+        content: '<h2>Notre mission</h2><p>VoyYacht est née en 2009 d\'une passion commune pour la mer et d\'une conviction : chaque client mérite une expérience nautique d\'exception, sans compromis sur la qualité, la sécurité ou la transparence.</p><h2>Nos valeurs</h2><p>Confiance, excellence, transparence, accessibilité, durabilité et humanité guident chacune de nos décisions.</p>',
       },
       {
         slug: 'contact-info',
         title: 'Informations de contact',
         content: JSON.stringify({
-          email: 'contact@azuryachts.com',
+          email: 'contact@voyyacht.com',
           phone: '+377 97 70 00 00',
           whatsapp: '+377 6 77 00 00 00',
           address: '3, Quai des Milliardaires, 98000 Monaco',
@@ -545,7 +545,7 @@ async function main() {
   console.log('🎉 Seed completed successfully!')
   console.log('')
   console.log('📧 Comptes de test :')
-  console.log('   Admin    : admin@azuryachts.com / Admin@2025')
+  console.log('   Admin    : admin@voyyacht.com / Admin@2025')
   console.log('   Standard : pierre@demo.com / Demo@2025')
   console.log('   Premium  : marco@demo.com / Demo@2025')
   console.log('   Platinium: sophia@demo.com / Demo@2025')

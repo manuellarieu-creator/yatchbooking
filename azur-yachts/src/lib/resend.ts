@@ -2,8 +2,8 @@ import { Resend } from 'resend'
 
 export const resend = new Resend(process.env.RESEND_API_KEY)
 
-export const FROM_EMAIL = process.env.EMAIL_FROM || 'noreply@azuryachts.vercel.app'
-export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@azuryachts.vercel.app'
+export const FROM_EMAIL = process.env.EMAIL_FROM || 'noreply@voyyacht.vercel.app'
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@voyyacht.vercel.app'
 
 // ── BASE TEMPLATE ──────────────────────────────────────────
 function baseTemplate(content: string): string {
