@@ -49,9 +49,7 @@ export default function GlobalChatBubble() {
       .catch(console.error);
   }, []);
 
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
+
 
   useEffect(() => {
     if (messagesEndRef.current && isChatOpen) {
@@ -118,6 +116,10 @@ export default function GlobalChatBubble() {
       setIsSending(false);
     }
   };
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <div className="global-chat-bubble">
