@@ -406,7 +406,7 @@ function ListingsContent() {
                       
                       <div className="card-specs">
                         <span className="card-spec">📏 <strong>{yacht.len}</strong></span>
-                        <span className="card-spec">👥 <strong>{yacht.cap}</strong> adultes</span>
+                        <span className="card-spec">👥 <strong>{yacht.cap}</strong> personnes</span>
                         <span className="card-spec">🛏 <strong>{yacht.cab}</strong> cabines</span>
                       </div>
                       
