@@ -103,8 +103,8 @@ export default function AdminReviewsPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {filteredReviews.map(review => (
               <div key={review.id} style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1.5rem', background: '#f8fafc' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                  <div style={{ minWidth: '200px', flex: 1 }}>
                     <div style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '0.2rem' }}>
                       {review.rating} / 5 ⭐ sur {
                         review.targetType === 'SITE' ? 'le Site' :
@@ -112,7 +112,7 @@ export default function AdminReviewsPage() {
                         review.listing?.title || 'Annonce supprimée'
                       }
                     </div>
-                    <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                    <div style={{ fontSize: '0.85rem', color: '#64748b', wordBreak: 'break-word' }}>
                       Par {review.author.firstName} {review.author.lastName} ({review.author.email}) le {new Date(review.createdAt).toLocaleDateString('fr-FR')}
                     </div>
                   </div>
@@ -120,23 +120,24 @@ export default function AdminReviewsPage() {
                     <span style={{ 
                       padding: '0.3rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600,
                       background: review.status === 'PENDING' ? '#fef3c7' : review.status === 'APPROVED' ? '#dcfce7' : '#fee2e2',
-                      color: review.status === 'PENDING' ? '#d97706' : review.status === 'APPROVED' ? '#166534' : '#991b1b'
+                      color: review.status === 'PENDING' ? '#d97706' : review.status === 'APPROVED' ? '#166534' : '#991b1b',
+                      whiteSpace: 'nowrap'
                     }}>
                       {review.status}
                     </span>
                   </div>
                 </div>
 
-                <div style={{ background: '#fff', padding: '1rem', borderRadius: '6px', border: '1px solid #cbd5e1', marginBottom: '1rem', fontStyle: 'italic', color: '#334155' }}>
+                <div style={{ background: '#fff', padding: '1rem', borderRadius: '6px', border: '1px solid #cbd5e1', marginBottom: '1rem', fontStyle: 'italic', color: '#334155', wordBreak: 'break-word' }}>
                   "{review.comment}"
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
                   {review.status !== 'APPROVED' && (
                     <button 
                       onClick={() => handleAction(review.id, 'APPROVED')}
                       disabled={actionLoadingId === review.id}
-                      style={{ background: '#22c55e', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 500 }}
+                      style={{ background: '#22c55e', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 500, flex: '1 1 auto', minWidth: '120px' }}
                     >
                       {actionLoadingId === review.id ? '...' : '✅ Approuver'}
                     </button>
@@ -145,7 +146,7 @@ export default function AdminReviewsPage() {
                     <button 
                       onClick={() => handleAction(review.id, 'REJECTED')}
                       disabled={actionLoadingId === review.id}
-                      style={{ background: '#fef2f2', color: '#ef4444', border: '1px solid #fecaca', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 500 }}
+                      style={{ background: '#fef2f2', color: '#ef4444', border: '1px solid #fecaca', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 500, flex: '1 1 auto', minWidth: '120px' }}
                     >
                       {actionLoadingId === review.id ? '...' : '❌ Rejeter'}
                     </button>
@@ -153,7 +154,7 @@ export default function AdminReviewsPage() {
                   <button 
                     onClick={() => handleDelete(review.id)}
                     disabled={actionLoadingId === review.id}
-                    style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 500 }}
+                    style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer', fontWeight: 500, flex: '1 1 auto', minWidth: '120px' }}
                   >
                     🗑️ Supprimer
                   </button>
