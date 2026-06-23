@@ -718,11 +718,29 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 <p style={{ color: 'var(--text-mid)', marginBottom: '1.5rem', lineHeight: 1.5 }}>
                   Ce bateau vous intéresse ? Contactez le propriétaire dès maintenant pour organiser une visite ou obtenir plus d'informations.
                 </p>
-                <Link href={`/dashboard?tab=messages&new_chat_with=${yacht.ownerId}`} passHref>
-                  <button className="reserve-btn">
-                    Contacter le propriétaire
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                  <button className="reserve-btn" style={{ background: 'transparent', color: 'var(--navy)', border: '2px solid var(--navy)' }} onClick={() => triggerToast('Veuillez contacter le propriétaire pour organiser un essai.')}>
+                    RESERVER UN ESSAI
                   </button>
-                </Link>
+                  <button className="reserve-btn" style={{ background: 'var(--navy)', color: '#fff' }} onClick={async () => {
+                    const res = await fetch('/api/sales/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ yachtId: yacht.id }) });
+                    if (res.ok) {
+                      const data = await res.json();
+                      window.location.href = `/payment?bookingId=${data.bookingId}`;
+                    } else if (res.status === 401) {
+                      window.location.href = '/auth';
+                    } else {
+                      triggerToast('Erreur lors de la création de la vente.');
+                    }
+                  }}>
+                    ACHETER CE BATEAU
+                  </button>
+                  <Link href={`/dashboard?tab=messages&new_chat_with=${yacht.ownerId}`} passHref>
+                    <button className="reserve-btn">
+                      CONTACTER LE PROPRIÉTAIRE
+                    </button>
+                  </Link>
+                </div>
                 <div className="widget-footer-note" style={{ marginTop: '1rem' }}>Réponse rapide garantie.</div>
               </div>
             ) : (

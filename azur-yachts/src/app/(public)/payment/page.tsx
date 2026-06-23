@@ -354,7 +354,7 @@ function PaymentContent() {
         <div className="order-summary">
           <div className="order-summary-head">
             <div className="order-summary-title">Récapitulatif</div>
-            <div className="order-ref">Réservation {booking.id.slice(-6).toUpperCase()}</div>
+            <div className="order-ref">{booking.totalNights === 0 ? "Achat de navire" : "Réservation"} {booking.id.slice(-6).toUpperCase()}</div>
           </div>
           <div className="order-body">
 
@@ -367,23 +367,34 @@ function PaymentContent() {
               </div>
             </div>
 
-            <div className="order-dates">
-              <div className="order-date-block">
-                <div className="order-date-lbl">Arrivée</div>
-                <div className="order-date-val">{format(new Date(booking.startDate), 'dd MMM yyyy', { locale: fr })}</div>
+            {booking.totalNights > 0 && (
+              <div className="order-dates">
+                <div className="order-date-block">
+                  <div className="order-date-lbl">Arrivée</div>
+                  <div className="order-date-val">{format(new Date(booking.startDate), 'dd MMM yyyy', { locale: fr })}</div>
+                </div>
+                <div className="order-date-sep">→</div>
+                <div className="order-date-block">
+                  <div className="order-date-lbl">Départ</div>
+                  <div className="order-date-val">{format(new Date(booking.endDate), 'dd MMM yyyy', { locale: fr })}</div>
+                </div>
               </div>
-              <div className="order-date-sep">→</div>
-              <div className="order-date-block">
-                <div className="order-date-lbl">Départ</div>
-                <div className="order-date-val">{format(new Date(booking.endDate), 'dd MMM yyyy', { locale: fr })}</div>
-              </div>
-            </div>
+            )}
 
-            <div className="order-guests">👥 {booking.adults} adultes · {booking.children} enfants</div>
+            {booking.totalNights > 0 && (
+              <div className="order-guests">👥 {booking.adults} adultes · {booking.children} enfants</div>
+            )}
 
             <div className="recap-rows">
-              <div className="recap-row"><span className="lbl">Base ({booking.totalNights} nuits)</span><span className="val">€{booking.basePrice.toLocaleString('fr-FR')}</span></div>
-              <div className="recap-row"><span className="lbl">Frais de nettoyage</span><span className="val">€{booking.cleaningFee.toLocaleString('fr-FR')}</span></div>
+              {booking.totalNights === 0 ? (
+                <div className="recap-row"><span className="lbl">Prix d'achat (TVA Incluse)</span><span className="val">€{booking.basePrice.toLocaleString('fr-FR')}</span></div>
+              ) : (
+                <div className="recap-row"><span className="lbl">Base ({booking.totalNights} nuits)</span><span className="val">€{booking.basePrice.toLocaleString('fr-FR')}</span></div>
+              )}
+              
+              {booking.totalNights > 0 && (
+                <div className="recap-row"><span className="lbl">Frais de nettoyage</span><span className="val">€{booking.cleaningFee.toLocaleString('fr-FR')}</span></div>
+              )}
               
               {booking.servicesTotal > 0 && (
                 <div className="recap-row"><span className="lbl">Services additionnels</span><span className="val">€{booking.servicesTotal.toLocaleString('fr-FR')}</span></div>
