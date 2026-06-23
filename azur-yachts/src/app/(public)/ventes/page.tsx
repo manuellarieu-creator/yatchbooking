@@ -391,11 +391,24 @@ function VentesContent() {
                           <div className="card-price-unit">TVA Incluse</div>
                         </div>
                         <div className="card-rating">
-                          {yacht.ownerImage ? (
-                            <img src={yacht.ownerImage} alt="Owner" className="owner-avatar" />
-                          ) : (
-                            <div className="owner-avatar-placeholder">👤</div>
-                          )}
+                          <button 
+                            className="nav-btn nav-btn-gold" 
+                            style={{ padding: '0.4rem 1rem', fontSize: '0.75rem', borderRadius: '4px' }}
+                            onClick={async (e) => {
+                              e.preventDefault();
+                              const res = await fetch('/api/sales/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ yachtId: yacht.id }) });
+                              if (res.ok) {
+                                const data = await res.json();
+                                window.location.href = `/payment?bookingId=${data.bookingId}`;
+                              } else if (res.status === 401) {
+                                window.location.href = '/auth';
+                              } else {
+                                alert('Erreur lors de la création de la vente.');
+                              }
+                            }}
+                          >
+                            ACHETER
+                          </button>
                         </div>
                       </div>
                     </div>
