@@ -138,6 +138,7 @@ function PublishForm() {
   // Step 4
   const [priceDay, setPriceDay] = useState('');
   const [salePrice, setSalePrice] = useState('');
+  const [trialPrice, setTrialPrice] = useState('');
   const [saleOfferType, setSaleOfferType] = useState('Bateau d\'occasion');
   const [cleaningFee, setCleaningFee] = useState('');
   const [securityDeposit, setSecurityDeposit] = useState('');
@@ -226,6 +227,7 @@ function PublishForm() {
           setDesc(l.description);
           setPriceDay(l.price?.toString() || '');
           setSalePrice(l.salePrice?.toString() || '');
+          setTrialPrice(l.trialPrice?.toString() || '');
           if (l.saleOfferType) setSaleOfferType(l.saleOfferType);
           setCleaningFee(l.cleaningFee?.toString() || '');
           setSecurityDeposit(l.securityDeposit?.toString() || '');
@@ -436,7 +438,7 @@ function PublishForm() {
       }));
 
       const payload = {
-        title, description: desc, price: Number(priceDay) || 0, salePrice: salePrice ? Number(salePrice) : null, saleOfferType, country: portCountry, location: portCity,
+        title, description: desc, price: Number(priceDay) || 0, salePrice: salePrice ? Number(salePrice) : null, trialPrice: trialPrice ? Number(trialPrice) : null, saleOfferType, country: portCountry, location: portCity,
         latitude: null, longitude: null, maxAdults: Number(adults) || 1, maxChildren: Number(children) || 0,
         boatType: boatType === 'Autre' ? customBoatType : boatType, boatLength: Number(length) || 0, cabins: Number(cabins) || null, berths: Number(berths) || null, bathrooms: Number(bathrooms) || null, boatPlanUrls, boatYear: Number(year) || 2000, requiresCaptain: captainReq,
         skipperAvailable: skipperOpt, isAtSea, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
@@ -1142,14 +1144,21 @@ function PublishForm() {
                     </div>
                   </div>
                   {salePrice && (
-                    <div className="field">
-                      <label className="label">Type d'offre de vente</label>
-                      <select className="select" value={saleOfferType} onChange={e => setSaleOfferType(e.target.value)}>
-                        <option value="Bateau d'occasion">Bateau d'occasion</option>
-                        <option value="Modèle de démonstration">Modèle de démonstration</option>
-                        <option value="Bateau neuf en stock">Bateau neuf en stock</option>
-                        <option value="Bateau neuf sur commande">Bateau neuf sur commande</option>
-                      </select>
+                    <div className="field-row">
+                      <div className="field">
+                        <label className="label">Type d'offre de vente</label>
+                        <select className="select" value={saleOfferType} onChange={e => setSaleOfferType(e.target.value)}>
+                          <option value="Bateau d'occasion">Bateau d'occasion</option>
+                          <option value="Modèle de démonstration">Modèle de démonstration</option>
+                          <option value="Bateau neuf en stock">Bateau neuf en stock</option>
+                          <option value="Bateau neuf sur commande">Bateau neuf sur commande</option>
+                        </select>
+                      </div>
+                      <div className="field">
+                        <label className="label">Réserver un essai : Tarif (€)</label>
+                        <input className="input" type="number" min="0" value={trialPrice} onChange={e => setTrialPrice(e.target.value)} placeholder="Ex : 500" />
+                        <span className="hint">Option affichée uniquement si ce tarif est renseigné</span>
+                      </div>
                     </div>
                   )}
                   <div className="info-box navy" style={{ marginTop: '.5rem' }}>

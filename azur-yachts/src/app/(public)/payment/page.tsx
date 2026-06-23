@@ -354,7 +354,7 @@ function PaymentContent() {
         <div className="order-summary">
           <div className="order-summary-head">
             <div className="order-summary-title">Récapitulatif</div>
-            <div className="order-ref">{booking.totalNights === 0 ? "Achat de navire" : "Réservation"} {booking.id.slice(-6).toUpperCase()}</div>
+            <div className="order-ref">{booking.adminNote?.startsWith('ESSAI') ? "Essai en mer" : booking.totalNights === 0 ? "Achat de navire" : "Réservation"} {booking.id.slice(-6).toUpperCase()}</div>
           </div>
           <div className="order-body">
 
@@ -387,7 +387,7 @@ function PaymentContent() {
 
             <div className="recap-rows">
               {booking.totalNights === 0 ? (
-                <div className="recap-row"><span className="lbl">Prix d'achat (TVA Incluse)</span><span className="val">€{booking.basePrice.toLocaleString('fr-FR')}</span></div>
+                <div className="recap-row"><span className="lbl">{booking.adminNote?.startsWith('ESSAI') ? "Prix de l'essai" : "Prix d'achat (TVA Incluse)"}</span><span className="val">€{booking.basePrice.toLocaleString('fr-FR')}</span></div>
               ) : (
                 <div className="recap-row"><span className="lbl">Base ({booking.totalNights} nuits)</span><span className="val">€{booking.basePrice.toLocaleString('fr-FR')}</span></div>
               )}

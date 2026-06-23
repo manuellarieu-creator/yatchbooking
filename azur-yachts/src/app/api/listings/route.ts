@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const {
-      title, description, price, salePrice, saleOfferType, country, location,
+      title, description, price, salePrice, trialPrice, saleOfferType, country, location,
       latitude, longitude, maxAdults, maxChildren,
       boatType, boatLength, boatYear, cabins, berths, bathrooms, boatPlanUrls, requiresCaptain,
       skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
 
     const listing = await prisma.listing.create({
       data: {
-        title, description, price, salePrice: salePrice ? Number(salePrice) : null, saleOfferType: saleOfferType || null, country, location,
+        title, description, price, salePrice: salePrice ? Number(salePrice) : null, trialPrice: trialPrice ? Number(trialPrice) : null, saleOfferType: saleOfferType || null, country, location,
         latitude, longitude, maxAdults, maxChildren,
         boatType, boatLength, boatYear, 
         navigationMode,

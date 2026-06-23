@@ -135,6 +135,44 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   const [reviewType, setReviewType] = useState<'SITE' | 'OWNER' | 'LISTING'>('LISTING');
   const [isListingReviewsModalOpen, setIsListingReviewsModalOpen] = useState(false);
 
+  // ── Sea Trial State ──
+  const [isTrialModalOpen, setIsTrialModalOpen] = useState(false);
+  const [trialDate, setTrialDate] = useState('');
+  const [trialPortIdx, setTrialPortIdx] = useState<number>(-1); // -1 = base port
+  const trialDeliveryFee = trialPortIdx >= 0 && yacht?.deliveryPricing?.[trialPortIdx] 
+    ? Number(yacht.deliveryPricing[trialPortIdx].fee) 
+    : 0;
+  const trialTotalPrice = (yacht?.trialPrice || 0) + trialDeliveryFee;
+
+  const handleTrialBooking = async () => {
+    if (!trialDate) {
+      triggerToast('Veuillez sélectionner une date pour l\'essai.');
+      return;
+    }
+    try {
+      const res = await fetch('/api/trials/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          yachtId: yacht.id,
+          date: trialDate,
+          deliveryFee: trialDeliveryFee,
+          portName: trialPortIdx >= 0 ? yacht.deliveryPricing[trialPortIdx].distance : yacht.location
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        window.location.href = `/payment?bookingId=${data.bookingId}`;
+      } else if (res.status === 401) {
+        window.location.href = '/auth';
+      } else {
+        triggerToast('Erreur lors de la réservation de l\'essai.');
+      }
+    } catch (e) {
+      triggerToast('Erreur réseau.');
+    }
+  };
+
   // Handle Keyboard for Lightbox
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -719,9 +757,11 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                   Ce bateau vous intéresse ? Contactez le propriétaire dès maintenant pour organiser une visite ou obtenir plus d'informations.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                  <button className="reserve-btn" style={{ background: 'transparent', color: 'var(--navy)', border: '2px solid var(--navy)' }} onClick={() => triggerToast('Veuillez contacter le propriétaire pour organiser un essai.')}>
-                    RESERVER UN ESSAI
-                  </button>
+                  {yacht.trialPrice && (
+                    <button className="reserve-btn" style={{ background: 'transparent', color: 'var(--navy)', border: '2px solid var(--navy)' }} onClick={() => setIsTrialModalOpen(true)}>
+                      RÉSERVER UN ESSAI ({yacht.trialPrice}€)
+                    </button>
+                  )}
                   <button className="reserve-btn" style={{ background: 'var(--navy)', color: '#fff' }} onClick={async () => {
                     const res = await fetch('/api/sales/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ yachtId: yacht.id }) });
                     if (res.ok) {
@@ -1004,6 +1044,59 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             ) : (
               <p style={{ color: 'var(--text-light)', fontStyle: 'italic', textAlign: 'center' }}>Aucun avis pour le moment.</p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ── SEA TRIAL MODAL ── */}
+      {isTrialModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setIsTrialModalOpen(false)}>
+          <div style={{ background: 'white', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '500px' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ margin: 0, fontFamily: 'var(--font-heading)' }}>Réserver un essai</h3>
+              <button onClick={() => setIsTrialModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)', marginBottom: '0.5rem' }}>Date de l'essai <span style={{color: 'red'}}>*</span></label>
+              <input type="date" className="input" value={trialDate} onChange={e => setTrialDate(e.target.value)} min={new Date().toISOString().split('T')[0]} />
+            </div>
+
+            {yacht.deliveryAvailable && yacht.deliveryPricing?.length > 0 && (
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--navy)', marginBottom: '0.5rem' }}>Lieu de l'essai</label>
+                <select className="select" value={trialPortIdx} onChange={e => setTrialPortIdx(Number(e.target.value))}>
+                  <option value={-1}>{yacht.location} (Port d'attache) - Sans frais</option>
+                  {yacht.deliveryPricing.map((dp: any, i: number) => (
+                    <option key={i} value={i}>
+                      Livraison à {dp.distance} (+{dp.fee}€)
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div style={{ padding: '1rem', background: '#f8fafc', borderRadius: '8px', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-mid)' }}>
+                <span>Tarif de base (Essai)</span>
+                <span>{yacht.trialPrice}€</span>
+              </div>
+              {trialDeliveryFee > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-mid)' }}>
+                  <span>Frais de livraison ({yacht.deliveryPricing[trialPortIdx].distance})</span>
+                  <span>{trialDeliveryFee}€</span>
+                </div>
+              )}
+              <div style={{ borderTop: '1px solid #e2e8f0', margin: '0.5rem 0' }}></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600, color: 'var(--navy)', fontSize: '1.1rem' }}>
+                <span>Total</span>
+                <span>{trialTotalPrice}€</span>
+              </div>
+            </div>
+
+            <button className="reserve-btn" style={{ width: '100%', background: 'var(--navy)', color: 'white' }} onClick={handleTrialBooking}>
+              Passer au paiement
+            </button>
           </div>
         </div>
       )}
