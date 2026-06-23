@@ -359,7 +359,13 @@ function PaymentContent() {
           <div className="order-body">
 
             <div className="order-yacht">
-              <div className="order-yacht-img" style={{ backgroundImage: booking.listing.images?.[0] ? `url(${booking.listing.images[0].url})` : 'none' }}></div>
+              <div className="order-yacht-img" style={{ 
+                backgroundImage: booking.listing.images?.[0] ? `url(${booking.listing.images[0].url})` : 'none',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}>
+                {!booking.listing.images?.[0] && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', opacity: 0.15 }}>⚓</div>}
+              </div>
               <div className="order-yacht-info">
                 <div className="order-yacht-type">{booking.listing.boatType} · {booking.listing.boatLength}m</div>
                 <div className="order-yacht-name">{booking.listing.title}</div>
