@@ -249,7 +249,7 @@ function PaymentContent() {
               <div className="bank-hero">
                 <span className="bank-hero-icon">✅</span>
                 <div className="bank-hero-title">Demande de paiement générée</div>
-                <p className="bank-hero-sub">Pour finaliser votre {booking.totalNights === 0 ? "achat" : "réservation"}, veuillez effectuer un virement bancaire du montant indiqué ci-dessous en indiquant impérativement la référence unique. <strong>Votre {booking.totalNights === 0 ? "achat" : "réservation"} ne sera {booking.totalNights === 0 ? "confirmé" : "confirmée"} qu’après vérification de la réception des fonds par notre équipe.</strong></p>
+                <p className="bank-hero-sub">Pour finaliser votre {booking.totalNights === 0 ? "achat" : "réservation"}, veuillez effectuer un virement bancaire du montant indiqué ci-dessous en indiquant impérativement la référence unique. <strong>Votre {booking.totalNights === 0 ? "achat" : "réservation"} ne sera {booking.totalNights === 0 ? "confirmé" : "confirmée"} qu’après la réception, sur notre compte bancaire, des fonds correspondant au montant de la transaction.</strong></p>
               </div>
 
               <div className="bank-details-card">
