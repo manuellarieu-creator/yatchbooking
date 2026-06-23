@@ -173,7 +173,7 @@ function PaymentContent() {
     <div className="payment-page-container">
       {/* NAV */}
       <nav className="pay-nav">
-        <button className="nav-back" onClick={() => router.push('/dashboard')}>← Retour au tableau de bord</button>
+        <button className="nav-back" onClick={() => router.push(`/yacht/${booking.listingId}`)}>← Étape précédente</button>
         <Link href="/" className="nav-logo">VOY<span>YACHT</span></Link>
         <div className="nav-secure">🔒 Paiement sécurisé</div>
       </nav>
@@ -191,7 +191,11 @@ function PaymentContent() {
           <div className="prog-step">
             <div className="prog-step-wrap">
               <div className="prog-dot done">✓</div>
-              <div className="prog-label">Réservation</div>
+              <div className="prog-label">
+                {booking.totalNights === 0 
+                  ? (booking.adminNote?.startsWith('ESSAI') ? "Essai" : "Achat")
+                  : "Réservation"}
+              </div>
             </div>
             <div className="prog-line done"></div>
           </div>
