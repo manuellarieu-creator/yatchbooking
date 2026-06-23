@@ -123,8 +123,8 @@ export default function LegalPage() {
           <span className="eyebrow">Documents légaux</span>
           <h1 className="hero-title">Conditions générales &<br/><em>Mentions légales</em></h1>
           <div className="hero-meta">
-            <div className="hero-meta-item">📅 <strong>Dernière mise à jour :</strong> 1er janvier 2025</div>
-            <div className="hero-meta-item">🌐 <strong>Droit applicable :</strong> Droit monégasque</div>
+            <div className="hero-meta-item">📅 <strong>Dernière mise à jour :</strong> 1er juin 2026</div>
+            <div className="hero-meta-item">🌐 <strong>Droit applicable :</strong> Droit Français</div>
             <div className="hero-meta-item">📍 <strong>Siège social :</strong> La Ciotat</div>
           </div>
         </div>
@@ -353,7 +353,7 @@ export default function LegalPage() {
                   </div>
                 </div>
                 <div className="prose">
-                  <p>Les présentes CGU sont soumises au droit monégasque. En cas de litige relatif à leur interprétation ou à leur exécution, les parties s'engagent à rechercher une solution amiable dans un délai de 30 jours. À défaut, le litige sera soumis à la compétence exclusive des tribunaux de la Principauté de Monaco.</p>
+                  <p>Les présentes CGU sont soumises au droit français. En cas de litige relatif à leur interprétation ou à leur exécution, les parties s'engagent à rechercher une solution amiable dans un délai de 30 jours. À défaut, le litige sera soumis à la compétence exclusive des tribunaux français.</p>
                   <p>Pour toute réclamation, vous pouvez contacter notre service client à <Link href="mailto:contact@voyyacht.com">contact@voyyacht.com</Link> ou via notre <Link href="/contact">formulaire de contact</Link>. Nous nous engageons à répondre dans un délai de 5 jours ouvrés.</p>
                 </div>
               </div>
@@ -446,7 +446,7 @@ export default function LegalPage() {
           {activeTab === 'confidentialite' && (
             <div className="tab-content active">
               <div className="info-box gold" style={{ marginBottom: '2rem' }}>
-                🔒 VoyYacht traite vos données personnelles dans le strict respect du Règlement Général sur la Protection des Données (RGPD — Règlement UE 2016/679) et de la législation monégasque applicable.
+                🔒 VoyYacht traite vos données personnelles dans le strict respect du Règlement Général sur la Protection des Données (RGPD — Règlement UE 2016/679) et de la législation française applicable.
               </div>
 
               <div className="doc-section" id="rgpd-1">
