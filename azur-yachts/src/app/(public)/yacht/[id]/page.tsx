@@ -401,6 +401,20 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
             )}
+            {!isSaleMode && !yacht.requiresCaptain && (
+              <div style={{ backgroundColor: 'rgba(21, 62, 92, 0.05)', border: '1px solid rgba(21, 62, 92, 0.2)', borderRadius: '8px', padding: '0.8rem 1rem', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.2rem' }}>📄</span>
+                <div>
+                  <strong style={{ color: 'var(--navy)', display: 'block', fontSize: '0.95rem', marginBottom: '0.4rem' }}>Pour naviguer sans skipper, un permis bateau est requis.</strong>
+                  <p style={{ color: 'var(--text-mid)', fontSize: '0.85rem', margin: 0, lineHeight: 1.5, marginBottom: '0.5rem' }}>
+                    Pour naviguer, un permis bateau en cours de validité est requis et une certaine expérience en mer est recommandée. La réglementation peut varier selon votre destination.
+                  </p>
+                  <p style={{ color: 'var(--text-mid)', fontSize: '0.85rem', margin: 0, lineHeight: 1.5 }}>
+                    <strong>Pas de permis ?</strong> Vous pouvez ajouter un skipper professionnel à votre réservation (des frais supplémentaires peuvent s'appliquer). Il s'occupera de la navigation : installez-vous confortablement et profitez — aucune expérience en mer n'est requise.
+                  </p>
+                </div>
+              </div>
+            )}
             <div 
               onClick={() => yacht.reviewCount > 0 && setIsListingReviewsModalOpen(true)} 
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem', cursor: yacht.reviewCount > 0 ? 'pointer' : 'default', textDecoration: yacht.reviewCount > 0 ? 'underline' : 'none', color: 'var(--text-mid)', fontSize: '0.95rem' }}
