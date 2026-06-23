@@ -13,8 +13,8 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--navy);
-  border: 2px solid var(--gold);
+  background: var(--gold);
+  border: 2px solid var(--navy);
   color: #fff;
   font-size: 1.4rem;
   cursor: pointer;
@@ -25,7 +25,6 @@
   transition: all .25s;
 }
 .chat-toggle:hover {
-  background: var(--navy-light);
   transform: scale(1.05);
 }
 .chat-badge-dot {
