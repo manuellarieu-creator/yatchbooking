@@ -5,9 +5,10 @@ import { usePathname, useSearchParams } from 'next/navigation';
 
 function HeaderContent({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
-  // If modal, always hide
-  if (searchParams.get('modal') === 'true') {
+  // If modal or admin layout, always hide
+  if (searchParams.get('modal') === 'true' || pathname?.startsWith('/admin')) {
     return null;
   }
 

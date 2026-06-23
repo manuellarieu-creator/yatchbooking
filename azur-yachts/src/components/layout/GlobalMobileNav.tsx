@@ -39,8 +39,8 @@ export default function GlobalMobileNav() {
     }
   };
 
-  // Hide on landing page or in modals
-  if (pathname === '/' || searchParams.get('modal') === 'true') {
+  // Hide on landing page, in modals, or admin area
+  if (pathname === '/' || searchParams.get('modal') === 'true' || pathname?.startsWith('/admin')) {
     return null;
   }
 

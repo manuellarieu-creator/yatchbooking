@@ -133,7 +133,7 @@ export default function UsersTable({ users: initialUsers }: { users: User[] }) {
 
   return (
     <div>
-      <div className="admin-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="admin-header">
         <div>
           <h1 className="admin-title">Utilisateurs & Annonceurs</h1>
           <p className="admin-subtitle">Gérez les comptes de la plateforme et validez les nouveaux annonceurs.</p>

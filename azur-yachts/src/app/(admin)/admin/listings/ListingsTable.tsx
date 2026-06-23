@@ -61,7 +61,7 @@ export default function ListingsTable({ listings: initialListings }: { listings:
 
   return (
     <div>
-      <div className="admin-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="admin-header">
         <div>
           <h1 className="admin-title">Annonces Yachts</h1>
           <p className="admin-subtitle">Modérez et validez les nouvelles annonces soumises par les annonceurs.</p>

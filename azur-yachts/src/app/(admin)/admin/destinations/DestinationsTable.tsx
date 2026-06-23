@@ -51,7 +51,7 @@ export default function DestinationsTable({ destinations: initialDestinations }:
 
   return (
     <div>
-      <div className="admin-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="admin-header">
         <div>
           <h1 className="admin-title">Destinations</h1>
           <p className="admin-subtitle">Gérez les destinations qui s'affichent sur la page d'accueil.</p>
