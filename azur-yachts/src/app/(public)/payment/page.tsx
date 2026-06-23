@@ -224,12 +224,12 @@ function PaymentContent() {
               <h2 className="section-title">Payer par <em>Virement Bancaire</em></h2>
 
               <p style={{ color: 'var(--text-mid)', lineHeight: 1.6, marginBottom: '1rem' }}>
-                Conformément à vos préférences, le règlement de cette réservation s’effectuera par virement bancaire. 
+                Conformément à vos préférences, le règlement de {booking.totalNights === 0 ? "cet achat" : "cette réservation"} s’effectuera par virement bancaire. 
                 Cliquez sur le bouton ci-dessous pour générer votre référence unique et obtenir nos coordonnées bancaires.
               </p>
 
               <div style={{ background: '#fef8e8', border: '1px solid #f0dca0', borderLeft: '3px solid var(--gold)', padding: '1rem 1.25rem', marginBottom: '2rem', fontSize: '.82rem', color: '#7a5c20', lineHeight: 1.8 }}>
-                ⚠️ <strong>Important :</strong> Le paiement par virement bancaire n’est <strong>pas immédiat</strong>. Après votre virement, notre équipe vérifiera manuellement la réception des fonds avant de confirmer votre réservation.<br/>
+                ⚠️ <strong>Important :</strong> Le paiement par virement bancaire n’est <strong>pas immédiat</strong>. Après votre virement, notre équipe vérifiera manuellement la réception des fonds avant de confirmer votre {booking.totalNights === 0 ? "achat" : "réservation"}.<br/>
                 📦 <strong>Virement SEPA standard</strong> : confirmation sous <strong>36 à 48 heures</strong><br/>
                 ⚡ <strong>Virement instantané</strong> : confirmation sous <strong>30 à 45 minutes</strong>
               </div>
@@ -249,7 +249,7 @@ function PaymentContent() {
               <div className="bank-hero">
                 <span className="bank-hero-icon">✅</span>
                 <div className="bank-hero-title">Demande de paiement générée</div>
-                <p className="bank-hero-sub">Pour finaliser votre réservation, veuillez effectuer un virement bancaire du montant indiqué ci-dessous en indiquant impérativement la référence unique. <strong>Votre réservation ne sera confirmée qu’après vérification de la réception des fonds par notre équipe.</strong></p>
+                <p className="bank-hero-sub">Pour finaliser votre {booking.totalNights === 0 ? "achat" : "réservation"}, veuillez effectuer un virement bancaire du montant indiqué ci-dessous en indiquant impérativement la référence unique. <strong>Votre {booking.totalNights === 0 ? "achat" : "réservation"} ne sera {booking.totalNights === 0 ? "confirmé" : "confirmée"} qu’après vérification de la réception des fonds par notre équipe.</strong></p>
               </div>
 
               <div className="bank-details-card">
@@ -289,7 +289,7 @@ function PaymentContent() {
 
               <div className="bank-deadline">
                 <span style={{ fontSize: '1rem', flexShrink: 0 }}>⏳</span>
-                <div className="bank-deadline-text">Vous disposez de <strong>24 heures</strong> pour effectuer le virement et soumettre votre preuve de paiement. Passé ce délai, votre réservation sera automatiquement annulée.</div>
+                <div className="bank-deadline-text">Vous disposez de <strong>24 heures</strong> pour effectuer le virement et soumettre votre preuve de paiement. Passé ce délai, votre {booking.totalNights === 0 ? "achat" : "réservation"} sera {booking.totalNights === 0 ? "automatiquement annulé" : "automatiquement annulée"}.</div>
               </div>
 
               <div style={{ background: 'var(--sand-light)', border: '1px solid var(--sand)', padding: '1rem 1.25rem', marginBottom: '1.5rem', fontSize: '.8rem', color: 'var(--text-mid)', lineHeight: 1.8 }}>
