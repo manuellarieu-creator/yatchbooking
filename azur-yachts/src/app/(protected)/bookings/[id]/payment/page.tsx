@@ -376,7 +376,7 @@ export default function PaymentPage() {
                 </span>
               </div>
               <p className="text-xs text-gray-400 pt-2 border-t border-[#e8e0d0]">
-                ✅ Validation manuelle par notre équipe avant confirmation.
+                ✅ {booking.totalNights === 0 ? "Achats validés manuellement par notre équipe avant confirmation." : "Validation manuelle par notre équipe avant confirmation."}
               </p>
             </div>
           </div>

@@ -429,7 +429,7 @@ function PaymentContent() {
             </div>
 
             <div className="order-guarantee">
-              ✅ Toutes les réservations sont validées manuellement par notre équipe avant confirmation. Votre paiement est sécurisé.
+              ✅ {booking.totalNights === 0 ? "Tous les achats sont validés manuellement par notre équipe avant confirmation. Votre paiement est sécurisé." : "Toutes les réservations sont validées manuellement par notre équipe avant confirmation. Votre paiement est sécurisé."}
             </div>
 
           </div>
