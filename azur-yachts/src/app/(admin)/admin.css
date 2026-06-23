@@ -240,52 +240,72 @@
 }
 
 /* RESPONSIVE DESIGN FOR ADMIN */
+.admin-mobile-toggle {
+  display: none;
+}
+.admin-sidebar-overlay {
+  display: none;
+}
+
 @media (max-width: 992px) {
   .admin-layout {
     flex-direction: column;
   }
   
-  .admin-sidebar {
-    width: 100%;
-    padding: 1rem 0;
-  }
-  
-  .admin-brand {
-    margin-bottom: 1rem;
+  .admin-mobile-toggle {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    background: #0a1628;
+    color: #fff;
+    padding: 1rem;
+    border: none;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 99;
   }
   
-  .admin-badge {
-    margin-top: 0;
+  .admin-sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
   }
   
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    height: 100vh;
+    width: 280px;
+    z-index: 101;
+    transition: left 0.3s ease;
+    padding-top: 1rem;
+    overflow-y: auto;
+  }
+  
+  .admin-sidebar.open {
+    left: 0;
+  }
+
   .admin-nav {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
+    flex-direction: column;
+    overflow-x: hidden;
+    padding-bottom: 2rem;
+    white-space: normal;
   }
-  
-  .admin-nav::-webkit-scrollbar {
-    height: 4px;
-  }
-  
-  .admin-nav::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-  }
-  
-  .admin-nav-link {
-    padding: 0.75rem 1.2rem;
-    font-size: 0.85rem;
+
+  .admin-brand {
+    margin-bottom: 2rem;
   }
   
   .admin-nav-link:hover, .admin-nav-link.active {
-    border-left: none;
-    border-bottom: 3px solid #d4b57a;
+    border-left: 3px solid #d4b57a;
+    border-bottom: none;
   }
   
   .admin-main {
