@@ -757,11 +757,9 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                   Ce bateau vous intéresse ? Contactez le propriétaire dès maintenant pour organiser une visite ou obtenir plus d'informations.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                  {yacht.trialPrice && (
-                    <button className="reserve-btn" style={{ background: 'transparent', color: 'var(--navy)', border: '2px solid var(--navy)' }} onClick={() => setIsTrialModalOpen(true)}>
-                      RÉSERVER UN ESSAI ({yacht.trialPrice}€)
-                    </button>
-                  )}
+                  <button className="reserve-btn" style={{ background: 'transparent', color: 'var(--navy)', border: '2px solid var(--navy)' }} onClick={() => yacht.trialPrice ? setIsTrialModalOpen(true) : triggerToast("Le propriétaire n'a pas défini de tarif pour l'essai en mer. Veuillez le contacter.")}>
+                    RÉSERVER UN ESSAI
+                  </button>
                   <button className="reserve-btn" style={{ background: 'var(--navy)', color: '#fff' }} onClick={async () => {
                     const res = await fetch('/api/sales/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ yachtId: yacht.id }) });
                     if (res.ok) {
