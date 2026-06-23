@@ -79,10 +79,10 @@ export default function AdminMessagesClient() {
       </div>
 
       <div style={{ display: 'flex', flex: 1, gap: '1rem', overflow: 'hidden', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-        {/* SIDEBAR CONVERSATIONS */}
-        <div style={{ width: '350px', borderRight: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
+        {/* CONVERSATION LIST (FULL WIDTH) */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <div style={{ padding: '1rem', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
-            <input type="text" placeholder="Rechercher..." style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
+            <input type="text" placeholder="Rechercher..." style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1' }} />
           </div>
           <div style={{ flex: 1, overflowY: 'auto' }}>
             {loading ? (
@@ -95,18 +95,20 @@ export default function AdminMessagesClient() {
                   key={conv.id} 
                   onClick={() => selectConversation(conv)}
                   style={{ 
-                    padding: '1rem', borderBottom: '1px solid #f1f5f9', cursor: 'pointer',
-                    background: selectedConv?.id === conv.id ? '#f1f5f9' : '#fff',
-                    borderLeft: selectedConv?.id === conv.id ? '3px solid #0f172a' : '3px solid transparent'
+                    padding: '1.25rem', borderBottom: '1px solid #f1f5f9', cursor: 'pointer',
+                    background: '#fff', transition: 'background 0.2s',
+                    display: 'flex', flexDirection: 'column', gap: '0.25rem'
                   }}
+                  onMouseOver={(e) => e.currentTarget.style.background = '#f8fafc'}
+                  onMouseOut={(e) => e.currentTarget.style.background = '#fff'}
                 >
-                  <div style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.2rem' }}>
+                  <div style={{ fontWeight: 600, fontSize: '1rem', color: '#0f172a' }}>
                     {conv.client?.firstName} {conv.client?.lastName} ↔ {conv.advertiser?.firstName} {conv.advertiser?.lastName}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.4rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    Yacht : {conv.listingTitle}
+                  <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 500 }}>
+                    🛥️ Yacht : {conv.listingTitle}
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: '#94a3b8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div style={{ fontSize: '0.9rem', color: '#64748b', marginTop: '0.25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {conv.lastMessage?.content || 'Nouvelle conversation'}
                   </div>
                 </div>
@@ -114,11 +116,15 @@ export default function AdminMessagesClient() {
             )}
           </div>
         </div>
+      </div>
 
-        {/* CHAT AREA */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#f8fafc' }}>
-          {selectedConv ? (
-            <>
+      {/* MODAL FOR CHAT */}
+      {selectedConv && (
+        <div className="admin-modal">
+          <div className="admin-modal-content" style={{ width: '95%', maxWidth: '1100px', height: '90vh', display: 'flex', flexDirection: 'row', overflow: 'hidden', flexWrap: 'wrap' }}>
+            
+            {/* CHAT AREA */}
+            <div style={{ flex: '1 1 500px', display: 'flex', flexDirection: 'column', background: '#f8fafc', height: '100%', minWidth: '300px' }}>
               {/* HEADER */}
               <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #e2e8f0', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
@@ -128,6 +134,7 @@ export default function AdminMessagesClient() {
                     Propriétaire : {selectedConv.advertiser?.firstName} {selectedConv.advertiser?.lastName} {selectedConv.advertiser?.isManagedByAdmin ? '(Profil Géré)' : ''}
                   </div>
                 </div>
+                <button onClick={() => setSelectedConv(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', padding: '0.5rem', color: '#64748b' }}>×</button>
               </div>
 
               {/* MESSAGES */}
@@ -145,7 +152,7 @@ export default function AdminMessagesClient() {
                     }
 
                     return (
-                      <div key={msg.id} style={{ alignSelf: isClient ? 'flex-start' : 'flex-end', maxWidth: '70%' }}>
+                      <div key={msg.id} style={{ alignSelf: isClient ? 'flex-start' : 'flex-end', maxWidth: '85%' }}>
                         <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.2rem', textAlign: isClient ? 'left' : 'right' }}>
                           {senderName} • {new Date(msg.createdAt).toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'})}
                         </div>
@@ -189,60 +196,56 @@ export default function AdminMessagesClient() {
                   </button>
                 </form>
               </div>
-            </>
-          ) : (
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
-              Sélectionnez une conversation pour commencer
-            </div>
-          )}
-        </div>
-
-        {/* RIGHT SIDEBAR (PROFILE INFO) */}
-        {selectedConv?.advertiser && (
-          <div style={{ width: '300px', borderLeft: '1px solid #e2e8f0', background: '#fff', padding: '1.5rem', overflowY: 'auto' }}>
-            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#0f172a' }}>Fiche Annonceur</h3>
-            
-            <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #e2e8f0' }}>
-              <div style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.2rem', color: '#0f172a' }}>
-                {selectedConv.advertiser.firstName} {selectedConv.advertiser.lastName}
-              </div>
-              <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.8rem' }}>
-                {selectedConv.advertiser.isManagedByAdmin ? '⭐ Profil Géré (Conciergerie)' : 'Propriétaire Standard'}
-              </div>
-              <div style={{ fontSize: '0.85rem', marginBottom: '0.3rem', color: '#334155' }}>
-                <strong>Email :</strong> {selectedConv.advertiser.email ? selectedConv.advertiser.email.replace(/(.{1})(.*)(@.*)/, '$1***$3') : 'Non renseigné'}
-              </div>
-              <div style={{ fontSize: '0.85rem', marginBottom: '0.3rem', color: '#334155' }}>
-                <strong>Tél :</strong> {selectedConv.advertiser.phone ? selectedConv.advertiser.phone.replace(/.(?=.{2})/g, '*') : 'Non renseigné'}
-              </div>
             </div>
 
-            <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#334155' }}>
-              <strong>Note globale :</strong> {selectedConv.advertiser.averageRating ? <span style={{ color: '#d97706', fontWeight: 600 }}>{selectedConv.advertiser.averageRating} / 5 ⭐</span> : 'Aucun avis'}
-            </div>
+            {/* RIGHT SIDEBAR (PROFILE INFO) */}
+            {selectedConv?.advertiser && (
+              <div style={{ flex: '1 1 300px', maxWidth: '350px', borderLeft: '1px solid #e2e8f0', background: '#fff', padding: '1.5rem', overflowY: 'auto', height: '100%', minWidth: '250px' }}>
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#0f172a' }}>Fiche Annonceur</h3>
+                
+                <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.2rem', color: '#0f172a' }}>
+                    {selectedConv.advertiser.firstName} {selectedConv.advertiser.lastName}
+                  </div>
+                  <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.8rem' }}>
+                    {selectedConv.advertiser.isManagedByAdmin ? '⭐ Profil Géré (Conciergerie)' : 'Propriétaire Standard'}
+                  </div>
+                  <div style={{ fontSize: '0.85rem', marginBottom: '0.3rem', color: '#334155' }}>
+                    <strong>Email :</strong> {selectedConv.advertiser.email ? selectedConv.advertiser.email.replace(/(.{1})(.*)(@.*)/, '$1***$3') : 'Non renseigné'}
+                  </div>
+                  <div style={{ fontSize: '0.85rem', marginBottom: '0.3rem', color: '#334155' }}>
+                    <strong>Tél :</strong> {selectedConv.advertiser.phone ? selectedConv.advertiser.phone.replace(/.(?=.{2})/g, '*') : 'Non renseigné'}
+                  </div>
+                </div>
 
-            <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#334155' }}>
-              <strong>Pays :</strong> {selectedConv.advertiser.countryResidence || 'Non renseigné'}
-            </div>
+                <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#334155' }}>
+                  <strong>Note globale :</strong> {selectedConv.advertiser.averageRating ? <span style={{ color: '#d97706', fontWeight: 600 }}>{selectedConv.advertiser.averageRating} / 5 ⭐</span> : 'Aucun avis'}
+                </div>
 
-            <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#334155' }}>
-              <strong>Langues :</strong> 
-              <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', marginTop: '0.3rem' }}>
-                {selectedConv.advertiser.languages?.length > 0 ? selectedConv.advertiser.languages.map((l: string, i: number) => (
-                  <span key={i} style={{ background: '#e2e8f0', padding: '0.15rem 0.4rem', borderRadius: '4px', fontSize: '0.75rem', color: '#475569' }}>{l}</span>
-                )) : 'Non renseigné'}
+                <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#334155' }}>
+                  <strong>Pays :</strong> {selectedConv.advertiser.countryResidence || 'Non renseigné'}
+                </div>
+
+                <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: '#334155' }}>
+                  <strong>Langues :</strong> 
+                  <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', marginTop: '0.3rem' }}>
+                    {selectedConv.advertiser.languages?.length > 0 ? selectedConv.advertiser.languages.map((l: string, i: number) => (
+                      <span key={i} style={{ background: '#e2e8f0', padding: '0.15rem 0.4rem', borderRadius: '4px', fontSize: '0.75rem', color: '#475569' }}>{l}</span>
+                    )) : 'Non renseigné'}
+                  </div>
+                </div>
+
+                <div style={{ fontSize: '0.85rem', color: '#334155' }}>
+                  <strong>Statut / Rang :</strong>
+                  <div style={{ marginTop: '0.3rem', display: 'inline-block', background: selectedConv.advertiser.advertiserTier === 'PLATINIUM' ? '#e2e8f0' : selectedConv.advertiser.advertiserTier === 'PREMIUM' ? '#fef08a' : '#fdf8f0', color: '#927334', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 600 }}>
+                    {selectedConv.advertiser.advertiserTier === 'STANDARD' ? 'GOLD' : selectedConv.advertiser.advertiserTier || 'GOLD'}
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div style={{ fontSize: '0.85rem', color: '#334155' }}>
-              <strong>Statut / Rang :</strong>
-              <div style={{ marginTop: '0.3rem', display: 'inline-block', background: selectedConv.advertiser.advertiserTier === 'PLATINIUM' ? '#e2e8f0' : selectedConv.advertiser.advertiserTier === 'PREMIUM' ? '#fef08a' : '#fdf8f0', color: '#927334', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 600 }}>
-                {selectedConv.advertiser.advertiserTier === 'STANDARD' ? 'GOLD' : selectedConv.advertiser.advertiserTier || 'GOLD'}
-              </div>
-            </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
