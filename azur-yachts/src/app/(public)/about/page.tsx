@@ -155,7 +155,7 @@ export default async function AboutPage() {
         <div className="histoire-inner">
           <div className="reveal" style={{ textAlign: 'center', marginBottom: 0 }}>
             <span className="sec-eyebrow">Notre parcours</span>
-            <h2 className="sec-title" style={{ marginBottom: '.5rem' }}>Une <em>décennie</em> d'innovation</h2>
+            <h2 className="sec-title" style={{ marginBottom: '.5rem' }}>Notre <em>expérience</em> à votre service</h2>
             <p className="sec-desc" style={{ margin: '0 auto', textAlign: 'center' }}>Les grandes étapes qui ont façonné VoyYacht.</p>
           </div>
           <div className="timeline">
