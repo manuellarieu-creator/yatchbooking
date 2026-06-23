@@ -138,6 +138,27 @@ export default function YachtPage({ params }: { params: { id: string } }) {
   // ── Sea Trial State ──
   const [isTrialModalOpen, setIsTrialModalOpen] = useState(false);
   const [trialDate, setTrialDate] = useState('');
+
+  const handleContactOwner = async (ownerId: string) => {
+    if (!yacht?.id) return;
+    try {
+      const res = await fetch('/api/conversations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listingId: yacht.id, ownerId })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        window.location.href = `/dashboard?tab=messages&convId=${data.conversation.id}`;
+      } else if (res.status === 401) {
+        window.location.href = '/auth';
+      } else {
+        triggerToast('Erreur de création de la conversation.');
+      }
+    } catch (e) {
+      triggerToast('Erreur réseau.');
+    }
+  };
   const [trialPortIdx, setTrialPortIdx] = useState<number>(-1); // -1 = base port
   const trialDeliveryFee = trialPortIdx >= 0 && yacht?.deliveryPricing?.[trialPortIdx] 
     ? Number(yacht.deliveryPricing[trialPortIdx].fee) 
@@ -669,7 +690,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                   </div>
                 )}
               </div>
-              <button className="msg-btn" onClick={() => window.location.href = `/dashboard?tab=messages&new_chat_with=${yacht.ownerId}`}>💬 Message</button>
+              <button className="msg-btn" onClick={() => handleContactOwner(yacht.ownerId)}>💬 Message</button>
             </div>
             
             {/* Owner Reviews */}
@@ -787,11 +808,9 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                   }}>
                     ACHETER CE BATEAU
                   </button>
-                  <Link href={`/dashboard?tab=messages&new_chat_with=${yacht.ownerId}`} passHref>
-                    <button className="reserve-btn">
-                      CONTACTER LE PROPRIÉTAIRE
-                    </button>
-                  </Link>
+                  <button className="reserve-btn" onClick={() => handleContactOwner(yacht.ownerId)}>
+                    CONTACTER LE PROPRIÉTAIRE
+                  </button>
                 </div>
                 <div className="widget-footer-note" style={{ marginTop: '1rem' }}>Réponse rapide garantie.</div>
               </div>
@@ -920,11 +939,9 @@ export default function YachtPage({ params }: { params: { id: string } }) {
             <button className="reserve-btn" onClick={handleBooking} disabled={bookingLoading}>
               {bookingLoading ? 'Vérification...' : 'Réserver ce yacht'}
             </button>
-            <Link href={`/dashboard?tab=messages&new_chat_with=${yacht.ownerId}`} passHref>
-              <button className="reserve-btn" style={{ marginTop: '10px', backgroundColor: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)' }}>
-                Contacter le propriétaire
-              </button>
-            </Link>
+            <button className="reserve-btn" style={{ marginTop: '10px', backgroundColor: 'transparent', color: 'var(--navy)', border: '2px solid var(--navy)' }} onClick={() => handleContactOwner(yacht.ownerId)}>
+              CONTACTER LE PROPRIÉTAIRE
+            </button>
             <div className="widget-footer-note">Vous ne serez débité qu'après confirmation de votre réservation par notre équipe.</div>
             </>
             )}
