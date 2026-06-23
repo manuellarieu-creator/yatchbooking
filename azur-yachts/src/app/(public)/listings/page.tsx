@@ -405,10 +405,9 @@ function ListingsContent() {
                       <div className="card-name">{yacht.name}</div>
                       
                       <div className="card-specs">
-                        <span className="card-spec">⏱ <strong>{yacht.time}</strong> loc. max</span>
+                        <span className="card-spec">📏 <strong>{yacht.len}</strong></span>
                         <span className="card-spec">👥 <strong>{yacht.cap}</strong> adultes</span>
                         <span className="card-spec">🛏 <strong>{yacht.cab}</strong> cabines</span>
-                        <span className="card-spec">📏 <strong>{yacht.len}</strong></span>
                       </div>
                       
                       <div className="card-info">
@@ -421,21 +420,24 @@ function ListingsContent() {
                         </div>
                       </div>
                       
-                      <div className="card-footer">
-                        <div className="card-price">
-                          <div className="card-price-value">{formatPrice(yacht.price)}</div>
-                          <div className="card-price-unit">par jour</div>
+                      <div className="card-footer" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div className="card-price">
+                            <div className="card-price-value">{formatPrice(yacht.price)}</div>
+                            <div className="card-price-unit">par jour</div>
+                          </div>
+                          <div className="card-rating">
+                            {yacht.ownerImage ? (
+                              <img src={yacht.ownerImage} alt="Owner" className="owner-avatar" />
+                            ) : (
+                              <div className="owner-avatar-placeholder">👤</div>
+                            )}
+                            <span className="card-star">★</span>
+                            <span className="card-rating-val">{yacht.rating.toFixed(1)}</span>
+                            <span className="card-rating-count">({yacht.revs} avis)</span>
+                          </div>
                         </div>
-                        <div className="card-rating">
-                          {yacht.ownerImage ? (
-                            <img src={yacht.ownerImage} alt="Owner" className="owner-avatar" />
-                          ) : (
-                            <div className="owner-avatar-placeholder">👤</div>
-                          )}
-                          <span className="card-star">★</span>
-                          <span className="card-rating-val">{yacht.rating.toFixed(1)}</span>
-                          <span className="card-rating-count">({yacht.revs} avis)</span>
-                        </div>
+                        <button className="nav-btn nav-btn-gold" style={{ width: '100%', padding: '0.6rem', fontSize: '0.8rem', borderRadius: '4px' }}>RÉSERVER CE BATEAU</button>
                       </div>
                     </div>
                   </Link>
