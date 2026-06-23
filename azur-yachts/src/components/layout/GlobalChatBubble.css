@@ -1,5 +1,12 @@
 /* Global Chat Bubble Styles */
 .global-chat-bubble {
+  --navy: #0a1628;
+  --navy-light: #1a3358;
+  --gold: #b8985a;
+  --white: #ffffff;
+  --sand: #e8e0d0;
+  --sand-light: #f3ede3;
+  --text-dark: #1a1a2e;
   position: fixed;
   bottom: 2rem;
   right: 2rem;
