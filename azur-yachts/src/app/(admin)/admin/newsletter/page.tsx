@@ -43,13 +43,13 @@ export default function NewsletterAdminPage() {
         <p>Gérez les abonnés à votre newsletter.</p>
       </div>
 
-      <div style={{ background: 'white', borderRadius: '8px', border: '1px solid #eaeaea', overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+      <div className="admin-table-card">
+        <table className="admin-table">
           <thead>
-            <tr style={{ background: '#f9f9f9', borderBottom: '2px solid #eaeaea' }}>
-              <th style={{ padding: '1rem' }}>Email</th>
-              <th style={{ padding: '1rem' }}>Date d'inscription</th>
-              <th style={{ padding: '1rem', textAlign: 'right' }}>Actions</th>
+            <tr>
+              <th>Email</th>
+              <th>Date d'inscription</th>
+              <th style={{ textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -59,17 +59,18 @@ export default function NewsletterAdminPage() {
               <tr><td colSpan={3} style={{ padding: '2rem', textAlign: 'center', color: '#888' }}>Aucun abonné pour le moment.</td></tr>
             ) : (
               subscribers.map((sub) => (
-                <tr key={sub.id} style={{ borderBottom: '1px solid #eaeaea' }}>
-                  <td style={{ padding: '1rem', fontWeight: 500 }}>{sub.email}</td>
-                  <td style={{ padding: '1rem', color: '#666' }}>
+                <tr key={sub.id}>
+                  <td data-label="Email" style={{ fontWeight: 500 }}>{sub.email}</td>
+                  <td data-label="Date d'inscription" style={{ color: '#666' }}>
                     {new Date(sub.createdAt).toLocaleDateString('fr-FR', {
                       day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
                     })}
                   </td>
-                  <td style={{ padding: '1rem', textAlign: 'right' }}>
+                  <td data-label="Actions" style={{ textAlign: 'right' }}>
                     <button 
                       onClick={() => handleDelete(sub.id)}
-                      style={{ background: '#fff0f0', color: '#d32f2f', border: '1px solid #fcc', padding: '0.4rem 0.8rem', borderRadius: '4px', cursor: 'pointer' }}
+                      className="action-btn"
+                      style={{ background: '#fff0f0', color: '#d32f2f', border: '1px solid #fcc' }}
                     >
                       Supprimer
                     </button>
