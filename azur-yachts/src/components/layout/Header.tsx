@@ -17,7 +17,7 @@ export default async function Header() {
           
           <div className="nav-center" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
             <Link href="/" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>ACCUEIL</Link>
-            <Link href="/listings" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>LES OFFRES</Link>
+            <Link href="/listings" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>LOCATIONS</Link>
             <Link href="/ventes" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>VENTES</Link>
             <Link href="/reservations" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>RÉSERVATIONS</Link>
             <Link href="/dashboard?tab=messages" className="nav-tab" style={{ color: '#fff', textDecoration: 'none', fontSize: '.8rem', fontWeight: 500, letterSpacing: '.05em', textTransform: 'uppercase' }}>MESSAGES</Link>
@@ -38,7 +38,7 @@ export default async function Header() {
         {/* Desktop: liens de navigation classiques */}
         <ul className="nav-links">
           <li><Link href="/">Accueil</Link></li>
-          <li><Link href="/listings">Les Offres</Link></li>
+          <li><Link href="/listings">Locations</Link></li>
           <li><Link href="/ventes">Ventes</Link></li>
           <li><Link href="/destinations">Destinations</Link></li>
           <li><Link href="/about">À propos</Link></li>

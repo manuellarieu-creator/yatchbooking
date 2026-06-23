@@ -174,7 +174,7 @@ function ListingsContent() {
         <div className="page-hero-inner">
           <div className="breadcrumb">
             <Link href="/">Accueil</Link><span className="sep">/</span>
-            <span className="current">Les Offres</span>
+            <span className="current">Locations</span>
           </div>
           <span className="page-eyebrow">Notre flotte complète</span>
           <h1 className="page-title">Découvrez nos yachts<br/>d'<em>exception</em></h1>

@@ -328,7 +328,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
       {/* ── BREADCRUMB ── */}
       <div className="breadcrumb-bar">
         <Link href="/">Accueil</Link><span className="sep">/</span>
-        <a href="#">Les Offres</a><span className="sep">/</span>
+        <a href="#">Locations</a><span className="sep">/</span>
         <a href="#">{yacht.country}</a><span className="sep">/</span>
         <span className="current">{yacht.title}</span>
       </div>
