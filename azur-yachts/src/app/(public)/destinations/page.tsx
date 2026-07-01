@@ -55,16 +55,24 @@ export default async function DestinationsPage() {
       {/* PREMIUM GRID */}
       <section className="destinations-content">
         <div className="dest-grid">
-          {sortedDestinations.map((dest, i) => {
+          {sortedDestinations.map((dest, i, arr) => {
             let mosaicClass = '';
-            const patternIndex = i % 6;
-            
-            if (patternIndex === 0) {
+            const pos = i % 4;
+            const isLastBlock = Math.floor(i / 4) === Math.floor((arr.length - 1) / 4);
+            const itemsInBlock = isLastBlock ? (arr.length % 4 === 0 ? 4 : arr.length % 4) : 4;
+
+            if (itemsInBlock === 4) {
+              if (pos === 0) mosaicClass = 'dest-card-large';
+              else if (pos === 1) mosaicClass = '';
+              else if (pos === 2) mosaicClass = 'dest-card-tall';
+              else if (pos === 3) mosaicClass = '';
+            } else if (itemsInBlock === 3) {
+              if (pos === 0) mosaicClass = 'dest-card-large';
+              else if (pos === 1 || pos === 2) mosaicClass = 'dest-card-tall';
+            } else if (itemsInBlock === 2) {
+              mosaicClass = 'dest-card-large'; // both 2x2
+            } else {
               mosaicClass = 'dest-card-large';
-            } else if (patternIndex === 2) {
-              mosaicClass = 'dest-card-tall';
-            } else if (patternIndex === 3 || patternIndex === 5) {
-              mosaicClass = 'dest-card-wide';
             }
 
             return (
