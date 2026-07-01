@@ -280,29 +280,46 @@ export default function HomePage() {
             <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-light)'}}>
               <div className="spinner" style={{margin: '0 auto'}}></div>
             </div>
-          ) : stats.destinations.length > 0 ? stats.destinations.map((dest: any, i: number) => (
-            <Link href={`/listings?location=${encodeURIComponent(dest.name)}`} key={dest.id || i} className="dest-card" style={{ textDecoration: 'none' }}>
-              <div className="dest-bg" style={{ 
-                background: dest.imageUrl ? `url('${dest.imageUrl}') center/cover` : (dest.gradient || 'linear-gradient(135deg, #1a5a80, #0a2540)') 
-              }}></div>
-              <div className="dest-overlay"></div>
-              {dest.isLarge && <span className="dest-tag">Populaire</span>}
-              <div className="dest-info">
-                <div className="dest-name">{dest.name}</div>
-                <div className="dest-count">{dest.count} yacht{dest.count > 1 ? 's' : ''} disponible{dest.count > 1 ? 's' : ''}</div>
-                {dest.minPrice && (
-                  <div className="dest-price" style={{ fontSize: '0.9rem', color: 'var(--gold)', marginTop: '0.3rem', fontWeight: 500 }}>
-                    à partir de {formatPrice(dest.minPrice)} / jour
-                  </div>
-                )}
-                <div className="dest-action" style={{ marginTop: '1rem' }}>
-                  <button className="dest-btn" style={{ background: 'var(--gold)', color: '#111', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '4px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>Explorer</button>
-                </div>
-              </div>
-            </Link>
-          )) : (
+          ) : stats.destinations.length > 0 ? (
+            <>
+              {stats.destinations.slice(0, 4).map((dest: any, i: number) => {
+                let mosaicClass = '';
+                if (i === 0) mosaicClass = 'dest-card-large';
+                else if (i === 1) mosaicClass = 'dest-card-tall';
+                // i === 2 is normal
+                // i === 3 is normal
+                
+                return (
+                  <Link href={`/listings?location=${encodeURIComponent(dest.name)}`} key={dest.id || i} className={`dest-card ${mosaicClass}`} style={{ textDecoration: 'none' }}>
+                    <div className="dest-bg" style={{ 
+                      background: dest.imageUrl ? `url('${dest.imageUrl}') center/cover` : (dest.gradient || 'linear-gradient(135deg, #1a5a80, #0a2540)') 
+                    }}></div>
+                    <div className="dest-overlay"></div>
+                    {dest.isLarge && <span className="dest-tag">Populaire</span>}
+                    <div className="dest-info">
+                      <div className="dest-name">{dest.name}</div>
+                      <div className="dest-count">{dest.count} yacht{dest.count > 1 ? 's' : ''} disponible{dest.count > 1 ? 's' : ''}</div>
+                      {dest.minPrice && (
+                        <div className="dest-price" style={{ fontSize: '0.9rem', color: 'var(--gold)', marginTop: '0.3rem', fontWeight: 500 }}>
+                          à partir de {formatPrice(dest.minPrice)} / jour
+                        </div>
+                      )}
+                      <div className="dest-action" style={{ marginTop: '1rem' }}>
+                        <button className="dest-btn" style={{ background: 'var(--gold)', color: '#111', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '4px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>Explorer</button>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </>
+          ) : (
             <p style={{ color: 'rgba(255,255,255,0.6)' }}>Aucune destination pour le moment.</p>
           )}
+        </div>
+        <div style={{ textAlign: 'center', marginTop: '3.5rem' }}>
+          <Link href="/destinations" className="search-btn" style={{ textDecoration: 'none', display: 'inline-block', fontSize: '0.85rem' }}>
+            Voir toutes les destinations
+          </Link>
         </div>
       </section>
 
