@@ -38,17 +38,21 @@ export default async function DestinationsPage() {
     };
   }));
 
-  // Filter out destinations with 0 yachts if desired, but here we show all active ones
-  // Or at least sort them to show those with yachts first
   const sortedDestinations = destinations.sort((a, b) => b.count - a.count);
 
   return (
     <main className="destinations-page">
-      <section className="destinations-header">
-        <h1>Nos Destinations <em>d'Exception</em></h1>
-        <p>Des criques secrètes de la mer Méditerranée aux lagons turquoise des Caraïbes, choisissez votre horizon. Découvrez notre sélection mondiale pour une expérience de navigation inoubliable.</p>
+      {/* PREMIUM HERO SECTION */}
+      <section className="dest-hero">
+        <div className="dest-hero-bg"></div>
+        <div className="dest-hero-content">
+          <span className="dest-hero-eyebrow">Explorez le Monde</span>
+          <h1 className="dest-hero-title">Destinations <em>d'Exception</em></h1>
+          <p className="dest-hero-desc">Des criques secrètes de la Méditerranée aux lagons turquoise des Caraïbes, choisissez votre horizon et découvrez notre sélection pour une navigation inoubliable.</p>
+        </div>
       </section>
 
+      {/* PREMIUM GRID */}
       <section className="destinations-content">
         <div className="dest-grid">
           {sortedDestinations.map((dest) => (
@@ -56,14 +60,12 @@ export default async function DestinationsPage() {
               href={`/listings?location=${encodeURIComponent(dest.name)}`} 
               key={dest.id} 
               className="dest-card" 
-              style={{ textDecoration: 'none' }}
             >
               <div 
                 className="dest-bg" 
                 style={{ 
-                  background: dest.imageUrl 
-                    ? `url('${dest.imageUrl}') center/cover` 
-                    : (dest.gradient || 'linear-gradient(135deg, #1a5a80, #0a2540)') 
+                  backgroundImage: dest.imageUrl ? `url('${dest.imageUrl}')` : 'none',
+                  background: !dest.imageUrl ? (dest.gradient || 'linear-gradient(135deg, #1a5a80, #0a2540)') : undefined
                 }}
               ></div>
               <div className="dest-overlay"></div>
@@ -71,28 +73,26 @@ export default async function DestinationsPage() {
               {dest.isLarge && <span className="dest-tag">Populaire</span>}
               
               <div className="dest-info">
-                <div className="dest-name">{dest.name}</div>
+                <div className="dest-name-wrapper">
+                  <h2 className="dest-name">{dest.name}</h2>
+                </div>
                 <div className="dest-count">
-                  {dest.count} {dest.count > 1 ? 'yachts disponibles' : (dest.count === 1 ? 'yacht disponible' : 'Bientôt disponible')}
+                  {dest.count} {dest.count > 1 ? 'yachts' : 'yacht'}
                 </div>
                 
                 {dest.minPrice !== null && (
                   <div className="dest-price">
-                    à partir de {formatPrice(dest.minPrice)} / jour
+                    À partir de {formatPrice(dest.minPrice)} / jour
                   </div>
                 )}
-                
-                <div className="dest-action">
-                  <span className="dest-btn">Explorer</span>
-                </div>
               </div>
             </Link>
           ))}
         </div>
         
         {sortedDestinations.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '3rem', color: 'rgba(255,255,255,0.6)' }}>
-            <p>Aucune destination n'est disponible pour le moment.</p>
+          <div style={{ textAlign: 'center', padding: '5rem', color: 'var(--text-light)' }}>
+            <p style={{ fontSize: '1.2rem', fontFamily: 'Cormorant Garamond, serif' }}>Aucune destination n'est disponible pour le moment.</p>
           </div>
         )}
       </section>
