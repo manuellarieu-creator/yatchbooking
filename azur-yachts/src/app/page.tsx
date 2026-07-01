@@ -447,7 +447,7 @@ export default function HomePage() {
             <h4>Navigation</h4>
             <ul>
               <li><Link href="/listings">Notre flotte</Link></li>
-              <li><Link href="#">Destinations</Link></li>
+              <li><Link href="/#destinations">Destinations</Link></li>
               <li><Link href="#">Expériences</Link></li>
               <li><Link href="#">Tarifs & offres</Link></li>
             </ul>
