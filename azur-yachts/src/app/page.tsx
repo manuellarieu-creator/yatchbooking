@@ -282,12 +282,17 @@ export default function HomePage() {
             </div>
           ) : stats.destinations.length > 0 ? (
             <>
-              {stats.destinations.slice(0, 4).map((dest: any, i: number) => {
+              {stats.destinations.slice(0, 4).map((dest: any, i: number, arr: any[]) => {
                 let mosaicClass = '';
-                if (i === 0) mosaicClass = 'dest-card-large';
-                else if (i === 1) mosaicClass = 'dest-card-tall';
-                // i === 2 is normal
-                // i === 3 is normal
+                if (arr.length === 3) {
+                  if (i === 0) mosaicClass = 'dest-card-large';
+                  else if (i === 1 || i === 2) mosaicClass = 'dest-card-tall';
+                } else {
+                  if (i === 0) mosaicClass = 'dest-card-large';
+                  else if (i === 1) mosaicClass = 'dest-card-tall';
+                  // i === 2 is normal
+                  // i === 3 is normal
+                }
                 
                 return (
                   <Link href={`/listings?location=${encodeURIComponent(dest.name)}`} key={dest.id || i} className={`dest-card ${mosaicClass}`} style={{ textDecoration: 'none' }}>
