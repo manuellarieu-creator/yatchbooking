@@ -57,11 +57,13 @@ export default async function DestinationsPage() {
         <div className="dest-grid">
           {sortedDestinations.map((dest, i) => {
             let mosaicClass = '';
-            if (dest.isLarge || i === 0) {
+            const patternIndex = i % 6;
+            
+            if (patternIndex === 0) {
               mosaicClass = 'dest-card-large';
-            } else if (i % 5 === 1 || i % 7 === 3) {
+            } else if (patternIndex === 2) {
               mosaicClass = 'dest-card-tall';
-            } else if (i % 6 === 4) {
+            } else if (patternIndex === 3 || patternIndex === 5) {
               mosaicClass = 'dest-card-wide';
             }
 
