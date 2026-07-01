@@ -1,0 +1,172 @@
+.destinations-page {
+  background: var(--navy);
+  color: #fff;
+  min-height: 100vh;
+  padding-top: 120px; /* Space for the header */
+}
+
+.destinations-header {
+  text-align: center;
+  padding: 2rem 2rem 4rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.destinations-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem;
+  font-weight: 300;
+  margin-bottom: 1.2rem;
+  line-height: 1.1;
+}
+
+.destinations-header h1 em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.destinations-header p {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.destinations-content {
+  padding: 0 5% 6rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2rem;
+}
+
+.dest-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 4/3;
+  min-height: 300px;
+}
+
+.dest-bg {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.6s ease;
+  background-size: cover;
+  background-position: center;
+}
+
+.dest-card:hover .dest-bg {
+  transform: scale(1.06);
+}
+
+.dest-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,22,40,0.9) 0%, rgba(10,22,40,0.1) 70%);
+  transition: background 0.5s ease;
+}
+
+.dest-card:hover .dest-overlay {
+  background: linear-gradient(to top, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.3) 70%);
+}
+
+.dest-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem;
+  text-align: left;
+}
+
+.dest-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.dest-count {
+  font-size: 0.8rem;
+  color: var(--gold-light);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.dest-price {
+  font-size: 0.95rem;
+  color: var(--gold);
+  margin-top: 0.4rem;
+  font-weight: 500;
+}
+
+.dest-tag {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: var(--gold);
+  color: #111;
+  padding: 0.4rem 1rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.dest-action {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: all 0.3s ease;
+  margin-top: 1.5rem;
+}
+
+.dest-btn {
+  background: var(--gold);
+  color: #111;
+  border: none;
+  padding: 0.7rem 2rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: inline-block;
+}
+
+.dest-btn:hover {
+  background: #fff;
+}
+
+@media (hover: hover) {
+  .dest-card:hover .dest-action {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (hover: none) {
+  .dest-action {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .destinations-page {
+    padding-top: 90px;
+  }
+  .destinations-header h1 {
+    font-size: 3rem;
+  }
+  .dest-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .destinations-content {
+    padding-bottom: 4rem;
+  }
+}
