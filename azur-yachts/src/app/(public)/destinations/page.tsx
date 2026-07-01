@@ -55,21 +55,11 @@ export default async function DestinationsPage() {
       {/* PREMIUM GRID */}
       <section className="destinations-content">
         <div className="dest-grid">
-          {sortedDestinations.map((dest, i) => {
-            let mosaicClass = '';
-            if (dest.isLarge || i === 0) {
-              mosaicClass = 'dest-card-large';
-            } else if (i % 5 === 1 || i % 7 === 3) {
-              mosaicClass = 'dest-card-tall';
-            } else if (i % 6 === 4) {
-              mosaicClass = 'dest-card-wide';
-            }
-
-            return (
+          {sortedDestinations.map((dest) => (
             <Link 
               href={`/listings?location=${encodeURIComponent(dest.name)}`} 
               key={dest.id} 
-              className={`dest-card ${mosaicClass}`} 
+              className="dest-card" 
             >
               <div 
                 className="dest-bg" 
@@ -97,8 +87,7 @@ export default async function DestinationsPage() {
                 )}
               </div>
             </Link>
-            );
-          })}
+          ))}
         </div>
         
         {sortedDestinations.length === 0 && (
