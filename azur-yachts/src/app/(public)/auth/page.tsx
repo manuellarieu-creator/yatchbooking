@@ -148,7 +148,7 @@ export default function AuthPage() {
         } else if (res.error.includes('OTP_INVALID')) {
           triggerToast('Code de sécurité invalide.');
         } else {
-          triggerToast('Email ou mot de passe incorrect.');
+          triggerToast('Erreur serveur : ' + res.error);
         }
       } else {
         triggerToast('Connexion réussie — redirection...');
