@@ -275,11 +275,11 @@ function VentesContent() {
           <div className="filter-group">
             <div className="filter-group-title">Catégorie</div>
             <div className="check-list">
-              {['Voilier', 'Catamaran', 'Motor Yacht', 'Superyacht', 'Cabine Cruiser'].map(t => (
+              {['Voilier', 'Catamaran', 'Bateau à moteur', 'Bateau sans permis', 'Motor Yacht', 'Superyacht', 'Cabine Cruiser'].map(t => (
                 <label key={t} className="check-item">
                   <input type="checkbox" checked={types.includes(t)} onChange={() => toggleArrayFilter(types, t, setTypes)} />
                   <span className="check-box"></span><span className="check-label">
-                    {t === 'Voilier' ? '⛵' : t === 'Catamaran' ? '🚤' : t === 'Motor Yacht' ? '🛥️' : t === 'Superyacht' ? '🚢' : t === 'Cabine Cruiser' ? '🛥️' : ''} {t}
+                    {t === 'Voilier' ? '⛵' : t === 'Catamaran' ? '🚤' : t === 'Bateau à moteur' ? '🛥️' : t === 'Bateau sans permis' ? '🪪' : t === 'Motor Yacht' ? '🛥️' : t === 'Superyacht' ? '🚢' : t === 'Cabine Cruiser' ? '🛥️' : ''} {t}
                   </span>
                 </label>
               ))}

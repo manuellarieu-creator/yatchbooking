@@ -131,6 +131,12 @@ function PublishForm() {
   const [isAtSea, setIsAtSea] = useState(false);
   const [customBoatType, setCustomBoatType] = useState('');
 
+  useEffect(() => {
+    if (boatType === 'Bateau sans permis') {
+      setRequiresLicense(false);
+    }
+  }, [boatType]);
+
   // Step 3
   const [photos, setPhotos] = useState<any[]>([]);
   const [desc, setDesc] = useState('');
@@ -681,6 +687,8 @@ function PublishForm() {
                         <option value="">Sélectionner…</option>
                         <option value="Voilier">⛵ Voilier</option>
                         <option value="Catamaran">🚤 Catamaran</option>
+                        <option value="Bateau à moteur">🛥️ Bateau à moteur</option>
+                        <option value="Bateau sans permis">🪪 Bateau sans permis</option>
                         <option value="Motor Yacht">🛥️ Motor Yacht</option>
                         <option value="Superyacht">🚢 Superyacht</option>
                         <option value="Cabine Cruiser">🛥️ Cabine Cruiser</option>
