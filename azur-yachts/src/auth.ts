@@ -23,8 +23,9 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           return null;
         }
 
+        const emailStr = (credentials.email as string).toLowerCase().trim();
         const user = await db.user.findUnique({
-          where: { email: credentials.email as string }
+          where: { email: emailStr }
         });
 
         if (!user || !user.password) {
