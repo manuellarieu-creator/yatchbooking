@@ -20,7 +20,9 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         otp: { label: 'OTP', type: 'text' }
       },
       async authorize(credentials) {
+        console.log("Authorize called for:", credentials?.email);
         if (!credentials?.email || !credentials?.password) {
+          console.log("Missing credentials");
           return null;
         }
 
@@ -29,7 +31,12 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           where: { email: emailStr }
         });
 
-        if (!user || !user.password) {
+        if (!user) {
+          console.log("User not found for email:", emailStr);
+          return null;
+        }
+        if (!user.password) {
+          console.log("User has no password:", emailStr);
           return null;
         }
 
@@ -37,6 +44,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           credentials.password as string,
           user.password
         );
+        console.log("Password match result:", passwordsMatch);
 
         if (passwordsMatch) {
           // Check 2FA
@@ -62,20 +70,27 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           // Generate a custom session token for DB tracking
           const sessionToken = crypto.randomUUID();
           
-          // Create a session in DB to track active logins
-          await db.session.create({
-            data: {
-              sessionToken,
-              userId: user.id,
-              expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-            }
-          });
+          try {
+            // Create a session in DB to track active logins
+            await db.session.create({
+              data: {
+                sessionToken,
+                userId: user.id,
+                expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+              }
+            });
+            console.log("Session created successfully in DB");
+          } catch (sessionErr) {
+            console.error("Error creating session in DB:", sessionErr);
+            throw sessionErr;
+          }
 
           // On retourne l'utilisateur sans le mot de passe, avec son nouveau sessionToken
           const { password, ...userWithoutPassword } = user;
           return { ...userWithoutPassword, sessionToken };
         }
 
+        console.log("Returning null from authorize because password didn't match.");
         return null;
       }
     })
