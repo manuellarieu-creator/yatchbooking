@@ -675,17 +675,23 @@ function PublishForm() {
                   <div className="field-row">
                     <div className="field">
                       <label className="label">Pays du port d'attache <span className="req">*</span></label>
-                      <select className="select" value={portCountry} onChange={e => setPortCountry(e.target.value)}>
-                        <option value="">Sélectionner…</option>
-                        <option>France</option>
-                        <option>Grèce</option>
-                        <option>Italie</option>
-                        <option>Espagne</option>
-                        <option>Croatie</option>
-                        <option>Monaco</option>
-                        <option>Caraïbes</option>
-                        <option>Autre</option>
-                      </select>
+                      <input 
+                        className="input" 
+                        type="text" 
+                        list="country-options" 
+                        value={portCountry} 
+                        onChange={e => setPortCountry(e.target.value)} 
+                        placeholder="Ex : France, Italie..." 
+                      />
+                      <datalist id="country-options">
+                        <option value="France" />
+                        <option value="Grèce" />
+                        <option value="Italie" />
+                        <option value="Espagne" />
+                        <option value="Croatie" />
+                        <option value="Monaco" />
+                        <option value="Caraïbes" />
+                      </datalist>
                     </div>
                     <div className="field">
                       <label className="label">Ville / Port d'attache <span className="req">*</span></label>
