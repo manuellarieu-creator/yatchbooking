@@ -149,7 +149,7 @@ function PublishForm() {
   // Step 3
   const [photos, setPhotos] = useState<any[]>([]);
   const [desc, setDesc] = useState('');
-  const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+  const draggedIdxRef = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Step 4
@@ -1106,7 +1106,7 @@ function PublishForm() {
                         draggable
                         onDragStart={(e) => {
                           e.dataTransfer.effectAllowed = 'move';
-                          setDraggedIdx(i);
+                          draggedIdxRef.current = i;
                         }}
                         onDragOver={(e) => {
                           e.preventDefault();
@@ -1114,13 +1114,14 @@ function PublishForm() {
                         }}
                         onDrop={(e) => {
                           e.preventDefault();
-                          if (draggedIdx === null || draggedIdx === i) return;
+                          e.stopPropagation();
+                          if (draggedIdxRef.current === null || draggedIdxRef.current === i) return;
                           const newPhotos = [...photos];
-                          const draggedPhoto = newPhotos[draggedIdx];
-                          newPhotos.splice(draggedIdx, 1);
+                          const draggedPhoto = newPhotos[draggedIdxRef.current];
+                          newPhotos.splice(draggedIdxRef.current, 1);
                           newPhotos.splice(i, 0, draggedPhoto);
                           setPhotos(newPhotos);
-                          setDraggedIdx(null);
+                          draggedIdxRef.current = null;
                         }}
                         style={{ cursor: 'grab' }}
                       >
