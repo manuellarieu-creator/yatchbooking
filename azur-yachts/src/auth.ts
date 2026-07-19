@@ -95,6 +95,8 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           const { password, ...userWithoutPassword } = user;
           return { ...userWithoutPassword, sessionToken };
         }
+        
+        return null;
       } catch (err: any) {
         console.error("Authorize catastrophic error:", err);
         class CustomAuthError extends CredentialsSignin {
