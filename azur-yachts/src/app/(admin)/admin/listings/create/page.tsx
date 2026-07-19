@@ -8,7 +8,8 @@ import {
   Thermometer, Droplets, AirVent, Layers, Usb, 
   LifeBuoy, Anchor, Compass, Navigation, Radio, 
   Flame, Coffee, Video, Sailboat, Battery, Sun, 
-  Zap, Plug, Activity, Shield, Wifi, Waves, Check 
+  Zap, Plug, Activity, Shield, Wifi, Waves, Check,
+  Map, Snowflake, Fish, Glasses, Square, LayoutTemplate
 } from 'lucide-react';
 import '@/app/(public)/publish/publish.css';
 
@@ -16,20 +17,21 @@ const TOTAL_STEPS = 7;
 
 const EQUIPEMENTS_A_BORD = [
   'Eau chaude', 'Dessalinisateur', 'Air conditionné', 'WC électrique', 'Serviettes de bain', 'Prise USB', 'Wi-Fi',
-  'Four/cuisinière', 'Machine à café', 'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V'
+  'Four/cuisinière', 'Machine à café', 'Glacière', 'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V'
 ];
 
 const EQUIPEMENTS_EXTERIEURS = [
   'Taud de soleil', 'Douche extérieure', 'Table extérieure', 'Enceintes extérieures', 'Pont en teck', 'Échelle de bain',
-  'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'VHF', 'Grand-voile lattée', 'Génois', 'Filet de sécurité'
+  'Coussins extérieurs', 'Bain de soleil avant', 'Bain de soleil arrière', 'Plateforme de bain',
+  'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'Sondeur', 'VHF', 'Guides & Cartes', 'Grand-voile lattée', 'Génois', 'Filet de sécurité'
 ];
 
 const AUTRES_LOISIRS = [
-  'Caméra vidéo', 'Système audio', 'Bain de soleil'
+  'Caméra vidéo', 'Système audio', 'Matériel de pêche', 'Masques et tubas'
 ];
 
 const EQUIPEMENTS_OPTIONNELS = [
-  'Paddle', 'Canoë-kayak', 'Ski nautique', 'Moteur hors-bord', 'Matériel de plongée', 'Bouée tractée', 'Literie supplémentaire'
+  'Paddle', 'Canoë-kayak', 'Ski nautique', 'Wakeboard', 'Bouée tractable', 'Moteur hors-bord', 'Matériel de plongée', 'Literie supplémentaire'
 ];
 
 const getIconForEquipment = (name: string) => {
@@ -43,6 +45,8 @@ const getIconForEquipment = (name: string) => {
   if (n.includes('teck')) return <Grip className="w-4 h-4" />;
   if (n.includes('échelle')) return <List className="w-4 h-4" />;
   if (n.includes('filet')) return <Shield className="w-4 h-4" />;
+  if (n.includes('coussin')) return <Square className="w-4 h-4" />;
+  if (n.includes('plateforme')) return <LayoutTemplate className="w-4 h-4" />;
   
   // CONFORT
   if (n.includes('eau chaude')) return <Thermometer className="w-4 h-4" />;
@@ -58,15 +62,20 @@ const getIconForEquipment = (name: string) => {
   if (n.includes('pilote')) return <Compass className="w-4 h-4" />;
   if (n.includes('gps')) return <Navigation className="w-4 h-4" />;
   if (n.includes('vhf')) return <Radio className="w-4 h-4" />;
+  if (n.includes('sondeur')) return <Activity className="w-4 h-4" />;
+  if (n.includes('carte') || n.includes('guide')) return <Map className="w-4 h-4" />;
   
   // CUISINE
   if (n.includes('four') || n.includes('cuisine')) return <Flame className="w-4 h-4" />;
   if (n.includes('café')) return <Coffee className="w-4 h-4" />;
+  if (n.includes('glacière')) return <Snowflake className="w-4 h-4" />;
   
   // LOISIRS & SPORTS
   if (n.includes('caméra') || n.includes('video')) return <Video className="w-4 h-4" />;
-  if (n.includes('ski nautique')) return <Activity className="w-4 h-4" />;
+  if (n.includes('ski nautique') || n.includes('wakeboard')) return <Activity className="w-4 h-4" />;
   if (n.includes('paddle') || n.includes('canoë') || n.includes('plongée') || n.includes('bouée')) return <Waves className="w-4 h-4" />;
+  if (n.includes('pêche')) return <Fish className="w-4 h-4" />;
+  if (n.includes('masque') || n.includes('tuba')) return <Glasses className="w-4 h-4" />;
   
   // VOILES
   if (n.includes('voile') || n.includes('génois')) return <Sailboat className="w-4 h-4" />;

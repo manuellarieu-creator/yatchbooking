@@ -8,24 +8,26 @@ import {
   Thermometer, Droplets, Snowflake, Bath, Plug, 
   Navigation, Anchor, Cpu, Compass, Radio, 
   Flame, Coffee, Video, Music, Sun, Sailboat, 
-  Zap, SunMedium, Shield, Wifi, Check 
+  Zap, SunMedium, Shield, Wifi, Check, Activity,
+  Map, Fish, Glasses, Square, LayoutTemplate
 } from 'lucide-react';
 import './yacht.css';
 
 const EQUIPMENT_CATEGORIES: Record<string, string[]> = {
   "Confort, Énergie & Cuisine": [
     'Eau chaude', 'Dessalinisateur', 'Air conditionné', 'WC électrique', 'Serviettes de bain', 'Prise USB', 'Wi-Fi',
-    'Four/cuisinière', 'Machine à café', 'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V'
+    'Four/cuisinière', 'Machine à café', 'Glacière', 'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V'
   ],
   "Équipements Extérieurs & Navigation": [
     'Taud de soleil', 'Douche extérieure', 'Table extérieure', 'Enceintes extérieures', 'Pont en teck', 'Échelle de bain',
-    'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'VHF', 'Grand-voile lattée', 'Génois', 'Filet de sécurité'
+    'Coussins extérieurs', 'Bain de soleil avant', 'Bain de soleil arrière', 'Plateforme de bain',
+    'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'Sondeur', 'VHF', 'Guides & Cartes', 'Grand-voile lattée', 'Génois', 'Filet de sécurité'
   ],
   "Autres & Loisirs": [
-    'Caméra vidéo', 'Système audio', 'Bain de soleil'
+    'Caméra vidéo', 'Système audio', 'Matériel de pêche', 'Masques et tubas'
   ],
   "Équipements en Option": [
-    'Paddle', 'Canoë-kayak', 'Ski nautique', 'Moteur hors-bord', 'Matériel de plongée', 'Bouée tractée', 'Literie supplémentaire'
+    'Paddle', 'Canoë-kayak', 'Ski nautique', 'Wakeboard', 'Bouée tractable', 'Moteur hors-bord', 'Matériel de plongée', 'Literie supplémentaire'
   ]
 };
 
@@ -36,9 +38,11 @@ const getIconForEquipment = (name: string) => {
   if (n.includes('table')) return <Grid2X2 className="w-4 h-4" />;
   if (n.includes('enceinte') || n.includes('audio')) return <Speaker className="w-4 h-4" />;
   if (n.includes('teck') || n.includes('échelle') || n.includes('paddle') || n.includes('ski nautique') || n.includes('canoë')) return <Waves className="w-4 h-4" />;
+  if (n.includes('coussin')) return <Square className="w-4 h-4" />;
+  if (n.includes('plateforme')) return <LayoutTemplate className="w-4 h-4" />;
   if (n.includes('eau chaude')) return <Thermometer className="w-4 h-4" />;
   if (n.includes('dessalinisateur') || n.includes('wc')) return <Droplets className="w-4 h-4" />;
-  if (n.includes('air cond') || n.includes('climatisation')) return <Snowflake className="w-4 h-4" />;
+  if (n.includes('air cond') || n.includes('climatisation') || n.includes('glacière')) return <Snowflake className="w-4 h-4" />;
   if (n.includes('serviette')) return <Bath className="w-4 h-4" />;
   if (n.includes('prise') || n.includes('inverseur')) return <Plug className="w-4 h-4" />;
   if (n.includes('annexe') || n.includes('navigation')) return <Navigation className="w-4 h-4" />;
@@ -46,6 +50,8 @@ const getIconForEquipment = (name: string) => {
   if (n.includes('pilote')) return <Cpu className="w-4 h-4" />;
   if (n.includes('gps')) return <Compass className="w-4 h-4" />;
   if (n.includes('vhf')) return <Radio className="w-4 h-4" />;
+  if (n.includes('sondeur')) return <Activity className="w-4 h-4" />;
+  if (n.includes('carte') || n.includes('guide')) return <Map className="w-4 h-4" />;
   if (n.includes('four') || n.includes('cuisine')) return <Flame className="w-4 h-4" />;
   if (n.includes('café')) return <Coffee className="w-4 h-4" />;
   if (n.includes('caméra') || n.includes('video')) return <Video className="w-4 h-4" />;
@@ -54,6 +60,9 @@ const getIconForEquipment = (name: string) => {
   if (n.includes('générateur')) return <Zap className="w-4 h-4" />;
   if (n.includes('filet')) return <Shield className="w-4 h-4" />;
   if (n.includes('wi-fi') || n.includes('wifi')) return <Wifi className="w-4 h-4" />;
+  if (n.includes('wakeboard')) return <Activity className="w-4 h-4" />;
+  if (n.includes('pêche')) return <Fish className="w-4 h-4" />;
+  if (n.includes('masque') || n.includes('tuba')) return <Glasses className="w-4 h-4" />;
   return <Check className="w-4 h-4" />;
 };
 
