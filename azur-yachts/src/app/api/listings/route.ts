@@ -117,9 +117,9 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest) {
+export const POST = auth(async (req: any) => {
   try {
-    const session = await auth()
+    const session = req.auth
     if (!session?.user) {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
     }
@@ -205,4 +205,4 @@ export async function POST(req: NextRequest) {
     console.error('POST /api/listings error:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
-}
+})

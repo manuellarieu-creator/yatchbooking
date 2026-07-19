@@ -80,9 +80,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export const PUT = auth(async (req: any, { params }: any) => {
   try {
-    const session = await auth()
+    const session = req.auth
     if (!session?.user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
 
     const listing = await prisma.listing.findUnique({ where: { id: params.id } })
@@ -148,11 +148,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const reason = lines.slice(-5).join('\n');
     return NextResponse.json({ error: reason }, { status: 500 })
   }
-}
+})
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export const DELETE = auth(async (req: any, { params }: any) => {
   try {
-    const session = await auth()
+    const session = req.auth
     if (!session?.user) return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
 
     const listing = await prisma.listing.findUnique({ where: { id: params.id } })
@@ -167,4 +167,4 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   } catch (error) {
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
-}
+})
