@@ -422,7 +422,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 </div>
               </div>
             )}
-            {!isSaleMode && !yacht.requiresCaptain && (
+            {!isSaleMode && !yacht.requiresCaptain && yacht.requiresLicense !== false && (
               <div style={{ backgroundColor: 'rgba(21, 62, 92, 0.05)', border: '1px solid rgba(21, 62, 92, 0.2)', borderRadius: '8px', padding: '0.8rem 1rem', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
                 <span style={{ fontSize: '1.2rem' }}>📄</span>
                 <div>
@@ -432,6 +432,17 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                   </p>
                   <p style={{ color: 'var(--text-mid)', fontSize: '0.85rem', margin: 0, lineHeight: 1.5 }}>
                     <strong>Pas de permis ?</strong> Vous pouvez ajouter un skipper professionnel à votre réservation (des frais supplémentaires peuvent s'appliquer). Il s'occupera de la navigation : installez-vous confortablement et profitez — aucune expérience en mer n'est requise.
+                  </p>
+                </div>
+              </div>
+            )}
+            {!isSaleMode && !yacht.requiresCaptain && yacht.requiresLicense === false && (
+              <div style={{ backgroundColor: 'rgba(56, 142, 60, 0.05)', border: '1px solid rgba(56, 142, 60, 0.2)', borderRadius: '8px', padding: '0.8rem 1rem', marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.2rem' }}>🪪</span>
+                <div>
+                  <strong style={{ color: 'var(--success)', display: 'block', fontSize: '0.95rem', marginBottom: '0.4rem' }}>Bateau sans permis</strong>
+                  <p style={{ color: 'var(--text-mid)', fontSize: '0.85rem', margin: 0, lineHeight: 1.5 }}>
+                    Ce bateau peut être piloté sans permis bateau ! Profitez de la mer en toute simplicité.
                   </p>
                 </div>
               </div>
@@ -453,6 +464,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               {!isSaleMode && yacht.requiresCaptain && <span className="quick-stat">⚓ Captain Required {yacht.captainPrice ? `(+${formatPrice(yacht.captainPrice)}/j)` : ''}</span>}
               {!isSaleMode && yacht.skipperAvailable && <span className="quick-stat" style={{ color: 'var(--success)' }}>✓ Skipper dispo {yacht.skipperPrice ? `(+${formatPrice(yacht.skipperPrice)}/j)` : ''}</span>}
               {!isSaleMode && <span className="quick-stat">⛽ <strong>{yacht.fuelIncluded ? 'Carburant inclus' : 'Carburant non inclus'}</strong></span>}
+              {!isSaleMode && yacht.requiresLicense === false && <span className="quick-stat" style={{ color: '#fff', background: 'var(--success)' }}>🪪 Sans permis</span>}
             </div>
           </div>
 
@@ -638,6 +650,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               <tbody>
                 <tr><td>Type</td><td>{yacht.boatType || '-'}</td></tr>
                 <tr><td>Année</td><td>{yacht.boatYear || '-'}</td></tr>
+                {yacht.requiresLicense === false && <tr><td>Puissance moteur</td><td>{yacht.enginePower ? `${yacht.enginePower} CV` : '-'}</td></tr>}
                 <tr><td>Longueur</td><td>{yacht.boatLength ? `${yacht.boatLength} m` : '-'}</td></tr>
                 <tr><td>Capacité adultes</td><td>{yacht.maxAdults || '-'}</td></tr>
                 <tr><td>Capacité enfants</td><td>{yacht.maxChildren || '0'}</td></tr>

@@ -121,6 +121,8 @@ model User {
   favorites               Favorite[]
   pushSubscriptions       PushSubscription[]
   notificationPreferences Json?
+  boatLicenseUrl          String?
+  boatLicenseVerified     Boolean                   @default(false)
 }
 
 model Account {
@@ -199,6 +201,8 @@ model Listing {
   boatPlanUrls      String[]       @default([])
   requiresCaptain   Boolean        @default(false)
   skipperAvailable  Boolean        @default(false)
+  requiresLicense   Boolean        @default(true)
+  enginePower       Int?
   maxRentalHours    Int?
   deliveryAvailable Boolean        @default(false)
   deliveryFee       Float?

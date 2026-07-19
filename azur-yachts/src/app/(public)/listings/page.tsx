@@ -45,7 +45,9 @@ function ListingsContent() {
             imgUrl: l.images?.[0]?.url || '',
             isFav: l.isFav || false,
             isAtSea: l.isAtSea || false,
-            fuelIncluded: l.fuelIncluded || false
+            fuelIncluded: l.fuelIncluded || false,
+            requiresLicense: l.requiresLicense !== false,
+            enginePower: l.enginePower || 0
           }));
           setYachts(mapped);
         }
@@ -77,6 +79,7 @@ function ListingsContent() {
   const [minCap, setMinCap] = useState(0);
   const [captainReq, setCaptainReq] = useState('indiff'); // 'oui', 'non', 'indiff'
   const [skipperAvail, setSkipperAvail] = useState('indiff'); // 'oui', 'non', 'indiff'
+  const [requiresLicenseReq, setRequiresLicenseReq] = useState('indiff'); // 'oui', 'non', 'indiff'
   const [minRating, setMinRating] = useState(0);
 
   const [sortOrder, setSortOrder] = useState('recent');
@@ -117,6 +120,7 @@ function ListingsContent() {
     setMinCap(0);
     setCaptainReq('indiff');
     setSkipperAvail('indiff');
+    setRequiresLicenseReq('indiff');
     setMinRating(0);
   };
 
@@ -126,6 +130,7 @@ function ListingsContent() {
     if (type === 'cap') setMinCap(0);
     if (type === 'captain') setCaptainReq('indiff');
     if (type === 'skipper') setSkipperAvail('indiff');
+    if (type === 'license') setRequiresLicenseReq('indiff');
     if (type === 'rating') setMinRating(0);
   };
 
@@ -139,6 +144,7 @@ function ListingsContent() {
       if (y.cap < minCap) return false;
       if (captainReq !== 'indiff' && y.captain !== captainReq) return false;
       if (skipperAvail !== 'indiff' && y.skipper !== skipperAvail) return false;
+      if (requiresLicenseReq !== 'indiff' && (y.requiresLicense ? 'oui' : 'non') !== requiresLicenseReq) return false;
       if (y.rating < minRating) return false;
       return true;
     }).sort((a, b) => {
@@ -148,7 +154,7 @@ function ListingsContent() {
       if (sortOrder === 'popular') return b.revs - a.revs;
       return 0; // recent (default)
     });
-  }, [yachts, debouncedSearchQuery, priceMin, priceMax, countries, types, minCap, captainReq, skipperAvail, minRating, sortOrder]);
+  }, [yachts, debouncedSearchQuery, priceMin, priceMax, countries, types, minCap, captainReq, skipperAvail, requiresLicenseReq, minRating, sortOrder]);
 
   const activeFilterTags = [
     ...countries.map(c => ({ label: c, type: 'country', val: c })),
@@ -156,6 +162,7 @@ function ListingsContent() {
     ...(minCap > 0 ? [{ label: `≥ ${minCap} pers.`, type: 'cap' }] : []),
     ...(captainReq !== 'indiff' ? [{ label: `Capitaine : ${captainReq}`, type: 'captain' }] : []),
     ...(skipperAvail !== 'indiff' ? [{ label: `Skipper : ${skipperAvail}`, type: 'skipper' }] : []),
+    ...(requiresLicenseReq !== 'indiff' ? [{ label: `Permis : ${requiresLicenseReq === 'oui' ? 'Requis' : 'Sans permis'}`, type: 'license' }] : []),
     ...(minRating > 0 ? [{ label: `≥ ${minRating}★`, type: 'rating' }] : []),
   ];
 
@@ -314,6 +321,18 @@ function ListingsContent() {
             </div>
           </div>
 
+          {/* Permis */}
+          <div className="filter-group">
+            <div className="filter-group-title">Permis bateau</div>
+            <div className="toggle-pair">
+              {['oui', 'non', 'indiff'].map(opt => (
+                <button key={opt} className={`toggle-option ${requiresLicenseReq === opt ? 'active' : ''}`} onClick={() => setRequiresLicenseReq(opt)}>
+                  {opt === 'indiff' ? 'Indiff.' : opt === 'oui' ? 'Requis' : 'Sans permis'}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Note */}
           <div className="filter-group" style={{ borderBottom: 'none' }}>
             <div className="filter-group-title">Note minimale</div>
@@ -417,6 +436,7 @@ function ListingsContent() {
                         </div>
                         <div className="card-info-row">
                           {yacht.skipper === 'oui' ? <span className="card-pill pill-skipper">⛵ Skipper Dispo</span> : <span className="card-pill pill-noskipper">⛵ Skipper Optionnel</span>}
+                          {!yacht.requiresLicense && <span className="card-pill pill-fuel-yes" style={{ background: 'var(--success)', color: 'white' }}>🪪 Sans Permis</span>}
                         </div>
                       </div>
                       

@@ -48,7 +48,9 @@ function VentesContent() {
             imgUrl: l.images?.[0]?.url || '',
             isFav: l.isFav || false,
             isAtSea: l.isAtSea || false,
-            fuelIncluded: l.fuelIncluded || false
+            fuelIncluded: l.fuelIncluded || false,
+            requiresLicense: l.requiresLicense !== false,
+            enginePower: l.enginePower || 0
           }));
           setYachts(mapped);
           

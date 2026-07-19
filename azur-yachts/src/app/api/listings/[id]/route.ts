@@ -109,6 +109,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     if ('navigationMode' in data) data.navigationMode = String(data.navigationMode);
     if ('fuelQuantity' in data) data.fuelQuantity = data.fuelQuantity ? String(data.fuelQuantity) : null;
     if ('fuelPricePerDay' in data) data.fuelPricePerDay = data.fuelPricePerDay ? Number(data.fuelPricePerDay) : null;
+    if ('requiresLicense' in data) data.requiresLicense = Boolean(data.requiresLicense);
+    if ('enginePower' in data) data.enginePower = data.enginePower ? Number(data.enginePower) : null;
 
     if (images) {
       data.images = {

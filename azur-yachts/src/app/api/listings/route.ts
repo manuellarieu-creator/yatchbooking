@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     const adults = Number(searchParams.get('adults')) || 0
     const captain = searchParams.get('captain')
     const skipper = searchParams.get('skipper')
+    const requiresLicense = searchParams.get('requiresLicense')
     const rating = Number(searchParams.get('rating')) || 0
     const sort = searchParams.get('sort') || 'recent'
     const page = Number(searchParams.get('page')) || 1
@@ -46,6 +47,7 @@ export async function GET(req: NextRequest) {
     if (captain === 'non') where.requiresCaptain = false
     if (skipper === 'oui') where.skipperAvailable = true
     if (skipper === 'non') where.skipperAvailable = false
+    if (requiresLicense === 'false') where.requiresLicense = false
     if (rating > 0) where.averageRating = { gte: rating }
 
     const saleOfferType = searchParams.get('saleOfferType')
@@ -130,7 +132,7 @@ export async function POST(req: NextRequest) {
       title, description, price, salePrice, trialPrice, saleOfferType, country, location,
       latitude, longitude, maxAdults, maxChildren,
       boatType, boatLength, boatYear, cabins, berths, bathrooms, boatPlanUrls, requiresCaptain,
-      skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
+      skipperAvailable, requiresLicense, enginePower, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
       deliveryFee, deliveryPricing, features, cleaningFee, securityDeposit, images, services, availabilities, ownerId,
       navigationMode, fuelQuantity, fuelPricePerDay
     } = body
@@ -150,7 +152,10 @@ export async function POST(req: NextRequest) {
         bathrooms: bathrooms ? Number(bathrooms) : null,
         boatPlanUrls: boatPlanUrls || [],
         requiresCaptain,
-        skipperAvailable, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
+        skipperAvailable,
+        requiresLicense: requiresLicense !== undefined ? requiresLicense : true,
+        enginePower: enginePower ? Number(enginePower) : null,
+        maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
         deliveryFee, deliveryPricing, features: features || [], cleaningFee, securityDeposit: securityDeposit || 0,
         status: (session.user as any).role === 'ADMIN' ? 'ACTIVE' : 'PENDING',
         ownerId: finalOwnerId,

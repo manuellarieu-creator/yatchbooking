@@ -34,6 +34,8 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingLicense, setIsUploadingLicense] = useState(false);
+  const [boatLicenseUrl, setBoatLicenseUrl] = useState('');
   
   const [securitySettings, setSecuritySettings] = useState({
     twoFactorEmailEnabled: false,
@@ -51,6 +53,9 @@ export default function ProfilePage() {
           setProfile(data.profile);
           if (data.profile.languages?.length) {
             setTags(data.profile.languages);
+          }
+          if (data.profile.boatLicenseUrl) {
+            setBoatLicenseUrl(data.profile.boatLicenseUrl);
           }
           if (data.profile.notificationPreferences) {
             // Merge with default to ensure no missing keys
@@ -129,7 +134,8 @@ export default function ProfilePage() {
       lastName: formData.get('lastName'),
       bio: formData.get('bio'),
       countryResidence: formData.get('country'),
-      languages: tags
+      languages: tags,
+      boatLicenseUrl: boatLicenseUrl || undefined
     };
 
     try {
@@ -248,6 +254,38 @@ export default function ProfilePage() {
     if (/[0-9]/.test(pwdValue)) score++;
     if (/[^A-Za-z0-9]/.test(pwdValue)) score++;
     return score;
+  };
+
+  const uploadToCloudinary = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'azur_yachts');
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dt7v4cuxm'}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        triggerToast(`Erreur d'upload : ${data.error?.message || 'Erreur inconnue'}`);
+        return null;
+      }
+      return data.secure_url;
+    } catch (err) {
+      triggerToast("Erreur lors de l'upload de l'image");
+      return null;
+    }
+  };
+
+  const handleLicenseUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    setIsUploadingLicense(true);
+    const url = await uploadToCloudinary(e.target.files[0]);
+    if (url) {
+      setBoatLicenseUrl(url);
+      triggerToast('Permis bateau uploadé. N\'oubliez pas d\'enregistrer.');
+    }
+    setIsUploadingLicense(false);
   };
 
   const pwdScore = getPwdStrength();
@@ -428,6 +466,37 @@ export default function ProfilePage() {
                       <input className="tag-input" placeholder="Ajouter…" value={tagInput} onChange={e => setTagInput(e.target.value)} onKeyDown={handleTagAdd} />
                     </div>
                     <span className="form-hint">Appuyez sur Entrée pour ajouter une langue</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-card">
+                <div className="form-card-title">Permis bateau</div>
+                <div className="form-row full">
+                  <div className="form-group">
+                    <label className="form-label">Copie de votre permis bateau</label>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
+                      {boatLicenseUrl ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <a href={boatLicenseUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--navy)', textDecoration: 'underline' }}>Voir le document</a>
+                          <button type="button" className="btn btn-sm btn-outline" onClick={() => setBoatLicenseUrl('')}>Supprimer</button>
+                        </div>
+                      ) : (
+                        <div style={{ padding: '1.5rem', border: '2px dashed var(--sand)', borderRadius: '8px', textAlign: 'center', width: '100%' }}>
+                          <span style={{ fontSize: '2rem' }}>🪪</span>
+                          <p style={{ margin: '1rem 0', color: 'var(--text-mid)', fontSize: '0.9rem' }}>
+                            Téléchargez votre permis bateau pour faciliter vos locations de bateaux sans skipper.
+                          </p>
+                          <label className="btn btn-primary" style={{ cursor: 'pointer', display: 'inline-flex', padding: '0.5rem 1.5rem' }}>
+                            {isUploadingLicense ? 'Upload en cours...' : 'Sélectionner un fichier'}
+                            <input type="file" style={{ display: 'none' }} accept="image/*,.pdf" onChange={handleLicenseUpload} disabled={isUploadingLicense} />
+                          </label>
+                        </div>
+                      )}
+                      <span className="form-hint" style={{ marginTop: '0.5rem' }}>
+                        {profile?.boatLicenseVerified ? <span style={{ color: 'var(--success)' }}>✓ Permis vérifié</span> : <span style={{ color: 'var(--text-light)' }}>En attente de vérification par nos équipes.</span>}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

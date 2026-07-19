@@ -122,6 +122,8 @@ function PublishForm() {
   const [hours, setHours] = useState('');
   const [captainReq, setCaptainReq] = useState(false);
   const [skipperOpt, setSkipperOpt] = useState(false);
+  const [requiresLicense, setRequiresLicense] = useState(true);
+  const [enginePower, setEnginePower] = useState('');
   const [features, setFeatures] = useState<string[]>([]);
   const [customFeature, setCustomFeature] = useState('');
   const [isAtSea, setIsAtSea] = useState(false);
@@ -195,6 +197,8 @@ function PublishForm() {
           setFuelPricePerDay(l.fuelPricePerDay?.toString() || '');
           setCaptainReq(l.requiresCaptain);
           setSkipperOpt(l.skipperAvailable);
+          setRequiresLicense(l.requiresLicense !== false);
+          setEnginePower(l.enginePower?.toString() || '');
           setFuelIncluded(l.fuelIncluded || false);
           setCaptainPrice(l.captainPrice?.toString() || '');
           setSkipperPrice(l.skipperPrice?.toString() || '');
@@ -226,7 +230,7 @@ function PublishForm() {
     return () => clearTimeout(t);
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
-    title, boatType, year, portCountry, portCity, length, cabins, berths, bathrooms, boatPlanUrls, adults, children, hours, captainReq, skipperOpt, features, isAtSea,
+    title, boatType, year, portCountry, portCity, length, cabins, berths, bathrooms, boatPlanUrls, adults, children, hours, captainReq, skipperOpt, requiresLicense, enginePower, features, isAtSea,
     photos, desc, priceDay, cleaningFee, securityDeposit, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail
   ]);
 
@@ -427,7 +431,7 @@ function PublishForm() {
         bathrooms: Number(bathrooms) || 0,
         boatPlanUrls: boatPlanUrls,
         requiresCaptain: captainReq,
-        skipperAvailable: skipperOpt, isAtSea, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
+        skipperAvailable: skipperOpt, requiresLicense, enginePower: Number(enginePower) || null, isAtSea, maxRentalHours: Number(hours) || 24, deliveryAvailable: deliveryToggle,
         deliveryPricing: deliveryPricing, features,
         navigationMode, fuelQuantity, fuelPricePerDay: fuelPricePerDay ? Number(fuelPricePerDay) : null,
         fuelIncluded, captainPrice: captainReq ? (Number(captainPrice) || 0) : null, skipperPrice: skipperOpt ? (Number(skipperPrice) || 0) : null,
@@ -871,6 +875,20 @@ function PublishForm() {
                       
                     </div>
                   )}
+                  <div className="toggle-row">
+                    <div className="toggle-info">
+                      <div className="toggle-label">Permis bateau obligatoire</div>
+                      <div className="toggle-desc">Cochez si un permis est nécessaire pour piloter ce bateau. (Les bateaux sans permis sont très recherchés)</div>
+                    </div>
+                    <label className="toggle">
+                      <input type="checkbox" checked={requiresLicense} onChange={e => setRequiresLicense(e.target.checked)} />
+                      <span className="toggle-slider"></span>
+                    </label>
+                  </div>
+                  <div className="field" style={{ marginTop: '1rem' }}>
+                    <label className="label">Puissance du moteur (CV)</label>
+                    <input className="input" type="number" min="0" value={enginePower} onChange={e => setEnginePower(e.target.value)} placeholder="Ex : 6 (utile pour les bateaux sans permis)" />
+                  </div>
                   <div className="toggle-row">
                     <div className="toggle-info">
                       <div className="toggle-label">Bateau en mer / Hors port d'attache</div>
