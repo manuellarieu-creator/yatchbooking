@@ -34,21 +34,25 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           });
 
           if (!user) {
-            console.log("User not found for email:", emailStr);
-            return null;
+            class UserNotFoundError extends CredentialsSignin { code = "UserNotFound"; }
+            throw new UserNotFoundError();
           }
           if (!user.password) {
-            console.log("User has no password:", emailStr);
-            return null;
+            class NoPasswordError extends CredentialsSignin { code = "UserHasNoPassword"; }
+            throw new NoPasswordError();
           }
 
           const passwordsMatch = await bcrypt.compare(
             credentials.password as string,
             user.password
           );
-          console.log("Password match result:", passwordsMatch);
+          
+          if (!passwordsMatch) {
+            class InvalidPasswordError extends CredentialsSignin { code = "InvalidPassword"; }
+            throw new InvalidPasswordError();
+          }
 
-        if (passwordsMatch) {
+          if (passwordsMatch) {
           // Check 2FA
           if (user.twoFactorEmailEnabled && !credentials.otp) {
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -91,9 +95,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           const { password, ...userWithoutPassword } = user;
           return { ...userWithoutPassword, sessionToken };
         }
-        
-        console.log("Returning null from authorize because password didn't match.");
-        return null;
       } catch (err: any) {
         console.error("Authorize catastrophic error:", err);
         class CustomAuthError extends CredentialsSignin {
