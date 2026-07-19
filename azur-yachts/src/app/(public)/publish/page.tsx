@@ -133,7 +133,6 @@ function PublishForm() {
     }
   }, [boatType]);
 
-  const [navigationMode, setNavigationMode] = useState('INCLUDED');
   const [isAtSea, setIsAtSea] = useState(false);
 
   // Step 3
