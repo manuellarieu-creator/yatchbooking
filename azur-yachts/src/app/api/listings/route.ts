@@ -134,7 +134,7 @@ export const POST = auth(async (req: any) => {
       boatType, boatLength, boatYear, cabins, berths, bathrooms, boatPlanUrls, requiresCaptain,
       skipperAvailable, requiresLicense, enginePower, maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
       deliveryFee, deliveryPricing, features, cleaningFee, securityDeposit, images, services, availabilities, ownerId,
-      navigationMode, fuelQuantity, fuelPricePerDay
+      navigationMode, fuelQuantity, fuelPricePerDay, cancellationPolicy
     } = body
 
     const finalOwnerId = ((session.user as any).role === 'ADMIN' && ownerId) ? ownerId : (session.user as any).id;
@@ -157,6 +157,7 @@ export const POST = auth(async (req: any) => {
         enginePower: enginePower ? Number(enginePower) : null,
         maxRentalHours, deliveryAvailable, fuelIncluded, captainPrice, skipperPrice,
         deliveryFee, deliveryPricing, features: features || [], cleaningFee, securityDeposit: securityDeposit || 0,
+        cancellationPolicy: cancellationPolicy || 'STRICT',
         status: (session.user as any).role === 'ADMIN' ? 'ACTIVE' : 'PENDING',
         ownerId: finalOwnerId,
         images: {

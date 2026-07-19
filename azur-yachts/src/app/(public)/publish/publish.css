@@ -537,6 +537,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none;
 }
 .publish-page-container .photo-thumb-overlay {
   position: absolute;

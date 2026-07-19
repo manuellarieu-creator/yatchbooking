@@ -42,6 +42,7 @@ export default function AdminSidebar() {
           <Link href="/admin/pages/about" onClick={() => setIsOpen(false)} className={`admin-nav-link ${isActive('/admin/pages/about') ? 'active' : ''}`}>📄 Page À propos</Link>
           <Link href="/admin/settings/general" onClick={() => setIsOpen(false)} className={`admin-nav-link ${isActive('/admin/settings/general') ? 'active' : ''}`}>⚙️ Paramètres</Link>
           <Link href="/admin/settings/payments" onClick={() => setIsOpen(false)} className={`admin-nav-link ${isActive('/admin/settings/payments') ? 'active' : ''}`}>🏦 Paramètres Banque</Link>
+          <Link href="/admin/equipments" onClick={() => setIsOpen(false)} className={`admin-nav-link ${isActive('/admin/equipments') ? 'active' : ''}`}>⚓ Équipements</Link>
         </nav>
         <div className="admin-logout">
           <Link href="/" className="admin-nav-link">← Retour au site</Link>

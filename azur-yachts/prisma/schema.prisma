@@ -46,6 +46,13 @@ enum ListingStatus {
   INACTIVE
 }
 
+enum CancellationPolicyType {
+  FLEXIBLE
+  MODERATE
+  STRICT
+  CUSTOM
+}
+
 enum BookingStatus {
   PENDING
   PAYMENT_PENDING
@@ -219,6 +226,7 @@ model Listing {
   averageRating     Float          @default(0)
   reviewCount       Int            @default(0)
   viewCount         Int            @default(0)
+  cancellationPolicy CancellationPolicyType @default(STRICT)
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
   owner             User           @relation(fields: [ownerId], references: [id])
@@ -480,3 +488,12 @@ model PlatformSettings {
   maintenanceMode   Boolean  @default(false)
   updatedAt         DateTime @updatedAt
 }
+
+model Equipment {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  category  String
+  iconName  String
+  createdAt DateTime @default(now())
+}
+

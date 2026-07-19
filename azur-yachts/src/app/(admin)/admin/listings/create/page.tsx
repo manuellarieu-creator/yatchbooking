@@ -15,78 +15,7 @@ import '@/app/(public)/publish/publish.css';
 
 const TOTAL_STEPS = 7;
 
-const EQUIPEMENTS_A_BORD = [
-  'Eau chaude', 'Dessalinisateur', 'Air conditionné', 'WC électrique', 'Serviettes de bain', 'Prise USB', 'Wi-Fi',
-  'Four/cuisinière', 'Machine à café', 'Glacière', 'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V'
-];
-
-const EQUIPEMENTS_EXTERIEURS = [
-  'Taud de soleil', 'Douche extérieure', 'Table extérieure', 'Enceintes extérieures', 'Pont en teck', 'Échelle de bain',
-  'Coussins extérieurs', 'Bain de soleil avant', 'Bain de soleil arrière', 'Plateforme de bain',
-  'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'Sondeur', 'VHF', 'Guides & Cartes', 'Grand-voile lattée', 'Génois', 'Filet de sécurité'
-];
-
-const AUTRES_LOISIRS = [
-  'Caméra vidéo', 'Système audio', 'Matériel de pêche', 'Masques et tubas'
-];
-
-const EQUIPEMENTS_OPTIONNELS = [
-  'Paddle', 'Canoë-kayak', 'Ski nautique', 'Wakeboard', 'Bouée tractable', 'Moteur hors-bord', 'Matériel de plongée', 'Literie supplémentaire'
-];
-
-const getIconForEquipment = (name: string) => {
-  const n = name.toLowerCase();
-  
-  // ÉQUIPEMENTS EXTÉRIEURS
-  if (n.includes('taud')) return <Tent className="w-4 h-4" />;
-  if (n.includes('douche')) return <ShowerHead className="w-4 h-4" />;
-  if (n.includes('table')) return <Grid2X2 className="w-4 h-4" />;
-  if (n.includes('enceinte')) return <Speaker className="w-4 h-4" />;
-  if (n.includes('teck')) return <Grip className="w-4 h-4" />;
-  if (n.includes('échelle')) return <List className="w-4 h-4" />;
-  if (n.includes('filet')) return <Shield className="w-4 h-4" />;
-  if (n.includes('coussin')) return <Square className="w-4 h-4" />;
-  if (n.includes('plateforme')) return <LayoutTemplate className="w-4 h-4" />;
-  
-  // CONFORT
-  if (n.includes('eau chaude')) return <Thermometer className="w-4 h-4" />;
-  if (n.includes('dessalinisateur') || n.includes('wc')) return <Droplets className="w-4 h-4" />;
-  if (n.includes('air cond') || n.includes('climatisation')) return <AirVent className="w-4 h-4" />;
-  if (n.includes('serviette') || n.includes('literie')) return <Layers className="w-4 h-4" />;
-  if (n.includes('usb')) return <Usb className="w-4 h-4" />;
-  if (n.includes('wi-fi') || n.includes('wifi')) return <Wifi className="w-4 h-4" />;
-
-  // NAVIGATION
-  if (n.includes('annexe')) return <LifeBuoy className="w-4 h-4" />;
-  if (n.includes('guindeau')) return <Anchor className="w-4 h-4" />;
-  if (n.includes('pilote')) return <Compass className="w-4 h-4" />;
-  if (n.includes('gps')) return <Navigation className="w-4 h-4" />;
-  if (n.includes('vhf')) return <Radio className="w-4 h-4" />;
-  if (n.includes('sondeur')) return <Activity className="w-4 h-4" />;
-  if (n.includes('carte') || n.includes('guide')) return <Map className="w-4 h-4" />;
-  
-  // CUISINE
-  if (n.includes('four') || n.includes('cuisine')) return <Flame className="w-4 h-4" />;
-  if (n.includes('café')) return <Coffee className="w-4 h-4" />;
-  if (n.includes('glacière')) return <Snowflake className="w-4 h-4" />;
-  
-  // LOISIRS & SPORTS
-  if (n.includes('caméra') || n.includes('video')) return <Video className="w-4 h-4" />;
-  if (n.includes('ski nautique') || n.includes('wakeboard')) return <Activity className="w-4 h-4" />;
-  if (n.includes('paddle') || n.includes('canoë') || n.includes('plongée') || n.includes('bouée')) return <Waves className="w-4 h-4" />;
-  if (n.includes('pêche')) return <Fish className="w-4 h-4" />;
-  if (n.includes('masque') || n.includes('tuba')) return <Glasses className="w-4 h-4" />;
-  
-  // VOILES
-  if (n.includes('voile') || n.includes('génois')) return <Sailboat className="w-4 h-4" />;
-  
-  // ENERGIE
-  if (n.includes('générateur')) return <Battery className="w-4 h-4" />;
-  if (n.includes('solaire')) return <Sun className="w-4 h-4" />;
-  if (n.includes('inverseur') || n.includes('220v') || n.includes('prise')) return <Plug className="w-4 h-4" />;
-  
-  return <Check className="w-4 h-4" />;
-};
+import { DynamicIcon } from '@/components/ui/DynamicIcon';
 
 type Service = {
   id: string;
@@ -123,6 +52,7 @@ function PublishForm() {
   const [year, setYear] = useState('');
   const [portCountry, setPortCountry] = useState('France');
   const [portCity, setPortCity] = useState('');
+  const [customPortCountry, setCustomPortCountry] = useState('');
   const [length, setLength] = useState('');
   const [cabins, setCabins] = useState('');
   const [berths, setBerths] = useState('');
@@ -140,11 +70,30 @@ function PublishForm() {
   const [isAtSea, setIsAtSea] = useState(false);
   const [customBoatType, setCustomBoatType] = useState('');
 
+  const [dbEquipments, setDbEquipments] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/equipments').then(res => res.json()).then(data => {
+      if (Array.isArray(data)) setDbEquipments(data);
+    });
+  }, []);
+
   useEffect(() => {
     if (boatType === 'Bateau sans permis') {
       setRequiresLicense(false);
     }
   }, [boatType]);
+
+  const equipementsABord = dbEquipments.filter(e => e.category === 'A_BORD').map(e => e.name);
+  const equipementsExterieurs = dbEquipments.filter(e => e.category === 'EXTERIEUR').map(e => e.name);
+  const autresLoisirs = dbEquipments.filter(e => e.category === 'LOISIR').map(e => e.name);
+  const equipementsOptionnels = dbEquipments.filter(e => e.category === 'OPTIONNEL').map(e => e.name);
+  const allStandardEquipments = dbEquipments.map(e => e.name);
+
+  const getIconForEquipment = (name: string) => {
+    const eq = dbEquipments.find(e => e.name === name);
+    return <DynamicIcon name={eq?.iconName || 'Check'} className="w-4 h-4" />;
+  };
 
   // Step 3
   const [photos, setPhotos] = useState<any[]>([]);
@@ -165,6 +114,7 @@ function PublishForm() {
   const [fuelPricePerDay, setFuelPricePerDay] = useState('');
   const [captainPrice, setCaptainPrice] = useState('');
   const [skipperPrice, setSkipperPrice] = useState('');
+  const [cancellationPolicy, setCancellationPolicy] = useState('STRICT');
 
   // Step 5
   const [services, setServices] = useState<Service[]>([]);
@@ -250,6 +200,7 @@ function PublishForm() {
           if (l.saleOfferType) setSaleOfferType(l.saleOfferType);
           setCleaningFee(l.cleaningFee?.toString() || '');
           setSecurityDeposit(l.securityDeposit?.toString() || '');
+          setCancellationPolicy(l.cancellationPolicy || 'STRICT');
           if (l.services) setServices(l.services);
           setDeliveryToggle(l.deliveryAvailable);
           if (l.deliveryPricing) setDeliveryPricing(l.deliveryPricing as any);
@@ -266,7 +217,7 @@ function PublishForm() {
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
     title, boatType, year, portCountry, portCity, length, cabins, berths, bathrooms, boatPlanUrls, adults, children, hours, captainReq, skipperOpt, requiresLicense, enginePower, features, isAtSea,
-    photos, desc, priceDay, cleaningFee, securityDeposit, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail, selectedOwnerId
+    photos, desc, priceDay, cleaningFee, securityDeposit, cancellationPolicy, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail, selectedOwnerId
   ]);
 
   const triggerToast = (msg: string) => {
@@ -466,6 +417,7 @@ function PublishForm() {
         fuelIncluded, captainPrice: captainReq ? (Number(captainPrice) || 0) : null, skipperPrice: skipperOpt ? (Number(skipperPrice) || 0) : null,
         cleaningFee: Number(cleaningFee) || 0,
         securityDeposit: Number(securityDeposit) || 0,
+        cancellationPolicy,
         images: processedImages, services, availabilities: [], ownerId: isAdmin ? selectedOwnerId : undefined
       };
       
@@ -719,23 +671,27 @@ function PublishForm() {
                   <div className="field-row">
                     <div className="field">
                       <label className="label">Pays du port d'attache <span className="req">*</span></label>
-                      <input 
-                        className="input" 
-                        type="text" 
-                        list="country-options" 
-                        value={portCountry} 
-                        onChange={e => setPortCountry(e.target.value)} 
-                        placeholder="Ex : France, Italie..." 
-                      />
-                      <datalist id="country-options">
-                        <option value="France" />
-                        <option value="Grèce" />
-                        <option value="Italie" />
-                        <option value="Espagne" />
-                        <option value="Croatie" />
-                        <option value="Monaco" />
-                        <option value="Caraïbes" />
-                      </datalist>
+                      <select className="select" value={['France', 'Grèce', 'Italie', 'Espagne', 'Croatie', 'Monaco', 'Caraïbes', ''].includes(portCountry) ? portCountry : 'Autre'} onChange={e => {
+                        if (e.target.value === 'Autre') {
+                          setPortCountry('Autre');
+                          setCustomPortCountry('');
+                        } else {
+                          setPortCountry(e.target.value);
+                        }
+                      }}>
+                        <option value="">Sélectionner un pays…</option>
+                        <option value="France">🇫🇷 France</option>
+                        <option value="Grèce">🇬🇷 Grèce</option>
+                        <option value="Italie">🇮🇹 Italie</option>
+                        <option value="Espagne">🇪🇸 Espagne</option>
+                        <option value="Croatie">🇭🇷 Croatie</option>
+                        <option value="Monaco">🇲🇨 Monaco</option>
+                        <option value="Caraïbes">🏝️ Caraïbes</option>
+                        <option value="Autre">🌍 Autre</option>
+                      </select>
+                      {(!['France', 'Grèce', 'Italie', 'Espagne', 'Croatie', 'Monaco', 'Caraïbes', ''].includes(portCountry) || portCountry === 'Autre') && (
+                        <input className="input" type="text" style={{ marginTop: '0.5rem' }} value={customPortCountry} onChange={e => { setCustomPortCountry(e.target.value); setPortCountry(e.target.value); }} placeholder="Précisez le pays" />
+                      )}
                     </div>
                     <div className="field">
                       <label className="label">Ville / Port d'attache <span className="req">*</span></label>
@@ -977,7 +933,7 @@ function PublishForm() {
                   <div className="features-section" style={{ marginBottom: '1.5rem' }}>
                     <h3 style={{ fontSize: '0.9rem', color: 'var(--navy)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Confort, Énergie & Cuisine</h3>
                     <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
-                      {EQUIPEMENTS_A_BORD.map(f => (
+                      {equipementsABord.map(f => (
                         <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
                           <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
                           <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(f)}</span>
@@ -990,7 +946,7 @@ function PublishForm() {
                   <div className="features-section" style={{ marginBottom: '1.5rem' }}>
                     <h3 style={{ fontSize: '0.9rem', color: 'var(--navy)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Équipements Extérieurs & Navigation</h3>
                     <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
-                      {EQUIPEMENTS_EXTERIEURS.map(f => (
+                      {equipementsExterieurs.map(f => (
                         <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
                           <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
                           <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(f)}</span>
@@ -1003,7 +959,7 @@ function PublishForm() {
                   <div className="features-section" style={{ marginBottom: '1.5rem' }}>
                     <h3 style={{ fontSize: '0.9rem', color: 'var(--navy)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Autres & Loisirs (Inclus)</h3>
                     <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
-                      {AUTRES_LOISIRS.map(f => (
+                      {autresLoisirs.map(f => (
                         <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
                           <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
                           <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(f)}</span>
@@ -1017,7 +973,7 @@ function PublishForm() {
                     <h3 style={{ fontSize: '0.9rem', color: 'var(--gold)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Équipements en Option (Payants)</h3>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginBottom: '1rem' }}>Cochez les équipements que vous proposez en option et indiquez leur prix. Ce prix sera ajouté au prix de la location (Par réservation).</p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                      {EQUIPEMENTS_OPTIONNELS.map(opt => {
+                      {equipementsOptionnels.map(opt => {
                         const isSelected = isOptionalEquipmentSelected(opt);
                         return (
                           <div key={opt} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -1046,12 +1002,11 @@ function PublishForm() {
                     </div>
                   </div>
 
-                  {/* Render custom features that were added but don't match standard lists */}
-                  {features.filter(f => !EQUIPEMENTS_A_BORD.includes(f) && !EQUIPEMENTS_EXTERIEURS.includes(f) && !AUTRES_LOISIRS.includes(f)).length > 0 && (
+                  {features.filter(f => !allStandardEquipments.includes(f)).length > 0 && (
                     <div className="features-section" style={{ marginBottom: '1.5rem' }}>
                       <h3 style={{ fontSize: '0.9rem', color: 'var(--navy)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Équipements Personnalisés</h3>
                       <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
-                        {features.filter(f => !EQUIPEMENTS_A_BORD.includes(f) && !EQUIPEMENTS_EXTERIEURS.includes(f) && !AUTRES_LOISIRS.includes(f)).map(f => (
+                        {features.filter(f => !allStandardEquipments.includes(f)).map(f => (
                           <label key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-main)' }}>
                             <input type="checkbox" checked={features.includes(f)} onChange={() => toggleFeature(f)} style={{ width: '1.2rem', height: '1.2rem', accentColor: 'var(--primary)' }} />
                             <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(f)}</span>
@@ -1205,6 +1160,17 @@ function PublishForm() {
                       </div>
                     </div>
                   )}
+                  <div className="field-row">
+                    <div className="field">
+                      <label className="label">Politique d'annulation <span className="req">*</span></label>
+                      <select className="select" value={cancellationPolicy} onChange={e => setCancellationPolicy(e.target.value)}>
+                        <option value="FLEXIBLE">Flexible (Remboursement intégral jusqu'à 24h avant le départ)</option>
+                        <option value="MODERATE">Modérée (Remboursement intégral jusqu'à 5 jours avant le départ)</option>
+                        <option value="STRICT">Stricte (Remboursement 50% jusqu'à 7 jours avant le départ)</option>
+                        <option value="CUSTOM">Personnalisée (À définir dans la description)</option>
+                      </select>
+                    </div>
+                  </div>
                   <div className="info-box navy" style={{ marginTop: '.5rem' }}>
                     💡 Le prix affiché est le tarif de location par jour. Les frais de nettoyage et les services optionnels s'ajouteront dans le récapitulatif de réservation.
                   </div>

@@ -9,7 +9,7 @@ export default function AutoLogout() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
 
-  const TIMEOUT_MS = 7 * 60 * 1000; // 7 minutes
+  const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
 
   useEffect(() => {
     lastActivityRef.current = Date.now();

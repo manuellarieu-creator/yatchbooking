@@ -13,58 +13,7 @@ import {
 } from 'lucide-react';
 import './yacht.css';
 
-const EQUIPMENT_CATEGORIES: Record<string, string[]> = {
-  "Confort, Énergie & Cuisine": [
-    'Eau chaude', 'Dessalinisateur', 'Air conditionné', 'WC électrique', 'Serviettes de bain', 'Prise USB', 'Wi-Fi',
-    'Four/cuisinière', 'Machine à café', 'Glacière', 'Générateur', 'Panneaux solaires', 'Inverseur électrique', 'Prise 220V'
-  ],
-  "Équipements Extérieurs & Navigation": [
-    'Taud de soleil', 'Douche extérieure', 'Table extérieure', 'Enceintes extérieures', 'Pont en teck', 'Échelle de bain',
-    'Coussins extérieurs', 'Bain de soleil avant', 'Bain de soleil arrière', 'Plateforme de bain',
-    'Annexe', 'Guindeau électrique', 'Pilote automatique', 'GPS', 'Sondeur', 'VHF', 'Guides & Cartes', 'Grand-voile lattée', 'Génois', 'Filet de sécurité'
-  ],
-  "Autres & Loisirs": [
-    'Caméra vidéo', 'Système audio', 'Matériel de pêche', 'Masques et tubas'
-  ],
-  "Équipements en Option": [
-    'Paddle', 'Canoë-kayak', 'Ski nautique', 'Wakeboard', 'Bouée tractable', 'Moteur hors-bord', 'Matériel de plongée', 'Literie supplémentaire'
-  ]
-};
-
-const getIconForEquipment = (name: string) => {
-  const n = name.toLowerCase();
-  if (n.includes('taud')) return <Umbrella className="w-4 h-4" />;
-  if (n.includes('douche')) return <ShowerHead className="w-4 h-4" />;
-  if (n.includes('table')) return <Grid2X2 className="w-4 h-4" />;
-  if (n.includes('enceinte') || n.includes('audio')) return <Speaker className="w-4 h-4" />;
-  if (n.includes('teck') || n.includes('échelle') || n.includes('paddle') || n.includes('ski nautique') || n.includes('canoë')) return <Waves className="w-4 h-4" />;
-  if (n.includes('coussin')) return <Square className="w-4 h-4" />;
-  if (n.includes('plateforme')) return <LayoutTemplate className="w-4 h-4" />;
-  if (n.includes('eau chaude')) return <Thermometer className="w-4 h-4" />;
-  if (n.includes('dessalinisateur') || n.includes('wc')) return <Droplets className="w-4 h-4" />;
-  if (n.includes('air cond') || n.includes('climatisation') || n.includes('glacière')) return <Snowflake className="w-4 h-4" />;
-  if (n.includes('serviette')) return <Bath className="w-4 h-4" />;
-  if (n.includes('prise') || n.includes('inverseur')) return <Plug className="w-4 h-4" />;
-  if (n.includes('annexe') || n.includes('navigation')) return <Navigation className="w-4 h-4" />;
-  if (n.includes('guindeau')) return <Anchor className="w-4 h-4" />;
-  if (n.includes('pilote')) return <Cpu className="w-4 h-4" />;
-  if (n.includes('gps')) return <Compass className="w-4 h-4" />;
-  if (n.includes('vhf')) return <Radio className="w-4 h-4" />;
-  if (n.includes('sondeur')) return <Activity className="w-4 h-4" />;
-  if (n.includes('carte') || n.includes('guide')) return <Map className="w-4 h-4" />;
-  if (n.includes('four') || n.includes('cuisine')) return <Flame className="w-4 h-4" />;
-  if (n.includes('café')) return <Coffee className="w-4 h-4" />;
-  if (n.includes('caméra') || n.includes('video')) return <Video className="w-4 h-4" />;
-  if (n.includes('bain de soleil') || n.includes('solaire')) return <Sun className="w-4 h-4" />;
-  if (n.includes('voile') || n.includes('génois')) return <Sailboat className="w-4 h-4" />;
-  if (n.includes('générateur')) return <Zap className="w-4 h-4" />;
-  if (n.includes('filet')) return <Shield className="w-4 h-4" />;
-  if (n.includes('wi-fi') || n.includes('wifi')) return <Wifi className="w-4 h-4" />;
-  if (n.includes('wakeboard')) return <Activity className="w-4 h-4" />;
-  if (n.includes('pêche')) return <Fish className="w-4 h-4" />;
-  if (n.includes('masque') || n.includes('tuba')) return <Glasses className="w-4 h-4" />;
-  return <Check className="w-4 h-4" />;
-};
+import { DynamicIcon } from '@/components/ui/DynamicIcon';
 
 export default function YachtPage({ params }: { params: { id: string } }) {
   const [toastMsg, setToastMsg] = useState('');
@@ -81,13 +30,21 @@ export default function YachtPage({ params }: { params: { id: string } }) {
     }
   }, []);
 
+  const [dbEquipments, setDbEquipments] = useState<any[]>([]);
+
   useEffect(() => {
     async function fetchYacht() {
       try {
-        const res = await fetch(`/api/listings/${params.id}`);
+        const [res, eqRes] = await Promise.all([
+          fetch(`/api/listings/${params.id}`),
+          fetch('/api/equipments')
+        ]);
         const data = await res.json();
+        const eqData = await eqRes.json();
+        
         if (data.listing) setYacht(data.listing);
         if (data.similar) setSimilarYachts(data.similar);
+        if (Array.isArray(eqData)) setDbEquipments(eqData);
       } catch (err) {
         console.error(err);
       } finally {
@@ -567,12 +524,13 @@ export default function YachtPage({ params }: { params: { id: string } }) {
               if (yacht.features && yacht.features.length > 0) {
                 hasFeatures = true;
                 yacht.features.forEach((f: string) => {
-                  let catFound = "AUTRES";
-                  for (const [cat, items] of Object.entries(EQUIPMENT_CATEGORIES)) {
-                    if (items.includes(f)) {
-                      catFound = cat;
-                      break;
-                    }
+                  let catFound = "Autres";
+                  const eq = dbEquipments.find(e => e.name === f);
+                  if (eq) {
+                    if (eq.category === 'A_BORD') catFound = 'Confort à bord';
+                    else if (eq.category === 'EXTERIEUR') catFound = 'Extérieur & Navigation';
+                    else if (eq.category === 'LOISIR') catFound = 'Loisirs & Sports';
+                    else if (eq.category === 'OPTIONNEL') catFound = 'Équipements Optionnels';
                   }
                   if (!groupedFeatures[catFound]) groupedFeatures[catFound] = [];
                   groupedFeatures[catFound].push(f);
@@ -586,18 +544,24 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                 if (optionalServices.length > 0) {
                   hasServices = true;
                   optionalServices.forEach((s: any) => {
-                    let catFound = "AUTRES";
-                    for (const [cat, items] of Object.entries(EQUIPMENT_CATEGORIES)) {
-                      if (items.some(item => item.toLowerCase() === s.name.toLowerCase())) {
-                        catFound = cat;
-                        break;
-                      }
+                    let catFound = "Services en Option";
+                    const eq = dbEquipments.find(e => e.name.toLowerCase() === s.name.toLowerCase());
+                    if (eq) {
+                      if (eq.category === 'A_BORD') catFound = 'Confort à bord';
+                      else if (eq.category === 'EXTERIEUR') catFound = 'Extérieur & Navigation';
+                      else if (eq.category === 'LOISIR') catFound = 'Loisirs & Sports';
+                      else if (eq.category === 'OPTIONNEL') catFound = 'Équipements Optionnels';
                     }
                     if (!groupedServices[catFound]) groupedServices[catFound] = [];
                     groupedServices[catFound].push(s);
                   });
                 }
               }
+
+              const getIcon = (name: string) => {
+                const eq = dbEquipments.find(e => e.name.toLowerCase() === name.toLowerCase());
+                return <DynamicIcon name={eq?.iconName || 'Check'} className="w-4 h-4" />;
+              };
 
               if (!hasFeatures && !hasServices) {
                 return <p style={{ color: 'var(--text-light)', fontStyle: 'italic', fontSize: '0.9rem' }}>Aucun équipement renseigné pour le moment.</p>;
@@ -614,7 +578,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
                             {items.map(item => (
                               <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>
-                                <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIconForEquipment(item)}</span>
+                                <span style={{ color: 'var(--text-light)', display: 'flex' }}>{getIcon(item)}</span>
                                 {item}
                               </div>
                             ))}
@@ -633,7 +597,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.8rem' }}>
                             {items.map(s => (
                               <div key={s.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>
-                                <span style={{ color: 'var(--text-light)', display: 'flex', marginTop: '0.2rem' }}>{getIconForEquipment(s.name)}</span>
+                                <span style={{ color: 'var(--text-light)', display: 'flex', marginTop: '0.2rem' }}>{getIcon(s.name)}</span>
                                 <div>
                                   <div>{s.name}</div>
                                   <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>{s.price} € / {s.unit === 'PER_DAY' ? 'jour' : s.unit === 'PER_BOOKING' ? 'réservation' : 'personne'}</div>
@@ -738,6 +702,29 @@ export default function YachtPage({ params }: { params: { id: string } }) {
           </div>
 
           <hr className="section-sep" />
+
+          {/* Cancellation Policy */}
+          {!isSaleMode && (
+            <div className="fade-in">
+              <div className="sec-title">Politique d'annulation</div>
+              <div style={{ padding: '1rem', background: '#f8f9fa', borderRadius: '8px', borderLeft: '4px solid var(--gold)' }}>
+                {yacht.cancellationPolicy === 'FLEXIBLE' && (
+                  <p style={{ margin: 0 }}><strong>Flexible</strong> : Remboursement intégral jusqu'à 24h avant le départ.</p>
+                )}
+                {yacht.cancellationPolicy === 'MODERATE' && (
+                  <p style={{ margin: 0 }}><strong>Modérée</strong> : Remboursement intégral jusqu'à 5 jours avant le départ.</p>
+                )}
+                {(yacht.cancellationPolicy === 'STRICT' || !yacht.cancellationPolicy) && (
+                  <p style={{ margin: 0 }}><strong>Stricte</strong> : Remboursement 50% jusqu'à 7 jours avant le départ.</p>
+                )}
+                {yacht.cancellationPolicy === 'CUSTOM' && (
+                  <p style={{ margin: 0 }}><strong>Personnalisée</strong> : Veuillez vous référer à la description de l'annonce ou contacter le propriétaire.</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {!isSaleMode && <hr className="section-sep" />}
 
           {/* Map */}
           <div className="fade-in">
