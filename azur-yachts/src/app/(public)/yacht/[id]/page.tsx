@@ -500,6 +500,29 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
           <hr className="section-sep" />
 
+          {/* Cancellation Policy */}
+          {!isSaleMode && (
+            <div className="fade-in">
+              <div className="sec-title">Politique d'annulation</div>
+              <div style={{ padding: '1rem', background: '#f8f9fa', borderRadius: '8px', borderLeft: '4px solid var(--gold)' }}>
+                {yacht.cancellationPolicy === 'FLEXIBLE' && (
+                  <p style={{ margin: 0 }}><strong>Flexible</strong> : Remboursement intégral jusqu'à 24h avant le départ.</p>
+                )}
+                {yacht.cancellationPolicy === 'MODERATE' && (
+                  <p style={{ margin: 0 }}><strong>Modérée</strong> : Remboursement intégral jusqu'à 5 jours avant le départ.</p>
+                )}
+                {(yacht.cancellationPolicy === 'STRICT' || !yacht.cancellationPolicy) && (
+                  <p style={{ margin: 0 }}><strong>Stricte</strong> : Remboursement 50% jusqu'à 7 jours avant le départ.</p>
+                )}
+                {yacht.cancellationPolicy === 'CUSTOM' && (
+                  <p style={{ margin: 0 }}><strong>Personnalisée</strong> : Veuillez vous référer à la description de l'annonce ou contacter le propriétaire.</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {!isSaleMode && <hr className="section-sep" />}
+
           {/* Description */}
           <div className="fade-in">
             <div className="sec-title">À propos de ce yacht</div>
@@ -703,28 +726,7 @@ export default function YachtPage({ params }: { params: { id: string } }) {
 
           <hr className="section-sep" />
 
-          {/* Cancellation Policy */}
-          {!isSaleMode && (
-            <div className="fade-in">
-              <div className="sec-title">Politique d'annulation</div>
-              <div style={{ padding: '1rem', background: '#f8f9fa', borderRadius: '8px', borderLeft: '4px solid var(--gold)' }}>
-                {yacht.cancellationPolicy === 'FLEXIBLE' && (
-                  <p style={{ margin: 0 }}><strong>Flexible</strong> : Remboursement intégral jusqu'à 24h avant le départ.</p>
-                )}
-                {yacht.cancellationPolicy === 'MODERATE' && (
-                  <p style={{ margin: 0 }}><strong>Modérée</strong> : Remboursement intégral jusqu'à 5 jours avant le départ.</p>
-                )}
-                {(yacht.cancellationPolicy === 'STRICT' || !yacht.cancellationPolicy) && (
-                  <p style={{ margin: 0 }}><strong>Stricte</strong> : Remboursement 50% jusqu'à 7 jours avant le départ.</p>
-                )}
-                {yacht.cancellationPolicy === 'CUSTOM' && (
-                  <p style={{ margin: 0 }}><strong>Personnalisée</strong> : Veuillez vous référer à la description de l'annonce ou contacter le propriétaire.</p>
-                )}
-              </div>
-            </div>
-          )}
 
-          {!isSaleMode && <hr className="section-sep" />}
 
           {/* Map */}
           <div className="fade-in">
