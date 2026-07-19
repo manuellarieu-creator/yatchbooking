@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { CredentialsSignin } from 'next-auth';
 import { authConfig } from './auth.config';
 import Credentials from 'next-auth/providers/credentials';
 import { db } from '@/lib/db';
@@ -96,7 +96,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         return null;
       } catch (err: any) {
         console.error("Authorize catastrophic error:", err);
-        const { CredentialsSignin } = require("next-auth");
         class CustomAuthError extends CredentialsSignin {
           code = err.message || "Unknown error";
         }
