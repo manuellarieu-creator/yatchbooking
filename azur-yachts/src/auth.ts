@@ -21,31 +21,32 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         otp: { label: 'OTP', type: 'text' }
       },
       async authorize(credentials) {
-        console.log("Authorize called for:", credentials?.email);
-        if (!credentials?.email || !credentials?.password) {
-          console.log("Missing credentials");
-          return null;
-        }
+        try {
+          console.log("Authorize called for:", credentials?.email);
+          if (!credentials?.email || !credentials?.password) {
+            console.log("Missing credentials");
+            return null;
+          }
 
-        const emailStr = (credentials.email as string).toLowerCase().trim();
-        const user = await db.user.findUnique({
-          where: { email: emailStr }
-        });
+          const emailStr = (credentials.email as string).toLowerCase().trim();
+          const user = await db.user.findUnique({
+            where: { email: emailStr }
+          });
 
-        if (!user) {
-          console.log("User not found for email:", emailStr);
-          return null;
-        }
-        if (!user.password) {
-          console.log("User has no password:", emailStr);
-          return null;
-        }
+          if (!user) {
+            console.log("User not found for email:", emailStr);
+            return null;
+          }
+          if (!user.password) {
+            console.log("User has no password:", emailStr);
+            return null;
+          }
 
-        const passwordsMatch = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        );
-        console.log("Password match result:", passwordsMatch);
+          const passwordsMatch = await bcrypt.compare(
+            credentials.password as string,
+            user.password
+          );
+          console.log("Password match result:", passwordsMatch);
 
         if (passwordsMatch) {
           // Check 2FA
@@ -90,9 +91,17 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           const { password, ...userWithoutPassword } = user;
           return { ...userWithoutPassword, sessionToken };
         }
-
+        
         console.log("Returning null from authorize because password didn't match.");
         return null;
+      } catch (err: any) {
+        console.error("Authorize catastrophic error:", err);
+        const { CredentialsSignin } = require("next-auth");
+        class CustomAuthError extends CredentialsSignin {
+          code = err.message || "Unknown error";
+        }
+        throw new CustomAuthError();
+      }
       }
     })
   ]
