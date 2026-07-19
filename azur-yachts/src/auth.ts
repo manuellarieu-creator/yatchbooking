@@ -9,6 +9,7 @@ import crypto from 'crypto';
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
+  trustHost: true,
   adapter: PrismaAdapter(db),
   session: { strategy: 'jwt' },
   providers: [
