@@ -111,6 +111,7 @@ function PublishForm() {
   const [fuelPricePerDay, setFuelPricePerDay] = useState('');
   const [captainPrice, setCaptainPrice] = useState('');
   const [skipperPrice, setSkipperPrice] = useState('');
+  const [cancellationPolicy, setCancellationPolicy] = useState('STRICT');
 
   // Step 5
   const [services, setServices] = useState<Service[]>([]);
@@ -175,6 +176,7 @@ function PublishForm() {
           if (l.saleOfferType) setSaleOfferType(l.saleOfferType);
           setCleaningFee(l.cleaningFee?.toString() || '');
           setSecurityDeposit(l.securityDeposit?.toString() || '');
+          setCancellationPolicy(l.cancellationPolicy || 'STRICT');
           if (l.services) setServices(l.services);
           setDeliveryToggle(l.deliveryAvailable);
           if (l.deliveryPricing) setDeliveryPricing(l.deliveryPricing as any);
@@ -196,7 +198,7 @@ function PublishForm() {
   }, [
     currentStep, firstName, lastName, country, phone, languages, 
     title, boatType, year, portCountry, portCity, length, cabins, berths, bathrooms, boatPlanUrls, adults, children, hours, captainReq, skipperOpt, requiresLicense, enginePower, features, isAtSea,
-    photos, desc, priceDay, cleaningFee, securityDeposit, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail
+    photos, desc, priceDay, cleaningFee, securityDeposit, cancellationPolicy, services, deliveryToggle, deliveryPricing, markedDays, immediateAvail
   ]);
 
   const triggerToast = (msg: string) => {
