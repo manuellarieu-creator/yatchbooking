@@ -5,6 +5,7 @@ import { db } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { send2faEmail } from '@/lib/resend';
+import crypto from 'crypto';
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
