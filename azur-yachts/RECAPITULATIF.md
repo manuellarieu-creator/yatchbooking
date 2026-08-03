@@ -43,8 +43,10 @@ Ce document résume l'état d'avancement de la plateforme.
 
 ## ⏳ CE QU'IL RESTE À FAIRE (Prochaines étapes)
 
-- [ ] **Nom de domaine :** Acheter et configurer le nom de domaine officiel (ex: `voyyacht.com`).
-- [ ] **Configuration Resend :** Lier le nom de domaine acheté à Resend pour débloquer l'envoi d'emails vers les vrais clients (sortir du mode "sandbox").
-- [ ] **Tests de bout en bout (Q&A) :** Simuler un parcours complet (Inscription -> Recherche -> Réservation -> Virement -> Validation Admin -> Réception des emails) une fois le domaine activé.
-- [ ] **Mise en production finale :** Mettre à jour les variables d'environnement Vercel/Stripe/Resend avec les clés de production (Live) et l'URL définitive du site.
-- [ ] **Mentions Légales & CGV :** Remplir les pages légales avec le texte officiel de la société.
+- [ ] **🌐 Nom de domaine :** Acheter et configurer le nom de domaine officiel (ex: `azuryachts.com` ou `voyyacht.com`).
+- [ ] **✉️ Configuration des Emails (Resend) :** Lier ce nom de domaine à Resend pour débloquer l'envoi d'emails vers les vrais clients (sortir du mode "sandbox").
+- [ ] **⚖️ Textes Légaux :** Rédiger et intégrer les textes officiels dans les pages "Mentions Légales", "Politique de confidentialité" et "CGV".
+- [ ] **🚀 Mise en production finale (Variables d'environnement) :**
+  - Mettre à jour les clés de production sur Vercel (Stripe Live, Resend Live).
+  - Changer l'URL globale (`NEXT_PUBLIC_APP_URL`) pour que le SEO automatique (Sitemap, Robots.txt, Meta balises) utilise bien le domaine officiel.
+- [ ] **🧪 Tests finaux (Q&A de bout en bout) :** Effectuer une dernière simulation complète en conditions réelles (Inscription ➔ Recherche ➔ Réservation ➔ Paiement ➔ Validation par l'Admin ➔ Réception des emails).
