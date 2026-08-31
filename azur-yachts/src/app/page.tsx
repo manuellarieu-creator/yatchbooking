@@ -480,7 +480,7 @@ export default function HomePage() {
             <h4>Contact</h4>
             <ul>
               <li><Link href="#">+33 1 42 00 00 00</Link></li>
-              <li><Link href="#">contact@voyyacht.com</Link></li>
+              <li><Link href="#">info@voyyacht.com</Link></li>
               <li><Link href="#">3, Quai des Milliardaires, Monaco</Link></li>
             </ul>
           </div>

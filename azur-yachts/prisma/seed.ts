@@ -532,7 +532,7 @@ async function main() {
         slug: 'contact-info',
         title: 'Informations de contact',
         content: JSON.stringify({
-          email: 'contact@voyyacht.com',
+          email: 'info@voyyacht.com',
           phone: '+377 97 70 00 00',
           whatsapp: '+377 6 77 00 00 00',
           address: '3, Quai des Milliardaires, 98000 Monaco',

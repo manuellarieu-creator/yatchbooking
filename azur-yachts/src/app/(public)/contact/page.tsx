@@ -95,7 +95,7 @@ export default function ContactPage() {
           <div className="info-icon">📧</div>
           <div>
             <div className="info-label">Email</div>
-            <div className="info-value">contact@voyyacht.com</div>
+            <div className="info-value">info@voyyacht.com</div>
             <div className="info-sub">Réponse sous 2h ouvrées</div>
           </div>
         </div>

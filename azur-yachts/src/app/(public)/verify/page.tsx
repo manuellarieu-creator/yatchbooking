@@ -556,7 +556,7 @@ export default function VerificationPage() {
               <div className="next-step-card">
                 <span className="ns-icon">📞</span>
                 <div className="ns-title">Questions ?</div>
-                <div className="ns-desc">Notre équipe répond 7j/7 à contact@voyyacht.com pour toute question sur la vérification.</div>
+                <div className="ns-desc">Notre équipe répond 7j/7 à info@voyyacht.com pour toute question sur la vérification.</div>
               </div>
             </div>
             <div className="success-btns">
