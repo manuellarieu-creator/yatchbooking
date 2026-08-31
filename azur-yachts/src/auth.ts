@@ -12,6 +12,20 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   trustHost: true,
   adapter: PrismaAdapter(db),
   session: { strategy: 'jwt' },
+  events: {
+    async signOut({ token }) {
+      if (token?.sessionToken) {
+        try {
+          await db.session.deleteMany({
+            where: { sessionToken: token.sessionToken as string }
+          });
+          console.log("Session cleared from DB on logout");
+        } catch (error) {
+          console.error("Error clearing session on logout:", error);
+        }
+      }
+    }
+  },
   providers: [
     Credentials({
       name: 'credentials',

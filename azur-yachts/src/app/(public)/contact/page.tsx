@@ -141,7 +141,7 @@ export default function ContactPage() {
               {/* Availability */}
               <div className="availability">
                 <div className="avail-dot"></div>
-                <span className="avail-text">Notre équipe est disponible en ce moment · Temps de réponse moyen : 45 min</span>
+                <span className="avail-text">Notre équipe est disponible en ce moment · Temps de réponse moyen : 5 min</span>
               </div>
 
               {/* Sujet */}
