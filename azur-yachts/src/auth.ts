@@ -13,11 +13,11 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   adapter: PrismaAdapter(db),
   session: { strategy: 'jwt' },
   events: {
-    async signOut({ token }) {
-      if (token?.sessionToken) {
+    async signOut(message: any) {
+      if (message?.token?.sessionToken) {
         try {
           await db.session.deleteMany({
-            where: { sessionToken: token.sessionToken as string }
+            where: { sessionToken: message.token.sessionToken as string }
           });
           console.log("Session cleared from DB on logout");
         } catch (error) {
